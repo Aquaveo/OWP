@@ -1,0 +1,15 @@
+*.pydevproject
+*.project
+*.egg-info
+*.class
+*.pyo
+*.pyc
+*.db
+*.sqlite
+*.DS_Store
+.idea/
+services.yml
+node_modules*
+tethysapp/owp/public/frontend/
+tethysapp/owp/workspaces/
+reactapp/config/production.env
