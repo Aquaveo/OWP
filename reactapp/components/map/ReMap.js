@@ -12,13 +12,10 @@ import { MapContainer } from '../styles/Map.styled'
 
 
 
-export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleShow }) => {
+export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleShow, setCurrentStation, currentProducts }) => {
 	const mapRef = useRef();
 	const [map, setMap] = useState(null);
 	const infoClickHandler = async (event) =>{
-		// console.log('Info Click Handler Fired:', event)
-	
-		let currentInfos = [] // the array we'll fill with the data returned from arcgis Server
 	
 		// get pixel click location
 		const pixel = map.getEventPixel(event.originalEvent)
@@ -74,7 +71,7 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 							const urlObject = new URL(`${urlService}/identify`)
 							urlObject.search = new URLSearchParams(query)
 
-							const promise = axios.get(urlObject).then(response => {
+							axios.get(urlObject).then(response => {
 								console.log(response.data);
 								// return { url: url, layers: [id], data:response.data.results } 
 								// response.data
@@ -92,18 +89,35 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 									// layers: `all:${server.layers}`, // query all the layer ids for htis map server built above
 									returnGeometry: false, // I don't want geometry, but you might want to display it on a 'selection layer'
 									f: 'json'
-				
 								}
 
-								const url = new URL(`${urlService}5/query`)
+								const url = new URL(`${urlService}/5/query`);
 								url.search = new URLSearchParams(query)
 								axios.get(url).then((response) => {
 									console.log(response.data);
+									setCurrentStation(response.data.features[0]['attributes']['raw.gnis_name']);
 									handleShow();
-								  });
+
+									// const query_geolocation = {
+									// 	location: {"x":clickCoordinate[0],"y":clickCoordinate[1]},
+									// 	// sourceCountry:'USA',
+									// 	// distance: 8000,
+									// 	f: 'json',
+									// 	token: 'AAPK052bec1846714415aed2c85ddfa15f73KYexWiKoe0Au2nFQprFm_CWnafrYs4Y3MwTI3iqb-QBEwR808TRyXrudF4Za40V-'
+									// }
+									// const url_geolocation = new URL(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode`)
+									// url_geolocation.search = new URLSearchParams(query_geolocation);
+
+									// axios.get(url_geolocation).then((response) => {
+									// 	console.log(response.data);
+									// 	handleShow();
+									//   });
+
+									// https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?sourceCountry=USA&location={"spatialReference":{"latestWkid":3857,"wkid":102100},"x":-10043710.011829564,"y":3957228.402628859}&distance=8000&f=json
+
+								});
 
 							  });
-							promises.push(promise);
 
 						} else {
 							mapServerInfo.find(server => server.url === url).layers.push(id) // if so, add the ID of this layer for query
@@ -111,11 +125,7 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 					}
 
 				})
-				// Promise.all(promises).then(results => {
-				// 	console.log(results);
-				// 	// mapServerInfo.push({ url: url, layers: [id] }) 
 
-				// });
 
 			// console.log('Request for:', layers.map(layer => layer.get('name'))) // 'name' property is one I assign with layer.set('name', ${name})
 	
