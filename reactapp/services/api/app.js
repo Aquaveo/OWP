@@ -6,6 +6,9 @@ const appAPI = {
     getPlotData: () => {
         return apiClient.get(`${APP_ROOT_URL}data/`);
     },
+    getForecastData: (requestData) => {
+        return apiClient.get(`${APP_ROOT_URL}getForecastData/`, {params: requestData});
+    },
 };
 
 export default appAPI;

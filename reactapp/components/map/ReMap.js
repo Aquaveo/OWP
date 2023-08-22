@@ -9,10 +9,10 @@ import VectorTileLayer from 'ol/layer/VectorTile.js';
 import VectorLayer from 'ol/layer/Vector.js';
 
 import { MapContainer } from '../styles/Map.styled'
+import appAPI from "services/api/app";
 
 
-
-export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleShow, setCurrentStation, currentProducts }) => {
+export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleShow, setCurrentStation, currentProducts, setDataChartArray }) => {
 	const mapRef = useRef();
 	const [map, setMap] = useState(null);
 	const infoClickHandler = async (event) =>{
@@ -95,9 +95,16 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 								url.search = new URLSearchParams(query)
 								axios.get(url).then((response) => {
 									console.log(response.data);
-									setCurrentStation(response.data.features[0]['attributes']['raw.gnis_name']);
-									handleShow();
+									let currentStationName = response.data.features[0]['attributes']['raw.gnis_name']
+									let currentStationID = response.data.features[0]['attributes']['raw.feature_id']
 
+									setCurrentStation(currentStationName);
+									handleShow();
+									let dataRequest = {
+										station_id: currentStationID,
+										products: currentProducts
+									}
+									appAPI.getForecastData(dataRequest)
 									// const query_geolocation = {
 									// 	location: {"x":clickCoordinate[0],"y":clickCoordinate[1]},
 									// 	// sourceCountry:'USA',
@@ -188,16 +195,6 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 		if (!map) return;
 		const viewResolution = /** @type {number} */ (map.getView().getResolution());
 		map.on('click',infoClickHandler)
-		// map.on('click',evt=>{
-		// 	const pixel = map.getEventPixel(evt.originalEvent)
-
-		// 	map.getLayers().forEach((layer)=>{
-		// 		console.log( layer.get("name"))
-		// 		if(layer.get("name") == 'streams_layer'){
-					
-		// 		}
-		// 	})
-
 		//   });
 		//   map.on('pointermove',evt=>{
         //     console.log("out")

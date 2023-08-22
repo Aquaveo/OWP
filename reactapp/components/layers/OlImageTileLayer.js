@@ -12,7 +12,7 @@ export const OlImageTileLayer = ({ source, name,groupLayerName,groupLayers }) =>
       if (groupLayerName === 'NWM Stream Analysis'){
         groupLayers[1].getLayers().array_.push(Ilayer)
       }
-      console.log(map)
+      // console.log(map)
       return () => {
         if (groupLayerName === 'NWM Stream Analysis'){
           groupLayers[1].getLayers().array_ = groupLayers[1].getLayers().array_.filter(function( layer ) {

@@ -12,7 +12,7 @@ export const OlTileLayer = ({ source, name, groupLayerName,groupLayers}) => {
       source,
       name,
     });
-    console.log(map);
+    // console.log(map);
 
     // if (groupLayers.length < 1){
     if (groupLayerName === 'Basemaps'){

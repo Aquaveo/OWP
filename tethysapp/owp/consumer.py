@@ -1,6 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .controllers import retrieve_data, retrieve_data_bias_corrected
+# from .controllers import retrieve_data, retrieve_data_bias_corrected
 
 from tethys_sdk.routing import consumer
 
@@ -51,7 +51,7 @@ class DataConsumer(AsyncWebsocketConsumer):
         print("data_notifications from consumer")
 
         message = event["mssg"]
-        station_id = event["reach_id"]
+        station_id = event["station_id"]
         product = event["product"]
         command = event["command"]
         data = event['data']
