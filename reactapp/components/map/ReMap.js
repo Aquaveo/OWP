@@ -12,7 +12,7 @@ import { MapContainer } from '../styles/Map.styled'
 import appAPI from "services/api/app";
 
 
-export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleShow, setCurrentStation, currentProducts, setDataChartArray }) => {
+export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleShow, setCurrentStation, currentProducts, setCurrentProducts }) => {
 	const mapRef = useRef();
 	const [map, setMap] = useState(null);
 	const infoClickHandler = async (event) =>{

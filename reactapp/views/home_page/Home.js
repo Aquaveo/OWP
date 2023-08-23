@@ -24,7 +24,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Dropdown from 'react-bootstrap/Dropdown';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
-
+import { LineChart } from "components/plots/linePlot";
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
@@ -33,8 +33,7 @@ const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Can
 const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
 function App() {
   const socketRef = useRef();
-  // const chartRef = useRef(null);
-  const [dataChartArray, setDataChartArray] = useState([])
+  // const [dataChartObject, setDataChartObject] = useState({})
   const [isFullMap, setIsFullMap] = useState(true)
   const [groupLayers, setGroupLayers] =  useState([
     new LayerGroup({
@@ -52,75 +51,92 @@ function App() {
   {
     analysis_assim:{
       'is_requested': true,
-      'name_product': 'analysis_assim'
+      'name_product': 'analysis_assim',
+      'data':[]
     },
     short_range: {
       'is_requested': true,
-      'name_product': 'short_range'
+      'name_product': 'short_range',
+      'data':[]
     },    
 
     long_range_ensemble_mean: {
       'is_requested': false,
-      'name_product': 'long_range_ensemble_mean'
+      'name_product': 'long_range_ensemble_mean',
+      'data':[]
     },
     long_range_ensemble_member_1:{
       'is_requested': false,
-      'name_product': 'long_range_ensemble_member_1'
+      'name_product': 'long_range_ensemble_member_1',
+      'data':[]
     },
     long_range_ensemble_member_2: {
       'is_requested': false,
-      'name_product': 'long_range_ensemble_member_2'
+      'name_product': 'long_range_ensemble_member_2',
+      'data':[]
     },
     long_range_ensemble_member_3: {
       'is_requested': false,
-      'name_product': 'long_range_ensemble_member_3'
+      'name_product': 'long_range_ensemble_member_3',
+      'data':[]
     },
     long_range_ensemble_member_4: {
       'is_requested': false,
-      'name_product': 'long_range_ensemble_member_4'
+      'name_product': 'long_range_ensemble_member_4',
+      'data':[]
     },
     medium_range_ensemble_mean:{
       'is_requested': false,
-      'name_product': 'medium_range_ensemble_mean'
+      'name_product': 'medium_range_ensemble_mean',
+      'data':[]
     },
     medium_range_ensemble_member_1:{
       'is_requested': false,
-      'name_product': 'medium_range_ensemble_member_1'
+      'name_product': 'medium_range_ensemble_member_1',
+      'data':[]
     },
     medium_range_ensemble_member_2:{
       'is_requested': false,
-      'name_product': 'medium_range_ensemble_member_2'
+      'name_product': 'medium_range_ensemble_member_2',
+      'data':[]
     },
     medium_range_ensemble_member_3:{
       'is_requested': false,
-      'name_product': 'medium_range_ensemble_member_3'
+      'name_product': 'medium_range_ensemble_member_3',
+      'data':[]
     },
     medium_range_ensemble_member_4:{
       'is_requested': false,
-      'name_product': 'medium_range_ensemble_member_4'
+      'name_product': 'medium_range_ensemble_member_4',
+      'data':[]
     },
     medium_range_ensemble_member_5:{
       'is_requested': false,
-      'name_product': 'medium_range_ensemble_member_5'
+      'name_product': 'medium_range_ensemble_member_5',
+      'data':[]
     },
     medium_range_ensemble_member_6:{
       'is_requested': false,
-      'name_product': 'medium_range_ensemble_member_6'
+      'name_product': 'medium_range_ensemble_member_6',
+      'data':[]
     },
     medium_range_ensemble_member_7:{
       'is_requested': false,
-      'name_product': 'medium_range_ensemble_member_7'
+      'name_product': 'medium_range_ensemble_member_7',
+      'data': []
     }
 }
 
 const [currentProducts, setCurrentProducts] = useReducer(reducerProducts, currentProductsInitial);
 
+
 function reducerProducts(state, action) {
   switch (action.type) {
     case 'analysis_assim':
-      return { ...state, analysis_assim : {... state['analysis_assim'], 'is_requested': !state['analysis_assim']['is_requested'] } };
+      return { ...state, analysis_assim : {... state['analysis_assim'], 'is_requested': !state['analysis_assim']['is_requested'],'data': action.data } };
+      // return { ...state, analysis_assim : {... state['analysis_assim'], 'is_requested': !state['analysis_assim']['is_requested'] } };
     case 'short_range':
-      return { ...state, short_range: {... state['short_range'], 'is_requested': !state['short_range']['is_requested'] }};
+      return { ...state, short_range: {... state['short_range'], 'is_requested': !state['short_range']['is_requested'], 'data': action.data }};
     // case 'reset':
     //   return { isRunning: false, time: 0 };
     // case 'tick':
@@ -130,10 +146,28 @@ function reducerProducts(state, action) {
   }
 }
 
+
   const handleClose = () => setshowModal(false);
   const handleShow = () => setshowModal(true);
   
 
+  let data = [
+    {
+      category: "Research",
+      value1: 1000,
+      value2: 588
+    },
+    {
+      category: "Marketing",
+      value1: 1200,
+      value2: 1800
+    },
+    {
+      category: "Sales",
+      value1: 850,
+      value2: 1230
+    }
+  ];
 
   useEffect(() => {
     console.log("ahah")
@@ -152,17 +186,20 @@ function reducerProducts(state, action) {
       };
 	}, []);
   useEffect(() => {
+    console.log("useEffect 2 Home")
     socketRef.current.onmessage = function (e) {
       let data = JSON.parse(e.data);
+      let product_name = data['product'];
       let ts = data['data'][0]['data'];
-      setDataChartArray(dataChartArray => [...dataChartArray, ts ])
+      setCurrentProducts({type: product_name, data: ts});
     }
-	}, [currentStation,dataChartArray]);
+    // console.log(currentProducts)
+	}, [currentStation,currentProducts]);
 
   return (
     <div>
     <MainContainer>
-        <ReMap isFullMap={isFullMap} center={fromLonLat([-94.9065, 38.9884])} zoom={5} layerGroups={groupLayers} handleShow={handleShow} setCurrentStation={setCurrentStation} currentProducts={currentProducts} setDataChartArray={setDataChartArray} >
+        <ReMap isFullMap={isFullMap} center={fromLonLat([-94.9065, 38.9884])} zoom={5} layerGroups={groupLayers} handleShow={handleShow} setCurrentStation={setCurrentStation} currentProducts={currentProducts} setCurrentProducts={setCurrentProducts} >
           <Layers>
 
 
@@ -218,7 +255,7 @@ function reducerProducts(state, action) {
                   variant="outline-primary"
                   checked={currentProducts['analysis_assim']['is_requested']}
                   value={currentProducts['analysis_assim']['name_product']}
-                  onChange={(e) => setCurrentProducts({ type: e.currentTarget.value })}
+                  onChange={(e) => setCurrentProducts({ type: e.currentTarget.value, data:currentProducts['analysis_assim']['data'] })}
                 >
                   Analysis and Assimilation
                 </ToggleButton>
@@ -228,42 +265,15 @@ function reducerProducts(state, action) {
                   variant="outline-primary"
                   checked={currentProducts['short_range']['is_requested']}
                   value={currentProducts['short_range']['name_product']}
-                  onChange={(e) => setCurrentProducts({ type: e.currentTarget.value })}
+                  onChange={(e) => setCurrentProducts({ type: e.currentTarget.value, data:currentProducts['short_range']['data'] })}
                 >
                   Short Range Forecast
                 </ToggleButton>
               </ButtonGroup>              
-              
-              <Dropdown className="d-inline mx-2">
-                <Dropdown.Toggle id="dropdown-autoclose-true">
-                  Long Range Forecast
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                  <Dropdown.Item href="#">30 day Ensemble Mean</Dropdown.Item>
-                  <Dropdown.Item href="#">
-                    <div>
-                      <Dropdown className="d-inline mx-2">
-                        <Dropdown.Toggle id="dropdown-ensembles-autoclose-true">
-                          30 day Ensembles
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                          <Dropdown.Item href="#"> Member 1</Dropdown.Item>
-                          <Dropdown.Item href="#"> Member 2</Dropdown.Item>
-                          <Dropdown.Item href="#"> Member 3</Dropdown.Item>
-                          <Dropdown.Item href="#"> Member 4</Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </div>
-
-                
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-              <PlotView/>
+              <LineChart data={currentProducts}/>
             </Tab>
             <Tab eventKey="metadata-tab" title="Metadata">
-              Tab content for Profile
+             
             </Tab>
             <Tab eventKey="info-tab" title="Info">
               Tab content for Loooonger Tab
@@ -289,3 +299,31 @@ function reducerProducts(state, action) {
   );
 }
 export default App;
+
+
+{/* <Dropdown className="d-inline mx-2">
+<Dropdown.Toggle id="dropdown-autoclose-true">
+  Long Range Forecast
+</Dropdown.Toggle>
+
+<Dropdown.Menu>
+  <Dropdown.Item href="#">30 day Ensemble Mean</Dropdown.Item>
+  <Dropdown.Item href="#">
+    <div>
+      <Dropdown className="d-inline mx-2">
+        <Dropdown.Toggle id="dropdown-ensembles-autoclose-true">
+          30 day Ensembles
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <Dropdown.Item href="#"> Member 1</Dropdown.Item>
+          <Dropdown.Item href="#"> Member 2</Dropdown.Item>
+          <Dropdown.Item href="#"> Member 3</Dropdown.Item>
+          <Dropdown.Item href="#"> Member 4</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    </div>
+
+
+  </Dropdown.Item>
+</Dropdown.Menu>
+</Dropdown> */}
