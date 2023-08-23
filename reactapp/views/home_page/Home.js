@@ -133,10 +133,10 @@ const [currentProducts, setCurrentProducts] = useReducer(reducerProducts, curren
 function reducerProducts(state, action) {
   switch (action.type) {
     case 'analysis_assim':
-      return { ...state, analysis_assim : {... state['analysis_assim'], 'is_requested': !state['analysis_assim']['is_requested'],'data': action.data } };
+      return { ...state, analysis_assim : {... state['analysis_assim'], 'is_requested': action.is_requested,'data': action.data } };
       // return { ...state, analysis_assim : {... state['analysis_assim'], 'is_requested': !state['analysis_assim']['is_requested'] } };
     case 'short_range':
-      return { ...state, short_range: {... state['short_range'], 'is_requested': !state['short_range']['is_requested'], 'data': action.data }};
+      return { ...state, short_range: {... state['short_range'], 'is_requested': action.is_requested, 'data': action.data }};
     // case 'reset':
     //   return { isRunning: false, time: 0 };
     // case 'tick':
@@ -150,7 +150,7 @@ function reducerProducts(state, action) {
   const handleClose = () => setshowModal(false);
   const handleShow = () => setshowModal(true);
   
-
+  
   let data = [
     {
       category: "Research",
@@ -170,7 +170,6 @@ function reducerProducts(state, action) {
   ];
 
   useEffect(() => {
-    console.log("ahah")
     socketRef.current = new WebSocket(ws);
       socketRef.current.onopen = () => {
         console.log("WebSocket is Open");
@@ -189,11 +188,16 @@ function reducerProducts(state, action) {
     console.log("useEffect 2 Home")
     socketRef.current.onmessage = function (e) {
       let data = JSON.parse(e.data);
+
       let product_name = data['product'];
-      let ts = data['data'][0]['data'];
-      setCurrentProducts({type: product_name, data: ts});
+      // let ts = data['data'][0]['data'];
+      console.log( data['data'][0]['data'])
+      let ts = data['data'][0]['data'].map(obj => ({
+        value: obj.value,
+        'forecast-time': new Date(obj['forecast-time']).getTime()
+      }));
+      setCurrentProducts({type: product_name,is_requested:true, data: ts});
     }
-    // console.log(currentProducts)
 	}, [currentStation,currentProducts]);
 
   return (
@@ -255,7 +259,7 @@ function reducerProducts(state, action) {
                   variant="outline-primary"
                   checked={currentProducts['analysis_assim']['is_requested']}
                   value={currentProducts['analysis_assim']['name_product']}
-                  onChange={(e) => setCurrentProducts({ type: e.currentTarget.value, data:currentProducts['analysis_assim']['data'] })}
+                  onChange={(e) => setCurrentProducts({ type: e.currentTarget.value, is_requested:!currentProducts['analysis_assim']['is_requested'], data:currentProducts['analysis_assim']['data'] })}
                 >
                   Analysis and Assimilation
                 </ToggleButton>
@@ -265,7 +269,7 @@ function reducerProducts(state, action) {
                   variant="outline-primary"
                   checked={currentProducts['short_range']['is_requested']}
                   value={currentProducts['short_range']['name_product']}
-                  onChange={(e) => setCurrentProducts({ type: e.currentTarget.value, data:currentProducts['short_range']['data'] })}
+                  onChange={(e) => setCurrentProducts({ type: e.currentTarget.value, is_requested:!currentProducts['short_range']['is_requested'],data:currentProducts['short_range']['data'] })}
                 >
                   Short Range Forecast
                 </ToggleButton>

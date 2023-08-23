@@ -9,9 +9,10 @@ const CHART_ID = 'default_ID';
 
 export const LineChart = (props) => {
   
-  const series1Ref = useRef(null);
-  const series2Ref = useRef(null);
+  const seriesAnalysisAssimRef = useRef(null);
+  const seriesShortermRef = useRef(null);
   const xAxisRef = useRef(null);
+
 
   // This code will only run one time
   useEffect(() => {
@@ -39,41 +40,46 @@ export const LineChart = (props) => {
     // Create X-Axis
     let xAxis = chart.xAxes.push(
       am5xy.DateAxis.new(root, {
-        baseInterval: { timeUnit: "day", count: 1 },
+        baseInterval: { timeUnit: "hour", count: 1 },
         renderer: am5xy.AxisRendererX.new(root, {}),
         tooltip: am5.Tooltip.new(root, {}),
-        tooltipDateFormat: "yyyy-MM-dd"
+        tooltipDateFormat: "MM/dd HH:mm"
       })
     );
+    for (const product in  props.data){
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+      var series = chart.series.push(
+        am5xy.LineSeries.new(root, {
+          name: props.data[product]['name_product'],
+          xAxis: xAxis,
+          yAxis: yAxis,
+          valueYField: "value",
+          valueXField: "forecast-time",
+          maxDeviation:1,
 
-    // Create series
-    let series1 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        name: "Series",
-        xAxis: xAxis,
-        yAxis: yAxis,
-        valueYField: "value",
-        valueXField: "forecast-time",
-        maxDeviation:1,
-        tooltip: am5.Tooltip.new(root, {
-          labelText: "{valueY}"
+          tooltip: am5.Tooltip.new(root, {
+            labelText: "{valueY}"
+          })
         })
-      })
-    );
+      );
 
-    let series2 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        name: "Series",
-        xAxis: xAxis,
-        yAxis: yAxis,
-        valueYField: "value",
-        valueXField: "forecast-time",
-        maxDeviation:1,
-        tooltip: am5.Tooltip.new(root, {
-          labelText: "{valueY}"
-        })
-      })
-    );
+      if (props.data[product]['is_requested'] && props.data[product]['name_product'] === 'analysis_assim'){
+        series.data.setAll(props.data[product]['data']);
+        // Make stuff animate on load
+        // https://www.amcharts.com/docs/v5/concepts/animations/
+        series.appear(1000);
+        seriesAnalysisAssimRef.current = series;
+      }
+      if (props.data[product]['is_requested'] && props.data[product]['name_product'] === 'short_range'){
+        series.data.setAll(props.data[product]['data']);
+        // Make stuff animate on load
+        // https://www.amcharts.com/docs/v5/concepts/animations/
+        series.appear(1000);
+        seriesShortermRef.current = series;
+      }
+
+    }
+
 
     // Add legend
     let legend = chart.children.push(am5.Legend.new(root, {}));
@@ -83,9 +89,8 @@ export const LineChart = (props) => {
     chart.set("cursor", am5xy.XYCursor.new(root, {}));
 
     xAxisRef.current = xAxis;
-    series1Ref.current = series1;
-    series2Ref.current = series2;
-
+    // series1Ref.current = series1;
+    // series2Ref.current = series2;
     return () => {
       root.dispose();
     };
@@ -95,9 +100,29 @@ export const LineChart = (props) => {
   useEffect(() => {
     console.log("useEffect 2 lineplot")
 
+    for (const product in  props.data){
+      if(props.data[product]['is_requested'] && props.data[product]['name_product']==='analysis_assim'){
+        seriesAnalysisAssimRef.current.data.setAll(props.data['analysis_assim']['data']);
+      }
+      if(props.data[product]['is_requested'] && props.data[product]['name_product']==='short_range'){
+        seriesShortermRef.current.data.setAll(props.data['short_range']['data']);
+      }
+
+    }
+
+
+    // props.data.forEach(function(product){
+    //   if(props.data[product]['is_requested'] && props.data[product]['name_product']==='analysis_assim'){
+    //     seriesAnalysisAssimRef.current.data.setAll(props.data['analysis_assim']['data']);
+    //   }
+    //   if(props.data[product]['is_requested'] && props.data[product]['name_product']==='short_range'){
+    //     seriesShortermRef.current.data.setAll(props.data['short_range']['data']);
+    //   }
+    // })
     xAxisRef.current.data.setAll(props.data['analysis_assim']['data']);
-    series1Ref.current.data.setAll(props.data['analysis_assim']['data']);
-    series2Ref.current.data.setAll(props.data['short_range']['data']);
+    // seriesAnalysisAssimRef.current.data.setAll(props.data['analysis_assim']['data']);
+    // seriesShortermRef.current.data.setAll(props.data['short_range']['data']);
+
   }, [props.data]);
 
   return <div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>;
