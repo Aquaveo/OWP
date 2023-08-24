@@ -11,6 +11,7 @@ export const LineChart = (props) => {
   
   const seriesAnalysisAssimRef = useRef(null);
   const seriesShortermRef = useRef(null);
+  
   const xAxisRef = useRef(null);
 
 
@@ -48,42 +49,67 @@ export const LineChart = (props) => {
     );
     for (const product in  props.data){
       // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
-      var series = chart.series.push(
-        am5xy.LineSeries.new(root, {
-          name: props.data[product]['name_product'],
-          xAxis: xAxis,
-          yAxis: yAxis,
-          valueYField: "value",
-          valueXField: "forecast-time",
-          maxDeviation:1,
-
-          tooltip: am5.Tooltip.new(root, {
-            labelText: "{valueY}"
+      if(props.data[product]['is_requested']){
+        var series = chart.series.push(
+          am5xy.LineSeries.new(root, {
+            name: props.data[product]['name_product'],
+            xAxis: xAxis,
+            yAxis: yAxis,
+            valueYField: "value",
+            valueXField: "forecast-time",
+            maxDeviation:1,
+  
+            tooltip: am5.Tooltip.new(root, {
+              labelText: "{valueY}"
+            })
           })
-        })
-      );
-
-      if (props.data[product]['is_requested'] && props.data[product]['name_product'] === 'analysis_assim'){
+        );
         series.data.setAll(props.data[product]['data']);
         // Make stuff animate on load
         // https://www.amcharts.com/docs/v5/concepts/animations/
         series.appear(1000);
+      }
+
+
+      if (props.data[product]['name_product'] === 'analysis_assim'){
         seriesAnalysisAssimRef.current = series;
       }
       if (props.data[product]['is_requested'] && props.data[product]['name_product'] === 'short_range'){
-        series.data.setAll(props.data[product]['data']);
-        // Make stuff animate on load
-        // https://www.amcharts.com/docs/v5/concepts/animations/
-        series.appear(1000);
         seriesShortermRef.current = series;
       }
 
     }
+    //Today date line
+
+    var rangeDataItem = xAxis.makeDataItem({
+      value: new Date().getTime(),
+      above: true
+    });
+    
+    var range = xAxis.createAxisRange(rangeDataItem);
+    
+    rangeDataItem.get("grid").set("visible", true);
+    range.get("grid").setAll({
+      stroke: 'red',
+      strokeOpacity: 1,
+      width: 32,
+      location: 1
+    });
+    
+    range.get("label").setAll({
+        fill: am5.color(0xffffff),
+        text: '05/02',
+        background: am5.RoundedRectangle.new(root, {
+          fill: '#aaa'
+        })
+      });
+
 
 
     // Add legend
     let legend = chart.children.push(am5.Legend.new(root, {}));
     legend.data.setAll(chart.series.values);
+
 
     // Add cursor
     chart.set("cursor", am5xy.XYCursor.new(root, {}));
@@ -101,6 +127,9 @@ export const LineChart = (props) => {
     console.log("useEffect 2 lineplot")
 
     for (const product in  props.data){
+      // chart.series.removeIndex(
+      //   chart.series.indexOf(series_to_remove)
+      // );
       if(props.data[product]['is_requested'] && props.data[product]['name_product']==='analysis_assim'){
         seriesAnalysisAssimRef.current.data.setAll(props.data['analysis_assim']['data']);
       }
@@ -128,150 +157,4 @@ export const LineChart = (props) => {
   return <div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // const chartRef = useRef(null);
-  // useEffect(() => {
-  //   let root = am5.Root.new(CHART_ID);
-  //   console.log("maklA")
-  //   // Set themes
-  //   // https://www.amcharts.com/docs/v5/concepts/themes/
-  //   root.setThemes([
-  //     am5themes_Animated.new(root)
-  //   ]);
-
-  //   // Create chart
-  //   // https://www.amcharts.com/docs/v5/charts/xy-chart/
-  //   var chart = root.container.children.push(
-  //     am5xy.XYChart.new(root, {
-  //       panX: true,
-  //       panY: true,
-  //       wheelX: "panX",
-  //       wheelY: "zoomX",
-  //     pinchZoomX:true
-  //     })
-  //   );
-
-  //   // Add cursor
-  //   // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
-  //   var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
-  //     behavior: "none"
-  //   }));
-  //   cursor.lineY.set("visible", false);
-
-  //   // Create axes
-  //   // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
-  //   var xAxis = chart.xAxes.push(
-  //     am5xy.DateAxis.new(root, {
-  //       baseInterval: { timeUnit: "day", count: 1 },
-  //       renderer: am5xy.AxisRendererX.new(root, {}),
-  //       tooltip: am5.Tooltip.new(root, {}),
-  //       tooltipDateFormat: "yyyy-MM-dd"
-  //     })
-  //   );
-
-  //   var yAxis = chart.yAxes.push(
-  //     am5xy.ValueAxis.new(root, {
-  //       maxDeviation:1,
-  //       renderer: am5xy.AxisRendererY.new(root, {pan:"zoom"})
-  //     })
-  //   );
-
-  //   // Add series
-  //   data.forEach(element => {
-  //     // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
-  //     var series = chart.series.push(
-  //       am5xy.LineSeries.new(root, {
-  //         name: "Series",
-  //         xAxis: xAxis,
-  //         yAxis: yAxis,
-  //         valueYField: "value",
-  //         valueXField: "forecast-time",
-  //         tooltip: am5.Tooltip.new(root, {
-  //           labelText: "{valueY}"
-  //         })
-  //       })
-  //     );
-  //     series.data.setAll(element);
-
-  //     // Make stuff animate on load
-  //     // https://www.amcharts.com/docs/v5/concepts/animations/
-  //     series.appear(1000);
-    
-  //   });
-
-  //   // Add scrollbar
-  //   // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
-  //   var scrollbar = chart.set("scrollbarX", am5xy.XYChartScrollbar.new(root, {
-  //     orientation: "horizontal",
-  //     height: 60
-  //   }));
-
-  //   var sbDateAxis = scrollbar.chart.xAxes.push(
-  //     am5xy.DateAxis.new(root, {
-  //       baseInterval: {
-  //         timeUnit: "day",
-  //         count: 1
-  //       },
-  //       renderer: am5xy.AxisRendererX.new(root, {})
-  //     })
-  //   );
-
-  //   var sbValueAxis = scrollbar.chart.yAxes.push(
-  //     am5xy.ValueAxis.new(root, {
-  //       renderer: am5xy.AxisRendererY.new(root, {})
-  //     })
-  //   );
-
-  //   var sbSeries = scrollbar.chart.series.push(
-  //     am5xy.LineSeries.new(root, {
-  //       valueYField: "price0",
-  //       valueXField: "date0",
-  //       xAxis: sbDateAxis,
-  //       yAxis: sbValueAxis
-  //     })
-  //   );
-
-  //   // series0.data.setAll(data);
-  //   // series1.data.setAll(data);
-  //   // sbSeries.data.setAll(data[0]);
-
-  //   chart.appear(1000, 100);
-
-  //   chartRef.current = chart;
-  //   return () => {
-  //     root.dispose();
-  //   };
-  // }, []);
-  // // When the paddingRight prop changes it will update the chart
-  // useEffect(() => {
-  //   chartRef.current.set("paddingRight", paddingRight);
-  // }, [paddingRight]);
-
-
-  // return (
-  //   <Container className="py-5 h-100 d-flex justify-content-center">
-  //     <div id="default_ID" style={{ width: "100%", height: "500px" }}></div>;
-  //   </Container>
-  // );
 };

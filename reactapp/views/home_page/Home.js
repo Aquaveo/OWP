@@ -245,12 +245,12 @@ function reducerProducts(state, action) {
         </Modal.Header>
         <Modal.Body>
           <Tabs
-            defaultActiveKey="configuration-tab"
+            defaultActiveKey="forecast-tab"
             id="justify-tab-example"
             className="mb-3"
             justify
           >
-            <Tab eventKey="configuration-tab" title="Configuration">
+            <Tab eventKey="forecast-tab" title="Forecast">
 
               <ButtonGroup className="mb-2">
                 <ToggleButton
@@ -276,10 +276,10 @@ function reducerProducts(state, action) {
               </ButtonGroup>              
               <LineChart data={currentProducts}/>
             </Tab>
-            <Tab eventKey="metadata-tab" title="Metadata">
+            <Tab eventKey="historical-tab" title="Historical Data">
              
             </Tab>
-            <Tab eventKey="info-tab" title="Info">
+            <Tab eventKey="averages-tab" title="Daily-Monthly Averages">
               Tab content for Loooonger Tab
             </Tab>
 
