@@ -9,6 +9,7 @@ from tethys_sdk.routing import controller
 
 
 BASE_API_URL='https://nwmdata.nohrsc.noaa.gov/latest/forecasts'
+async_client = httpx.AsyncClient()
 
 @controller
 def home(request):
@@ -63,17 +64,36 @@ def getForecastData(request):
     station_id = request.GET.get('station_id')
     products = json.loads(request.GET.get('products'))
     print(station_id)
+    # breakpoint()
     response = "executing"
     try:
-        api_base_url = BASE_API_URL        
+        api_base_url = BASE_API_URL
         asyncio.run(make_api_calls(api_base_url,station_id,products))
 
     except Exception as e:
-        print('saveHistoricalSimulationData error')
+        print('getForecastData error')
         print(e)
 
     return JsonResponse({'state':response })
 
+def updateForecastData(station_id, products):
+    response = "updating"
+    try:
+        api_base_url = BASE_API_URL
+        # breakpoint()
+        # loop = asyncio.get_event_loop()
+        # loop.close()
+        # loop = asyncio.get_running_loop()
+        # await loop.create_task(make_api_calls(api_base_url,station_id,products))
+        # loop.run_until_complete(make_api_calls(api_base_url,station_id,products))
+
+        asyncio.run(make_api_calls(api_base_url,station_id,products))
+
+    except Exception as e:
+        print('updateForecastData error')
+        print(e)
+
+    return JsonResponse({'state':response })
 async def make_api_calls(api_base_url,station_id,products):
 
     list_async_task = []
@@ -91,11 +111,19 @@ async def make_api_calls(api_base_url,station_id,products):
 async def api_forecast_call(api_base_url,station_id,method_name):
     mssge_string = "Complete"
     channel_layer = get_channel_layer()
-    print(station_id)
+    # print(station_id)
+    # breakpoint()
 
     try:
         print(f"{api_base_url}/{method_name}/streamflow/")
-        print(station_id)
+        print(method_name)
+        # response_await = await async_client.get(
+        #     url = f"{api_base_url}/{method_name}/streamflow",
+        #     params = {
+        #         "station_id": station_id
+        #     },
+        #     timeout=None           
+        # )
         async with httpx.AsyncClient() as client:
             response_await = await client.get(
             url = f"{api_base_url}/{method_name}/streamflow",
@@ -104,7 +132,7 @@ async def api_forecast_call(api_base_url,station_id,method_name):
             },
             timeout=None          
         )
-        print(response_await)
+        # print(response_await)
         await channel_layer.group_send(
             "notifications_owp",
             {
@@ -117,6 +145,8 @@ async def api_forecast_call(api_base_url,station_id,method_name):
                 "data": response_await.json()
             },
         )
+        return mssge_string
+
     except httpx.HTTPError as exc:
 
         print(f"Error while requesting {exc.request.url!r}.")

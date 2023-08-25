@@ -1,6 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-# from .controllers import retrieve_data, retrieve_data_bias_corrected
+from .controllers import updateForecastData
 
 from tethys_sdk.routing import consumer
 
@@ -21,12 +21,14 @@ class DataConsumer(AsyncWebsocketConsumer):
         # You can call:
         print("receving function to consumer")
         text_data_json = json.loads(text_data)
-        print(text_data_json)
-        json_obj = retrieve_data(text_data_json['station_id'],text_data_json['product'])
-        await self.channel_layer.group_send (
-            "notifications_owp",
-            json_obj,
-        )        
+        # print(text_data_json)
+        updateForecastData(text_data_json['station_id'],text_data_json['product'])
+        # json_obj = updateForecastData(text_data_json['station_id'],text_data_json['product'])
+        json_obj = {}
+        # await self.channel_layer.group_send (
+        #     "notifications_owp",
+        #     json_obj,
+        # )        
         # if "type" in text_data_json and text_data_json["type"] == "plot_hs_data":
             # asyncio.run(retrieve_data_from_file(text_data_json['reach_id']))
             # json_obj = retrieve_data(text_data_json['station_id'],text_data_json['product'])

@@ -10,10 +10,10 @@ const CHART_ID = 'default_ID';
 export const LineChart = (props) => {
   
   const seriesAnalysisAssimRef = useRef(null);
-  const seriesShortermRef = useRef(null);
+  // const seriesShortermRef = useRef(null);
   
   const xAxisRef = useRef(null);
-
+  const chartRef = useRef(null);
 
   // This code will only run one time
   useEffect(() => {
@@ -33,7 +33,6 @@ export const LineChart = (props) => {
     // Create Y-axis
     let yAxis = chart.yAxes.push(
       am5xy.ValueAxis.new(root, {
-        maxDeviation:1,
         renderer: am5xy.AxisRendererY.new(root, {pan:"zoom"})
       })
     );
@@ -58,29 +57,29 @@ export const LineChart = (props) => {
             valueYField: "value",
             valueXField: "forecast-time",
             maxDeviation:1,
-  
+            stroke: am5.color(props.data[product]['color']),
             tooltip: am5.Tooltip.new(root, {
-              labelText: "{valueY}"
+              labelText: `${product}: {valueY}`
             })
           })
         );
+        series.strokes.template.setAll({
+          strokeWidth: 3,
+        });
         series.data.setAll(props.data[product]['data']);
         // Make stuff animate on load
         // https://www.amcharts.com/docs/v5/concepts/animations/
         series.appear(1000);
-      }
-
-
-      if (props.data[product]['name_product'] === 'analysis_assim'){
-        seriesAnalysisAssimRef.current = series;
-      }
-      if (props.data[product]['is_requested'] && props.data[product]['name_product'] === 'short_range'){
-        seriesShortermRef.current = series;
+        if (product === 'analysis_assim'){
+          seriesAnalysisAssimRef.current = series;
+        }
+        // if (product === 'short_range'){
+        //   seriesShortermRef.current = series;
+        // }
       }
 
     }
     //Today date line
-
     var rangeDataItem = xAxis.makeDataItem({
       value: new Date().getTime(),
       above: true
@@ -90,21 +89,12 @@ export const LineChart = (props) => {
     
     rangeDataItem.get("grid").set("visible", true);
     range.get("grid").setAll({
-      stroke: 'red',
+      stroke: '#88d318',
       strokeOpacity: 1,
       width: 32,
       location: 1
     });
-    
-    range.get("label").setAll({
-        fill: am5.color(0xffffff),
-        text: '05/02',
-        background: am5.RoundedRectangle.new(root, {
-          fill: '#aaa'
-        })
-      });
-
-
+  
 
     // Add legend
     let legend = chart.children.push(am5.Legend.new(root, {}));
@@ -115,8 +105,8 @@ export const LineChart = (props) => {
     chart.set("cursor", am5xy.XYCursor.new(root, {}));
 
     xAxisRef.current = xAxis;
-    // series1Ref.current = series1;
-    // series2Ref.current = series2;
+    chartRef.current= chart;
+
     return () => {
       root.dispose();
     };
@@ -127,32 +117,47 @@ export const LineChart = (props) => {
     console.log("useEffect 2 lineplot")
 
     for (const product in  props.data){
-      // chart.series.removeIndex(
-      //   chart.series.indexOf(series_to_remove)
-      // );
-      if(props.data[product]['is_requested'] && props.data[product]['name_product']==='analysis_assim'){
-        seriesAnalysisAssimRef.current.data.setAll(props.data['analysis_assim']['data']);
-      }
-      if(props.data[product]['is_requested'] && props.data[product]['name_product']==='short_range'){
-        seriesShortermRef.current.data.setAll(props.data['short_range']['data']);
-      }
+      if(!props.data[product]['is_requested']){
+        if(product ==='analysis_assim' && chartRef.current.series.indexOf(seriesAnalysisAssimRef.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesAnalysisAssimRef.current)
+          ).dispose();
+          // props.setCurrentProducts({type: product, is_requested: props.data[product]['is_requested'], data:[] })
+        }
+        // if(product ==='short_range' && chartRef.current.series.indexOf(seriesShortermRef.current) > -1){
+        //   chartRef.current.series.removeIndex(
+        //     chartRef.current.series.indexOf(seriesShortermRef.current)
+        //   ).dispose();
+        //   // props.setCurrentProducts({type: product, is_requested: props.data[product]['is_requested'], data:[] })
 
+        // }
+      }
+      else{
+        if( product ==='analysis_assim'){
+          if(chartRef.current.series.indexOf(seriesAnalysisAssimRef.current) < 0){
+            // props.setCurrentProducts({type: product, is_requested: props.data[product]['is_requested'], data:[] })
+
+            chartRef.current.series.push(seriesAnalysisAssimRef.current);
+          }
+          else{
+            seriesAnalysisAssimRef.current.data.setAll(props.data[product]['data']);
+
+          }
+        }
+        // if(product ==='short_range' ){
+        //   // seriesShortermRef.current.data.setAll(props.data[product]['data']);
+        //   if(chartRef.current.series.indexOf(seriesShortermRef.current) < 0){
+        //     chartRef.current.series.push(seriesShortermRef.current);
+        //   }
+        //   else{
+        //     seriesShortermRef.current.data.setAll(props.data[product]['data']);
+        //   }
+        // }
+      }
+      
     }
 
-
-    // props.data.forEach(function(product){
-    //   if(props.data[product]['is_requested'] && props.data[product]['name_product']==='analysis_assim'){
-    //     seriesAnalysisAssimRef.current.data.setAll(props.data['analysis_assim']['data']);
-    //   }
-    //   if(props.data[product]['is_requested'] && props.data[product]['name_product']==='short_range'){
-    //     seriesShortermRef.current.data.setAll(props.data['short_range']['data']);
-    //   }
-    // })
-    xAxisRef.current.data.setAll(props.data['analysis_assim']['data']);
-    // seriesAnalysisAssimRef.current.data.setAll(props.data['analysis_assim']['data']);
-    // seriesShortermRef.current.data.setAll(props.data['short_range']['data']);
-
-  }, [props.data]);
+  }, [props.isUpdatePlot]);
 
   return <div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>;
 

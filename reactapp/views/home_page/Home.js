@@ -25,6 +25,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import { LineChart } from "components/plots/linePlot";
+import appAPI from "services/api/app";
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
@@ -47,82 +48,99 @@ function App() {
   ]);
   const [showModal, setshowModal] = useState(false);
   const [currentStation, setCurrentStation] = useState();
+  const [currentStationID, setCurrentStationID] = useState();
+  const [isUpdatePlot, setIsUpdatePlot] = useState(false);
   const currentProductsInitial =
   {
     analysis_assim:{
       'is_requested': true,
       'name_product': 'analysis_assim',
+      'color':'#ff8c66',
       'data':[]
     },
     short_range: {
-      'is_requested': true,
+      'is_requested': false,
       'name_product': 'short_range',
+      'color':'#ff6699',
       'data':[]
     },    
 
     long_range_ensemble_mean: {
       'is_requested': false,
       'name_product': 'long_range_ensemble_mean',
+      'color': '#8ca9ff',
       'data':[]
     },
     long_range_ensemble_member_1:{
       'is_requested': false,
       'name_product': 'long_range_ensemble_member_1',
+      'color': '#8ca9ff',
       'data':[]
     },
     long_range_ensemble_member_2: {
       'is_requested': false,
       'name_product': 'long_range_ensemble_member_2',
+      'color': '#8ca9ff',
       'data':[]
     },
     long_range_ensemble_member_3: {
       'is_requested': false,
       'name_product': 'long_range_ensemble_member_3',
+      'color': '#8ca9ff',
       'data':[]
     },
     long_range_ensemble_member_4: {
       'is_requested': false,
       'name_product': 'long_range_ensemble_member_4',
+      'color': '#8ca9ff',
       'data':[]
     },
     medium_range_ensemble_mean:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_mean',
+      'color': '#d966ff',
       'data':[]
     },
     medium_range_ensemble_member_1:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_1',
+      'color': '#d966ff',
       'data':[]
     },
     medium_range_ensemble_member_2:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_2',
+      'color': '#d966ff',
       'data':[]
     },
     medium_range_ensemble_member_3:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_3',
+      'color': '#d966ff',
       'data':[]
     },
     medium_range_ensemble_member_4:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_4',
+      'color': '#d966ff',
       'data':[]
     },
     medium_range_ensemble_member_5:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_5',
+      'color': '#d966ff',
       'data':[]
     },
     medium_range_ensemble_member_6:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_6',
+      'color': '#d966ff',
       'data':[]
     },
     medium_range_ensemble_member_7:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_7',
+      'color': '#d966ff',
       'data': []
     }
 }
@@ -131,16 +149,13 @@ const [currentProducts, setCurrentProducts] = useReducer(reducerProducts, curren
 
 
 function reducerProducts(state, action) {
+  //only changing object
   switch (action.type) {
     case 'analysis_assim':
       return { ...state, analysis_assim : {... state['analysis_assim'], 'is_requested': action.is_requested,'data': action.data } };
       // return { ...state, analysis_assim : {... state['analysis_assim'], 'is_requested': !state['analysis_assim']['is_requested'] } };
     case 'short_range':
       return { ...state, short_range: {... state['short_range'], 'is_requested': action.is_requested, 'data': action.data }};
-    // case 'reset':
-    //   return { isRunning: false, time: 0 };
-    // case 'tick':
-    //   return { ...state, time: state.time + 1 };
     default:
       throw new Error();
   }
@@ -149,25 +164,9 @@ function reducerProducts(state, action) {
 
   const handleClose = () => setshowModal(false);
   const handleShow = () => setshowModal(true);
+  const handlePlotUpdate = () => {setIsUpdatePlot((current) => !current);}
+
   
-  
-  let data = [
-    {
-      category: "Research",
-      value1: 1000,
-      value2: 588
-    },
-    {
-      category: "Marketing",
-      value1: 1200,
-      value2: 1800
-    },
-    {
-      category: "Sales",
-      value1: 850,
-      value2: 1230
-    }
-  ];
 
   useEffect(() => {
     socketRef.current = new WebSocket(ws);
@@ -183,27 +182,61 @@ function reducerProducts(state, action) {
         }, 1000);
         console.log("WebSocket is Closed");
       };
+      socketRef.current.onmessage = function (e) {
+        let data = JSON.parse(e.data);
+        
+        let product_name = data['product'];
+        console.log("receiving data socker")
+        let ts = data['data'][0]['data'].map(obj => ({
+          value: obj.value,
+          'forecast-time': new Date(obj['forecast-time']).getTime()
+        }));
+        setCurrentProducts({type: product_name,is_requested:true, data: ts});
+        handlePlotUpdate()
+      }
 	}, []);
   useEffect(() => {
-    console.log("useEffect 2 Home")
-    socketRef.current.onmessage = function (e) {
-      let data = JSON.parse(e.data);
-
-      let product_name = data['product'];
-      // let ts = data['data'][0]['data'];
-      console.log( data['data'][0]['data'])
-      let ts = data['data'][0]['data'].map(obj => ({
-        value: obj.value,
-        'forecast-time': new Date(obj['forecast-time']).getTime()
-      }));
-      setCurrentProducts({type: product_name,is_requested:true, data: ts});
+    // here we have changed the currrent products object, so we can send something to the web sockets
+    console.log("useEffect currentProducts Home")
+    const updatedProducts = {}
+    // const updatedProducts = Object.keys(currentProducts).filter(([key, value]) => value['is_requested'] === true && value['data'].length === 0);
+    for (const key in currentProducts) {
+      const nestedObject = currentProducts[key];
+      if (nestedObject['is_requested'] === true && nestedObject['data'].length === 0) {
+        updatedProducts[key] = nestedObject;
+      }
     }
-	}, [currentStation,currentProducts]);
+    console.log(updatedProducts);
+    if (Object.keys(updatedProducts).length ) {
+      let dataRequest = {
+        // station_id: currentStationID,
+        station_id: 19269170,
+        products: updatedProducts
+      }
+      appAPI.getForecastData(dataRequest)      
+      // socketRef.current.send(
+      //   JSON.stringify({
+      //     type: "plot_hs_data",
+      //     station_id:currentStationID,
+      //     product: updatedProducts
+      //   })
+      // );
+    }
+
+	}, [currentProducts]);
+
+  useEffect(()=>{
+
+    console.log("useEffect currentStation Home")
+
+    //send message to web socket to start again 
+
+  },[currentStation])
 
   return (
     <div>
     <MainContainer>
-        <ReMap isFullMap={isFullMap} center={fromLonLat([-94.9065, 38.9884])} zoom={5} layerGroups={groupLayers} handleShow={handleShow} setCurrentStation={setCurrentStation} currentProducts={currentProducts} setCurrentProducts={setCurrentProducts} >
+        <ReMap isFullMap={isFullMap} center={fromLonLat([-94.9065, 38.9884])} zoom={5} layerGroups={groupLayers} handleShow={handleShow} setCurrentStation={setCurrentStation} currentProducts={currentProducts} setCurrentProducts={setCurrentProducts} setCurrentStationID={setCurrentStationID} >
           <Layers>
 
 
@@ -274,7 +307,7 @@ function reducerProducts(state, action) {
                   Short Range Forecast
                 </ToggleButton>
               </ButtonGroup>              
-              <LineChart data={currentProducts}/>
+              <LineChart data={currentProducts} isUpdatePlot={isUpdatePlot} />
             </Tab>
             <Tab eventKey="historical-tab" title="Historical Data">
              

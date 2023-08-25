@@ -12,11 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     container = document.getElementById('root');
     const root = createRoot(container);
     root.render(
-      <StrictMode>
         <BrowserRouter basename={APP_ROOT_URL}>
           <App />
         </BrowserRouter>
-      </StrictMode>
     );
 
     if (module.hot) {
