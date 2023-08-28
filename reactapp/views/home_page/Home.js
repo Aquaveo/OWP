@@ -23,6 +23,7 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import Dropdown from 'react-bootstrap/Dropdown';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import  ButtonToolbar  from "react-bootstrap/ButtonToolbar";
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import { LineChart } from "components/plots/linePlot";
 import appAPI from "services/api/app";
@@ -305,10 +306,11 @@ function App() {
             justify
           >
             <Tab eventKey="forecast-tab" title="Forecast">
-
-              <ButtonGroup className="mb-2">
+            <ButtonToolbar aria-label="Toolbar with button groups">
+              <ButtonGroup className="mb-2" size="sm" >
                 <ToggleButton
                   id="toggle-check-analysis_assim"
+                  className="me-2"
                   type="checkbox"
                   variant="outline-primary"
                   checked={currentProducts['analysis_assim']['is_requested']}
@@ -319,19 +321,20 @@ function App() {
                 >
                   Analysis and Assimilation
                 </ToggleButton>
-                <ToggleButton
-                  id="toggle-check-short_range"
-                  type="checkbox"
-                  variant="outline-primary"
-                  checked={currentProducts['short_range']['is_requested']}
-                  value={currentProducts['short_range']['name_product']}
-                  onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['short_range']['is_requested'], currentProducts['short_range']['data'])}
+                  <ToggleButton
+                    id="toggle-check-short_range"
+                    type="checkbox"
+                    variant="outline-primary"
+                    checked={currentProducts['short_range']['is_requested']}
+                    value={currentProducts['short_range']['name_product']}
+                    onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['short_range']['is_requested'], currentProducts['short_range']['data'])}
 
-                  // onChange={(e) => setCurrentProducts({ type: e.currentTarget.value, is_requested:!currentProducts['short_range']['is_requested'],data:currentProducts['short_range']['data'] })}
-                >
-                  Short Range Forecast
-                </ToggleButton>
-              </ButtonGroup>              
+                    // onChange={(e) => setCurrentProducts({ type: e.currentTarget.value, is_requested:!currentProducts['short_range']['is_requested'],data:currentProducts['short_range']['data'] })}
+                  >
+                    Short Range Forecast
+                  </ToggleButton>
+                </ButtonGroup>
+              </ButtonToolbar>             
               <LineChart data={currentProducts} isUpdatePlot={isUpdatePlot} />
             </Tab>
             <Tab eventKey="historical-tab" title="Historical Data">
