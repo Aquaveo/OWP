@@ -10,11 +10,13 @@ const CHART_ID = 'default_ID';
 export const LineChart = (props) => {
   
   const seriesAnalysisAssimRef = useRef(null);
-  // const seriesShortermRef = useRef(null);
+  const seriesShortermRef = useRef(null);
   
   const xAxisRef = useRef(null);
+  const yaxisRef = useRef(null);
   const chartRef = useRef(null);
-
+  const rootRef = useRef(null);
+  const legendRef = useRef(null);
   // This code will only run one time
   useEffect(() => {
     console.log("useEffect 1 lineplot")
@@ -106,6 +108,9 @@ export const LineChart = (props) => {
 
     xAxisRef.current = xAxis;
     chartRef.current= chart;
+    yaxisRef.current =  yAxis;
+    rootRef.current = root;
+    legendRef.current = legend;
 
     return () => {
       root.dispose();
@@ -124,35 +129,59 @@ export const LineChart = (props) => {
           ).dispose();
           // props.setCurrentProducts({type: product, is_requested: props.data[product]['is_requested'], data:[] })
         }
-        // if(product ==='short_range' && chartRef.current.series.indexOf(seriesShortermRef.current) > -1){
-        //   chartRef.current.series.removeIndex(
-        //     chartRef.current.series.indexOf(seriesShortermRef.current)
-        //   ).dispose();
-        //   // props.setCurrentProducts({type: product, is_requested: props.data[product]['is_requested'], data:[] })
+        if(product ==='short_range' && chartRef.current.series.indexOf(seriesShortermRef.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesShortermRef.current)
+          )
+          // props.setCurrentProducts({type: product, is_requested: props.data[product]['is_requested'], data:[] })
 
-        // }
+        }
       }
       else{
         if( product ==='analysis_assim'){
+          seriesAnalysisAssimRef.current.data.setAll(props.data[product]['data']);
           if(chartRef.current.series.indexOf(seriesAnalysisAssimRef.current) < 0){
             // props.setCurrentProducts({type: product, is_requested: props.data[product]['is_requested'], data:[] })
-
             chartRef.current.series.push(seriesAnalysisAssimRef.current);
           }
-          else{
-            seriesAnalysisAssimRef.current.data.setAll(props.data[product]['data']);
+          // else{
+          //   seriesAnalysisAssimRef.current.data.setAll(props.data[product]['data']);
 
+          // }
+        }
+        if(product ==='short_range' ){
+          // seriesShortermRef.current.data.setAll(props.data[product]['data']);
+          if(chartRef.current.series.indexOf(seriesShortermRef.current) < 0){
+
+            var series = chartRef.current.series.push(
+              am5xy.LineSeries.new(rootRef.current, {
+                name: props.data[product]['name_product'],
+                xAxis: xAxisRef.current,
+                yAxis: yaxisRef.current,
+                valueYField: "value",
+                valueXField: "forecast-time",
+                maxDeviation:1,
+                stroke: am5.color(props.data[product]['color']),
+                tooltip: am5.Tooltip.new(rootRef.current, {
+                  labelText: `${product}: {valueY}`
+                })
+              })
+            );
+            series.strokes.template.setAll({
+              strokeWidth: 3,
+            });
+            series.data.setAll(props.data[product]['data']);
+            series.appear(1000);
+            seriesShortermRef.current = series;
+            legendRef.current.data.setAll(chartRef.current.series.values);
+
+            // seriesShortermRef.current.data.setAll(props.data[product]['data']);
+            // chartRef.current.series.push(seriesShortermRef.current);
+          }
+          else{
+            seriesShortermRef.current.data.setAll(props.data[product]['data']);
           }
         }
-        // if(product ==='short_range' ){
-        //   // seriesShortermRef.current.data.setAll(props.data[product]['data']);
-        //   if(chartRef.current.series.indexOf(seriesShortermRef.current) < 0){
-        //     chartRef.current.series.push(seriesShortermRef.current);
-        //   }
-        //   else{
-        //     seriesShortermRef.current.data.setAll(props.data[product]['data']);
-        //   }
-        // }
       }
       
     }
