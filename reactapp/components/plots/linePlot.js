@@ -7,6 +7,7 @@ import Container from 'react-bootstrap/Container';
 
 const CHART_ID = 'default_ID';
 
+
 export const LineChart = (props) => {
   
   const seriesAnalysisAssimRef = useRef(null);
@@ -75,9 +76,6 @@ export const LineChart = (props) => {
         if (product === 'analysis_assim'){
           seriesAnalysisAssimRef.current = series;
         }
-        // if (product === 'short_range'){
-        //   seriesShortermRef.current = series;
-        // }
       }
 
     }
@@ -127,30 +125,52 @@ export const LineChart = (props) => {
           chartRef.current.series.removeIndex(
             chartRef.current.series.indexOf(seriesAnalysisAssimRef.current)
           )
-          // props.setCurrentProducts({type: product, is_requested: props.data[product]['is_requested'], data:[] })
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
+
         }
         if(product ==='short_range' && chartRef.current.series.indexOf(seriesShortermRef.current) > -1){
           chartRef.current.series.removeIndex(
             chartRef.current.series.indexOf(seriesShortermRef.current)
           )
-          // props.setCurrentProducts({type: product, is_requested: props.data[product]['is_requested'], data:[] })
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
 
         }
       }
       else{
         if( product ==='analysis_assim'){
-          seriesAnalysisAssimRef.current.data.setAll(props.data[product]['data']);
+          // seriesAnalysisAssimRef.current.data.setAll(props.data[product]['data']);
           if(chartRef.current.series.indexOf(seriesAnalysisAssimRef.current) < 0){
-            // props.setCurrentProducts({type: product, is_requested: props.data[product]['is_requested'], data:[] })
-            chartRef.current.series.push(seriesAnalysisAssimRef.current);
-          }
-          // else{
-          //   seriesAnalysisAssimRef.current.data.setAll(props.data[product]['data']);
+            // chartRef.current.series.push(seriesAnalysisAssimRef.current);
 
-          // }
+            var series = chartRef.current.series.push(
+              am5xy.LineSeries.new(rootRef.current, {
+                name: props.data[product]['name_product'],
+                xAxis: xAxisRef.current,
+                yAxis: yaxisRef.current,
+                valueYField: "value",
+                valueXField: "forecast-time",
+                maxDeviation:1,
+                stroke: am5.color(props.data[product]['color']),
+                tooltip: am5.Tooltip.new(rootRef.current, {
+                  labelText: `${product}: {valueY}`
+                })
+              })
+            );
+            series.strokes.template.setAll({
+              strokeWidth: 3,
+            });
+            series.data.setAll(props.data[product]['data']);
+            series.appear(1000);
+            seriesAnalysisAssimRef.current = series;
+            legendRef.current.data.setAll(chartRef.current.series.values);
+          }
+          else{
+            seriesAnalysisAssimRef.current.data.setAll(props.data[product]['data']);
+          }
         }
         if(product ==='short_range' ){
-          // seriesShortermRef.current.data.setAll(props.data[product]['data']);
           if(chartRef.current.series.indexOf(seriesShortermRef.current) < 0){
 
             var series = chartRef.current.series.push(
@@ -174,9 +194,6 @@ export const LineChart = (props) => {
             series.appear(1000);
             seriesShortermRef.current = series;
             legendRef.current.data.setAll(chartRef.current.series.values);
-
-            // seriesShortermRef.current.data.setAll(props.data[product]['data']);
-            // chartRef.current.series.push(seriesShortermRef.current);
           }
           else{
             seriesShortermRef.current.data.setAll(props.data[product]['data']);
