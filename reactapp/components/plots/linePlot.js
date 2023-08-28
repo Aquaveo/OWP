@@ -126,7 +126,7 @@ export const LineChart = (props) => {
         if(product ==='analysis_assim' && chartRef.current.series.indexOf(seriesAnalysisAssimRef.current) > -1){
           chartRef.current.series.removeIndex(
             chartRef.current.series.indexOf(seriesAnalysisAssimRef.current)
-          ).dispose();
+          )
           // props.setCurrentProducts({type: product, is_requested: props.data[product]['is_requested'], data:[] })
         }
         if(product ==='short_range' && chartRef.current.series.indexOf(seriesShortermRef.current) > -1){

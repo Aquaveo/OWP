@@ -56,117 +56,138 @@ function App() {
       'is_requested': true,
       'name_product': 'analysis_assim',
       'color':'#ff8c66',
-      'data':[]
+      'data':[],
+      'is_latest': true
     },
     short_range: {
       'is_requested': false,
       'name_product': 'short_range',
       'color':'#ff6699',
-      'data':[]
+      'data':[],
+      'is_latest': true
     },    
 
     long_range_ensemble_mean: {
       'is_requested': false,
       'name_product': 'long_range_ensemble_mean',
       'color': '#8ca9ff',
-      'data':[]
+      'data':[],
+      'is_latest': true
     },
     long_range_ensemble_member_1:{
       'is_requested': false,
       'name_product': 'long_range_ensemble_member_1',
       'color': '#8ca9ff',
-      'data':[]
+      'data':[],
+      'is_latest': true
     },
     long_range_ensemble_member_2: {
       'is_requested': false,
       'name_product': 'long_range_ensemble_member_2',
       'color': '#8ca9ff',
-      'data':[]
+      'data':[],
+      'is_latest': true
     },
     long_range_ensemble_member_3: {
       'is_requested': false,
       'name_product': 'long_range_ensemble_member_3',
       'color': '#8ca9ff',
-      'data':[]
+      'data':[],
+      'is_latest': true
     },
     long_range_ensemble_member_4: {
       'is_requested': false,
       'name_product': 'long_range_ensemble_member_4',
       'color': '#8ca9ff',
-      'data':[]
+      'data':[],
+      'is_latest': true
     },
     medium_range_ensemble_mean:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_mean',
       'color': '#d966ff',
-      'data':[]
+      'data':[],
+      'is_latest': true
     },
     medium_range_ensemble_member_1:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_1',
       'color': '#d966ff',
-      'data':[]
+      'data':[],
+      'is_latest': true
     },
     medium_range_ensemble_member_2:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_2',
       'color': '#d966ff',
-      'data':[]
+      'data':[],
+      'is_latest': true
     },
     medium_range_ensemble_member_3:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_3',
       'color': '#d966ff',
-      'data':[]
+      'data':[],
+      'is_latest': true
     },
     medium_range_ensemble_member_4:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_4',
       'color': '#d966ff',
-      'data':[]
+      'data':[],
+      'is_latest': true
     },
     medium_range_ensemble_member_5:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_5',
       'color': '#d966ff',
-      'data':[]
+      'data':[],
+      'is_latest': true
     },
     medium_range_ensemble_member_6:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_6',
       'color': '#d966ff',
-      'data':[]
+      'data':[],
+      'is_latest': true,
     },
     medium_range_ensemble_member_7:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_7',
       'color': '#d966ff',
-      'data': []
+      'data': [],
+      'is_latest': true,
     }
 }
 
-const [currentProducts, setCurrentProducts] = useReducer(reducerProducts, currentProductsInitial);
+  const [currentProducts, setCurrentProducts] = useReducer(reducerProducts, currentProductsInitial);
 
 
-function reducerProducts(state, action) {
-  //only changing object
-  switch (action.type) {
-    case 'analysis_assim':
-      return { ...state, analysis_assim : {... state['analysis_assim'], 'is_requested': action.is_requested,'data': action.data } };
-      // return { ...state, analysis_assim : {... state['analysis_assim'], 'is_requested': !state['analysis_assim']['is_requested'] } };
-    case 'short_range':
-      return { ...state, short_range: {... state['short_range'], 'is_requested': action.is_requested, 'data': action.data }};
-    default:
-      throw new Error();
-  }
-}
+
 
 
   const handleClose = () => setshowModal(false);
   const handleShow = () => setshowModal(true);
   const handlePlotUpdate = () => {setIsUpdatePlot((current) => !current);}
 
-  
+  const handleProductsUpdate = (type,is_requested,data) => {
+    setCurrentProducts ({ type: type, is_requested: is_requested,data:data })
+    handlePlotUpdate()
+  }
+
+  function reducerProducts(state, action) {
+    //only changing object
+    // setIsUpdatePlot((current) => !current);
+    switch (action.type) {
+      case 'analysis_assim':
+        return { ...state, analysis_assim : {... state['analysis_assim'], 'is_requested': action.is_requested,'data': action.data } };
+        // return { ...state, analysis_assim : {... state['analysis_assim'], 'is_requested': !state['analysis_assim']['is_requested'] } };
+      case 'short_range':
+        return { ...state, short_range: {... state['short_range'], 'is_requested': action.is_requested, 'data': action.data }};
+      default:
+        throw new Error();
+    }
+  }
 
   useEffect(() => {
     socketRef.current = new WebSocket(ws);
@@ -292,7 +313,9 @@ function reducerProducts(state, action) {
                   variant="outline-primary"
                   checked={currentProducts['analysis_assim']['is_requested']}
                   value={currentProducts['analysis_assim']['name_product']}
-                  onChange={(e) => setCurrentProducts({ type: e.currentTarget.value, is_requested:!currentProducts['analysis_assim']['is_requested'], data:currentProducts['analysis_assim']['data'] })}
+                  onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['analysis_assim']['is_requested'], currentProducts['analysis_assim']['data'])}
+                  
+                  // onChange={(e) => setCurrentProducts({ type: e.currentTarget.value, is_requested:!currentProducts['analysis_assim']['is_requested'], data:currentProducts['analysis_assim']['data'] })}
                 >
                   Analysis and Assimilation
                 </ToggleButton>
@@ -302,7 +325,9 @@ function reducerProducts(state, action) {
                   variant="outline-primary"
                   checked={currentProducts['short_range']['is_requested']}
                   value={currentProducts['short_range']['name_product']}
-                  onChange={(e) => setCurrentProducts({ type: e.currentTarget.value, is_requested:!currentProducts['short_range']['is_requested'],data:currentProducts['short_range']['data'] })}
+                  onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['short_range']['is_requested'], currentProducts['short_range']['data'])}
+
+                  // onChange={(e) => setCurrentProducts({ type: e.currentTarget.value, is_requested:!currentProducts['short_range']['is_requested'],data:currentProducts['short_range']['data'] })}
                 >
                   Short Range Forecast
                 </ToggleButton>
