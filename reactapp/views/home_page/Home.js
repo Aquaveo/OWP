@@ -314,7 +314,13 @@ function App() {
           >
             <Tab eventKey="forecast-tab" title="Forecast">
             <ButtonToolbar>
+              
+
+              
               <ButtonGroup className="mb-2" size="sm" >
+                <Button variant="secondary"  size="sm" className="me-2" >
+                  <Badge bg="secondary">Analysis</Badge>
+                </Button>
                 <ToggleButton
                   id="toggle-check-analysis_assim"
                   className="me-2"
@@ -323,11 +329,21 @@ function App() {
                   checked={currentProducts['analysis_assim']['is_requested']}
                   value={currentProducts['analysis_assim']['name_product']}
                   onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['analysis_assim']['is_requested'], currentProducts['analysis_assim']['data'])}
+                                  >
                   
-                  // onChange={(e) => setCurrentProducts({ type: e.currentTarget.value, is_requested:!currentProducts['analysis_assim']['is_requested'], data:currentProducts['analysis_assim']['data'] })}
-                >
                   Analysis and Assimilation
+
                 </ToggleButton>
+
+                </ButtonGroup>
+              </ButtonToolbar>
+
+              <ButtonToolbar>
+              
+              <ButtonGroup className="mb-2" size="sm" >
+                <Button variant="secondary" size="sm" className="me-2" >
+                    <Badge bg="secondary">Short Term Forecast</Badge>
+                </Button>
                   <ToggleButton
                     id="toggle-check-short_range"
                     type="checkbox"
@@ -335,16 +351,18 @@ function App() {
                     checked={currentProducts['short_range']['is_requested']}
                     value={currentProducts['short_range']['name_product']}
                     onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['short_range']['is_requested'], currentProducts['short_range']['data'])}
-
-                    // onChange={(e) => setCurrentProducts({ type: e.currentTarget.value, is_requested:!currentProducts['short_range']['is_requested'],data:currentProducts['short_range']['data'] })}
                   >
                     Short Range Forecast
                   </ToggleButton>
                 </ButtonGroup>
               </ButtonToolbar>
+
+
               <ButtonToolbar>
                 <ButtonGroup className="mb-2" size="sm">
-                  <Badge className="me-2" bg="primary">Long Range Forecast</Badge>
+                  <Button variant="secondary" size="sm" className="me-2" >
+                    <Badge bg="secondary">Long Range Forecast</Badge>
+                  </Button>
 
                   <ToggleButton
                     id="toggle-check-long_range_mean"
@@ -422,9 +440,6 @@ function App() {
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
           </Button>
         </Modal.Footer>
       </Modal>
