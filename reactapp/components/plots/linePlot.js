@@ -11,18 +11,55 @@ const CHART_ID = 'default_ID';
 export const LineChart = (props) => {
   
   const seriesAnalysisAssimRef = useRef(null);
+  
   const seriesShortermRef = useRef(null);
+  
   const seriesLongtermMeanRef = useRef(null);
   const seriesLongtermEnsemble1Ref = useRef(null);
   const seriesLongtermEnsemble2Ref = useRef(null);
   const seriesLongtermEnsemble3Ref = useRef(null);
   const seriesLongtermEnsemble4Ref = useRef(null);
   
+  const seriesMidtermMeanRef = useRef(null);
+  const seriesMidtermEnsemble1Ref = useRef(null);
+  const seriesMidtermEnsemble2Ref = useRef(null);
+  const seriesMidtermEnsemble3Ref = useRef(null);
+  const seriesMidtermEnsemble4Ref = useRef(null);
+  const seriesMidtermEnsemble5Ref = useRef(null);
+  const seriesMidtermEnsemble6Ref = useRef(null);
+  const seriesMidtermEnsemble7Ref = useRef(null);
+
   const xAxisRef = useRef(null);
   const yaxisRef = useRef(null);
   const chartRef = useRef(null);
   const rootRef = useRef(null);
   const legendRef = useRef(null);
+
+
+  const makeSeries = (product,series_ref) => {
+    var series = chartRef.current.series.push(
+      am5xy.LineSeries.new(rootRef.current, {
+        name: props.data[product]['name_product'],
+        xAxis: xAxisRef.current,
+        yAxis: yaxisRef.current,
+        valueYField: "value",
+        valueXField: "forecast-time",
+        maxDeviation:1,
+        stroke: am5.color(props.data[product]['color']),
+        tooltip: am5.Tooltip.new(rootRef.current, {
+          labelText: `${product}: {valueY}`
+        })
+      })
+    );
+    series.strokes.template.setAll({
+      strokeWidth: 3,
+    });
+    series.data.setAll(props.data[product]['data']);
+    series.appear(1000);
+    series_ref.current = series;
+    legendRef.current.data.setAll(chartRef.current.series.values);
+  }
+
   // This code will only run one time
   useEffect(() => {
     console.log("useEffect 1 lineplot")
@@ -176,7 +213,63 @@ export const LineChart = (props) => {
           ).dispose();
           // removes the legend when we inactivate the layer
           legendRef.current.data.setAll(chartRef.current.series.values);
-        }                     
+        }
+        if(product ==='medium_range_ensemble_mean' && chartRef.current.series.indexOf(seriesMidtermMeanRef.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesMidtermMeanRef.current)
+          ).dispose();
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
+        }
+        if(product ==='medium_range_ensemble_member_1' && chartRef.current.series.indexOf(seriesMidtermEnsemble1Ref.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesMidtermEnsemble1Ref.current)
+          ).dispose();
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
+        }
+        if(product ==='medium_range_ensemble_member_2' && chartRef.current.series.indexOf(seriesMidtermEnsemble2Ref.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesMidtermEnsemble2Ref.current)
+          ).dispose();
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
+        }
+        if(product ==='medium_range_ensemble_member_3' && chartRef.current.series.indexOf(seriesMidtermEnsemble3Ref.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesMidtermEnsemble3Ref.current)
+          ).dispose();
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
+        }
+        if(product ==='medium_range_ensemble_member_4' && chartRef.current.series.indexOf(seriesMidtermEnsemble4Ref.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesMidtermEnsemble4Ref.current)
+          ).dispose();
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
+        }
+        if(product ==='medium_range_ensemble_member_5' && chartRef.current.series.indexOf(seriesMidtermEnsemble5Ref.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesMidtermEnsemble5Ref.current)
+          ).dispose();
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
+        }
+        if(product ==='medium_range_ensemble_member_6' && chartRef.current.series.indexOf(seriesMidtermEnsemble6Ref.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesMidtermEnsemble6Ref.current)
+          ).dispose();
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
+        }
+        if(product ==='medium_range_ensemble_member_7' && chartRef.current.series.indexOf(seriesMidtermEnsemble7Ref.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesMidtermEnsemble7Ref.current)
+          ).dispose();
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
+        }          
       }
       else{
         if( product ==='analysis_assim'){
@@ -387,6 +480,78 @@ export const LineChart = (props) => {
             seriesLongtermEnsemble4Ref.current.data.setAll(props.data[product]['data']);
           }
         }
+
+        if(product ==='medium_range_ensemble_mean' ){
+          if(chartRef.current.series.indexOf(seriesMidtermMeanRef.current) < 0){
+            makeSeries(product,seriesMidtermMeanRef);
+          }
+          else{
+            seriesMidtermMeanRef.current.data.setAll(props.data[product]['data']);
+          }
+        }
+        if(product ==='medium_range_ensemble_member_1' ){
+          if(chartRef.current.series.indexOf(seriesMidtermEnsemble1Ref.current) < 0){
+            makeSeries(product,seriesMidtermEnsemble1Ref);
+          }
+          else{
+            seriesMidtermEnsemble1Ref.current.data.setAll(props.data[product]['data']);
+          }
+        }
+
+        if(product ==='medium_range_ensemble_member_2' ){
+          if(chartRef.current.series.indexOf(seriesMidtermEnsemble2Ref.current) < 0){
+            makeSeries(product,seriesMidtermEnsemble2Ref);
+          }
+          else{
+            seriesMidtermEnsemble2Ref.current.data.setAll(props.data[product]['data']);
+          }
+        }
+
+        if(product ==='medium_range_ensemble_member_3' ){
+          if(chartRef.current.series.indexOf(seriesMidtermEnsemble3Ref.current) < 0){
+            makeSeries(product,seriesMidtermEnsemble3Ref);
+          }
+          else{
+            seriesMidtermEnsemble3Ref.current.data.setAll(props.data[product]['data']);
+          }
+        }        
+        if(product ==='medium_range_ensemble_member_4' ){
+          if(chartRef.current.series.indexOf(seriesMidtermEnsemble4Ref.current) < 0){
+            makeSeries(product,seriesMidtermEnsemble4Ref);
+          }
+          else{
+            seriesMidtermEnsemble4Ref.current.data.setAll(props.data[product]['data']);
+          }
+        }
+
+        if(product ==='medium_range_ensemble_member_5' ){
+          if(chartRef.current.series.indexOf(seriesMidtermEnsemble5Ref.current) < 0){
+            makeSeries(product,seriesMidtermEnsemble5Ref);
+          }
+          else{
+            seriesMidtermEnsemble5Ref.current.data.setAll(props.data[product]['data']);
+          }
+        }
+
+        if(product ==='medium_range_ensemble_member_6' ){
+          if(chartRef.current.series.indexOf(seriesMidtermEnsemble6Ref.current) < 0){
+            makeSeries(product,seriesMidtermEnsemble6Ref);
+          }
+          else{
+            seriesMidtermEnsemble6Ref.current.data.setAll(props.data[product]['data']);
+          }
+        }
+
+        if(product ==='medium_range_ensemble_member_7' ){
+          if(chartRef.current.series.indexOf(seriesMidtermEnsemble7Ref.current) < 0){
+            makeSeries(product,seriesMidtermEnsemble7Ref);
+          }
+          else{
+            seriesMidtermEnsemble7Ref.current.data.setAll(props.data[product]['data']);
+          }
+        }
+
+
       }
       
     }

@@ -116,6 +116,7 @@ async def api_forecast_call(api_base_url,station_id,method_name):
 
     try:
         print(f"{api_base_url}/{method_name}/streamflow/")
+        print(station_id)
         print(method_name)
         # response_await = await async_client.get(
         #     url = f"{api_base_url}/{method_name}/streamflow",
