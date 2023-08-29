@@ -24,6 +24,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Dropdown from 'react-bootstrap/Dropdown';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import  ButtonToolbar  from "react-bootstrap/ButtonToolbar";
+import { Badge } from "react-bootstrap";
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import { LineChart } from "components/plots/linePlot";
 import appAPI from "services/api/app";
@@ -49,7 +50,7 @@ function App() {
   ]);
   const [showModal, setshowModal] = useState(false);
   const [currentStation, setCurrentStation] = useState();
-  const [currentStationID, setCurrentStationID] = useState();
+  const [currentStationID, setCurrentStationID] = useState(-99999);
   const [isUpdatePlot, setIsUpdatePlot] = useState(false);
   const currentProductsInitial =
   {
@@ -185,6 +186,21 @@ function App() {
         // return { ...state, analysis_assim : {... state['analysis_assim'], 'is_requested': !state['analysis_assim']['is_requested'] } };
       case 'short_range':
         return { ...state, short_range: {... state['short_range'], 'is_requested': action.is_requested, 'data': action.data }};
+      case 'long_range_ensemble_mean':
+          return { ...state, long_range_ensemble_mean: {... state['long_range_ensemble_mean'], 'is_requested': action.is_requested, 'data': action.data }};
+      case 'long_range_ensemble_member_1':
+        return { ...state, long_range_ensemble_member_1: {... state['long_range_ensemble_member_1'], 'is_requested': action.is_requested, 'data': action.data }};
+      case 'long_range_ensemble_member_2':
+        return { ...state, long_range_ensemble_member_2: {... state['long_range_ensemble_member_2'], 'is_requested': action.is_requested, 'data': action.data }};
+      case 'long_range_ensemble_member_3':
+        return { ...state, long_range_ensemble_member_3: {... state['long_range_ensemble_member_3'], 'is_requested': action.is_requested, 'data': action.data }};   
+      case 'long_range_ensemble_member_4':
+        return { ...state, long_range_ensemble_member_4: {... state['long_range_ensemble_member_4'], 'is_requested': action.is_requested, 'data': action.data }}; 
+
+
+      case 'reset':
+        return currentProductsInitial
+      
       default:
         throw new Error();
     }
@@ -221,7 +237,6 @@ function App() {
     // here we have changed the currrent products object, so we can send something to the web sockets
     console.log("useEffect currentProducts Home")
     const updatedProducts = {}
-    // const updatedProducts = Object.keys(currentProducts).filter(([key, value]) => value['is_requested'] === true && value['data'].length === 0);
     for (const key in currentProducts) {
       const nestedObject = currentProducts[key];
       if (nestedObject['is_requested'] === true && nestedObject['data'].length === 0) {
@@ -229,36 +244,28 @@ function App() {
       }
     }
     console.log(updatedProducts);
-    if (Object.keys(updatedProducts).length ) {
+    if (Object.keys(updatedProducts).length && currentStationID > 0 ) {
       let dataRequest = {
         // station_id: currentStationID,
         station_id: 19269170,
         products: updatedProducts
       }
-      appAPI.getForecastData(dataRequest)      
-      // socketRef.current.send(
-      //   JSON.stringify({
-      //     type: "plot_hs_data",
-      //     station_id:currentStationID,
-      //     product: updatedProducts
-      //   })
-      // );
+      appAPI.getForecastData(dataRequest);
     }
 
 	}, [currentProducts]);
 
   useEffect(()=>{
-
-    console.log("useEffect currentStation Home")
-
+    console.log("useEffect currentStationID Home")
+    setCurrentProducts({type: "reset"})
     //send message to web socket to start again 
 
-  },[currentStation])
+  },[currentStationID])
 
   return (
     <div>
     <MainContainer>
-        <ReMap isFullMap={isFullMap} center={fromLonLat([-94.9065, 38.9884])} zoom={5} layerGroups={groupLayers} handleShow={handleShow} setCurrentStation={setCurrentStation} currentProducts={currentProducts} setCurrentProducts={setCurrentProducts} setCurrentStationID={setCurrentStationID} >
+        <ReMap isFullMap={isFullMap} center={fromLonLat([-94.9065, 38.9884])} zoom={5} layerGroups={groupLayers} handleShow={handleShow} setCurrentStation={setCurrentStation} currentProducts={currentProducts} setCurrentStationID={setCurrentStationID} >
           <Layers>
 
 
@@ -306,7 +313,7 @@ function App() {
             justify
           >
             <Tab eventKey="forecast-tab" title="Forecast">
-            <ButtonToolbar aria-label="Toolbar with button groups">
+            <ButtonToolbar>
               <ButtonGroup className="mb-2" size="sm" >
                 <ToggleButton
                   id="toggle-check-analysis_assim"
@@ -334,7 +341,69 @@ function App() {
                     Short Range Forecast
                   </ToggleButton>
                 </ButtonGroup>
-              </ButtonToolbar>             
+              </ButtonToolbar>
+              <ButtonToolbar>
+                <ButtonGroup className="mb-2" size="sm">
+                  <Badge className="me-2" bg="primary">Long Range Forecast</Badge>
+
+                  <ToggleButton
+                    id="toggle-check-long_range_mean"
+                    className="me-2"
+                    type="checkbox"
+                    variant="outline-primary"
+                    checked={currentProducts['long_range_ensemble_mean']['is_requested']}
+                    value={currentProducts['long_range_ensemble_mean']['name_product']}
+                    onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_mean']['is_requested'], currentProducts['long_range_ensemble_mean']['data'])}                    
+                  >
+                    Ensemble Mean
+                  </ToggleButton>
+                    <ToggleButton
+                      id="toggle-check-long_range_1"
+                      type="checkbox"
+                      className="me-2"
+
+                      variant="outline-primary"
+                      checked={currentProducts['long_range_ensemble_member_1']['is_requested']}
+                      value={currentProducts['long_range_ensemble_member_1']['name_product']}
+                      onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_1']['is_requested'], currentProducts['long_range_ensemble_member_1']['data'])}
+                    >
+                    Member 1
+                  </ToggleButton>
+                  <ToggleButton
+                      id="toggle-check-long_range_2"
+                      className="me-2"
+                      type="checkbox"
+                      variant="outline-primary"
+                      checked={currentProducts['long_range_ensemble_member_2']['is_requested']}
+                      value={currentProducts['long_range_ensemble_member_2']['name_product']}
+                      onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_2']['is_requested'], currentProducts['long_range_ensemble_member_2']['data'])}
+                    >
+                    Member 2
+                  </ToggleButton>                  
+                  <ToggleButton
+                      id="toggle-check-long_range_3"
+                      className="me-2"
+                      type="checkbox"
+                      variant="outline-primary"
+                      checked={currentProducts['long_range_ensemble_member_3']['is_requested']}
+                      value={currentProducts['long_range_ensemble_member_3']['name_product']}
+                      onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_3']['is_requested'], currentProducts['long_range_ensemble_member_3']['data'])}
+                    >
+                    Member 3
+                  </ToggleButton>
+                  <ToggleButton
+                      id="toggle-check-long_range_4"
+                      type="checkbox"
+                      variant="outline-primary"
+                      checked={currentProducts['long_range_ensemble_member_4']['is_requested']}
+                      value={currentProducts['long_range_ensemble_member_4']['name_product']}
+                      onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_4']['is_requested'], currentProducts['long_range_ensemble_member_4']['data'])}
+                    >
+                    Member 4
+                  </ToggleButton>                                
+                </ButtonGroup>
+              </ButtonToolbar>
+  
               <LineChart data={currentProducts} isUpdatePlot={isUpdatePlot} />
             </Tab>
             <Tab eventKey="historical-tab" title="Historical Data">

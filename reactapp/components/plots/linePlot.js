@@ -12,6 +12,11 @@ export const LineChart = (props) => {
   
   const seriesAnalysisAssimRef = useRef(null);
   const seriesShortermRef = useRef(null);
+  const seriesLongtermMeanRef = useRef(null);
+  const seriesLongtermEnsemble1Ref = useRef(null);
+  const seriesLongtermEnsemble2Ref = useRef(null);
+  const seriesLongtermEnsemble3Ref = useRef(null);
+  const seriesLongtermEnsemble4Ref = useRef(null);
   
   const xAxisRef = useRef(null);
   const yaxisRef = useRef(null);
@@ -124,7 +129,7 @@ export const LineChart = (props) => {
         if(product ==='analysis_assim' && chartRef.current.series.indexOf(seriesAnalysisAssimRef.current) > -1){
           chartRef.current.series.removeIndex(
             chartRef.current.series.indexOf(seriesAnalysisAssimRef.current)
-          )
+          ).dispose();
           // removes the legend when we inactivate the layer
           legendRef.current.data.setAll(chartRef.current.series.values);
 
@@ -132,11 +137,46 @@ export const LineChart = (props) => {
         if(product ==='short_range' && chartRef.current.series.indexOf(seriesShortermRef.current) > -1){
           chartRef.current.series.removeIndex(
             chartRef.current.series.indexOf(seriesShortermRef.current)
-          )
+          ).dispose();
           // removes the legend when we inactivate the layer
           legendRef.current.data.setAll(chartRef.current.series.values);
-
         }
+        // Long term forecast
+        if(product ==='long_range_ensemble_mean' && chartRef.current.series.indexOf(seriesLongtermMeanRef.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesLongtermMeanRef.current)
+          ).dispose();
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
+        }
+        if(product ==='long_range_ensemble_member_1' && chartRef.current.series.indexOf(seriesLongtermEnsemble1Ref.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesLongtermEnsemble1Ref.current)
+          ).dispose();
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
+        }
+        if(product ==='long_range_ensemble_member_2' && chartRef.current.series.indexOf(seriesLongtermEnsemble2Ref.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesLongtermEnsemble2Ref.current)
+          ).dispose();
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
+        }
+        if(product ==='long_range_ensemble_member_3' && chartRef.current.series.indexOf(seriesLongtermEnsemble3Ref.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesLongtermEnsemble3Ref.current)
+          ).dispose();
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
+        }
+        if(product ==='long_range_ensemble_member_4' && chartRef.current.series.indexOf(seriesLongtermEnsemble4Ref.current) > -1){
+          chartRef.current.series.removeIndex(
+            chartRef.current.series.indexOf(seriesLongtermEnsemble4Ref.current)
+          ).dispose();
+          // removes the legend when we inactivate the layer
+          legendRef.current.data.setAll(chartRef.current.series.values);
+        }                     
       }
       else{
         if( product ==='analysis_assim'){
@@ -197,6 +237,154 @@ export const LineChart = (props) => {
           }
           else{
             seriesShortermRef.current.data.setAll(props.data[product]['data']);
+          }
+        }
+        // long term forecasts
+        if(product ==='long_range_ensemble_mean' ){
+          if(chartRef.current.series.indexOf(seriesLongtermMeanRef.current) < 0){
+
+            var series = chartRef.current.series.push(
+              am5xy.LineSeries.new(rootRef.current, {
+                name: props.data[product]['name_product'],
+                xAxis: xAxisRef.current,
+                yAxis: yaxisRef.current,
+                valueYField: "value",
+                valueXField: "forecast-time",
+                maxDeviation:1,
+                stroke: am5.color(props.data[product]['color']),
+                tooltip: am5.Tooltip.new(rootRef.current, {
+                  labelText: `${product}: {valueY}`
+                })
+              })
+            );
+            series.strokes.template.setAll({
+              strokeWidth: 3,
+            });
+            series.data.setAll(props.data[product]['data']);
+            series.appear(1000);
+            seriesLongtermMeanRef.current = series;
+            legendRef.current.data.setAll(chartRef.current.series.values);
+          }
+          else{
+            seriesLongtermMeanRef.current.data.setAll(props.data[product]['data']);
+          }
+        }
+
+        if(product ==='long_range_ensemble_member_1' ){
+          if(chartRef.current.series.indexOf(seriesLongtermEnsemble1Ref.current) < 0){
+
+            var series = chartRef.current.series.push(
+              am5xy.LineSeries.new(rootRef.current, {
+                name: props.data[product]['name_product'],
+                xAxis: xAxisRef.current,
+                yAxis: yaxisRef.current,
+                valueYField: "value",
+                valueXField: "forecast-time",
+                maxDeviation:1,
+                stroke: am5.color(props.data[product]['color']),
+                tooltip: am5.Tooltip.new(rootRef.current, {
+                  labelText: `${product}: {valueY}`
+                })
+              })
+            );
+            series.strokes.template.setAll({
+              strokeWidth: 3,
+            });
+            series.data.setAll(props.data[product]['data']);
+            series.appear(1000);
+            seriesLongtermEnsemble1Ref.current = series;
+            legendRef.current.data.setAll(chartRef.current.series.values);
+          }
+          else{
+            seriesLongtermEnsemble1Ref.current.data.setAll(props.data[product]['data']);
+          }
+        }
+        if(product ==='long_range_ensemble_member_2' ){
+          if(chartRef.current.series.indexOf(seriesLongtermEnsemble2Ref.current) < 0){
+
+            var series = chartRef.current.series.push(
+              am5xy.LineSeries.new(rootRef.current, {
+                name: props.data[product]['name_product'],
+                xAxis: xAxisRef.current,
+                yAxis: yaxisRef.current,
+                valueYField: "value",
+                valueXField: "forecast-time",
+                maxDeviation:1,
+                stroke: am5.color(props.data[product]['color']),
+                tooltip: am5.Tooltip.new(rootRef.current, {
+                  labelText: `${product}: {valueY}`
+                })
+              })
+            );
+            series.strokes.template.setAll({
+              strokeWidth: 3,
+            });
+            series.data.setAll(props.data[product]['data']);
+            series.appear(1000);
+            seriesLongtermEnsemble2Ref.current = series;
+            legendRef.current.data.setAll(chartRef.current.series.values);
+          }
+          else{
+            seriesLongtermEnsemble2Ref.current.data.setAll(props.data[product]['data']);
+          }
+        }
+
+        if(product ==='long_range_ensemble_member_3' ){
+          if(chartRef.current.series.indexOf(seriesLongtermEnsemble3Ref.current) < 0){
+
+            var series = chartRef.current.series.push(
+              am5xy.LineSeries.new(rootRef.current, {
+                name: props.data[product]['name_product'],
+                xAxis: xAxisRef.current,
+                yAxis: yaxisRef.current,
+                valueYField: "value",
+                valueXField: "forecast-time",
+                maxDeviation:1,
+                stroke: am5.color(props.data[product]['color']),
+                tooltip: am5.Tooltip.new(rootRef.current, {
+                  labelText: `${product}: {valueY}`
+                })
+              })
+            );
+            series.strokes.template.setAll({
+              strokeWidth: 3,
+            });
+            series.data.setAll(props.data[product]['data']);
+            series.appear(1000);
+            seriesLongtermEnsemble3Ref.current = series;
+            legendRef.current.data.setAll(chartRef.current.series.values);
+          }
+          else{
+            seriesLongtermEnsemble3Ref.current.data.setAll(props.data[product]['data']);
+          }
+        }
+        if(product ==='long_range_ensemble_member_4' ){
+          if(chartRef.current.series.indexOf(seriesLongtermEnsemble4Ref.current) < 0){
+
+            var series = chartRef.current.series.push(
+              am5xy.LineSeries.new(rootRef.current, {
+                name: props.data[product]['name_product'],
+                xAxis: xAxisRef.current,
+                yAxis: yaxisRef.current,
+                valueYField: "value",
+                valueXField: "forecast-time",
+                maxDeviation:1,
+                stroke: am5.color(props.data[product]['color']),
+                tooltip: am5.Tooltip.new(rootRef.current, {
+                  labelText: `${product}: {valueY}`
+                })
+              })
+            );
+            series.strokes.template.setAll({
+              strokeWidth: 3,
+            });
+            series.data.setAll(props.data[product]['data']);
+            series.appear(1000);
+            seriesLongtermEnsemble4Ref.current = series;
+            legendRef.current.data.setAll(chartRef.current.series.values);
+          }
+          else{
+            seriesLongtermEnsemble4Ref.current.data.setAll(props.data[product]['data']);
           }
         }
       }
