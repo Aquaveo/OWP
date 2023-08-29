@@ -257,15 +257,15 @@ function App() {
 
   useEffect(()=>{
     console.log("useEffect currentStationID Home")
-    setCurrentProducts({type: "reset"})
+    // setCurrentProducts({type: "reset"})
     //send message to web socket to start again 
-
+    handlePlotUpdate();
   },[currentStationID])
 
   return (
     <div>
     <MainContainer>
-        <ReMap isFullMap={isFullMap} center={fromLonLat([-94.9065, 38.9884])} zoom={5} layerGroups={groupLayers} handleShow={handleShow} setCurrentStation={setCurrentStation} currentProducts={currentProducts} setCurrentStationID={setCurrentStationID} >
+        <ReMap isFullMap={isFullMap} center={fromLonLat([-94.9065, 38.9884])} zoom={5} layerGroups={groupLayers} handleShow={handleShow} setCurrentStation={setCurrentStation} currentProducts={currentProducts} setCurrentStationID={setCurrentStationID} setCurrentProducts={setCurrentProducts} >
           <Layers>
 
 

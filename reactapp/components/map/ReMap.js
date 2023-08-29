@@ -12,7 +12,7 @@ import { MapContainer } from '../styles/Map.styled'
 import appAPI from "services/api/app";
 
 
-export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleShow, setCurrentStation, currentProducts, setCurrentStationID }) => {
+export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleShow, setCurrentStation, currentProducts, setCurrentStationID, setCurrentProducts }) => {
 	const mapRef = useRef();
 	const [map, setMap] = useState(null);
 	// on component mount
@@ -113,8 +113,10 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 										let stationName = response.data.features[0]['attributes']['raw.gnis_name']
 										let stationID = response.data.features[0]['attributes']['raw.feature_id']
 										console.log("STATION ID", stationID)
-										setCurrentStationID(stationID);
+										// setCurrentStationID(stationID);
+										setCurrentStationID(Math.random());
 										setCurrentStation(stationName);
+										setCurrentProducts({type: "reset"});
 										handleShow();
 										let dataRequest = {
 											// station_id: stationID,
