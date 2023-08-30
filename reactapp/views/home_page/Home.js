@@ -315,7 +315,7 @@ function App() {
       </MainContainer>
 
       <ModalContainer>
-        <Modal show={showModal} onHide={handleClose} centered size="lg" >
+        <Modal show={showModal} onHide={handleClose} centered size="xl" >
           <Modal.Header closeButton>
             <Modal.Title>{currentStation}</Modal.Title>
           </Modal.Header>
@@ -336,6 +336,8 @@ function App() {
                     <Button variant="secondary"  size="sm" className="me-2" >
                       <Badge bg="secondary">Analysis</Badge>
                     </Button>
+
+
                     <ToggleButton
                       id="toggle-check-analysis_assim"
                       className="me-2"
