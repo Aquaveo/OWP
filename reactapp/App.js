@@ -13,25 +13,19 @@ import 'App.scss';
 
 function App() {
   const PATH_HOME = '/',
-        PATH_PLOT = '/plot/',
-        PATH_OWP = '/OWP/',
-        PATH_LEARN = '/learn/';
+        PATH_INFO = '/Information/';
   return (
     <>
       <ErrorBoundary>
           <Loader>
             <Layout 
               navLinks={[
-                {title: 'Home', to: PATH_HOME, eventKey: 'link-home'},
-                {title: 'OWP', to: PATH_OWP, eventKey: 'link-owp'},
-                {title: 'Plot', to: PATH_PLOT, eventKey: 'link-plot'},
-                {title: 'Learn React', to: PATH_LEARN, eventKey: 'link-learn'},
+                {title: 'OWP Application', to: PATH_HOME, eventKey: 'link-home'},
+                {title: 'Information', to: PATH_INFO, eventKey: 'link-learn'},
               ]}
               routes={[
-                <Route path={PATH_HOME} element={<Home2 />} key='route-home' />,
-                <Route path={PATH_OWP} element={<Home />} key='route-home' />,
-                <Route path={PATH_PLOT} element={<PlotView />} key='route-plot' />,
-                <Route path={PATH_LEARN} element={<LearnReact />} key='route-learn' />,
+                <Route path={PATH_HOME} element={<Home />} key='route-home' />,
+                <Route path={PATH_INFO} element={<LearnReact />} key='route-learn' />
               ]}
             />
           </Loader>
