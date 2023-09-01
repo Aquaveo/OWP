@@ -7,13 +7,13 @@ import axios from 'axios';
 import View from "ol/View";
 import VectorTileLayer from 'ol/layer/VectorTile.js';
 import VectorLayer from 'ol/layer/Vector.js';
-import * as olProj from 'ol/proj';
+import LineString from 'ol/geom/LineString.js';
 
 import { MapContainer } from '../styles/Map.styled'
 import appAPI from "services/api/app";
 
 
-export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleShow, setCurrentStation, currentProducts, setCurrentStationID, setCurrentProducts }) => {
+export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleShow, setCurrentStation, currentProducts, setCurrentStationID, setCurrentProducts, setCurrentReachIdGeometry }) => {
 	const mapRef = useRef();
 	const [map, setMap] = useState(null);
 	// on component mount
@@ -93,7 +93,8 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 									console.log(filteredArray);
 									const selectedLayer = filteredArray[0]
 									console.log(selectedLayer);
-
+									let reachIDPath = selectedLayer['geometry']['paths'];
+									setCurrentReachIdGeometry(reachIDPath)
 									let stationName = selectedLayer['attributes']['gnis_name']
 									let stationID = selectedLayer['attributes']['feature_id']
 									console.log("STATION ID", stationID)

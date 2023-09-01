@@ -424,7 +424,7 @@ function App() {
                   <Row>
                     <Col md="3">
                       <Button variant="secondary" size="sm" className="me-2 w-100" >
-                      <Badge bg="secondary">Long Range Forecast</Badge>
+                        <Badge bg="secondary">Long Range Forecast</Badge>
                       </Button>
                     </Col>
                     <Col>
@@ -438,8 +438,7 @@ function App() {
                         value={currentProducts['long_range_ensemble_mean']['name_product']}
                         onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_mean']['is_requested'], currentProducts['long_range_ensemble_mean']['data'])}                    
                       >
-                        
-                        <span> Mean </span>
+                        <SpanBadge>Mean</SpanBadge>
                       </ToggleButton>
                         <ToggleButton
                           id="toggle-check-long_range_1"
@@ -451,7 +450,8 @@ function App() {
                           value={currentProducts['long_range_ensemble_member_1']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_1']['is_requested'], currentProducts['long_range_ensemble_member_1']['data'])}
                         >
-                          <span> 1 </span>
+                          
+                          <SpanBadge>1</SpanBadge>
                         
                       </ToggleButton>
                       <ToggleButton
@@ -463,7 +463,7 @@ function App() {
                           value={currentProducts['long_range_ensemble_member_2']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_2']['is_requested'], currentProducts['long_range_ensemble_member_2']['data'])}
                         >
-                        <span>2 </span>
+                        <SpanBadge>2</SpanBadge>
                       </ToggleButton>                  
                       <ToggleButton
                           id="toggle-check-long_range_3"
@@ -474,9 +474,7 @@ function App() {
                           value={currentProducts['long_range_ensemble_member_3']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_3']['is_requested'], currentProducts['long_range_ensemble_member_3']['data'])}
                         >
-                        <span> 3 </span>
-
-                        
+                        <SpanBadge>3</SpanBadge>
                       </ToggleButton>
                       <ToggleButton
                           id="toggle-check-long_range_4"
@@ -487,7 +485,7 @@ function App() {
                           value={currentProducts['long_range_ensemble_member_4']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_4']['is_requested'], currentProducts['long_range_ensemble_member_4']['data'])}
                         >
-                        <span> 4 </span>
+                        <SpanBadge>4</SpanBadge>
                       </ToggleButton>
                       </ButtonGroup>
 
@@ -513,7 +511,7 @@ function App() {
                         value={currentProducts['medium_range_ensemble_mean']['name_product']}
                         onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_mean']['is_requested'], currentProducts['long_range_ensemble_mean']['data'])}                    
                       >
-                        <span>Mean</span>  
+                        <SpanBadge>Mean</SpanBadge>
                       </ToggleButton>
                       <ToggleButton
                           id="toggle-check-medium_range_1"
@@ -524,7 +522,7 @@ function App() {
                           value={currentProducts['medium_range_ensemble_member_1']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_1']['is_requested'], currentProducts['long_range_ensemble_member_1']['data'])}
                         >
-                        <span>1</span>  
+                        <SpanBadge>1</SpanBadge>
                       </ToggleButton>
                       <ToggleButton
                           id="toggle-check-medium_range_2"
@@ -535,7 +533,7 @@ function App() {
                           value={currentProducts['medium_range_ensemble_member_2']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_2']['is_requested'], currentProducts['medium_range_ensemble_member_2']['data'])}
                         >
-                        <span>2</span>
+                        <SpanBadge>2</SpanBadge>
                       </ToggleButton>                  
                       <ToggleButton
                           id="toggle-check-medium_range_3"
@@ -546,7 +544,7 @@ function App() {
                           value={currentProducts['medium_range_ensemble_member_3']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_3']['is_requested'], currentProducts['medium_range_ensemble_member_3']['data'])}
                         >
-                        <span>3</span>                      
+                        <SpanBadge>3</SpanBadge>                      
                       </ToggleButton>
                       <ToggleButton
                           id="toggle-check-medium_range_4"
@@ -557,7 +555,7 @@ function App() {
                           value={currentProducts['medium_range_ensemble_member_4']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_4']['is_requested'], currentProducts['medium_range_ensemble_member_4']['data'])}
                         >
-                        <span>4</span>
+                        <SpanBadge>4</SpanBadge>
                       </ToggleButton>
 
                       <ToggleButton
@@ -569,7 +567,7 @@ function App() {
                           value={currentProducts['medium_range_ensemble_member_5']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_5']['is_requested'], currentProducts['medium_range_ensemble_member_5']['data'])}
                         >
-                          <span>5</span>
+                         <SpanBadge>5</SpanBadge>
                       </ToggleButton>    
 
                       <ToggleButton
@@ -581,7 +579,7 @@ function App() {
                           value={currentProducts['medium_range_ensemble_member_6']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_6']['is_requested'], currentProducts['medium_range_ensemble_member_6']['data'])}
                         >
-                          <span>6</span>
+                         <SpanBadge>6</SpanBadge>
                       </ToggleButton>
                       <ToggleButton
                           id="toggle-check-medium_range_7"
@@ -592,7 +590,7 @@ function App() {
                           value={currentProducts['medium_range_ensemble_member_7']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_7']['is_requested'], currentProducts['medium_range_ensemble_member_7']['data'])}
                         >
-                          <span>7</span>
+                          <SpanBadge>7</SpanBadge>
                       </ToggleButton>
                     </ButtonGroup>
                     

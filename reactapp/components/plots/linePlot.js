@@ -34,7 +34,7 @@ export const LineChart = (props) => {
   const chartRef = useRef(null);
   const rootRef = useRef(null);
   const legendRef = useRef(null);
-
+  const legendRootRef = useRef(null);
 
   const makeSeries = (product,series_ref) => {
 
@@ -76,14 +76,20 @@ export const LineChart = (props) => {
     legendRef.current.data.setAll(chartRef.current.series.values);
   }
 
+
   // This code will only run one time
   useEffect(() => {
     console.log("useEffect 1 lineplot")
 
     let root = am5.Root.new("chartdiv");
+    var legendRoot = am5.Root.new("legenddiv");
 
     root.setThemes([am5themes_Animated.new(root)]);
-
+    legendRoot.setThemes([
+      am5themes_Animated.new(root),
+      am5xy.DefaultTheme.new(root)
+    ]);
+    
     let chart = root.container.children.push(
       am5xy.XYChart.new(root, {
         panX: true,
@@ -176,14 +182,10 @@ export const LineChart = (props) => {
     }));
 
     // Add legend
-    let legend = chart.children.push(am5.Legend.new(root, {
-      width: 300,
-      paddingLeft: 15,
-      x: am5.percent(100),
-      y: am5.percent(50),
-      height: am5.percent(100),
+    let legend = legendRoot.container.children.push(am5.Legend.new(legendRoot, {
+      width: am5.percent(100),
       centerX: am5.percent(50),
-      layout: root.verticalLayout
+      x: am5.percent(50)
     }));
 
     // When legend item container is hovered, dim all the series except the hovered one
@@ -227,16 +229,19 @@ export const LineChart = (props) => {
       });
     })
 
-    legend.itemContainers.template.set("width", am5.p100);
-    legend.valueLabels.template.setAll({
-      width: am5.p100,
-      textAlign: "right"
-    });
+    // legend.itemContainers.template.set("width", am5.p100);
+    // legend.valueLabels.template.setAll({
+    //   width: am5.p100,
+    //   textAlign: "right"
+    // });
 
 
 
     legend.data.setAll(chart.series.values);
-
+    // Resize legend to actual height of its content
+    legend.events.on("boundschanged", function() {
+      document.getElementById("legenddiv").style.height = legend.height() + "px"
+    });
 
     // Add cursor
     var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
@@ -247,6 +252,7 @@ export const LineChart = (props) => {
     chartRef.current= chart;
     yaxisRef.current =  yAxis;
     rootRef.current = root;
+    legendRootRef.current = legendRoot;
     legendRef.current = legend;
 
     return () => {
@@ -511,7 +517,14 @@ export const LineChart = (props) => {
 
   }, [props.isUpdatePlot]);
 
-  return <div id="chartdiv" style={{ width: "100%", height: "500px"}}></div>;
+  return(
+    <div>
+      <div id="chartdiv" style={{ width: "100%", height: "500px"}}></div>
+      <div id="legenddiv" style={{ width: "100%", height: "200px"}}></div>
+    </div>
+  )
+  
+          
 
 
 };
