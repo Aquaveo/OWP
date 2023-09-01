@@ -8,4 +8,5 @@ export const ModalContainer = styled.div`
         width: 90vw;
         max-width: 70%;
     }
+
 `;

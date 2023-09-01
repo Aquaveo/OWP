@@ -2,7 +2,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-
+import { SpanBadge } from 'components/styles/Badge.styled';
 import Layers from "../../components/layers/Layers";
 import Controls from "components/control/Controls";
 
@@ -359,7 +359,7 @@ function App() {
       </MainContainer>
 
       <ModalContainer>
-        <Modal show={showModal} onHide={handleClose} centered size="xl" >
+        <Modal show={showModal} onHide={handleClose} centered size="lg" >
           <Modal.Header closeButton>
             <Modal.Title>{currentStation}</Modal.Title>
           </Modal.Header>
@@ -373,12 +373,7 @@ function App() {
               <Tab eventKey="forecast-tab" title="Forecast">
                 <Container>
                     <Row>
-                      <Col md="2">
-                        <Button variant="secondary" size="sm" className="me-2 w-100" >
-                          <Badge bg="secondary">Analysis</Badge>
-                        </Button>
-                      </Col>
-                      <Col>
+                      <Col md="3">
                           <ButtonGroup className="mb-2" size="sm">
 
                             <ToggleButton
@@ -390,8 +385,9 @@ function App() {
                             value={currentProducts['analysis_assim']['name_product']}
                             onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['analysis_assim']['is_requested'], currentProducts['analysis_assim']['data'])}
                             >
-                            Analysis and Assimilation
-
+                           <SpanBadge>
+                              Analysis and Assimilation
+                           </SpanBadge>
                             </ToggleButton>
                           </ButtonGroup>
                       </Col>
@@ -401,24 +397,22 @@ function App() {
 
                 <Container>
                   <Row>
-                    <Col md="2">
-                      <Button variant="secondary" size="sm" className="me-2 w-100" >
-                        <Badge bg="secondary">Short Range Forecast</Badge>
-                      </Button>
-                    </Col>
-                    <Col>
-                      <ButtonGroup className="mb-2" size="sm">
+
+                    <Col md="3">
+                      <ButtonGroup className="mb-2 w-100" size="sm">
 
                         <ToggleButton
                           id="toggle-check-short_range"
-                          className="me-2 btn-sm"
+                          className="me-2 btn-sm w-100"
                           type="checkbox"
                           variant="outline-primary"
                           checked={currentProducts['short_range']['is_requested']}
                           value={currentProducts['short_range']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['short_range']['is_requested'], currentProducts['short_range']['data'])}
                         >
-                          Short Range Forecast
+                           <SpanBadge>
+                              Short Range Forecast
+                           </SpanBadge>
                         </ToggleButton>
                       </ButtonGroup>
 
@@ -428,7 +422,7 @@ function App() {
 
                 <Container>
                   <Row>
-                    <Col md="2">
+                    <Col md="3">
                       <Button variant="secondary" size="sm" className="me-2 w-100" >
                       <Badge bg="secondary">Long Range Forecast</Badge>
                       </Button>
@@ -444,7 +438,8 @@ function App() {
                         value={currentProducts['long_range_ensemble_mean']['name_product']}
                         onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_mean']['is_requested'], currentProducts['long_range_ensemble_mean']['data'])}                    
                       >
-                        Mean
+                        
+                        <span> Mean </span>
                       </ToggleButton>
                         <ToggleButton
                           id="toggle-check-long_range_1"
@@ -456,7 +451,7 @@ function App() {
                           value={currentProducts['long_range_ensemble_member_1']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_1']['is_requested'], currentProducts['long_range_ensemble_member_1']['data'])}
                         >
-                          <span className="small-font-size">Member 1 </span>
+                          <span> 1 </span>
                         
                       </ToggleButton>
                       <ToggleButton
@@ -468,7 +463,7 @@ function App() {
                           value={currentProducts['long_range_ensemble_member_2']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_2']['is_requested'], currentProducts['long_range_ensemble_member_2']['data'])}
                         >
-                        <span className="small-font-size">Member 2 </span>
+                        <span>2 </span>
                       </ToggleButton>                  
                       <ToggleButton
                           id="toggle-check-long_range_3"
@@ -479,7 +474,9 @@ function App() {
                           value={currentProducts['long_range_ensemble_member_3']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_3']['is_requested'], currentProducts['long_range_ensemble_member_3']['data'])}
                         >
-                        Member 3
+                        <span> 3 </span>
+
+                        
                       </ToggleButton>
                       <ToggleButton
                           id="toggle-check-long_range_4"
@@ -490,7 +487,7 @@ function App() {
                           value={currentProducts['long_range_ensemble_member_4']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_4']['is_requested'], currentProducts['long_range_ensemble_member_4']['data'])}
                         >
-                        Member 4
+                        <span> 4 </span>
                       </ToggleButton>
                       </ButtonGroup>
 
@@ -500,7 +497,7 @@ function App() {
 
                 <Container>
                   <Row>
-                    <Col md="2">
+                    <Col md="3">
                       <Button variant="secondary" size="sm" className="me-2 w-100" >
                         <Badge bg="secondary">Medium Range Forecast</Badge>
                       </Button>
@@ -516,7 +513,7 @@ function App() {
                         value={currentProducts['medium_range_ensemble_mean']['name_product']}
                         onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_mean']['is_requested'], currentProducts['long_range_ensemble_mean']['data'])}                    
                       >
-                        Mean
+                        <span>Mean</span>  
                       </ToggleButton>
                       <ToggleButton
                           id="toggle-check-medium_range_1"
@@ -527,7 +524,7 @@ function App() {
                           value={currentProducts['medium_range_ensemble_member_1']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_1']['is_requested'], currentProducts['long_range_ensemble_member_1']['data'])}
                         >
-                        Member 1
+                        <span>1</span>  
                       </ToggleButton>
                       <ToggleButton
                           id="toggle-check-medium_range_2"
@@ -538,7 +535,7 @@ function App() {
                           value={currentProducts['medium_range_ensemble_member_2']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_2']['is_requested'], currentProducts['medium_range_ensemble_member_2']['data'])}
                         >
-                        Member 2
+                        <span>2</span>
                       </ToggleButton>                  
                       <ToggleButton
                           id="toggle-check-medium_range_3"
@@ -549,7 +546,7 @@ function App() {
                           value={currentProducts['medium_range_ensemble_member_3']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_3']['is_requested'], currentProducts['medium_range_ensemble_member_3']['data'])}
                         >
-                        Member 3
+                        <span>3</span>                      
                       </ToggleButton>
                       <ToggleButton
                           id="toggle-check-medium_range_4"
@@ -560,7 +557,7 @@ function App() {
                           value={currentProducts['medium_range_ensemble_member_4']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_4']['is_requested'], currentProducts['medium_range_ensemble_member_4']['data'])}
                         >
-                        Member 4
+                        <span>4</span>
                       </ToggleButton>
 
                       <ToggleButton
@@ -572,7 +569,7 @@ function App() {
                           value={currentProducts['medium_range_ensemble_member_5']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_5']['is_requested'], currentProducts['medium_range_ensemble_member_5']['data'])}
                         >
-                        Member 5
+                          <span>5</span>
                       </ToggleButton>    
 
                       <ToggleButton
@@ -584,10 +581,8 @@ function App() {
                           value={currentProducts['medium_range_ensemble_member_6']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_6']['is_requested'], currentProducts['medium_range_ensemble_member_6']['data'])}
                         >
-                        Member 6
+                          <span>6</span>
                       </ToggleButton>
-
-
                       <ToggleButton
                           id="toggle-check-medium_range_7"
                           type="checkbox"
@@ -597,7 +592,7 @@ function App() {
                           value={currentProducts['medium_range_ensemble_member_7']['name_product']}
                           onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_7']['is_requested'], currentProducts['medium_range_ensemble_member_7']['data'])}
                         >
-                        Member 7
+                          <span>7</span>
                       </ToggleButton>
                     </ButtonGroup>
                     
