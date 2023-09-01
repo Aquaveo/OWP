@@ -315,7 +315,7 @@ function App() {
       </MainContainer>
 
       <ModalContainer>
-        <Modal show={showModal} onHide={handleClose} centered size="xl" >
+        <Modal show={showModal} onHide={handleClose} centered dialogClassName="modal-width-class" >
           <Modal.Header closeButton>
             <Modal.Title>{currentStation}</Modal.Title>
           </Modal.Header>
@@ -327,7 +327,7 @@ function App() {
               justify
             >
               <Tab eventKey="forecast-tab" title="Forecast">
-              <div className="d-grid gap-2">
+              {/* <div className="d-grid gap-2"> */}
 
 
                 <ButtonToolbar>
@@ -542,7 +542,7 @@ function App() {
                   </ButtonGroup>
                 </ButtonToolbar>
 
-              </div>
+              {/* </div> */}
 
 
                 <LineChart data={currentProducts} isUpdatePlot={isUpdatePlot} />

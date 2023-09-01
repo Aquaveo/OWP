@@ -4,9 +4,7 @@ import ErrorBoundary from 'components/error/ErrorBoundary';
 import Layout from 'components/layout/Layout';
 import Loader from 'components/loader/Loader';
 
-import Home2 from 'views/home/Home';
 import LearnReact from 'views/learn/LearnReact';
-import PlotView from 'views/plot/Plot';
 import Home from 'views/home_page/Home';
 
 import 'App.scss';

@@ -18,32 +18,6 @@ def home(request):
     return render(request, 'owp/index.html')
 
 
-@controller
-def data(request):
-    """API controller for the plot page."""
-    # Download example data from GitHub
-    df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv')
-
-    # Do data processing in Python
-    l_date = df['Date'].tolist()
-
-    # Then return JSON containing data
-    return JsonResponse({
-        'series': [
-            {
-                'title': 'AAPL High',
-                'x': l_date,
-                'y': df['AAPL.High'].tolist()
-            },
-            {
-                'title': 'AAPL Low',
-                'x': l_date,
-                'y': df['AAPL.Low'].tolist()
-            }
-        ],
-    })
-
-
 #     station_id = request.GET.get('station_id')
 #     url=f'{BASE_API_URL}/analysis_assim/streamflow?station_id={station_id}'
 #     # https://nwmdata.nohrsc.noaa.gov/latest/forecasts/short_range/streamflow?station_id=19266232
@@ -56,7 +30,6 @@ def data(request):
 #     #https://nwmdata.nohrsc.noaa.gov/latest/forecasts/medium_range_ensemble_member_7/streamflow?station_id=19266232 this until ensemble 1-7
 
 
-  
 
 
 @controller
