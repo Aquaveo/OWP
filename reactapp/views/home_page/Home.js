@@ -1,3 +1,8 @@
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
+
 import Layers from "../../components/layers/Layers";
 import Controls from "components/control/Controls";
 
@@ -8,10 +13,16 @@ import { ReMap } from "../../components/map/ReMap";
 import { TileImageArcGISRest } from "../../components/source/TileImageArcGISRest";
 import { ArcGISRestTile } from "components/source/TileArcGISRest";
 import { WMSTile } from "../../components/source/TileWMS";
+import { VectorLayer } from "components/layers/VectorLayer";
+import { VectorSourceLayer } from "components/source/Vector"; 
+import VectorSource from 'ol/source/Vector'
+import {Stroke, Style} from 'ol/style.js';
+import Feature from 'ol/Feature.js';
 
 import { useEffect, useState, useReducer, useRef } from 'react';
 import { fromLonLat } from 'ol/proj';
 import LayerGroup from 'ol/layer/Group';
+import LineString from 'ol/geom/LineString.js';
 
 
 import { MainContainer } from "components/styles/ContainerMain.styled";
@@ -164,7 +175,7 @@ function App() {
 }
 
   const [currentProducts, setCurrentProducts] = useReducer(reducerProducts, currentProductsInitial);
-
+  const [currentReachIdGeometry, setCurrentReachIdGeometry] = useState([]);
 
 
 
@@ -281,7 +292,16 @@ function App() {
   return (
     <div>
     <MainContainer>
-        <ReMap isFullMap={isFullMap} center={fromLonLat([-94.9065, 38.9884])} zoom={5} layerGroups={groupLayers} handleShow={handleShow} setCurrentStation={setCurrentStation} currentProducts={currentProducts} setCurrentStationID={setCurrentStationID} setCurrentProducts={setCurrentProducts} >
+        <ReMap isFullMap={isFullMap} 
+          center={fromLonLat([-94.9065, 38.9884])} 
+          zoom={5} layerGroups={groupLayers} 
+          handleShow={handleShow} 
+          setCurrentStation={setCurrentStation} 
+          currentProducts={currentProducts} 
+          setCurrentStationID={setCurrentStationID} 
+          setCurrentProducts={setCurrentProducts} 
+          setCurrentReachIdGeometry={setCurrentReachIdGeometry} 
+        >
           <Layers>
 
 
@@ -304,6 +324,29 @@ function App() {
               groupLayerName={"NWM Stream Analysis"}
               groupLayers = {groupLayers}
             />
+            <VectorLayer
+              name={"reach_vector"}
+              source={new VectorSource({
+                features: [
+                  new Feature({
+                    geometry: new LineString(currentReachIdGeometry).transform('EPSG:4326', 'EPSG:3857'),
+                    name: "myid"
+
+                  })
+                ]
+                
+                 // make sure features is an array
+              })}
+              style={
+                new Style({                  
+                  stroke : new Stroke({ 
+                      color: '#e1ff00',
+                      width: 5
+                  })
+                })
+              }
+              zIndex={1}
+          />
 
           </Layers>
           <Controls>
@@ -328,223 +371,239 @@ function App() {
               justify
             >
               <Tab eventKey="forecast-tab" title="Forecast">
-              {/* <div className="d-grid gap-2"> */}
+                <Container>
+                    <Row>
+                      <Col md="2">
+                        <Button variant="secondary" size="sm" className="me-2 w-100" >
+                          <Badge bg="secondary">Analysis</Badge>
+                        </Button>
+                      </Col>
+                      <Col>
+                          <ButtonGroup className="mb-2" size="sm">
+
+                            <ToggleButton
+                            id="toggle-check-analysis_assim"
+                            className="me-2 btn-sm"
+                            type="checkbox"
+                            variant="outline-primary"
+                            checked={currentProducts['analysis_assim']['is_requested']}
+                            value={currentProducts['analysis_assim']['name_product']}
+                            onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['analysis_assim']['is_requested'], currentProducts['analysis_assim']['data'])}
+                            >
+                            Analysis and Assimilation
+
+                            </ToggleButton>
+                          </ButtonGroup>
+                      </Col>
+                    </Row>
+                </Container>
 
 
-                <ButtonToolbar>
-                  
-                  <ButtonGroup className="mb-2" size="sm" >
-                    <Button variant="secondary"  size="sm" className="me-2" >
-                      <Badge bg="secondary">Analysis</Badge>
-                    </Button>
+                <Container>
+                  <Row>
+                    <Col md="2">
+                      <Button variant="secondary" size="sm" className="me-2 w-100" >
+                        <Badge bg="secondary">Short Range Forecast</Badge>
+                      </Button>
+                    </Col>
+                    <Col>
+                      <ButtonGroup className="mb-2" size="sm">
 
+                        <ToggleButton
+                          id="toggle-check-short_range"
+                          className="me-2 btn-sm"
+                          type="checkbox"
+                          variant="outline-primary"
+                          checked={currentProducts['short_range']['is_requested']}
+                          value={currentProducts['short_range']['name_product']}
+                          onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['short_range']['is_requested'], currentProducts['short_range']['data'])}
+                        >
+                          Short Range Forecast
+                        </ToggleButton>
+                      </ButtonGroup>
 
-                    <ToggleButton
-                      id="toggle-check-analysis_assim"
-                      className="me-2"
-                      type="checkbox"
-                      variant="outline-primary"
-                      checked={currentProducts['analysis_assim']['is_requested']}
-                      value={currentProducts['analysis_assim']['name_product']}
-                      onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['analysis_assim']['is_requested'], currentProducts['analysis_assim']['data'])}
-                    >
-                      
-                      Analysis and Assimilation
+                    </Col>
+                  </Row>
+                </Container>
 
-                    </ToggleButton>
-
-                    </ButtonGroup>
-                </ButtonToolbar>
-
-                <ButtonToolbar>
-                
-                <ButtonGroup className="mb-2" size="sm" >
-                  <Button variant="secondary" size="sm" className="me-2" >
-                      <Badge bg="secondary">Short Term Forecast</Badge>
-                  </Button>
-                    <ToggleButton
-                      id="toggle-check-short_range"
-                      type="checkbox"
-                      variant="outline-primary"
-                      checked={currentProducts['short_range']['is_requested']}
-                      value={currentProducts['short_range']['name_product']}
-                      onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['short_range']['is_requested'], currentProducts['short_range']['data'])}
-                    >
-                      Short Range Forecast
-                    </ToggleButton>
-                  </ButtonGroup>
-                </ButtonToolbar>
-
-
-                <ButtonToolbar>
-                  <ButtonGroup className="mb-2" size="sm">
-                    <Button variant="secondary" size="sm" className="me-2" >
+                <Container>
+                  <Row>
+                    <Col md="2">
+                      <Button variant="secondary" size="sm" className="me-2 w-100" >
                       <Badge bg="secondary">Long Range Forecast</Badge>
-                    </Button>
+                      </Button>
+                    </Col>
+                    <Col>
+                      <ButtonGroup className="mb-2" size="sm">
+                        <ToggleButton
+                        id="toggle-check-long_range_mean"
+                        className="me-2 btn-sm"
+                        type="checkbox"
+                        variant="outline-primary"
+                        checked={currentProducts['long_range_ensemble_mean']['is_requested']}
+                        value={currentProducts['long_range_ensemble_mean']['name_product']}
+                        onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_mean']['is_requested'], currentProducts['long_range_ensemble_mean']['data'])}                    
+                      >
+                        Mean
+                      </ToggleButton>
+                        <ToggleButton
+                          id="toggle-check-long_range_1"
+                          type="checkbox"
+                          className="me-2 btn-sm"
 
-                    <ToggleButton
-                      id="toggle-check-long_range_mean"
-                      className="me-2"
-                      type="checkbox"
-                      variant="outline-primary"
-                      checked={currentProducts['long_range_ensemble_mean']['is_requested']}
-                      value={currentProducts['long_range_ensemble_mean']['name_product']}
-                      onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_mean']['is_requested'], currentProducts['long_range_ensemble_mean']['data'])}                    
-                    >
-                      Mean
-                    </ToggleButton>
+                          variant="outline-primary"
+                          checked={currentProducts['long_range_ensemble_member_1']['is_requested']}
+                          value={currentProducts['long_range_ensemble_member_1']['name_product']}
+                          onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_1']['is_requested'], currentProducts['long_range_ensemble_member_1']['data'])}
+                        >
+                          <span className="small-font-size">Member 1 </span>
+                        
+                      </ToggleButton>
                       <ToggleButton
-                        id="toggle-check-long_range_1"
-                        type="checkbox"
-                        className="me-2"
+                          id="toggle-check-long_range_2"
+                          className="me-2 btn-sm"
+                          type="checkbox"
+                          variant="outline-primary"
+                          checked={currentProducts['long_range_ensemble_member_2']['is_requested']}
+                          value={currentProducts['long_range_ensemble_member_2']['name_product']}
+                          onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_2']['is_requested'], currentProducts['long_range_ensemble_member_2']['data'])}
+                        >
+                        <span className="small-font-size">Member 2 </span>
+                      </ToggleButton>                  
+                      <ToggleButton
+                          id="toggle-check-long_range_3"
+                          className="me-2 btn-sm"
+                          type="checkbox"
+                          variant="outline-primary"
+                          checked={currentProducts['long_range_ensemble_member_3']['is_requested']}
+                          value={currentProducts['long_range_ensemble_member_3']['name_product']}
+                          onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_3']['is_requested'], currentProducts['long_range_ensemble_member_3']['data'])}
+                        >
+                        Member 3
+                      </ToggleButton>
+                      <ToggleButton
+                          id="toggle-check-long_range_4"
+                          type="checkbox"
+                          className="me-2 btn-sm"
+                          variant="outline-primary"
+                          checked={currentProducts['long_range_ensemble_member_4']['is_requested']}
+                          value={currentProducts['long_range_ensemble_member_4']['name_product']}
+                          onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_4']['is_requested'], currentProducts['long_range_ensemble_member_4']['data'])}
+                        >
+                        Member 4
+                      </ToggleButton>
+                      </ButtonGroup>
 
-                        variant="outline-primary"
-                        checked={currentProducts['long_range_ensemble_member_1']['is_requested']}
-                        value={currentProducts['long_range_ensemble_member_1']['name_product']}
-                        onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_1']['is_requested'], currentProducts['long_range_ensemble_member_1']['data'])}
-                      >
-                        <span className="small-font-size">Member 1 </span>
-                      
-                    </ToggleButton>
-                    <ToggleButton
-                        id="toggle-check-long_range_2"
-                        className="me-2"
-                        type="checkbox"
-                        variant="outline-primary"
-                        checked={currentProducts['long_range_ensemble_member_2']['is_requested']}
-                        value={currentProducts['long_range_ensemble_member_2']['name_product']}
-                        onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_2']['is_requested'], currentProducts['long_range_ensemble_member_2']['data'])}
-                      >
-                      <span className="small-font-size">Member 2 </span>
-                    </ToggleButton>                  
-                    <ToggleButton
-                        id="toggle-check-long_range_3"
-                        className="me-2"
-                        type="checkbox"
-                        variant="outline-primary"
-                        checked={currentProducts['long_range_ensemble_member_3']['is_requested']}
-                        value={currentProducts['long_range_ensemble_member_3']['name_product']}
-                        onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_3']['is_requested'], currentProducts['long_range_ensemble_member_3']['data'])}
-                      >
-                      Member 3
-                    </ToggleButton>
-                    <ToggleButton
-                        id="toggle-check-long_range_4"
-                        type="checkbox"
-                        variant="outline-primary"
-                        checked={currentProducts['long_range_ensemble_member_4']['is_requested']}
-                        value={currentProducts['long_range_ensemble_member_4']['name_product']}
-                        onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['long_range_ensemble_member_4']['is_requested'], currentProducts['long_range_ensemble_member_4']['data'])}
-                      >
-                      Member 4
-                    </ToggleButton>                                
-                  </ButtonGroup>
-                </ButtonToolbar>
-    
-                <ButtonToolbar>
-                  <ButtonGroup className="mb-2" size="sm">
-                    <Button variant="secondary" size="sm" className="me-2" >
-                      <Badge bg="secondary">Medium Range Forecast</Badge>
-                    </Button>
+                    </Col>
+                  </Row>
+                </Container>
 
-                    <ToggleButton
-                      id="toggle-check-medium_range_mean"
-                      className="me-2"
-                      type="checkbox"
-                      variant="outline-primary"
-                      size="sm"
-                      checked={currentProducts['medium_range_ensemble_mean']['is_requested']}
-                      value={currentProducts['medium_range_ensemble_mean']['name_product']}
-                      onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_mean']['is_requested'], currentProducts['long_range_ensemble_mean']['data'])}                    
-                    >
-                      Mean
-                    </ToggleButton>
-                    <ToggleButton
-                        id="toggle-check-medium_range_1"
+                <Container>
+                  <Row>
+                    <Col md="2">
+                      <Button variant="secondary" size="sm" className="me-2 w-100" >
+                        <Badge bg="secondary">Medium Range Forecast</Badge>
+                      </Button>
+                    </Col>
+                    <Col>
+                      <ButtonGroup className="mb-2" size="sm">
+                        <ToggleButton
+                        id="toggle-check-medium_range_mean"
+                        className="me-2 btn-sm"
                         type="checkbox"
-                        className="me-2"
+                        variant="outline-primary"
+                        checked={currentProducts['medium_range_ensemble_mean']['is_requested']}
+                        value={currentProducts['medium_range_ensemble_mean']['name_product']}
+                        onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_mean']['is_requested'], currentProducts['long_range_ensemble_mean']['data'])}                    
+                      >
+                        Mean
+                      </ToggleButton>
+                      <ToggleButton
+                          id="toggle-check-medium_range_1"
+                          type="checkbox"
+                          className="me-2 btn-sm"
+                          variant="outline-primary"
+                          checked={currentProducts['medium_range_ensemble_member_1']['is_requested']}
+                          value={currentProducts['medium_range_ensemble_member_1']['name_product']}
+                          onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_1']['is_requested'], currentProducts['long_range_ensemble_member_1']['data'])}
+                        >
+                        Member 1
+                      </ToggleButton>
+                      <ToggleButton
+                          id="toggle-check-medium_range_2"
+                          className="me-2 btn-sm"
+                          type="checkbox"
+                          variant="outline-primary"
+                          checked={currentProducts['medium_range_ensemble_member_2']['is_requested']}
+                          value={currentProducts['medium_range_ensemble_member_2']['name_product']}
+                          onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_2']['is_requested'], currentProducts['medium_range_ensemble_member_2']['data'])}
+                        >
+                        Member 2
+                      </ToggleButton>                  
+                      <ToggleButton
+                          id="toggle-check-medium_range_3"
+                          className="me-2 btn-sm"
+                          type="checkbox"
+                          variant="outline-primary"
+                          checked={currentProducts['medium_range_ensemble_member_3']['is_requested']}
+                          value={currentProducts['medium_range_ensemble_member_3']['name_product']}
+                          onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_3']['is_requested'], currentProducts['medium_range_ensemble_member_3']['data'])}
+                        >
+                        Member 3
+                      </ToggleButton>
+                      <ToggleButton
+                          id="toggle-check-medium_range_4"
+                          type="checkbox"
+                          className="me-2 btn-sm"
+                          variant="outline-primary"
+                          checked={currentProducts['medium_range_ensemble_member_4']['is_requested']}
+                          value={currentProducts['medium_range_ensemble_member_4']['name_product']}
+                          onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_4']['is_requested'], currentProducts['medium_range_ensemble_member_4']['data'])}
+                        >
+                        Member 4
+                      </ToggleButton>
 
-                        variant="outline-primary"
-                        checked={currentProducts['medium_range_ensemble_member_1']['is_requested']}
-                        value={currentProducts['medium_range_ensemble_member_1']['name_product']}
-                        onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_1']['is_requested'], currentProducts['long_range_ensemble_member_1']['data'])}
-                      >
-                      Member 1
-                    </ToggleButton>
-                    <ToggleButton
-                        id="toggle-check-medium_range_2"
-                        className="me-2"
-                        type="checkbox"
-                        variant="outline-primary"
-                        checked={currentProducts['medium_range_ensemble_member_2']['is_requested']}
-                        value={currentProducts['medium_range_ensemble_member_2']['name_product']}
-                        onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_2']['is_requested'], currentProducts['medium_range_ensemble_member_2']['data'])}
-                      >
-                      Member 2
-                    </ToggleButton>                  
-                    <ToggleButton
-                        id="toggle-check-medium_range_3"
-                        className="me-2"
-                        type="checkbox"
-                        variant="outline-primary"
-                        checked={currentProducts['medium_range_ensemble_member_3']['is_requested']}
-                        value={currentProducts['medium_range_ensemble_member_3']['name_product']}
-                        onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_3']['is_requested'], currentProducts['medium_range_ensemble_member_3']['data'])}
-                      >
-                      Member 3
-                    </ToggleButton>
-                    <ToggleButton
-                        id="toggle-check-medium_range_4"
-                        type="checkbox"
-                        className="me-2"
-                        variant="outline-primary"
-                        checked={currentProducts['medium_range_ensemble_member_4']['is_requested']}
-                        value={currentProducts['medium_range_ensemble_member_4']['name_product']}
-                        onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_4']['is_requested'], currentProducts['medium_range_ensemble_member_4']['data'])}
-                      >
-                      Member 4
-                    </ToggleButton>
+                      <ToggleButton
+                          id="toggle-check-medium_range_5"
+                          type="checkbox"
+                          className="me-2 btn-sm"
+                          variant="outline-primary"
+                          checked={currentProducts['medium_range_ensemble_member_5']['is_requested']}
+                          value={currentProducts['medium_range_ensemble_member_5']['name_product']}
+                          onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_5']['is_requested'], currentProducts['medium_range_ensemble_member_5']['data'])}
+                        >
+                        Member 5
+                      </ToggleButton>    
 
-                    <ToggleButton
-                        id="toggle-check-medium_range_5"
-                        type="checkbox"
-                        className="me-2"
-                        variant="outline-primary"
-                        checked={currentProducts['medium_range_ensemble_member_5']['is_requested']}
-                        value={currentProducts['medium_range_ensemble_member_5']['name_product']}
-                        onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_5']['is_requested'], currentProducts['medium_range_ensemble_member_5']['data'])}
-                      >
-                      Member 5
-                    </ToggleButton>    
-
-                    <ToggleButton
-                        id="toggle-check-medium_range_6"
-                        type="checkbox"
-                        className="me-2"
-                        variant="outline-primary"
-                        checked={currentProducts['medium_range_ensemble_member_6']['is_requested']}
-                        value={currentProducts['medium_range_ensemble_member_6']['name_product']}
-                        onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_6']['is_requested'], currentProducts['medium_range_ensemble_member_6']['data'])}
-                      >
-                      Member 6
-                    </ToggleButton>
+                      <ToggleButton
+                          id="toggle-check-medium_range_6"
+                          type="checkbox"
+                          className="me-2 btn-sm"
+                          variant="outline-primary"
+                          checked={currentProducts['medium_range_ensemble_member_6']['is_requested']}
+                          value={currentProducts['medium_range_ensemble_member_6']['name_product']}
+                          onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_6']['is_requested'], currentProducts['medium_range_ensemble_member_6']['data'])}
+                        >
+                        Member 6
+                      </ToggleButton>
 
 
-                    <ToggleButton
-                        id="toggle-check-medium_range_7"
-                        type="checkbox"
-                        variant="outline-primary"
-                        checked={currentProducts['medium_range_ensemble_member_7']['is_requested']}
-                        value={currentProducts['medium_range_ensemble_member_7']['name_product']}
-                        onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_7']['is_requested'], currentProducts['medium_range_ensemble_member_7']['data'])}
-                      >
-                      Member 7
-                    </ToggleButton>                      
-                  </ButtonGroup>
-                </ButtonToolbar>
-
-              {/* </div> */}
-
+                      <ToggleButton
+                          id="toggle-check-medium_range_7"
+                          type="checkbox"
+                          className="me-2 btn-sm"
+                          variant="outline-primary"
+                          checked={currentProducts['medium_range_ensemble_member_7']['is_requested']}
+                          value={currentProducts['medium_range_ensemble_member_7']['name_product']}
+                          onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_7']['is_requested'], currentProducts['medium_range_ensemble_member_7']['data'])}
+                        >
+                        Member 7
+                      </ToggleButton>
+                    </ButtonGroup>
+                    
+                    </Col>
+                  </Row>
+                </Container>
 
                 <LineChart data={currentProducts} isUpdatePlot={isUpdatePlot} />
               </Tab>
