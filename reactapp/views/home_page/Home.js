@@ -240,7 +240,7 @@ function App() {
         let data = JSON.parse(e.data);
         
         let product_name = data['product'];
-        console.log("receiving data socker")
+        console.log("receiving data socket")
         let ts = data['data'][0]['data'].map(obj => ({
           value: obj.value,
           'forecast-time': new Date(obj['forecast-time']).getTime()
@@ -262,8 +262,8 @@ function App() {
     console.log(updatedProducts);
     if (Object.keys(updatedProducts).length && currentStationID > 0 ) {
       let dataRequest = {
-        // station_id: currentStationID,
-        station_id: 19269170,
+        station_id: currentStationID,
+        // station_id: 19269170,
         products: updatedProducts
       }
       appAPI.getForecastData(dataRequest);
@@ -296,8 +296,9 @@ function App() {
             />                    
             <OlImageTileLayer
               source={TileImageArcGISRest(StreamLayerURL, {
-                LAYERS:"show:1,2,3,4,5,6,8,9,10,11,12,13,15,16,17,18,19,20,21"
+                // LAYERS:"show:1,2,3,4,5,6,8,9,10,11,12,13,15,16,17,18,19,20,21"
                 // LAYERS:"show:5,12,19,21"
+                LAYERS:"show:1,2,3,4,5,6,21"
               })}
               name={"streams_layer"}
               groupLayerName={"NWM Stream Analysis"}
@@ -315,7 +316,7 @@ function App() {
       </MainContainer>
 
       <ModalContainer>
-        <Modal show={showModal} onHide={handleClose} centered dialogClassName="modal-width-class" >
+        <Modal show={showModal} onHide={handleClose} centered size="xl" >
           <Modal.Header closeButton>
             <Modal.Title>{currentStation}</Modal.Title>
           </Modal.Header>
@@ -346,7 +347,7 @@ function App() {
                       checked={currentProducts['analysis_assim']['is_requested']}
                       value={currentProducts['analysis_assim']['name_product']}
                       onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['analysis_assim']['is_requested'], currentProducts['analysis_assim']['data'])}
-                                      >
+                    >
                       
                       Analysis and Assimilation
 

@@ -37,6 +37,19 @@ export const LineChart = (props) => {
 
 
   const makeSeries = (product,series_ref) => {
+
+    var tooltip = am5.Tooltip.new(rootRef.current, {
+      labelText: `${product}: {valueY}`,
+      getFillFromSprite: true,
+      getLabelFillFromSprite: true
+    })
+    tooltip.get('background').setAll({
+      fill: am5.color(props.data[product]['color']),
+      strokeWidth: 0,
+    });
+    tooltip.label.setAll({
+      fill: am5.color(props.data[product]['color'])
+    });
     var series = chartRef.current.series.push(
       am5xy.LineSeries.new(rootRef.current, {
         name: props.data[product]['name_product'],
@@ -46,16 +59,19 @@ export const LineChart = (props) => {
         valueXField: "forecast-time",
         maxDeviation:1,
         stroke: am5.color(props.data[product]['color']),
-        tooltip: am5.Tooltip.new(rootRef.current, {
-          labelText: `${product}: {valueY}`
-        })
+        tooltip: tooltip
       })
     );
+    let strokeWidth = 1
+    if(product.includes("mean") || product === "analysis_assim" || product === "short_range"){
+      strokeWidth = 3
+    }
     series.strokes.template.setAll({
-      strokeWidth: 3,
+      strokeWidth: strokeWidth,
     });
     series.data.setAll(props.data[product]['data']);
-    series.appear(1000);
+    series.appear(1000,500);
+        // series.appear(1000);
     series_ref.current = series;
     legendRef.current.data.setAll(chartRef.current.series.values);
   }
@@ -70,8 +86,11 @@ export const LineChart = (props) => {
 
     let chart = root.container.children.push(
       am5xy.XYChart.new(root, {
-        panY: false,
-        layout: root.verticalLayout
+        panX: true,
+        panY: true,
+        wheelX: "panX",
+        wheelY: "zoomX",
+        pinchZoomX:true
       })
     );
 
@@ -94,6 +113,20 @@ export const LineChart = (props) => {
     for (const product in  props.data){
       // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
       if(props.data[product]['is_requested']){
+
+        var tooltip = am5.Tooltip.new(root, {
+          labelText: `${product}: {valueY}`,
+          getFillFromSprite: true,
+          getLabelFillFromSprite: true
+        })
+        tooltip.get('background').set({
+          fill: am5.color(props.data[product]['color']),
+          strokeWidth: 0,
+        });
+        tooltip.label.set({
+          fill: am5.color(props.data[product]['color'])
+        });
+        
         var series = chart.series.push(
           am5xy.LineSeries.new(root, {
             name: props.data[product]['name_product'],
@@ -103,28 +136,28 @@ export const LineChart = (props) => {
             valueXField: "forecast-time",
             maxDeviation:1,
             stroke: am5.color(props.data[product]['color']),
-            tooltip: am5.Tooltip.new(root, {
-              labelText: `${product}: {valueY}`
-            })
+            tooltip: tooltip,
+            legendValueText: "{valueY}"
           })
         );
         series.strokes.template.setAll({
-          strokeWidth: 3,
+          strokeWidth: 2,
         });
         series.data.setAll(props.data[product]['data']);
         // Make stuff animate on load
         // https://www.amcharts.com/docs/v5/concepts/animations/
-        series.appear(1000);
+        series.appear(1000,500);
         if (product === 'analysis_assim'){
           seriesAnalysisAssimRef.current = series;
         }
       }
 
     }
+
     //Today date line
     var rangeDataItem = xAxis.makeDataItem({
       value: new Date().getTime(),
-      above: true
+      above: false
     });
     
     var range = xAxis.createAxisRange(rangeDataItem);
@@ -136,15 +169,79 @@ export const LineChart = (props) => {
       width: 32,
       location: 1
     });
-  
+    // Add scrollbar
+    // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
+    chart.set("scrollbarX", am5.Scrollbar.new(root, {
+      orientation: "horizontal"
+    }));
 
     // Add legend
-    let legend = chart.children.push(am5.Legend.new(root, {}));
+    let legend = chart.children.push(am5.Legend.new(root, {
+      width: 300,
+      paddingLeft: 15,
+      x: am5.percent(100),
+      y: am5.percent(50),
+      height: am5.percent(100),
+      centerX: am5.percent(50),
+      layout: root.verticalLayout
+    }));
+
+    // When legend item container is hovered, dim all the series except the hovered one
+    legend.itemContainers.template.events.on("pointerover", function(e) {
+      var itemContainer = e.target;
+
+      // As series list is data of a legend, dataContext is series
+      var series = itemContainer.dataItem.dataContext;
+
+      chart.series.each(function(chartSeries) {
+        if (chartSeries != series) {
+          chartSeries.strokes.template.setAll({
+            strokeOpacity: 0.5,
+            stroke: am5.color(props.data[chartSeries.get('name')]['color'])
+          });
+        } else {
+          
+          chartSeries.strokes.template.setAll({
+            strokeWidth: 3,
+            stroke: am5.color(props.data[chartSeries.get('name')]['color'])
+          });
+        }
+      })
+    })
+
+    // When legend item container is unhovered, make all series as they are
+    legend.itemContainers.template.events.on("pointerout", function(e) {
+      var itemContainer = e.target;
+      var series = itemContainer.dataItem.dataContext;
+
+      chart.series.each(function(chartSeries) {
+        let strokeWidth = 1
+        if(chartSeries.get('name').includes("mean") || chartSeries.get('name') === "analysis_assim" || chartSeries.get('name') === "short_range"){
+          strokeWidth = 2
+        }
+        chartSeries.strokes.template.setAll({
+          strokeOpacity: 1,
+          strokeWidth: strokeWidth,
+          stroke: am5.color(props.data[chartSeries.get('name')]['color'])
+        });
+      });
+    })
+
+    legend.itemContainers.template.set("width", am5.p100);
+    legend.valueLabels.template.setAll({
+      width: am5.p100,
+      textAlign: "right"
+    });
+
+
+
     legend.data.setAll(chart.series.values);
 
 
     // Add cursor
-    chart.set("cursor", am5xy.XYCursor.new(root, {}));
+    var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+    cursor.lineX.set("forceHidden", true);
+    cursor.lineY.set("forceHidden", true);
 
     xAxisRef.current = xAxis;
     chartRef.current= chart;
@@ -273,31 +370,8 @@ export const LineChart = (props) => {
       }
       else{
         if( product ==='analysis_assim'){
-          // seriesAnalysisAssimRef.current.data.setAll(props.data[product]['data']);
           if(chartRef.current.series.indexOf(seriesAnalysisAssimRef.current) < 0){
-            // chartRef.current.series.push(seriesAnalysisAssimRef.current);
-
-            var series = chartRef.current.series.push(
-              am5xy.LineSeries.new(rootRef.current, {
-                name: props.data[product]['name_product'],
-                xAxis: xAxisRef.current,
-                yAxis: yaxisRef.current,
-                valueYField: "value",
-                valueXField: "forecast-time",
-                maxDeviation:1,
-                stroke: am5.color(props.data[product]['color']),
-                tooltip: am5.Tooltip.new(rootRef.current, {
-                  labelText: `${product}: {valueY}`
-                })
-              })
-            );
-            series.strokes.template.setAll({
-              strokeWidth: 3,
-            });
-            series.data.setAll(props.data[product]['data']);
-            series.appear(1000);
-            seriesAnalysisAssimRef.current = series;
-            legendRef.current.data.setAll(chartRef.current.series.values);
+              makeSeries(product,seriesAnalysisAssimRef);
           }
           else{
             seriesAnalysisAssimRef.current.data.setAll(props.data[product]['data']);
@@ -305,28 +379,8 @@ export const LineChart = (props) => {
         }
         if(product ==='short_range' ){
           if(chartRef.current.series.indexOf(seriesShortermRef.current) < 0){
-
-            var series = chartRef.current.series.push(
-              am5xy.LineSeries.new(rootRef.current, {
-                name: props.data[product]['name_product'],
-                xAxis: xAxisRef.current,
-                yAxis: yaxisRef.current,
-                valueYField: "value",
-                valueXField: "forecast-time",
-                maxDeviation:1,
-                stroke: am5.color(props.data[product]['color']),
-                tooltip: am5.Tooltip.new(rootRef.current, {
-                  labelText: `${product}: {valueY}`
-                })
-              })
-            );
-            series.strokes.template.setAll({
-              strokeWidth: 3,
-            });
-            series.data.setAll(props.data[product]['data']);
-            series.appear(1000);
-            seriesShortermRef.current = series;
-            legendRef.current.data.setAll(chartRef.current.series.values);
+            makeSeries(product,seriesShortermRef);
+ 
           }
           else{
             seriesShortermRef.current.data.setAll(props.data[product]['data']);
@@ -335,28 +389,7 @@ export const LineChart = (props) => {
         // long term forecasts
         if(product ==='long_range_ensemble_mean' ){
           if(chartRef.current.series.indexOf(seriesLongtermMeanRef.current) < 0){
-
-            var series = chartRef.current.series.push(
-              am5xy.LineSeries.new(rootRef.current, {
-                name: props.data[product]['name_product'],
-                xAxis: xAxisRef.current,
-                yAxis: yaxisRef.current,
-                valueYField: "value",
-                valueXField: "forecast-time",
-                maxDeviation:1,
-                stroke: am5.color(props.data[product]['color']),
-                tooltip: am5.Tooltip.new(rootRef.current, {
-                  labelText: `${product}: {valueY}`
-                })
-              })
-            );
-            series.strokes.template.setAll({
-              strokeWidth: 3,
-            });
-            series.data.setAll(props.data[product]['data']);
-            series.appear(1000);
-            seriesLongtermMeanRef.current = series;
-            legendRef.current.data.setAll(chartRef.current.series.values);
+            makeSeries(product,seriesLongtermMeanRef);
           }
           else{
             seriesLongtermMeanRef.current.data.setAll(props.data[product]['data']);
@@ -366,27 +399,8 @@ export const LineChart = (props) => {
         if(product ==='long_range_ensemble_member_1' ){
           if(chartRef.current.series.indexOf(seriesLongtermEnsemble1Ref.current) < 0){
 
-            var series = chartRef.current.series.push(
-              am5xy.LineSeries.new(rootRef.current, {
-                name: props.data[product]['name_product'],
-                xAxis: xAxisRef.current,
-                yAxis: yaxisRef.current,
-                valueYField: "value",
-                valueXField: "forecast-time",
-                maxDeviation:1,
-                stroke: am5.color(props.data[product]['color']),
-                tooltip: am5.Tooltip.new(rootRef.current, {
-                  labelText: `${product}: {valueY}`
-                })
-              })
-            );
-            series.strokes.template.setAll({
-              strokeWidth: 3,
-            });
-            series.data.setAll(props.data[product]['data']);
-            series.appear(1000);
-            seriesLongtermEnsemble1Ref.current = series;
-            legendRef.current.data.setAll(chartRef.current.series.values);
+            makeSeries(product,seriesLongtermEnsemble1Ref);
+
           }
           else{
             seriesLongtermEnsemble1Ref.current.data.setAll(props.data[product]['data']);
@@ -394,28 +408,8 @@ export const LineChart = (props) => {
         }
         if(product ==='long_range_ensemble_member_2' ){
           if(chartRef.current.series.indexOf(seriesLongtermEnsemble2Ref.current) < 0){
+            makeSeries(product,seriesLongtermEnsemble2Ref);
 
-            var series = chartRef.current.series.push(
-              am5xy.LineSeries.new(rootRef.current, {
-                name: props.data[product]['name_product'],
-                xAxis: xAxisRef.current,
-                yAxis: yaxisRef.current,
-                valueYField: "value",
-                valueXField: "forecast-time",
-                maxDeviation:1,
-                stroke: am5.color(props.data[product]['color']),
-                tooltip: am5.Tooltip.new(rootRef.current, {
-                  labelText: `${product}: {valueY}`
-                })
-              })
-            );
-            series.strokes.template.setAll({
-              strokeWidth: 3,
-            });
-            series.data.setAll(props.data[product]['data']);
-            series.appear(1000);
-            seriesLongtermEnsemble2Ref.current = series;
-            legendRef.current.data.setAll(chartRef.current.series.values);
           }
           else{
             seriesLongtermEnsemble2Ref.current.data.setAll(props.data[product]['data']);
@@ -424,28 +418,8 @@ export const LineChart = (props) => {
 
         if(product ==='long_range_ensemble_member_3' ){
           if(chartRef.current.series.indexOf(seriesLongtermEnsemble3Ref.current) < 0){
+            makeSeries(product,seriesLongtermEnsemble3Ref);
 
-            var series = chartRef.current.series.push(
-              am5xy.LineSeries.new(rootRef.current, {
-                name: props.data[product]['name_product'],
-                xAxis: xAxisRef.current,
-                yAxis: yaxisRef.current,
-                valueYField: "value",
-                valueXField: "forecast-time",
-                maxDeviation:1,
-                stroke: am5.color(props.data[product]['color']),
-                tooltip: am5.Tooltip.new(rootRef.current, {
-                  labelText: `${product}: {valueY}`
-                })
-              })
-            );
-            series.strokes.template.setAll({
-              strokeWidth: 3,
-            });
-            series.data.setAll(props.data[product]['data']);
-            series.appear(1000);
-            seriesLongtermEnsemble3Ref.current = series;
-            legendRef.current.data.setAll(chartRef.current.series.values);
           }
           else{
             seriesLongtermEnsemble3Ref.current.data.setAll(props.data[product]['data']);
@@ -453,28 +427,7 @@ export const LineChart = (props) => {
         }
         if(product ==='long_range_ensemble_member_4' ){
           if(chartRef.current.series.indexOf(seriesLongtermEnsemble4Ref.current) < 0){
-
-            var series = chartRef.current.series.push(
-              am5xy.LineSeries.new(rootRef.current, {
-                name: props.data[product]['name_product'],
-                xAxis: xAxisRef.current,
-                yAxis: yaxisRef.current,
-                valueYField: "value",
-                valueXField: "forecast-time",
-                maxDeviation:1,
-                stroke: am5.color(props.data[product]['color']),
-                tooltip: am5.Tooltip.new(rootRef.current, {
-                  labelText: `${product}: {valueY}`
-                })
-              })
-            );
-            series.strokes.template.setAll({
-              strokeWidth: 3,
-            });
-            series.data.setAll(props.data[product]['data']);
-            series.appear(1000);
-            seriesLongtermEnsemble4Ref.current = series;
-            legendRef.current.data.setAll(chartRef.current.series.values);
+            makeSeries(product,seriesLongtermEnsemble4Ref);
           }
           else{
             seriesLongtermEnsemble4Ref.current.data.setAll(props.data[product]['data']);
@@ -558,7 +511,7 @@ export const LineChart = (props) => {
 
   }, [props.isUpdatePlot]);
 
-  return <div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>;
+  return <div id="chartdiv" style={{ width: "100%", height: "500px"}}></div>;
 
 
 };

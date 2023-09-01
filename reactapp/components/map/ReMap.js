@@ -7,6 +7,7 @@ import axios from 'axios';
 import View from "ol/View";
 import VectorTileLayer from 'ol/layer/VectorTile.js';
 import VectorLayer from 'ol/layer/Vector.js';
+import * as olProj from 'ol/proj';
 
 import { MapContainer } from '../styles/Map.styled'
 import appAPI from "services/api/app";
@@ -75,6 +76,7 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 								const query ={
 									f: 'json',
 									geometryType: 'esriGeometryPoint',
+									layers:'all',
 									tolerance: 1,
 									geometry: clickCoordinate,
 									mapExtent: mapObject.getView().calculateExtent(), // get map extent
@@ -87,45 +89,69 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 	
 								axios.get(urlObject).then(response => {
 									console.log(response.data);
-									// return { url: url, layers: [id], data:response.data.results } 
-									// response.data
-									// const LayerID = response.data['results'][0]['layerId']
-									const spatialReference= response.data['results'][0]['geometry']['spatialReference']
-									const query = {
-										geometry: {spatialReference,"x":clickCoordinate[0],"y":clickCoordinate[1]},
-										// layer: {"id":"5"},
-										outFields:'*',
-										geometryType: 'esriGeometryPoint',
-										spatialRel: "esriSpatialRelIntersects",
-										units:'esriSRUnit_Meter',
-										distance: 10000,
-										sr: mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop(),
-										// layers: `all:${server.layers}`, // query all the layer ids for htis map server built above
-										returnGeometry: false, // I don't want geometry, but you might want to display it on a 'selection layer'
-										f: 'json'
+									const filteredArray = response.data['results'].filter(obj => obj.layerId === 5);
+									console.log(filteredArray);
+									const selectedLayer = filteredArray[0]
+									console.log(selectedLayer);
+
+									let stationName = selectedLayer['attributes']['gnis_name']
+									let stationID = selectedLayer['attributes']['feature_id']
+									console.log("STATION ID", stationID)
+									setCurrentStationID(stationID);
+									// setCurrentStationID(Math.random());
+									setCurrentStation(stationName);
+									setCurrentProducts({type: "reset"});
+									handleShow();
+									let dataRequest = {
+										station_id: stationID,
+										// station_id: 19266232,
+										products: currentProducts
 									}
+									appAPI.getForecastData(dataRequest);
+
+									// const spatialReference= selectedLayer['geometry']['spatialReference']	
+									// const geometry = {"spatialReference":spatialReference ,"x":clickCoordinate[0],"y":clickCoordinate[1]}
+									// var lonlat = olProj.transform(clickCoordinate, 'EPSG:3857', 'EPSG:4326');
+									// var lon = lonlat[0];
+									// var lat = lonlat[1];
+									// const query = {
+									// 	geometry: JSON.stringify(geometry),
+									// 	// layer: {"id":"5"},
+									// 	outFields:'*',
+									// 	geometryType: 'esriGeometryPoint',
+									// 	spatialRel: "esriSpatialRelIntersects",
+									// 	units:'esriSRUnit_Meter',
+									// 	distance: 10000,
+									// 	sr: `${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`,
+									// 	// layers: `all:${server.layers}`, // query all the layer ids for htis map server built above
+									// 	returnGeometry: false, // I don't want geometry, but you might want to display it on a 'selection layer'
+									// 	f: 'json',
+									// 	inSR:102100,
+									// 	outSR:102100
+									// }
 	
-									const url = new URL(`${urlService}/5/query`);
-									url.search = new URLSearchParams(query);
-									// console.log()
-									axios.get(url).then((response) => {
-										console.log(response.data);
-										let stationName = response.data.features[0]['attributes']['raw.gnis_name']
-										let stationID = response.data.features[0]['attributes']['raw.feature_id']
-										console.log("STATION ID", stationID)
-										// setCurrentStationID(stationID);
-										setCurrentStationID(Math.random());
-										setCurrentStation(stationName);
-										setCurrentProducts({type: "reset"});
-										handleShow();
-										let dataRequest = {
-											// station_id: stationID,
-											station_id: 19266232,
-											products: currentProducts
-										}
-										appAPI.getForecastData(dataRequest);
+									// const url = new URL(`${urlService}/5/query`);
+									// url.search = new URLSearchParams(query);
+									// // console.log()
+									// axios.get(url).then((response) => {
+									// 	console.log(response.data);
+									// 	// selectedLayer[]
+									// 	let stationName = response.data.features[1]['attributes']['raw.gnis_name']
+									// 	let stationID = response.data.features[1]['attributes']['raw.feature_id']
+									// 	console.log("STATION ID", stationID)
+									// 	setCurrentStationID(stationID);
+									// 	// setCurrentStationID(Math.random());
+									// 	setCurrentStation(stationName);
+									// 	setCurrentProducts({type: "reset"});
+									// 	handleShow();
+									// 	let dataRequest = {
+									// 		station_id: stationID,
+									// 		// station_id: 19266232,
+									// 		products: currentProducts
+									// 	}
+									// 	appAPI.getForecastData(dataRequest);
 	
-									});
+									// });
 	
 								  });
 	
