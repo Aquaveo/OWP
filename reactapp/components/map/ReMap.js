@@ -13,7 +13,7 @@ import { MapContainer } from '../styles/Map.styled'
 import appAPI from "services/api/app";
 
 
-export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleShow, setCurrentStation, currentProducts, setCurrentStationID, setCurrentProducts, setCurrentReachIdGeometry }) => {
+export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleShow, setCurrentStation, currentProducts, setCurrentStationID, setCurrentProducts, setCurrentReachIdGeometry,handleisPlotReady }) => {
 	const mapRef = useRef();
 	const [map, setMap] = useState(null);
 	// on component mount
@@ -94,7 +94,8 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 									const selectedLayer = filteredArray[0]
 									console.log(selectedLayer);
 									let reachIDPath = selectedLayer['geometry']['paths'];
-									setCurrentReachIdGeometry(reachIDPath)
+									setCurrentReachIdGeometry(reachIDPath);
+									console.log(reachIDPath)
 									let stationName = selectedLayer['attributes']['gnis_name']
 									let stationID = selectedLayer['attributes']['feature_id']
 									console.log("STATION ID", stationID)
@@ -103,6 +104,7 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 									setCurrentStation(stationName);
 									setCurrentProducts({type: "reset"});
 									handleShow();
+									handleisPlotReady();
 									let dataRequest = {
 										station_id: stationID,
 										// station_id: 19266232,

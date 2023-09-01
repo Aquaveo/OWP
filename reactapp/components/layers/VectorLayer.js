@@ -3,7 +3,7 @@ import OLVectorLayer from "ol/layer/Vector";
 
 import MapContext from "../map/MapContext";
 
-export const VectorLayer = ({ name,source, style, zIndex }) => {
+export const VectorLayer = ({ name,source, style, zIndex,features }) => {
   const { map } = useContext(MapContext);
   useEffect(() => {
     console.log("here")
@@ -20,7 +20,27 @@ export const VectorLayer = ({ name,source, style, zIndex }) => {
         map.removeLayer(vectorLayer);
       }
     };
-  }, [map, source]);
+  }, [map]);
+
+
+  useEffect(() => {
+    if (!map) return;
+    map.getAllLayers().filter(function( layer ) {
+      if(layer.get('name') === name){
+        console.log("chane");
+        
+        // layer.getSource().addFeatures(features);
+        // layer.getSource().refresh();
+
+      }
+    });
+
+
+    return () => {
+
+    };
+  },[features]);
+
 
   return null;
 };
