@@ -73,6 +73,22 @@ export const LineChart = (props) => {
       menu: am5plugins_exporting.ExportingMenu.new(rootRef.current, {}),
       dataSource: mergedDataArray
     });
+    var annotator = am5plugins_exporting.Annotator.new(rootRef.current, {});
+
+    var menuitems = exporting.get("menu").get("items");
+
+    menuitems.push({
+        type: "separator"
+    });
+
+    menuitems.push({
+        type: "custom",
+        label: "Annotate",
+        callback: function () {
+            this.close();
+            annotator.toggle();            
+        }
+    });
   }
 
   const makeSeries = (product,series_ref) => {
