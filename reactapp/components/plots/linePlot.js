@@ -37,100 +37,7 @@ export const LineChart = (props) => {
   const legendRef = useRef(null);
   const legendRootRef = useRef(null);
 
-  const makeSeries = (product,series_ref) => {
-
-    var tooltip = am5.Tooltip.new(rootRef.current, {
-      labelText: `${product}: {valueY}`,
-      getFillFromSprite: true,
-      getLabelFillFromSprite: true
-    })
-    tooltip.get('background').setAll({
-      fill: am5.color(props.data[product]['color']),
-      strokeWidth: 0,
-    });
-    tooltip.label.setAll({
-      fill: am5.color(props.data[product]['color'])
-    });
-    var series = chartRef.current.series.push(
-      am5xy.LineSeries.new(rootRef.current, {
-        name: props.data[product]['name_product'],
-        xAxis: xAxisRef.current,
-        yAxis: yaxisRef.current,
-        valueYField: "value",
-        valueXField: "forecast-time",
-        maxDeviation:1,
-        stroke: am5.color(props.data[product]['color']),
-        tooltip: tooltip
-      })
-    );
-    // if(props.data[product]['name_product']=='analysis_assim'){
-    //   chartRef.current.series.data.insert(0, series);
-    // }
-
-    // if(props.data[product]['name_product']=='short_range'){
-    //   chartRef.current.series.data.insert(1, series);
-    // }
-    // if(props.data[product]['name_product']=='medium_range_ensemble_mean'){
-    //   chartRef.current.series.insert(2, series);
-    // }
-    
-    // if(props.data[product]['name_product']=='medium_range_ensemble_member_1'){
-    //   chartRef.current.series.insert(3, series);
-    // }
-
-    // if(props.data[product]['name_product']=='medium_range_ensemble_member_2'){
-    //   chartRef.current.series.insert(4, series);
-    // }
-    // if(props.data[product]['name_product']=='medium_range_ensemble_member_3'){
-    //   chartRef.current.series.insert(5, series);
-    // }
-    // if(props.data[product]['name_product']=='medium_range_ensemble_member_4'){
-    //   chartRef.current.series.insert(6, series);
-    // }
-
-    // if(props.data[product]['name_product']=='medium_range_ensemble_member_5'){
-    //   chartRef.current.series.insert(7, series);
-    // }
-    // if(props.data[product]['name_product']=='medium_range_ensemble_member_6'){
-    //   chartRef.current.series.insert(8, series);
-    // }
-
-    // if(props.data[product]['name_product']=='medium_range_ensemble_member_7'){
-    //   chartRef.current.series.insert(9, series);
-    // }
-    // if(props.data[product]['name_product']=='long_range_ensemble_mean'){
-    //   chartRef.current.series.insert(10, series);
-    // }
-
-    // if(props.data[product]['name_product']=='long_range_ensemble_member_1'){
-    //   chartRef.current.series.insert(11, series);
-    // }
-
-    // if(props.data[product]['name_product']=='long_range_ensemble_member_2'){
-    //   chartRef.current.series.insert(12, series);
-    // }
-
-    // if(props.data[product]['name_product']=='long_range_ensemble_member_3'){
-    //   chartRef.current.series.insert(13, series);
-    // }
-
-    // if(props.data[product]['name_product']=='long_range_ensemble_member_4'){
-    //   chartRef.current.series.insert(14, series);
-    // }
-    let strokeWidth = 1
-    if(product.includes("mean") || product === "analysis_assim" || product === "short_range"){
-      strokeWidth = 3
-    }
-    series.strokes.template.setAll({
-      strokeWidth: strokeWidth,
-    });
-    series.data.setAll(props.data[product]['data']);
-    series.appear(1000,500);
-        // series.appear(1000);
-    series_ref.current = series;
-    legendRef.current.data.setAll(chartRef.current.series.values);
-
-
+  const makeExportData = () =>{
     var seriesData = [];
     chartRef.current.series.each(function (s) {
       for (var i = 0; i < s.dataItems.length; i++) {
@@ -162,13 +69,51 @@ export const LineChart = (props) => {
     // Convert the mergedData object back to an array
     const mergedDataArray = Object.values(mergedData);
 
-    chart.insertSeries(newSeries, index);
-
     var exporting = am5plugins_exporting.Exporting.new(rootRef.current, {
       menu: am5plugins_exporting.ExportingMenu.new(rootRef.current, {}),
       dataSource: mergedDataArray
     });
+  }
 
+  const makeSeries = (product,series_ref) => {
+
+    var tooltip = am5.Tooltip.new(rootRef.current, {
+      labelText: `${product}: {valueY}`,
+      getFillFromSprite: true,
+      getLabelFillFromSprite: true
+    })
+    tooltip.get('background').setAll({
+      fill: am5.color(props.data[product]['color']),
+      strokeWidth: 0,
+    });
+    tooltip.label.setAll({
+      fill: am5.color(props.data[product]['color'])
+    });
+    var series = chartRef.current.series.push(
+      am5xy.LineSeries.new(rootRef.current, {
+        name: props.data[product]['name_product'],
+        xAxis: xAxisRef.current,
+        yAxis: yaxisRef.current,
+        valueYField: "value",
+        valueXField: "forecast-time",
+        maxDeviation:1,
+        stroke: am5.color(props.data[product]['color']),
+        tooltip: tooltip
+      })
+    );
+
+    let strokeWidth = 1
+    if(product.includes("mean") || product === "analysis_assim" || product === "short_range"){
+      strokeWidth = 3
+    }
+    series.strokes.template.setAll({
+      strokeWidth: strokeWidth,
+    });
+    series.data.setAll(props.data[product]['data']);
+    series.appear(1000,500);
+        // series.appear(1000);
+    series_ref.current = series;
+    legendRef.current.data.setAll(chartRef.current.series.values);
   }
 
 
@@ -249,28 +194,41 @@ export const LineChart = (props) => {
         // https://www.amcharts.com/docs/v5/concepts/animations/
         series.appear(1000,500);
 
-
-        var seriesData = [];
-        chart.series.each(function (series) {
-          for (var i = 0; i < series.dataItems.length; i++) {
-            var dataItem = series.dataItems[i];
-            var dataItemObject = {
-              name: series.name,
-              value: dataItem.value,
-              // Add any other properties you need
-            };
-            seriesData.push(dataItemObject);
-          }
-        });
-
-        var exporting = am5plugins_exporting.Exporting.new(root, {
-          menu: am5plugins_exporting.ExportingMenu.new(root, {}),
-          dataSource: seriesData
-        });
-      
-
         if (product === 'analysis_assim'){
           seriesAnalysisAssimRef.current = series;
+          var seriesData = [];
+          for (var i = 0; i < seriesAnalysisAssimRef.current.dataItems.length; i++) {
+            var dataItem = seriesAnalysisAssimRef.current.dataItems[i];
+            var seriesName = s.get('name');
+            const date = new Date(dataItem.get('valueX'));
+            // Get the date string in the desired format (YYYY-MM-DD HH:MM:SS)
+            const dateString = date.toISOString().slice(0, 19).replace('T', ' ');
+            var dataItemObject = {};
+            dataItemObject['forecastTime'] = dateString,
+            dataItemObject[seriesName] = dataItem.get('valueY'),
+            seriesData.push(dataItemObject);
+          }
+          // Create an object to store the merged values
+          const mergedData = {};
+      
+          // Iterate through the data array
+          seriesData.forEach((item) => {
+            const { forecastTime, ...values } = item;
+      
+            if (!mergedData[forecastTime]) {
+              mergedData[forecastTime] = { forecastTime, ...values };
+            } else {
+              mergedData[forecastTime] = { forecastTime, ...mergedData[forecastTime], ...values };
+            }
+          });
+      
+          // Convert the mergedData object back to an array
+          const mergedDataArray = Object.values(mergedData);
+      
+          var exporting = am5plugins_exporting.Exporting.new(root, {
+            menu: am5plugins_exporting.ExportingMenu.new(root, {}),
+            dataSource: mergedDataArray
+          });
         }
       }
 
@@ -504,7 +462,9 @@ export const LineChart = (props) => {
           }
           else{
             seriesAnalysisAssimRef.current.data.setAll(props.data[product]['data']);
+
           }
+
         }
         if(product ==='short_range' ){
           if(chartRef.current.series.indexOf(seriesShortermRef.current) < 0){
@@ -633,6 +593,7 @@ export const LineChart = (props) => {
           }
         }
 
+        makeExportData();
 
       }
       
@@ -647,7 +608,61 @@ export const LineChart = (props) => {
     </div>
   )
   
-          
-
-
+        
 };
+
+
+    // if(props.data[product]['name_product']=='analysis_assim'){
+    //   chartRef.current.series.data.insert(0, series);
+    // }
+
+    // if(props.data[product]['name_product']=='short_range'){
+    //   chartRef.current.series.data.insert(1, series);
+    // }
+    // if(props.data[product]['name_product']=='medium_range_ensemble_mean'){
+    //   chartRef.current.series.insert(2, series);
+    // }
+    
+    // if(props.data[product]['name_product']=='medium_range_ensemble_member_1'){
+    //   chartRef.current.series.insert(3, series);
+    // }
+
+    // if(props.data[product]['name_product']=='medium_range_ensemble_member_2'){
+    //   chartRef.current.series.insert(4, series);
+    // }
+    // if(props.data[product]['name_product']=='medium_range_ensemble_member_3'){
+    //   chartRef.current.series.insert(5, series);
+    // }
+    // if(props.data[product]['name_product']=='medium_range_ensemble_member_4'){
+    //   chartRef.current.series.insert(6, series);
+    // }
+
+    // if(props.data[product]['name_product']=='medium_range_ensemble_member_5'){
+    //   chartRef.current.series.insert(7, series);
+    // }
+    // if(props.data[product]['name_product']=='medium_range_ensemble_member_6'){
+    //   chartRef.current.series.insert(8, series);
+    // }
+
+    // if(props.data[product]['name_product']=='medium_range_ensemble_member_7'){
+    //   chartRef.current.series.insert(9, series);
+    // }
+    // if(props.data[product]['name_product']=='long_range_ensemble_mean'){
+    //   chartRef.current.series.insert(10, series);
+    // }
+
+    // if(props.data[product]['name_product']=='long_range_ensemble_member_1'){
+    //   chartRef.current.series.insert(11, series);
+    // }
+
+    // if(props.data[product]['name_product']=='long_range_ensemble_member_2'){
+    //   chartRef.current.series.insert(12, series);
+    // }
+
+    // if(props.data[product]['name_product']=='long_range_ensemble_member_3'){
+    //   chartRef.current.series.insert(13, series);
+    // }
+
+    // if(props.data[product]['name_product']=='long_range_ensemble_member_4'){
+    //   chartRef.current.series.insert(14, series);
+    // }
