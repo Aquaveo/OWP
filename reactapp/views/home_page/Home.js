@@ -177,7 +177,7 @@ function App() {
 }
 
   const [currentProducts, setCurrentProducts] = useReducer(reducerProducts, currentProductsInitial);
-  const [currentReachIdGeometry, setCurrentReachIdGeometry] = useState();
+  const [currentReachIdGeometry, setCurrentReachIdGeometry] = useState(new VectorSource());
   const [isPlotReady, setIsPlotReady] = useState(false); 
 
   const handleClose = () => setshowModal(false);
@@ -340,8 +340,7 @@ function App() {
                   })
                 })
               }
-              zIndex={90000}
-              // features={currentReachIdGeometry}
+              
           />
 
           </Layers>

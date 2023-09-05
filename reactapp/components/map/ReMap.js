@@ -96,7 +96,7 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 									console.log(selectedLayer);
 									let reachIDPath = selectedLayer['geometry']['paths'];
 									const feature = new Feature({
-										geometry: new Circle([486524.0550283753, 6801035.6531745335], 500),
+										geometry: new LineString(reachIDPath),
 										name: stationID,
 									});
 									let sourceVector = new VectorSource({
