@@ -3,7 +3,7 @@ import OLVectorLayer from "ol/layer/Vector";
 
 import MapContext from "../map/MapContext";
 
-export const VectorLayer = ({ name,source, style, zIndex,features }) => {
+export const VectorLayer = ({ name,source, style, zIndex}) => {
   const { map } = useContext(MapContext);
   useEffect(() => {
     console.log("here")
@@ -27,7 +27,9 @@ export const VectorLayer = ({ name,source, style, zIndex,features }) => {
     if (!map) return;
     map.getAllLayers().filter(function( layer ) {
       if(layer.get('name') === name){
-        console.log("chane");
+        console.log("jeu")
+        // let sourceLayer = layer.getSource().getFeatures();
+        // console.log(sourceLayer);
         
         // layer.getSource().addFeatures(features);
         // layer.getSource().refresh();
@@ -39,7 +41,7 @@ export const VectorLayer = ({ name,source, style, zIndex,features }) => {
     return () => {
 
     };
-  },[features]);
+  },[source]);
 
 
   return null;

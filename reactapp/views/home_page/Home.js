@@ -23,7 +23,7 @@ import { useEffect, useState, useReducer, useRef } from 'react';
 import { fromLonLat } from 'ol/proj';
 import LayerGroup from 'ol/layer/Group';
 import LineString from 'ol/geom/LineString.js';
-
+import { Circle } from 'ol/geom';
 
 import { MainContainer } from "components/styles/ContainerMain.styled";
 import { ModalContainer } from "components/styles/Modal.styled";
@@ -177,7 +177,7 @@ function App() {
 }
 
   const [currentProducts, setCurrentProducts] = useReducer(reducerProducts, currentProductsInitial);
-  const [currentReachIdGeometry, setCurrentReachIdGeometry] = useState([]);
+  const [currentReachIdGeometry, setCurrentReachIdGeometry] = useState();
   const [isPlotReady, setIsPlotReady] = useState(false); 
 
   const handleClose = () => setshowModal(false);
@@ -331,16 +331,7 @@ function App() {
             />
             <VectorLayer
               name={"reach_vector"}
-              source={new VectorSource({
-                features: [
-                  new Feature({
-                    geometry: new LineString(currentReachIdGeometry),
-                    name: "myid"
-                  })
-                ]
-                
-                 // make sure features is an array
-              })}
+              source={currentReachIdGeometry}
               style={
                 new Style({                  
                   stroke : new Stroke({ 
@@ -350,7 +341,7 @@ function App() {
                 })
               }
               zIndex={90000}
-              features={currentReachIdGeometry}
+              // features={currentReachIdGeometry}
           />
 
           </Layers>
@@ -632,29 +623,3 @@ function App() {
 export default App;
 
 
-{/* <Dropdown className="d-inline mx-2">
-<Dropdown.Toggle id="dropdown-autoclose-true">
-  Long Range Forecast
-</Dropdown.Toggle>
-
-<Dropdown.Menu>
-  <Dropdown.Item href="#">30 day Ensemble Mean</Dropdown.Item>
-  <Dropdown.Item href="#">
-    <div>
-      <Dropdown className="d-inline mx-2">
-        <Dropdown.Toggle id="dropdown-ensembles-autoclose-true">
-          30 day Ensembles
-        </Dropdown.Toggle>
-        <Dropdown.Menu>
-          <Dropdown.Item href="#"> Member 1</Dropdown.Item>
-          <Dropdown.Item href="#"> Member 2</Dropdown.Item>
-          <Dropdown.Item href="#"> Member 3</Dropdown.Item>
-          <Dropdown.Item href="#"> Member 4</Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
-    </div>
-
-
-  </Dropdown.Item>
-</Dropdown.Menu>
-</Dropdown> */}

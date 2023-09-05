@@ -4,3 +4,14 @@ export const VectorSourceLayer = (features) => {
     features  
 });
 };
+
+// new VectorSource({
+//   features: [
+//     new Feature({
+//       geometry: new LineString(currentReachIdGeometry),
+//       name: "myid"
+//     })
+//   ]
+  
+//    // make sure features is an array
+// })

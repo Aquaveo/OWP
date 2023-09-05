@@ -8,11 +8,12 @@ import View from "ol/View";
 import VectorTileLayer from 'ol/layer/VectorTile.js';
 import VectorLayer from 'ol/layer/Vector.js';
 import LineString from 'ol/geom/LineString.js';
-
+import { Circle } from "ol/geom";
+import { Feature } from "ol";
 import { MapContainer } from '../styles/Map.styled'
 import appAPI from "services/api/app";
-
-
+import { VectorSourceLayer } from "components/source/Vector";
+import VectorSource from "ol/source/Vector";
 export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleShow, setCurrentStation, currentProducts, setCurrentStationID, setCurrentProducts, setCurrentReachIdGeometry,handleisPlotReady }) => {
 	const mapRef = useRef();
 	const [map, setMap] = useState(null);
@@ -94,7 +95,15 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 									const selectedLayer = filteredArray[0]
 									console.log(selectedLayer);
 									let reachIDPath = selectedLayer['geometry']['paths'];
-									setCurrentReachIdGeometry(reachIDPath);
+									const feature = new Feature({
+										geometry: new Circle([486524.0550283753, 6801035.6531745335], 500),
+										name: stationID,
+									});
+									let sourceVector = new VectorSource({
+										features: [feature]
+									})
+									setCurrentReachIdGeometry(sourceVector);
+
 									console.log(reachIDPath)
 									let stationName = selectedLayer['attributes']['gnis_name']
 									let stationID = selectedLayer['attributes']['feature_id']
