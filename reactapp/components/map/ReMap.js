@@ -14,7 +14,24 @@ import { MapContainer } from '../styles/Map.styled'
 import appAPI from "services/api/app";
 import { VectorSourceLayer } from "components/source/Vector";
 import VectorSource from "ol/source/Vector";
-export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleShow, setCurrentStation, currentProducts, setCurrentStationID, setCurrentProducts, setCurrentReachIdGeometry,handleisPlotReady }) => {
+export const ReMap = (
+	{ 
+		children, 
+		isFullMap, 
+		zoom, center, 
+		layerGroups, 
+		handleShow, 
+		setCurrentStation, 
+		currentProducts, 
+		setCurrentStationID, 
+		setCurrentProducts, 
+		setCurrentReachIdGeometry,
+		handleisPlotReady,
+		setMetadata 
+	}) => 
+	
+	{
+	
 	const mapRef = useRef();
 	const [map, setMap] = useState(null);
 	// on component mount
@@ -58,6 +75,7 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 			// only if there are layers to query
 			if ( layers.length > 0 ) {
 				const clickCoordinate = mapObject.getCoordinateFromPixel(pixel)
+				console.log(clickCoordinate)
 				let mapServerInfo = []
 				let promises = [];
 				let layer = layers[0];
@@ -74,26 +92,42 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 							/* Here need to do MapExport request in order to get the data of the layer */
 							
 							if (!server) {
-								const query ={
-									f: 'json',
+								// Query Layer 5 
+								const spatialReference= {"latestWkid":3857,"wkid":102100}
+								const geometry = {"spatialReference":spatialReference ,"x":clickCoordinate[0],"y":clickCoordinate[1]}
+								// var lonlat = olProj.transform(clickCoordinate, 'EPSG:3857', 'EPSG:4326');
+								// var lon = lonlat[0];
+								// var lat = lonlat[1];
+								const queryLayer5 = {
+									geometry: JSON.stringify(geometry),
+									// layer: {"id":"5"},
+									outFields:'*',
 									geometryType: 'esriGeometryPoint',
-									layers:'all',
-									tolerance: 1,
-									geometry: clickCoordinate,
-									mapExtent: mapObject.getView().calculateExtent(), // get map extent
-									imageDisplay: `${mapObject.getSize()},96`,  // get map size/resolution
-									sr: mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop() // this is because our OL map is in this SR
-	
+									spatialRel: "esriSpatialRelIntersects",
+									units:'esriSRUnit_Meter',
+									distance: 10000,
+									sr: `${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`,
+									// layers: `all:${server.layers}`, // query all the layer ids for htis map server built above
+									returnGeometry: true, // I don't want geometry, but you might want to display it on a 'selection layer'
+									f: 'json',
+									inSR:102100,
+									outSR:102100
 								}
-								const urlObject = new URL(`${urlService}/identify`)
-								urlObject.search = new URLSearchParams(query)
-	
-								axios.get(urlObject).then(response => {
-									console.log(response.data);
-									const filteredArray = response.data['results'].filter(obj => obj.layerId === 5);
-									console.log(filteredArray);
+								const url = new URL(`${urlService}/5/query`);
+								url.search = new URLSearchParams(queryLayer5);
+
+								axios.get(url).then((response) => {
+									// console.log(response.data);
+									const filteredArray = response.data['features'].filter(obj => obj.attributes['analysis_assim.streamflow'] > 10 && obj.attributes['raw.gnis_name'] != "" );
+									// Sort the array based on analysis_assim.streamflow in descending order
+									filteredArray.sort((a, b) => {
+										const shapeLengthA = a.attributes['raw.Shape_Length'];
+										const shapeLengthB = b.attributes['raw.Shape_Length'];
+										return shapeLengthB - shapeLengthA
+									});
+
+									// console.log(filteredArray)
 									const selectedLayer = filteredArray[0]
-									console.log(selectedLayer);
 									let reachIDPath = selectedLayer['geometry']['paths'];
 									const feature = new Feature({
 										geometry: new LineString(reachIDPath),
@@ -105,8 +139,8 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 									setCurrentReachIdGeometry(sourceVector);
 
 									console.log(reachIDPath)
-									let stationName = selectedLayer['attributes']['gnis_name']
-									let stationID = selectedLayer['attributes']['feature_id']
+									let stationName = selectedLayer['attributes']['raw.gnis_name']
+									let stationID = selectedLayer['attributes']['raw.feature_id']
 									console.log("STATION ID", stationID)
 									setCurrentStationID(stationID);
 									// setCurrentStationID(Math.random());
@@ -121,59 +155,38 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 									}
 									appAPI.getForecastData(dataRequest);
 
-									// const spatialReference= selectedLayer['geometry']['spatialReference']	
-									// const geometry = {"spatialReference":spatialReference ,"x":clickCoordinate[0],"y":clickCoordinate[1]}
-									// var lonlat = olProj.transform(clickCoordinate, 'EPSG:3857', 'EPSG:4326');
-									// var lon = lonlat[0];
-									// var lat = lonlat[1];
-									// const query = {
-									// 	geometry: JSON.stringify(geometry),
-									// 	// layer: {"id":"5"},
-									// 	outFields:'*',
-									// 	geometryType: 'esriGeometryPoint',
-									// 	spatialRel: "esriSpatialRelIntersects",
-									// 	units:'esriSRUnit_Meter',
-									// 	distance: 10000,
-									// 	sr: `${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`,
-									// 	// layers: `all:${server.layers}`, // query all the layer ids for htis map server built above
-									// 	returnGeometry: false, // I don't want geometry, but you might want to display it on a 'selection layer'
-									// 	f: 'json',
-									// 	inSR:102100,
-									// 	outSR:102100
-									// }
-	
-									// const url = new URL(`${urlService}/5/query`);
-									// url.search = new URLSearchParams(query);
-									// // console.log()
-									// axios.get(url).then((response) => {
-									// 	console.log(response.data);
-									// 	// selectedLayer[]
-									// 	let stationName = response.data.features[1]['attributes']['raw.gnis_name']
-									// 	let stationID = response.data.features[1]['attributes']['raw.feature_id']
-									// 	console.log("STATION ID", stationID)
-									// 	setCurrentStationID(stationID);
-									// 	// setCurrentStationID(Math.random());
-									// 	setCurrentStation(stationName);
-									// 	setCurrentProducts({type: "reset"});
-									// 	handleShow();
-									// 	let dataRequest = {
-									// 		station_id: stationID,
-									// 		// station_id: 19266232,
-									// 		products: currentProducts
-									// 	}
-									// 	appAPI.getForecastData(dataRequest);
-	
-									// });
-	
-								  });
+									// GeoReverse API to get the name of the river
+									const urlSGeoReverseService = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode'
+									const queryGeoReverse ={
+										f: 'json',
+										sourceCountry: 'USA',
+										location:JSON.stringify(geometry),
+										distance: 8000,	
+									}
+									
+									const urlGeo = new URL(`${urlSGeoReverseService}`);
+									urlGeo.search = new URLSearchParams(queryGeoReverse);
+									axios.get(urlGeo).then((response) => {
+										console.log(response.data);
+										var lat = response.data['location']['x'];
+										var lon = response.data['location']['y'];
+										var regionName = response.data['address']['Region'];
+										var cityName = response.data['address']['City']
+										const metadataArray = [
+											`${stationName} - ${cityName}, ${regionName}`,
+											`streamflow for Reach ID: ${stationID} (lat: ${lat} , lon: ${lon})`
+										]
+										setMetadata(metadataArray)
+									});
+
+								});
+
 	
 							} else {
 								mapServerInfo.find(server => server.url === url).layers.push(id) // if so, add the ID of this layer for query
 							}
 						}
-	
-					// })
-	
+		
 			}
 		
 		}
@@ -192,9 +205,34 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 		const viewResolution = /** @type {number} */ (map.getView().getResolution());
 		// map.on('click',infoClickHandler)
 		//   });
-		//   map.on('pointermove',evt=>{
-        //     console.log("out")
-		//   });
+		map.on('pointermove',evt=>{
+
+			if (evt.dragging) return;
+			var pixel = evt.map.getEventPixel(evt.originalEvent);
+			var hit = map.hasFeatureAtPixel(evt.pixel, {
+				layerFilter: function(layer) {
+					return layer.get('layer_name') === 'streams_layer';
+				}
+			});
+			evt.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+
+
+			// const pixel = map.getEventPixel(evt.originalEvent)
+		
+			// // generate list of layers
+
+			// let hit = map.forEachFeatureAtPixel(pixel, function(layer) {
+			// 	return layer.get('name') === 'streams_layer';
+
+			// });
+
+			// if(hit){
+			// 	map.getTargetElement().style.cursor = 'pointer';
+			// }
+			// else {
+			// 	map.getTargetElement().style.cursor = '';
+			//   }
+		});
 	},[map])
 
 
@@ -210,3 +248,16 @@ export const ReMap = ({ children, isFullMap, zoom, center, layerGroups, handleSh
 	)
 }
 
+// const query ={
+// 	f: 'json',
+// 	geometryType: 'esriGeometryPoint',
+// 	layers:'all',
+// 	tolerance: 1,
+// 	geometry: clickCoordinate,
+// 	mapExtent: mapObject.getView().calculateExtent(), // get map extent
+// 	imageDisplay: `${mapObject.getSize()},96`,  // get map size/resolution
+// 	sr: mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop() // this is because our OL map is in this SR
+
+// }
+// const urlObject = new URL(`${urlService}/identify`)
+// urlObject.search = new URLSearchParams(query)

@@ -45,7 +45,6 @@ export const VectorLayer = ({ name,source, style, zIndex = 0}) => {
         sourceLayer.clear();
         sourceLayer.addFeatures(source.getFeatures());
         console.log(sourceLayer);
-        // map.addLayer(layer);
 
         // layer.getSource().addFeatures(features);
         // layer.getSource().refresh();

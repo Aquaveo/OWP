@@ -5,7 +5,8 @@ import * as am5plugins_exporting from "@amcharts/amcharts5/plugins/exporting";
 
 import { useLayoutEffect, useEffect ,useRef } from "react";
 import Container from 'react-bootstrap/Container';
-
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 const CHART_ID = 'default_ID';
 
 
@@ -36,6 +37,8 @@ export const LineChart = (props) => {
   const rootRef = useRef(null);
   const legendRef = useRef(null);
   const legendRootRef = useRef(null);
+  const labelTitleRef = useRef(null);
+  const labelSubtitleRef = useRef(null);
 
   const makeExportData = () =>{
     var seriesData = [];
@@ -132,7 +135,31 @@ export const LineChart = (props) => {
     legendRef.current.data.setAll(chartRef.current.series.values);
   }
 
+  const addLabels = () =>{
+    if(props.metadata[0] != undefined ){
+      console.log("s")
+      labelTitleRef.current.set('text', props.metadata[0])
+      // chartRef.current.children.unshift(am5.Label.new(rootRef.current, {
+      //   text: props.metadata[0],
+      //   fontSize: 14,
+      //   textAlign: "center",
+      //   x: am5.percent(50),
+      //   centerX: am5.percent(50),
+      //   height: "100"
+      // }));
+    }
 
+    // labelSubtitleRef.current.set('text', props.metadata[1])
+
+    // chartRef.current.topAxesContainer.children.push(am5.Label.new(rootRef.current, {
+    //   html: `<div style=\"text-align: center;\"><p style=\"font-size: 12px;\">${props.metadata[1]}</p></div>`,
+    //   fontSize: 25,
+    //   fontWeight: "bold",
+    //   textAlign: "center",
+    //   x: am5.percent(50),
+    //   centerX: am5.percent(50),
+    // }));
+  }
   // This code will only run one time
   useEffect(() => {
     console.log("useEffect 1 lineplot")
@@ -153,6 +180,7 @@ export const LineChart = (props) => {
         wheelX: "panX",
         wheelY: "zoomX",
         pinchZoomX:true
+        // layout: "gridLayout"
       })
     );
 
@@ -268,7 +296,8 @@ export const LineChart = (props) => {
     // Add scrollbar
     // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
     chart.set("scrollbarX", am5.Scrollbar.new(root, {
-      orientation: "horizontal"
+      orientation: "horizontal",
+      height: 50
     }));
 
     // Add legend
@@ -339,10 +368,44 @@ export const LineChart = (props) => {
     cursor.lineY.set("forceHidden", true);
 
 
-    am5plugins_exporting.Exporting.new(root, {
-      menu: am5plugins_exporting.ExportingMenu.new(root, {}),
-      dataSource: chart.series.data
-    });
+    // add title and subtitle
+
+    var title = am5.Label.new(root, {
+      text: props.metadata[0],
+      fontSize: 16,
+      textAlign: "center",
+      x: am5.percent(50),
+      // y:am5.percent(-20),
+      centerX: am5.percent(50),
+      // height: "100"
+    })
+    var subtitle = am5.Label.new(root, {
+      text: `${props.metadata[1]}`,
+      fontSize: 12,
+      fontWeight: "bold",
+      textAlign: "center",
+      x: am5.percent(50),
+      centerX: am5.percent(50),
+    })
+    let titleChart = chart.children.unshift(title);
+    // let subtitleChart = chart.topAxesContainer.children.push(subtitle)
+
+
+    // chart.events.on("datavalidated", function(ev) {
+
+    //   // Get objects of interest
+    //   var chart = ev.target;
+    //   var categoryAxis = chart.yAxes.getIndex(0);
+    
+    //   // Calculate how we need to adjust chart height
+    //   var adjustHeight = chart.data.length * cellSize - categoryAxis.pixelHeight;
+    
+    //   // get current chart height
+    //   var targetHeight = chart.pixelHeight + adjustHeight;
+    
+    //   // Set it on chart's container
+    //   chart.svgContainer.htmlElement.style.height = targetHeight + "px";
+    // });
 
     xAxisRef.current = xAxis;
     chartRef.current= chart;
@@ -350,6 +413,8 @@ export const LineChart = (props) => {
     rootRef.current = root;
     legendRootRef.current = legendRoot;
     legendRef.current = legend;
+    labelTitleRef.current = titleChart;
+    // labelSubtitleRef.current = subtitleChart;
 
     return () => {
       root.dispose();
@@ -610,18 +675,35 @@ export const LineChart = (props) => {
         }
 
         makeExportData();
-
       }
       
     }
 
   }, [props.isUpdatePlot]);
 
+  /*
+    When metadata is changed
+  */
+  useEffect(() => {
+    addLabels();
+  
+    return () => {
+    }
+  }, [props.metadata])
+  
   return(
-    <div>
-      <div id="chartdiv" style={{ width: "100%", height: "500px"}}></div>
-      <div id="legenddiv" style={{ width: "100%", height: "200px"}}></div>
-    </div>
+    <Container>
+      <Row>
+        <Col>
+            <div id="chartdiv" style={{ width: "100%", height: "600px"}}></div>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+        <div id="legenddiv" style={{ width: "100%", height: "100%"}}></div>
+        </Col>
+      </Row>      
+    </Container>  
   )
   
         

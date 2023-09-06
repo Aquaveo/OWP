@@ -66,6 +66,7 @@ function App() {
   const [currentStation, setCurrentStation] = useState();
   const [currentStationID, setCurrentStationID] = useState(-99999);
   const [isUpdatePlot, setIsUpdatePlot] = useState(false);
+  const [metadata, setMetadata] = useState([]);
   const currentProductsInitial =
   {
     analysis_assim:{
@@ -305,6 +306,7 @@ function App() {
           setCurrentProducts={setCurrentProducts} 
           setCurrentReachIdGeometry={setCurrentReachIdGeometry}
           handleisPlotReady={handleisPlotReady}
+          setMetadata = {setMetadata}
         >
 
           <Layers>
@@ -329,7 +331,7 @@ function App() {
               groupLayerName={"NWM Stream Analysis"}
               groupLayers = {groupLayers}
             />
-            <VectorLayer
+            {/* <VectorLayer
               name={"reach_vector"}
               source={currentReachIdGeometry}
               style={
@@ -341,7 +343,7 @@ function App() {
                 })
               }
               
-          />
+          /> */}
 
           </Layers>
           <Controls>
@@ -356,9 +358,10 @@ function App() {
         <ModalContainer>
           <Modal show={showModal} onHide={handleClose} centered size="lg" >
             <Modal.Header closeButton>
-              <Modal.Title>{currentStation}</Modal.Title>
+              <Modal.Title>{metadata[0]}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+              <Container>
               <Tabs
                 defaultActiveKey="forecast-tab"
                 id="justify-tab-example"
@@ -388,7 +391,6 @@ function App() {
                         </Col>
                       </Row>
                   </Container>
-
 
                   <Container>
                     <Row>
@@ -592,8 +594,13 @@ function App() {
                       </Col>
                     </Row>
                   </Container>
-
-                  <LineChart data={currentProducts} isUpdatePlot={isUpdatePlot} />
+                  <Container>
+                    <Row>
+                      <Col>
+                        <LineChart data={currentProducts} isUpdatePlot={isUpdatePlot} metadata={metadata} />
+                      </Col>
+                    </Row>
+                  </Container>
                 </Tab>
                 <Tab eventKey="historical-tab" title="Historical Data">
                 
@@ -603,10 +610,10 @@ function App() {
                 </Tab>
 
               </Tabs>
-              
-            
-            
-            
+
+              </Container>
+
+
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>
