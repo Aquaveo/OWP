@@ -11,17 +11,17 @@ export const LoaderContainer = styled.div`
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 9999; /* Adjust the z-index as needed */
+        z-index: 9999999; /* Adjust the z-index as needed */
     }
     
     /* Style for the loading spinner or indicator */
     .loading-spinner {
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #3498db;
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #16a085;
         border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 2s linear infinite; /* Add a spinning animation */
+        width: 80px;
+        height: 80px;
+        animation: spin 1s linear infinite; /* Add a spinning animation */
     }
     
     @keyframes spin {

@@ -40,7 +40,6 @@ import { Badge } from "react-bootstrap";
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import { LineChart } from "components/plots/linePlot";
 import appAPI from "services/api/app";
-import { Orbit } from '@uiball/loaders'
 import { LoaderContainer } from 'components/styles/Loader.styled';
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';

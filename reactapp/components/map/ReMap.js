@@ -48,7 +48,6 @@ export const ReMap = (
 		mapObject.setTarget(mapRef.current);
 		setMap(mapObject);
 		const infoClickHandler = async (event) =>{
-			handleShowLoading();
 
 			event.preventDefault();
 			// get pixel click location
@@ -76,6 +75,7 @@ export const ReMap = (
 		
 			// only if there are layers to query
 			if ( layers.length > 0 ) {
+
 				const clickCoordinate = mapObject.getCoordinateFromPixel(pixel)
 				console.log(clickCoordinate)
 				let mapServerInfo = []
@@ -119,6 +119,8 @@ export const ReMap = (
 								url.search = new URLSearchParams(queryLayer5);
 
 								axios.get(url).then((response) => {
+
+
 									// console.log(response.data);
 									const filteredArray = response.data['features'].filter(obj => obj.attributes['analysis_assim.streamflow'] > 10 && obj.attributes['raw.gnis_name'] != "" );
 									// Sort the array based on analysis_assim.streamflow in descending order
@@ -167,6 +169,8 @@ export const ReMap = (
 									const urlGeo = new URL(`${urlSGeoReverseService}`);
 									urlGeo.search = new URLSearchParams(queryGeoReverse);
 									axios.get(urlGeo).then((response) => {
+										//MOVE IT LATER, When only clicking on layer
+										handleShowLoading();
 										console.log(response.data);
 										var lat = response.data['location']['x'];
 										var lon = response.data['location']['y'];
