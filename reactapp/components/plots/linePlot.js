@@ -136,9 +136,8 @@ export const LineChart = (props) => {
   }
 
   const addLabels = () =>{
-    if(props.metadata[0] != undefined ){
-      console.log("s")
-      labelTitleRef.current.set('text', props.metadata[0])
+
+      // labelTitleRef.current.set('text', props.metadata[0])
       // chartRef.current.children.unshift(am5.Label.new(rootRef.current, {
       //   text: props.metadata[0],
       //   fontSize: 14,
@@ -147,18 +146,9 @@ export const LineChart = (props) => {
       //   centerX: am5.percent(50),
       //   height: "100"
       // }));
-    }
+    
+    labelSubtitleRef.current.set('text', props.metadata[1])
 
-    // labelSubtitleRef.current.set('text', props.metadata[1])
-
-    // chartRef.current.topAxesContainer.children.push(am5.Label.new(rootRef.current, {
-    //   html: `<div style=\"text-align: center;\"><p style=\"font-size: 12px;\">${props.metadata[1]}</p></div>`,
-    //   fontSize: 25,
-    //   fontWeight: "bold",
-    //   textAlign: "center",
-    //   x: am5.percent(50),
-    //   centerX: am5.percent(50),
-    // }));
   }
   // This code will only run one time
   useEffect(() => {
@@ -297,7 +287,7 @@ export const LineChart = (props) => {
     // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
     chart.set("scrollbarX", am5.Scrollbar.new(root, {
       orientation: "horizontal",
-      height: 50
+      
     }));
 
     // Add legend
@@ -387,25 +377,25 @@ export const LineChart = (props) => {
       x: am5.percent(50),
       centerX: am5.percent(50),
     })
-    let titleChart = chart.children.unshift(title);
-    // let subtitleChart = chart.topAxesContainer.children.push(subtitle)
+    // let titleChart = chart.children.unshift(title);
+    let subtitleChart = chart.topAxesContainer.children.push(subtitle);
 
 
-    // chart.events.on("datavalidated", function(ev) {
+    chart.events.on("datavalidated", function(ev) {
 
-    //   // Get objects of interest
-    //   var chart = ev.target;
-    //   var categoryAxis = chart.yAxes.getIndex(0);
+      // Get objects of interest
+      var chart = ev.target;
+      var categoryAxis = chart.yAxes.getIndex(0);
     
-    //   // Calculate how we need to adjust chart height
-    //   var adjustHeight = chart.data.length * cellSize - categoryAxis.pixelHeight;
+      // Calculate how we need to adjust chart height
+      var adjustHeight = chart.data.length * cellSize - categoryAxis.pixelHeight;
     
-    //   // get current chart height
-    //   var targetHeight = chart.pixelHeight + adjustHeight;
+      // get current chart height
+      var targetHeight = chart.pixelHeight + adjustHeight;
     
-    //   // Set it on chart's container
-    //   chart.svgContainer.htmlElement.style.height = targetHeight + "px";
-    // });
+      // Set it on chart's container
+      chart.svgContainer.htmlElement.style.height = targetHeight + "px";
+    });
 
     xAxisRef.current = xAxis;
     chartRef.current= chart;
@@ -413,8 +403,8 @@ export const LineChart = (props) => {
     rootRef.current = root;
     legendRootRef.current = legendRoot;
     legendRef.current = legend;
-    labelTitleRef.current = titleChart;
-    // labelSubtitleRef.current = subtitleChart;
+    // labelTitleRef.current = titleChart;
+    labelSubtitleRef.current = subtitleChart;
 
     return () => {
       root.dispose();
@@ -678,7 +668,7 @@ export const LineChart = (props) => {
       }
       
     }
-
+    props.handleHideLoading()
   }, [props.isUpdatePlot]);
 
   /*
@@ -686,6 +676,7 @@ export const LineChart = (props) => {
   */
   useEffect(() => {
     addLabels();
+    console.log("s2")
   
     return () => {
     }

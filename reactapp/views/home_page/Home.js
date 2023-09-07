@@ -184,7 +184,9 @@ function App() {
   const handleClose = () => setshowModal(false);
   const handleShow = () => setshowModal(true);
   const handlePlotUpdate = () => {setIsUpdatePlot((current) => !current);}
-  const handleisPlotReady = () => {setIsPlotReady((current) => !current);}
+  
+  const handleShowLoading = () => setIsPlotReady(true);
+  const handleHideLoading = () => setIsPlotReady(false);
 
   const handleProductsUpdate = (type,is_requested,data) => {
     setCurrentProducts ({ type: type, is_requested: is_requested,data:data })
@@ -259,7 +261,8 @@ function App() {
           'forecast-time': new Date(obj['forecast-time']).getTime()
         }));
         setCurrentProducts({type: product_name,is_requested:true, data: ts});
-        handlePlotUpdate()
+        handlePlotUpdate();
+        // handleisPlotReady();
       }
 	}, []);
   useEffect(() => {
@@ -276,7 +279,6 @@ function App() {
     if (Object.keys(updatedProducts).length && currentStationID > 0 ) {
       let dataRequest = {
         station_id: currentStationID,
-        // station_id: 19269170,
         products: updatedProducts
       }
       appAPI.getForecastData(dataRequest);
@@ -294,6 +296,15 @@ function App() {
   return (
     
     <div>
+      { isPlotReady &&
+        <LoaderContainer>
+          <div className="loading-overlay">
+            <div className="loading-spinner"></div>
+          </div>
+        </LoaderContainer>        
+      }
+
+    
 
     <MainContainer>
         <ReMap isFullMap={isFullMap} 
@@ -305,7 +316,7 @@ function App() {
           setCurrentStationID={setCurrentStationID} 
           setCurrentProducts={setCurrentProducts} 
           setCurrentReachIdGeometry={setCurrentReachIdGeometry}
-          handleisPlotReady={handleisPlotReady}
+          handleShowLoading={handleShowLoading}
           setMetadata = {setMetadata}
         >
 
@@ -597,7 +608,7 @@ function App() {
                   <Container>
                     <Row>
                       <Col>
-                        <LineChart data={currentProducts} isUpdatePlot={isUpdatePlot} metadata={metadata} />
+                        <LineChart data={currentProducts} isUpdatePlot={isUpdatePlot} metadata={metadata} handleHideLoading={handleHideLoading} />
                       </Col>
                     </Row>
                   </Container>

@@ -26,7 +26,7 @@ export const ReMap = (
 		setCurrentStationID, 
 		setCurrentProducts, 
 		setCurrentReachIdGeometry,
-		handleisPlotReady,
+		handleShowLoading,
 		setMetadata 
 	}) => 
 	
@@ -48,6 +48,8 @@ export const ReMap = (
 		mapObject.setTarget(mapRef.current);
 		setMap(mapObject);
 		const infoClickHandler = async (event) =>{
+			handleShowLoading();
+
 			event.preventDefault();
 			// get pixel click location
 			const pixel = mapObject.getEventPixel(event.originalEvent)
@@ -147,10 +149,8 @@ export const ReMap = (
 									setCurrentStation(stationName);
 									setCurrentProducts({type: "reset"});
 									handleShow();
-									handleisPlotReady();
 									let dataRequest = {
 										station_id: stationID,
-										// station_id: 19266232,
 										products: currentProducts
 									}
 									appAPI.getForecastData(dataRequest);
@@ -176,7 +176,8 @@ export const ReMap = (
 											`${stationName} - ${cityName}, ${regionName}`,
 											`streamflow for Reach ID: ${stationID} (lat: ${lat} , lon: ${lon})`
 										]
-										setMetadata(metadataArray)
+										setMetadata(metadataArray);
+
 									});
 
 								});
