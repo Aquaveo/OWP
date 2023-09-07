@@ -122,7 +122,7 @@ export const ReMap = (
 
 
 									// console.log(response.data);
-									const filteredArray = response.data['features'].filter(obj => obj.attributes['analysis_assim.streamflow'] > 10 && obj.attributes['raw.gnis_name'] != "" );
+									const filteredArray = response.data['features'].filter(obj => obj.attributes['analysis_assim.streamflow'] > 10 && obj.attributes['raw.gnis_name']);
 									// Sort the array based on analysis_assim.streamflow in descending order
 									filteredArray.sort((a, b) => {
 										const shapeLengthA = a.attributes['raw.Shape_Length'];
@@ -130,7 +130,7 @@ export const ReMap = (
 										return shapeLengthB - shapeLengthA
 									});
 
-									// console.log(filteredArray)
+									console.log(filteredArray)
 									const selectedLayer = filteredArray[0]
 									let reachIDPath = selectedLayer['geometry']['paths'];
 									const feature = new Feature({
