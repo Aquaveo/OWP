@@ -73,14 +73,16 @@ function App() {
       'name_product': 'analysis_assim',
       'color':'#ff8c66',
       'data':[],
-      'is_latest': true
+      'is_latest': true,
+      'tooltip_text':'AnA'
     },
     short_range: {
       'is_requested': false,
       'name_product': 'short_range',
       'color':'#ff6699',
       'data':[],
-      'is_latest': true
+      'is_latest': true,
+      'tooltip_text':'SR'
     },    
 
     long_range_ensemble_mean: {
@@ -88,77 +90,88 @@ function App() {
       'name_product': 'long_range_ensemble_mean',
       'color': '#8ca9ff',
       'data':[],
-      'is_latest': true
+      'is_latest': true,
+      'tooltip_text':'LR-Mean'
     },
     long_range_ensemble_member_1:{
       'is_requested': false,
       'name_product': 'long_range_ensemble_member_1',
       'color': '#8ca9ff',
       'data':[],
-      'is_latest': true
+      'is_latest': true,
+      'tooltip_text':'LR-1'
     },
     long_range_ensemble_member_2: {
       'is_requested': false,
       'name_product': 'long_range_ensemble_member_2',
       'color': '#8ca9ff',
       'data':[],
-      'is_latest': true
+      'is_latest': true,
+      'tooltip_text':'LR-2'
     },
     long_range_ensemble_member_3: {
       'is_requested': false,
       'name_product': 'long_range_ensemble_member_3',
       'color': '#8ca9ff',
       'data':[],
-      'is_latest': true
+      'is_latest': true,
+      'tooltip_text':'LR-3'
     },
     long_range_ensemble_member_4: {
       'is_requested': false,
       'name_product': 'long_range_ensemble_member_4',
       'color': '#8ca9ff',
       'data':[],
-      'is_latest': true
+      'is_latest': true,
+      'tooltip_text':'LR-4'
     },
     medium_range_ensemble_mean:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_mean',
       'color': '#d966ff',
       'data':[],
-      'is_latest': true
+      'is_latest': true,
+      'tooltip_text':'MR-Mean'
     },
     medium_range_ensemble_member_1:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_1',
       'color': '#d966ff',
       'data':[],
-      'is_latest': true
+      'is_latest': true,
+      'tooltip_text':'MR-1'
     },
     medium_range_ensemble_member_2:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_2',
       'color': '#d966ff',
       'data':[],
-      'is_latest': true
+      'is_latest': true,
+      'tooltip_text':'MR-2'
     },
     medium_range_ensemble_member_3:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_3',
       'color': '#d966ff',
       'data':[],
-      'is_latest': true
+      'is_latest': true,
+      'tooltip_text':'MR-3'
     },
     medium_range_ensemble_member_4:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_4',
       'color': '#d966ff',
       'data':[],
-      'is_latest': true
+      'is_latest': true,
+      'tooltip_text':'MR-4'
     },
     medium_range_ensemble_member_5:{
       'is_requested': false,
       'name_product': 'medium_range_ensemble_member_5',
       'color': '#d966ff',
       'data':[],
-      'is_latest': true
+      'is_latest': true,
+      'tooltip_text':'MR-5'
     },
     medium_range_ensemble_member_6:{
       'is_requested': false,
@@ -166,6 +179,7 @@ function App() {
       'color': '#d966ff',
       'data':[],
       'is_latest': true,
+      'tooltip_text':'MR-6'
     },
     medium_range_ensemble_member_7:{
       'is_requested': false,
@@ -173,6 +187,7 @@ function App() {
       'color': '#d966ff',
       'data': [],
       'is_latest': true,
+      'tooltip_text':'MR-7'
     }
 }
 

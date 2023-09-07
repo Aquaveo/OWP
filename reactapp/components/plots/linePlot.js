@@ -94,10 +94,11 @@ export const LineChart = (props) => {
     });
   }
 
+
   const makeSeries = (product,series_ref) => {
 
     var tooltip = am5.Tooltip.new(rootRef.current, {
-      labelText: `${product}: {valueY}`,
+      labelText: `${props.data[product]['tooltip_text']}: {valueY}`,
       getFillFromSprite: true,
       getLabelFillFromSprite: true
     })
@@ -177,7 +178,8 @@ export const LineChart = (props) => {
     // Create Y-axis
     let yAxis = chart.yAxes.push(
       am5xy.ValueAxis.new(root, {
-        renderer: am5xy.AxisRendererY.new(root, {pan:"zoom"})
+        renderer: am5xy.AxisRendererY.new(root, {pan:"zoom"}),
+        tooltip: am5.Tooltip.new(root, {})
       })
     );
 
@@ -195,7 +197,7 @@ export const LineChart = (props) => {
       if(props.data[product]['is_requested']){
 
         var tooltip = am5.Tooltip.new(root, {
-          labelText: `${product}: {valueY}`,
+          labelText: `${props.data[product]['tooltip_text']}: {valueY}`,
           getFillFromSprite: true,
           getLabelFillFromSprite: true
         })
@@ -270,7 +272,7 @@ export const LineChart = (props) => {
 
     //Today date line
     var rangeDataItem = xAxis.makeDataItem({
-      value: new Date().getTime(),
+      value: new Date().setHours(20),
       above: false
     });
     
@@ -280,7 +282,8 @@ export const LineChart = (props) => {
     range.get("grid").setAll({
       stroke: '#88d318',
       strokeOpacity: 1,
-      width: 32,
+      strokeWidth:2,
+      width: 40,
       location: 1
     });
     // Add scrollbar
@@ -348,9 +351,9 @@ export const LineChart = (props) => {
 
     legend.data.setAll(chart.series.values);
     // Resize legend to actual height of its content
-    legend.events.on("boundschanged", function() {
-      document.getElementById("legenddiv").style.height = legend.height() + "px"
-    });
+    // legend.events.on("boundschanged", function() {
+    //   document.getElementById("legenddiv").style.height = legend.height() + "px"
+    // });
 
     // Add cursor
     var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
