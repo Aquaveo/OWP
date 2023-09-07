@@ -516,7 +516,7 @@ function App() {
                           variant="outline-primary"
                           checked={currentProducts['medium_range_ensemble_mean']['is_requested']}
                           value={currentProducts['medium_range_ensemble_mean']['name_product']}
-                          onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_mean']['is_requested'], currentProducts['long_range_ensemble_mean']['data'])}                    
+                          onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_mean']['is_requested'], currentProducts['medium_range_ensemble_mean']['data'])}                    
                         >
                           <SpanBadge>Mean</SpanBadge>
                         </ToggleButton>
@@ -527,7 +527,7 @@ function App() {
                             variant="outline-primary"
                             checked={currentProducts['medium_range_ensemble_member_1']['is_requested']}
                             value={currentProducts['medium_range_ensemble_member_1']['name_product']}
-                            onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_1']['is_requested'], currentProducts['long_range_ensemble_member_1']['data'])}
+                            onChange={(e) => handleProductsUpdate(e.currentTarget.value,!currentProducts['medium_range_ensemble_member_1']['is_requested'], currentProducts['medium_range_ensemble_member_1']['data'])}
                           >
                           <SpanBadge>1</SpanBadge>
                         </ToggleButton>
