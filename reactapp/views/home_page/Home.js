@@ -381,7 +381,7 @@ function App() {
       </MainContainer>
 
         <ModalContainer>
-          <Modal show={showModal} onHide={handleClose} centered size="lg" >
+          <Modal show={showModal} onHide={handleClose} centered size="xl" >
             <Modal.Header closeButton>
               <Modal.Title>{metadata[0]}</Modal.Title>
             </Modal.Header>

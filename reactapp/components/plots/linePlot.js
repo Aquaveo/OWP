@@ -99,16 +99,16 @@ export const LineChart = (props) => {
 
     var tooltip = am5.Tooltip.new(rootRef.current, {
       labelText: `${props.data[product]['tooltip_text']}: {valueY}`,
-      getFillFromSprite: true,
-      getLabelFillFromSprite: true
+      // getFillFromSprite: true,
+      // getLabelFillFromSprite: true
     })
-    tooltip.get('background').setAll({
-      fill: am5.color(props.data[product]['color']),
-      strokeWidth: 0,
-    });
-    tooltip.label.setAll({
-      fill: am5.color(props.data[product]['color'])
-    });
+    // tooltip.get('background').setAll({
+    //   fill: am5.color(props.data[product]['color']),
+    //   strokeWidth: 0,
+    // });
+    // tooltip.label.setAll({
+    //   fill: am5.color(props.data[product]['color'])
+    // });
     var series = chartRef.current.series.push(
       am5xy.LineSeries.new(rootRef.current, {
         name: props.data[product]['name_product'],
@@ -117,8 +117,12 @@ export const LineChart = (props) => {
         valueYField: "value",
         valueXField: "forecast-time",
         maxDeviation:1,
-        stroke: am5.color(props.data[product]['color']),
-        tooltip: tooltip
+        // stroke: am5.color(props.data[product]['color']),
+        tooltip: tooltip,
+        legendLabelText: "[{stroke}]{name}[/]: [bold #888]{categoryX}[/]",
+        legendRangeLabelText: "[{stroke}]{name}[/]",
+        legendValueText: "[bold {stroke}]{valueY}[/]",
+        legendRangeValueText: "[{stroke}]{valueYClose}[/]"
       })
     );
 
@@ -198,16 +202,16 @@ export const LineChart = (props) => {
 
         var tooltip = am5.Tooltip.new(root, {
           labelText: `${props.data[product]['tooltip_text']}: {valueY}`,
-          getFillFromSprite: true,
-          getLabelFillFromSprite: true
+          // getFillFromSprite: true,
+          // getLabelFillFromSprite: true
         })
-        tooltip.get('background').set({
-          fill: am5.color(props.data[product]['color']),
-          strokeWidth: 0,
-        });
-        tooltip.label.set({
-          fill: am5.color(props.data[product]['color'])
-        });
+        // tooltip.get('background').set({
+        //   fill: am5.color(props.data[product]['color']),
+        //   strokeWidth: 0,
+        // });
+        // tooltip.label.set({
+        //   fill: am5.color(props.data[product]['color'])
+        // });
         
         var series = chart.series.push(
           am5xy.LineSeries.new(root, {
@@ -217,9 +221,12 @@ export const LineChart = (props) => {
             valueYField: "value",
             valueXField: "forecast-time",
             maxDeviation:1,
-            stroke: am5.color(props.data[product]['color']),
+            // stroke: am5.color(props.data[product]['color']),
             tooltip: tooltip,
-            legendValueText: "{valueY}"
+            legendLabelText: "[{stroke}]{name}[/]: [bold #888]{categoryX}[/]",
+            legendRangeLabelText: "[{stroke}]{name}[/]",
+            legendValueText: "[bold {stroke}]{valueY}[/]",
+            legendRangeValueText: "[{stroke}]{valueYClose}[/]"
           })
         );
         series.strokes.template.setAll({
@@ -297,8 +304,17 @@ export const LineChart = (props) => {
     let legend = legendRoot.container.children.push(am5.Legend.new(legendRoot, {
       width: am5.percent(100),
       centerX: am5.percent(50),
-      x: am5.percent(50)
+      x: am5.percent(50),
+      useDefaultMarker: true,
+      layout: legendRoot.verticalLayout
+      // layout: am5.GridLayout.new(root, {
+      //   maxColumns: 3,
+      //   fixedWidthGrid: true
+      // })
     }));
+
+    legend.markerRectangles.template.setAll({});
+
 
     // When legend item container is hovered, dim all the series except the hovered one
     legend.itemContainers.template.events.on("pointerover", function(e) {
@@ -311,13 +327,13 @@ export const LineChart = (props) => {
         if (chartSeries != series) {
           chartSeries.strokes.template.setAll({
             strokeOpacity: 0.5,
-            stroke: am5.color(props.data[chartSeries.get('name')]['color'])
+            // stroke: am5.color(props.data[chartSeries.get('name')]['color'])
           });
         } else {
           
           chartSeries.strokes.template.setAll({
             strokeWidth: 3,
-            stroke: am5.color(props.data[chartSeries.get('name')]['color'])
+            // stroke: am5.color(props.data[chartSeries.get('name')]['color'])
           });
         }
       })
@@ -336,24 +352,24 @@ export const LineChart = (props) => {
         chartSeries.strokes.template.setAll({
           strokeOpacity: 1,
           strokeWidth: strokeWidth,
-          stroke: am5.color(props.data[chartSeries.get('name')]['color'])
+          // stroke: am5.color(props.data[chartSeries.get('name')]['color'])
         });
       });
     })
 
-    // legend.itemContainers.template.set("width", am5.p100);
-    // legend.valueLabels.template.setAll({
-    //   width: am5.p100,
-    //   textAlign: "right"
-    // });
+    legend.itemContainers.template.set("width", am5.p100);
+    legend.valueLabels.template.setAll({
+      width: am5.p100,
+      textAlign: "right"
+    });
 
 
 
     legend.data.setAll(chart.series.values);
     // Resize legend to actual height of its content
-    // legend.events.on("boundschanged", function() {
-    //   document.getElementById("legenddiv").style.height = legend.height() + "px"
-    // });
+    legend.events.on("boundschanged", function() {
+      document.getElementById("legenddiv").style.height = legend.height() + "px"
+    });
 
     // Add cursor
     var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
@@ -688,15 +704,14 @@ export const LineChart = (props) => {
   return(
     <Container>
       <Row>
-        <Col>
+        <Col sm={10}>
             <div id="chartdiv" style={{ width: "100%", height: "600px"}}></div>
         </Col>
-      </Row>
-      <Row>
-        <Col>
-        <div id="legenddiv" style={{ width: "100%", height: "100%"}}></div>
+        <Col sm={2}>
+        <div id="legenddiv" style={{ width: "100%", height: "300px"}}></div>
         </Col>
-      </Row>      
+      </Row>
+
     </Container>  
   )
   

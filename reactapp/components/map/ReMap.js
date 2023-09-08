@@ -8,7 +8,6 @@ import View from "ol/View";
 import VectorTileLayer from 'ol/layer/VectorTile.js';
 import VectorLayer from 'ol/layer/Vector.js';
 import LineString from 'ol/geom/LineString.js';
-import { Circle } from "ol/geom";
 import { Feature } from "ol";
 import { MapContainer } from '../styles/Map.styled'
 import appAPI from "services/api/app";
