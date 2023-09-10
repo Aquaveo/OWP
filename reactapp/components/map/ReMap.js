@@ -83,7 +83,7 @@ export const ReMap = (
 				// layers
 					// .forEach( (layer) => {
 						if(layer.get('name') ==='streams_layer'){
-							
+							handleShowLoading();
 							const urlService = layer.getSource().getUrl() // collect mapServer URL
 							const id = layer
 								.getSource()
@@ -169,7 +169,8 @@ export const ReMap = (
 									urlGeo.search = new URLSearchParams(queryGeoReverse);
 									axios.get(urlGeo).then((response) => {
 										//MOVE IT LATER, When only clicking on layer
-										handleShowLoading();
+										handleShow();
+
 										console.log(response.data);
 										var lat = response.data['location']['x'];
 										var lon = response.data['location']['y'];
