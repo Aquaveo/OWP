@@ -98,17 +98,9 @@ export const LineChart = (props) => {
   const makeSeries = (product,series_ref) => {
 
     var tooltip = am5.Tooltip.new(rootRef.current, {
-      labelText: `${props.data[product]['tooltip_text']}: {valueY}`,
-      // getFillFromSprite: true,
-      // getLabelFillFromSprite: true
+      labelText: `${props.data[product]['tooltip_text']}: {valueY}`
     })
-    // tooltip.get('background').setAll({
-    //   fill: am5.color(props.data[product]['color']),
-    //   strokeWidth: 0,
-    // });
-    // tooltip.label.setAll({
-    //   fill: am5.color(props.data[product]['color'])
-    // });
+
     var series = chartRef.current.series.push(
       am5xy.LineSeries.new(rootRef.current, {
         name: props.data[product]['name_product'],
@@ -117,12 +109,11 @@ export const LineChart = (props) => {
         valueYField: "value",
         valueXField: "forecast-time",
         maxDeviation:1,
-        // stroke: am5.color(props.data[product]['color']),
+        fill: am5.color(props.data[product]['color']),
+        stroke: am5.color(props.data[product]['color']),
         tooltip: tooltip,
-        legendLabelText: "[{stroke}]{name}[/]: [bold #888]{categoryX}[/]",
-        legendRangeLabelText: "[{stroke}]{name}[/]",
-        legendValueText: "[bold {stroke}]{valueY}[/]",
-        legendRangeValueText: "[{stroke}]{valueYClose}[/]"
+        legendLabelText: `[{stroke}]${props.data[product]['tooltip_text']}[/]`,
+        legendRangeLabelText: `[{stroke}]${props.data[product]['tooltip_text']}[/]`
       })
     );
 
@@ -201,18 +192,9 @@ export const LineChart = (props) => {
       if(props.data[product]['is_requested']){
 
         var tooltip = am5.Tooltip.new(root, {
-          labelText: `${props.data[product]['tooltip_text']}: {valueY}`,
-          // getFillFromSprite: true,
-          // getLabelFillFromSprite: true
+          labelText: `${props.data[product]['tooltip_text']}: {valueY}`
         })
-        // tooltip.get('background').set({
-        //   fill: am5.color(props.data[product]['color']),
-        //   strokeWidth: 0,
-        // });
-        // tooltip.label.set({
-        //   fill: am5.color(props.data[product]['color'])
-        // });
-        
+
         var series = chart.series.push(
           am5xy.LineSeries.new(root, {
             name: props.data[product]['name_product'],
@@ -221,12 +203,11 @@ export const LineChart = (props) => {
             valueYField: "value",
             valueXField: "forecast-time",
             maxDeviation:1,
-            // stroke: am5.color(props.data[product]['color']),
+            fill: am5.color(props.data[product]['color']),
+            stroke: am5.color(props.data[product]['color']),
             tooltip: tooltip,
-            legendLabelText: "[{stroke}]{name}[/]: [bold #888]{categoryX}[/]",
-            legendRangeLabelText: "[{stroke}]{name}[/]",
-            legendValueText: "[bold {stroke}]{valueY}[/]",
-            legendRangeValueText: "[{stroke}]{valueYClose}[/]"
+            legendLabelText: `[{stroke}]${props.data[product]['tooltip_text']}[/]`,
+            legendRangeLabelText: `[{stroke}]${props.data[product]['tooltip_text']}[/]`,
           })
         );
         series.strokes.template.setAll({
@@ -327,12 +308,14 @@ export const LineChart = (props) => {
         if (chartSeries != series) {
           chartSeries.strokes.template.setAll({
             strokeOpacity: 0.5,
+            stroke: am5.color(props.data[chartSeries.get('name')]['color'])
             // stroke: am5.color(props.data[chartSeries.get('name')]['color'])
           });
         } else {
           
           chartSeries.strokes.template.setAll({
             strokeWidth: 3,
+            stroke: am5.color(props.data[chartSeries.get('name')]['color'])
             // stroke: am5.color(props.data[chartSeries.get('name')]['color'])
           });
         }
@@ -352,6 +335,7 @@ export const LineChart = (props) => {
         chartSeries.strokes.template.setAll({
           strokeOpacity: 1,
           strokeWidth: strokeWidth,
+          stroke: am5.color(props.data[chartSeries.get('name')]['color'])
           // stroke: am5.color(props.data[chartSeries.get('name')]['color'])
         });
       });
@@ -368,7 +352,8 @@ export const LineChart = (props) => {
     legend.data.setAll(chart.series.values);
     // Resize legend to actual height of its content
     legend.events.on("boundschanged", function() {
-      document.getElementById("legenddiv").style.height = legend.height() + "px"
+      let legendFinalHeight = legend.height() + 30;
+      document.getElementById("legenddiv").style.height = legendFinalHeight + "px"
     });
 
     // Add cursor
@@ -705,13 +690,12 @@ export const LineChart = (props) => {
     <Container>
       <Row>
         <Col sm={10}>
-            <div id="chartdiv" style={{ width: "100%", height: "600px"}}></div>
+            <div id="chartdiv" style={{ width: "100%", height: "500px"}}></div>
         </Col>
         <Col sm={2}>
-        <div id="legenddiv" style={{ width: "100%", height: "300px"}}></div>
-        </Col>
+          <div id="legenddiv" style={{ width: "100%", height: "300px"}}></div>
+        </Col>  
       </Row>
-
     </Container>  
   )
   
