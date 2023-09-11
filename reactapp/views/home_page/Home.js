@@ -42,6 +42,8 @@ import { LineChart } from "components/plots/linePlot";
 import appAPI from "services/api/app";
 import { LoaderContainer } from 'components/styles/Loader.styled';
 
+
+
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
@@ -252,6 +254,11 @@ function App() {
   }
 
   useEffect(() => {
+    /* 
+      Load the regions of the user
+    */
+    let dataRequest = {}
+    appAPI.getUserRegions();
     socketRef.current = new WebSocket(ws);
       socketRef.current.onopen = () => {
         console.log("WebSocket is Open");
@@ -323,7 +330,8 @@ function App() {
     <MainContainer>
         <ReMap isFullMap={isFullMap} 
           center={fromLonLat([-94.9065, 38.9884])} 
-          zoom={5} layerGroups={groupLayers} 
+          zoom={5} 
+          layerGroups={groupLayers} 
           handleShow={handleShow} 
           setCurrentStation={setCurrentStation} 
           currentProducts={currentProducts} 

@@ -7,6 +7,7 @@ import httpx
 import json
 from tethys_sdk.routing import controller
 
+from django.contrib.auth.models import User
 
 BASE_API_URL='https://nwmdata.nohrsc.noaa.gov/latest/forecasts'
 async_client = httpx.AsyncClient()
@@ -29,8 +30,17 @@ def home(request):
 
 #     #https://nwmdata.nohrsc.noaa.gov/latest/forecasts/medium_range_ensemble_member_7/streamflow?station_id=19266232 this until ensemble 1-7
 
-
-
+@controller
+def getUserRegions(request):
+    # breakpoint()
+    regions_repsonse = {}
+    if request.user.is_authenticated:
+        print("authenticated")
+        user_name = request.user.username
+        # get the user_id and user name, get the actual User Object
+        # get all the region associated with the userID
+        # pass all the regions to front end
+    return JsonResponse({'state':regions_repsonse })
 
 @controller
 def getForecastData(request):

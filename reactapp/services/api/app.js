@@ -6,6 +6,9 @@ const appAPI = {
     getForecastData: (requestData) => {
         return apiClient.get(`${APP_ROOT_URL}getForecastData/`, {params: requestData});
     },
+    getUserRegions:(requestData) => {
+        return apiClient.get(`${APP_ROOT_URL}getUserRegions/`, {params: requestData});
+    },
 };
 
 export default appAPI;

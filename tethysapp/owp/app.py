@@ -1,4 +1,5 @@
 from tethys_sdk.base import TethysAppBase
+from tethys_sdk.app_settings import PersistentStoreDatabaseSetting
 
 
 class Owp(TethysAppBase):
@@ -17,3 +18,19 @@ class Owp(TethysAppBase):
     enable_feedback = False
     feedback_emails = []
     controller_modules = ['controllers', 'consumer' ]
+
+    def persistent_store_settings(self):
+        """
+        Add one or more persistent_stores.
+        """
+        # Create a new persistent store (database)
+        stores = (
+            PersistentStoreDatabaseSetting(
+                name='user_data',
+                initializer='owp.init_db.init_user_data_db',
+                spatial=True,
+                required=True,
+            ),
+        )
+
+        return stores

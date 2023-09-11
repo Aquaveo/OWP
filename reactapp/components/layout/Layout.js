@@ -8,10 +8,16 @@ import Header from 'components/layout/Header';
 import NavMenu from 'components/layout/NavMenu';
 import NotFound from 'components/error/NotFound';
 import { AppContext } from 'components/context';
+import { Button } from 'react-bootstrap';
+import { SubMenu } from 'components/subMenus/submenu';
 
 function Layout({navLinks, routes, children}) {
   const {tethysApp} = useContext(AppContext);
   const [navVisible, setNavVisible] = useState(false);
+  const [showModal, setshowModal] = useState(false);
+
+  const handleClose = () => setshowModal(false);
+  const handleShow = () => setshowModal(true);
 
   return (
     <div className="h-100">
@@ -26,6 +32,9 @@ function Layout({navLinks, routes, children}) {
               )
             })}
           </Nav>
+          <div>
+            <SubMenu name="Regions" showModal={showModal} handleShow={handleShow} handleClose={handleClose} modalTitle={"Add Regions"} />
+          </div>
         </NavMenu>
         <Routes>
           {routes}
