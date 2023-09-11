@@ -336,7 +336,6 @@ export const LineChart = (props) => {
           strokeOpacity: 1,
           strokeWidth: strokeWidth,
           stroke: am5.color(props.data[chartSeries.get('name')]['color'])
-          // stroke: am5.color(props.data[chartSeries.get('name')]['color'])
         });
       });
     })
