@@ -7,6 +7,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import Header from 'components/layout/Header';
 import NavMenu from 'components/layout/NavMenu';
 import NotFound from 'components/error/NotFound';
+import Container from 'react-bootstrap/Container';
 import { AppContext } from 'components/context';
 import { Button } from 'react-bootstrap';
 import { SubMenu } from 'components/subMenus/submenu';
@@ -23,18 +24,9 @@ function Layout({navLinks, routes, children}) {
     <div className="h-100">
         <Header onNavChange={setNavVisible} />
         <NavMenu navTitle="Navigation"  navVisible={navVisible} onNavChange={setNavVisible}>
-          <Nav variant="pills" defaultActiveKey={tethysApp.rootUrl} className="flex-column">
-            {navLinks.map((link, idx) => {
-              return (
-                <LinkContainer to={link.to} onClick={() => setNavVisible(false)} key={`link-container-${idx}`}>
-                  <Nav.Link eventKey={link.eventKey} key={`link-${idx}`}>{link.title}</Nav.Link>
-                </LinkContainer>
-              )
-            })}
-          </Nav>
-          <div>
+          <Container>
             <SubMenu name="Regions" showModal={showModal} handleShow={handleShow} handleClose={handleClose} modalTitle={"Add Regions"} />
-          </div>
+          </Container>
         </NavMenu>
         <Routes>
           {routes}

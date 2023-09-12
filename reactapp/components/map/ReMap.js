@@ -13,6 +13,10 @@ import { MapContainer } from '../styles/Map.styled'
 import appAPI from "services/api/app";
 import { VectorSourceLayer } from "components/source/Vector";
 import VectorSource from "ol/source/Vector";
+import { Vector } from "ol/layer";
+import GeoJSON from 'ol/format/GeoJSON';
+import {Fill, Stroke, Style} from 'ol/style.js';
+
 export const ReMap = (
 	{ 
 		children, 
@@ -189,6 +193,67 @@ export const ReMap = (
 	
 							} else {
 								mapServerInfo.find(server => server.url === url).layers.push(id) // if so, add the ID of this layer for query
+							}
+						}
+						if(layer.get('name') === 'huc_levels'){
+
+
+							const urlService = layer.getSource().getUrl() // collect mapServer URL
+							const id = layer
+								.getSource()
+								.getParams()
+								.LAYERS['selectedHucs'].replace('show:', '') // remove the visible component to just get the raw url
+							const server = mapServerInfo.find(server => server.url === urlService) // see if server already exists in mapServerInfo
+							/* Here need to do MapExport request in order to get the data of the layer */
+							
+							if (!server) {
+								// Query Layer 5 
+								const spatialReference= {"latestWkid":3857,"wkid":102100}
+								const geometry = {"spatialReference":spatialReference ,"x":clickCoordinate[0],"y":clickCoordinate[1]}
+
+								const queryLayer5 = {
+									geometry: JSON.stringify(geometry),
+									outFields:'*',
+									geometryType: 'esriGeometryPoint',
+									spatialRel: "esriSpatialRelIntersects",
+									units:'esriSRUnit_Meter',
+									distance: 10000,
+									sr: `${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`,
+									returnGeometry: true, // I don't want geometry, but you might want to display it on a 'selection layer'
+									f: 'geojson',
+									inSR:102100,
+									outSR:102100
+								}
+								const url = new URL(`${urlService}/${id}/query`);
+								url.search = new URLSearchParams(queryLayer5);
+
+								axios.get(url).then((response) => {
+									console.log(response.data);
+									const styles = new Style({
+										stroke: new Stroke({
+										  color: 'red',
+										  width: 3,
+										})
+									  })
+									const polygonSource = new VectorSource({
+										format: new GeoJSON(),
+										url: url.href
+									  });
+									  const polygonLayer = new Vector({
+										source: polygonSource,
+										style: styles,
+										name: `${response.data['features'][0]['id']}`
+									  });
+
+									  mapObject.getLayers().insertAt(1, polygonLayer);
+
+								});
+
+
+
+
+
+
 							}
 						}
 		
