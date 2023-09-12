@@ -70,7 +70,7 @@ function App() {
       layers: []
     }),
   ]);
-  const [selectedHucs, setSelectedHucs] = useState("show:1");
+  const [selectedHucs, setSelectedHucs] = useState("exclude:0,2,3,4,5,6,7,8");
   const [selectedFeaturesHucs, setSelectedFeaturesHucs] = useState([]);
   const [showModal, setshowModal] = useState(false);
   const [currentStation, setCurrentStation] = useState();

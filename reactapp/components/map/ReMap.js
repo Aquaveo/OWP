@@ -212,20 +212,36 @@ export const ReMap = (
 								const geometry = {"spatialReference":spatialReference ,"x":clickCoordinate[0],"y":clickCoordinate[1]}
 
 								const queryLayer5 = {
-									geometry: JSON.stringify(geometry),
-									outFields:'*',
+									f: 'json',
 									geometryType: 'esriGeometryPoint',
-									spatialRel: "esriSpatialRelIntersects",
-									units:'esriSRUnit_Meter',
-									distance: 10000,
-									sr: `${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`,
-									returnGeometry: true, // I don't want geometry, but you might want to display it on a 'selection layer'
-									f: 'geojson',
-									inSR:102100,
-									outSR:102100
+									layers:'visible',
+									tolerance: 1,
+									geometry: clickCoordinate,
+									mapExtent: mapObject.getView().calculateExtent(), // get map extent
+									imageDisplay: `${mapObject.getSize()},96`,  // get map size/resolution
+									sr: mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop() // this is because our OL map is in this SR
+
 								}
-								const url = new URL(`${urlService}/${id}/query`);
+
+								const url = new URL(`${urlService}/identify`);
 								url.search = new URLSearchParams(queryLayer5);
+								// here we can grab the last layer and then run the query for that layer at that point for the geometry :)
+
+								// const queryLayer5 = {
+								// 	geometry: JSON.stringify(geometry),
+								// 	outFields:'*',
+								// 	geometryType: 'esriGeometryPoint',
+								// 	spatialRel: "esriSpatialRelIntersects",
+								// 	units:'esriSRUnit_Meter',
+								// 	distance: 10000,
+								// 	sr: `${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`,
+								// 	returnGeometry: true, // I don't want geometry, but you might want to display it on a 'selection layer'
+								// 	f: 'geojson',
+								// 	inSR:102100,
+								// 	outSR:102100
+								// }
+								// const url = new URL(`${urlService}/${id}/query`);
+								// url.search = new URLSearchParams(queryLayer5);
 
 								axios.get(url).then((response) => {
 									console.log(response.data);
@@ -246,7 +262,7 @@ export const ReMap = (
 									  });
 
 									  mapObject.getLayers().insertAt(1, polygonLayer);
-
+									  // Implement the saving to database for the current user
 								});
 
 
