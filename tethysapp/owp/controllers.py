@@ -30,6 +30,12 @@ def home(request):
 
 #     #https://nwmdata.nohrsc.noaa.gov/latest/forecasts/medium_range_ensemble_member_7/streamflow?station_id=19266232 this until ensemble 1-7
 
+
+@controller
+def saveUserRegions(request):
+    pass
+
+
 @controller
 def getUserRegions(request):
     # breakpoint()
@@ -41,6 +47,8 @@ def getUserRegions(request):
         # get all the region associated with the userID
         # pass all the regions to front end
     return JsonResponse({'state':regions_repsonse })
+
+
 
 @controller
 def getForecastData(request):

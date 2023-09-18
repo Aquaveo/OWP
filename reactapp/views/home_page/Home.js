@@ -41,7 +41,7 @@ import ToggleButton from 'react-bootstrap/ToggleButton';
 import { LineChart } from "components/plots/linePlot";
 import appAPI from "services/api/app";
 import { LoaderContainer } from 'components/styles/Loader.styled';
-
+import { SideMenuWrapper } from 'components/menus/SideMenuRegions';
 
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
@@ -52,7 +52,7 @@ const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/M
 
 // const ws = 'ws://' + window.location.href.split('//')[1].split('owp')[0] + 'owp' +'/data-notification/notifications/ws/';
 const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
-function App() {
+function App({showRegions, setShowRegionsVisible}) {
   const socketRef = useRef();
   // const [dataChartObject, setDataChartObject] = useState({})
   const [isFullMap, setIsFullMap] = useState(true)
@@ -262,6 +262,25 @@ function App() {
     }
   }
 
+	const currentSelectedRegions = []
+
+	const [selectedRegions, setSelectedRegions] = useReducer(reducerSelectedRegions, []);
+
+	function reducerSelectedRegions(state, action) {
+		switch (action.type) {
+		  case 'delete':
+			return state.filter(region => region.name !== action.region['name']);
+		  case 'add':
+			return [ ...state, action.region ];
+		  case 'update':
+			return removeDuplicatesRegions(state,'name');			
+		  case 'reset':
+			return currentSelectedRegions ;
+		}
+	}
+
+
+
   useEffect(() => {
     /* 
       Load the regions of the user
@@ -337,6 +356,7 @@ function App() {
     
 
     <MainContainer>
+    <SideMenuWrapper showRegions={showRegions} setShowRegionsVisible={setShowRegionsVisible} selectedRegions={selectedRegions}/>
         <ReMap isFullMap={isFullMap} 
           center={fromLonLat([-94.9065, 38.9884])} 
           zoom={5} 
@@ -349,6 +369,8 @@ function App() {
           setCurrentReachIdGeometry={setCurrentReachIdGeometry}
           handleShowLoading={handleShowLoading}
           setMetadata = {setMetadata}
+          selectedRegions={selectedRegions}
+          setSelectedRegions={setSelectedRegions}
         >
 
           <Layers>
@@ -372,15 +394,20 @@ function App() {
               name={"streams_layer"}
               groupLayerName={"NWM Stream Analysis"}
               groupLayers = {groupLayers}
+   
             />
-            <OlImageTileLayer
+            {/* { showRegions &&  */}
+              <OlImageTileLayer
               source={TileImageArcGISRest(WbdMapLayerURL, {
                 LAYERS:{selectedHucs}
               })}
               name={"huc_levels"}
               groupLayerName={"HUCS"}
               groupLayers = {groupLayers}
-            />
+    
+            />            
+            {/* } */}
+
 
             {/* <VectorLayer
               name={"reach_vector"}

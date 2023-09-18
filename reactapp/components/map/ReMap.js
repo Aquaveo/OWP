@@ -31,53 +31,32 @@ export const ReMap = (
 		setCurrentProducts, 
 		setCurrentReachIdGeometry,
 		handleShowLoading,
-		setMetadata 
+		setMetadata,
+		selectedRegions,
+		setSelectedRegions
 	}) => 
 	
 	{
 	
 	const mapRef = useRef();
 	const [map, setMap] = useState(null);
-	const [triggerAddingLayers,setTriggerAddingLayers] = useState(false)
 	const [curentRegion, setCurrentRegion] = useState({});
-	const [selectedRegions, setSelectedRegions] = useReducer(reducerSelectedRegions, []);
-
-	const currentSelectedRegions = []
-	function reducerSelectedRegions(state, action) {
-		switch (action.type) {
-		  case 'delete':
-			return state.filter(region => region.name !== action.region['name']);
-		  case 'add':
-			return [ ...state, action.region ];
-		  case 'update':
-			return removeDuplicatesRegions(state,'name');			
-		  case 'reset':
-			return currentSelectedRegions ;
-		}
-	  }
-
-
-	const currentSelectedFeaturesHucs = {}
-
-
-
-	// const [selectedHucLayerName, setSelectedHucLayerName] = useState([])
-	const [selectedFeaturesHucs, setSelectedFeaturesHucs] = useState({});
+	// const [selectedRegions, setSelectedRegions] = useReducer(reducerSelectedRegions, []);
 	
+	// const currentSelectedRegions = [];
 
-	const storeSelectedRegion = (newRegion) =>{
-		setSelectedRegions(selectedRegions => [...selectedRegions, newRegion]);
-	}
-	const removeSelectedRegion =(regionToDelete) =>{
-		setSelectedRegions(selectedRegions.filter(item => item.name !== regionToDelete));
-	}
-	const removeSelectedFeaturesHuc = (layerName) => {
-		setSelectedFeaturesHucs(current => {
-			const copy = {...current};
-			delete copy[layerName];
-			return copy;
-		  });
-	}
+	// function reducerSelectedRegions(state, action) {
+	// 	switch (action.type) {
+	// 	  case 'delete':
+	// 		return state.filter(region => region.name !== action.region['name']);
+	// 	  case 'add':
+	// 		return [ ...state, action.region ];
+	// 	  case 'update':
+	// 		return removeDuplicatesRegions(state,'name');			
+	// 	  case 'reset':
+	// 		return currentSelectedRegions ;
+	// 	}
+	// }
 
 	function isRegionInSelectedRegions(arr, key, value) {
 		if(arr){
@@ -88,22 +67,7 @@ export const ReMap = (
 		}
 	  }
 
-	// const [selectedFeaturesHucs, setSelectedFeaturesHucs] = useReducer(reducerSelectedFeaturesHucs, currentSelectedFeaturesHucs);
-	// const currentSelectedFeaturesHucs = {}
 
-	// function reducerSelectedFeaturesHucs(state, action) {
-	// 	switch (action.type) {
-	// 	  case 'delete':
-	// 		const {salary, ...rest} = state;
-	// 		return rest;
-	// 	  case 'add':
-	// 		return { ...state, [action.layer_name]: action.layer };
-	// 	  case 'reset':
-	// 		return currentSelectedFeaturesHucs ;
-	// 	}
-	//   }
-
-	// on component mount
 	useEffect(() => {
 		console.log("usEffect Map.js");
 		let options = {

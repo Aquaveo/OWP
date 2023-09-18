@@ -9,6 +9,9 @@ const appAPI = {
     getUserRegions:(requestData) => {
         return apiClient.get(`${APP_ROOT_URL}getUserRegions/`, {params: requestData});
     },
+    saveUserRegions:(requestData) => {
+        return apiClient.get(`${APP_ROOT_URL}saveUserRegions/`, {params: requestData});
+    },
 };
 
 export default appAPI;

@@ -1,7 +1,7 @@
 import {  useContext, useEffect } from "react";
 import {Image as ImageLayer } from 'ol/layer.js';
 import MapContext from "../map/MapContext";
-export const OlImageTileLayer = ({ source, name,groupLayerName,groupLayers }) => {
+export const OlImageTileLayer = ({ source, name,groupLayerName,groupLayers}) => {
     const { map } = useContext(MapContext);
     useEffect(() => {
       if (!map) return;
