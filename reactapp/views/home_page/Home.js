@@ -52,7 +52,7 @@ const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/M
 
 // const ws = 'ws://' + window.location.href.split('//')[1].split('owp')[0] + 'owp' +'/data-notification/notifications/ws/';
 const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
-function App({showRegions, setShowRegionsVisible}) {
+function App({showRegions, setShowRegionsVisible, setAvailableRegions}) {
   const socketRef = useRef();
   // const [dataChartObject, setDataChartObject] = useState({})
   const [isFullMap, setIsFullMap] = useState(true)
@@ -353,10 +353,9 @@ function App({showRegions, setShowRegionsVisible}) {
         </LoaderContainer>        
       }
 
-    
-
+  
     <MainContainer>
-    <SideMenuWrapper showRegions={showRegions} setShowRegionsVisible={setShowRegionsVisible} selectedRegions={selectedRegions}/>
+    <SideMenuWrapper showRegions={showRegions} setShowRegionsVisible={setShowRegionsVisible} selectedRegions={selectedRegions} setAvailableRegions={setAvailableRegions}  />
         <ReMap isFullMap={isFullMap} 
           center={fromLonLat([-94.9065, 38.9884])} 
           zoom={5} 

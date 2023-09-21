@@ -13,6 +13,7 @@ function App() {
   const [showRegions,setShowRegionsVisible] = useState(false);
   const handleClose = () => setShowRegionsVisible(false);
   const handleShow = () => setShowRegionsVisible(true);
+  const [availableRegions, setAvailableRegions] = useState([]);
   const PATH_HOME = '/',
         PATH_INFO = '/Information/';
   return (
@@ -25,8 +26,9 @@ function App() {
                 {title: 'Information', to: PATH_INFO, eventKey: 'link-learn'},
               ]}
               handleShow={handleShow}
+              availableRegions={availableRegions}
               routes={[
-                <Route path={PATH_HOME} element={<Home showRegions={showRegions} setShowRegionsVisible ={setShowRegionsVisible} />} key='route-home' />,
+                <Route path={PATH_HOME} element={<Home showRegions={showRegions} setShowRegionsVisible ={setShowRegionsVisible} setAvailableRegions={setAvailableRegions} availableRegions={availableRegions} />} key='route-home' />,
                 <Route path={PATH_INFO} element={<LearnReact />} key='route-learn' />
               ]}
             />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect  } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Spin as Hamburger } from 'hamburger-react'
 import { SideMenu } from "components/styles/SideMenu.styled";
@@ -8,17 +8,51 @@ export const SideMenuWrapper = (
     { 
         showRegions,
         setShowRegionsVisible,
-        selectedRegions
+        selectedRegions,
+        setAvailableRegions,
+        availableRegions
     }) => {
-    const saveRegionsUser = () => {
-        console.log(selectedRegions)
-        // let dataRequest = {
-        //     region_data: data,
-        // }
-        // appAPI.saveUserRegions(dataRequest);
+    const saveRegionsUser = async () => {
+        console.log(selectedRegions);
+        let finalGeoJSON = makeGeoJSONFromArray();
+        console.log(finalGeoJSON);
+
+
+        //merge geojsons
+        let dataRequest = {
+            region_data: finalGeoJSON
+        }
+
+        let responseRegions = await appAPI.saveUserRegions(dataRequest);
+        console.log(responseRegions.data)
+        setAvailableRegions([])
+    }
+    const concatGeoJSON = (g1, g2) => {
+        return { 
+            "type" : "FeatureCollection",
+            "features": [... g1.features, ... g2.features]
+        }
     }
 
+    const makeGeoJSONFromArray = () =>{
+        let finalGeoJSON = selectedRegions[0]['data'];
+
+        for (let i = 1; i < selectedRegions.length; i++) {
+            finalGeoJSON = concatGeoJSON(finalGeoJSON, selectedRegions[i]['data']);
+        }
+      
+        return finalGeoJSON;
+    }
   
+    useEffect(() => {
+      console.log(availableRegions)
+    
+      return () => {
+      }
+    }, [availableRegions])
+    
+
+
     return(
       
         <SideMenu isVisible={showRegions} >

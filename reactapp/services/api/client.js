@@ -11,7 +11,11 @@ const apiClient = axios.create({
     'Accept': 'application/json',
     'Content-Type': 'application/json'
   },
+
 });
+apiClient.defaults.xsrfHeaderName = "X-CSRFToken"
+apiClient.defaults.xsrfCookieName = 'csrftoken'
+apiClient.defaults.withCredentials = true;
 
 function handleSuccess(response) {
   return response.data ? response.data : response;
