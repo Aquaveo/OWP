@@ -44,12 +44,7 @@ export const SideMenuWrapper = (
         return finalGeoJSON;
     }
   
-    useEffect(() => {
-      console.log(availableRegions)
-    
-      return () => {
-      }
-    }, [availableRegions])
+
     
 
 

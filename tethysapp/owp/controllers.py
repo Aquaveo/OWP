@@ -92,7 +92,7 @@ def saveUserRegions(request):
         session.commit()
         # Close the connection to prevent issues
         session.close()
-        breakpoint()
+        # breakpoint()
         # return the all regions of the of the user
         sql_query = f"SELECT * FROM regions WHERE user_name='{user_name}'"
         user_regions_df = gpd.GeoDataFrame.from_postgis(sql_query, engine)
@@ -122,10 +122,29 @@ def getUserRegions(request):
     if request.user.is_authenticated:
         print("authenticated")
         user_name = request.user.username
+        engine = app.get_persistent_store_database("user_data")
+        sql_query = f"SELECT * FROM regions WHERE user_name='{user_name}'"
+
+        user_regions_df = gpd.GeoDataFrame.from_postgis(sql_query, engine)
+        regions_repsonse["regions"] = user_regions_df.to_dict(orient="records")
+        default_region = next(
+            (item for item in regions_repsonse["regions"] if item["default"]), None
+        )
+
+        default_region_geometry = shapely.to_geojson(default_region["geom"])
+
+        regions_repsonse["regions"] = [
+            {k: v for k, v in obj.items() if k != "geom"}
+            for obj in regions_repsonse["regions"]
+        ]
+        regions_repsonse["default_geom"] = default_region_geometry
         # get the user_id and user name, get the actual User Object
         # get all the region associated with the userID
         # pass all the regions to front end
-    return JsonResponse({"state": regions_repsonse})
+    else:
+        regions_repsonse["regions"] = []
+        regions_repsonse["default_geom"] = {}
+    return JsonResponse(regions_repsonse)
 
 
 @controller

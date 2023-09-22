@@ -24,7 +24,7 @@ function Layout({navLinks, routes,handleShow,availableRegions, children}) {
         <Header onNavChange={setNavVisible} />
         <NavMenu navTitle="Navigation"  navVisible={navVisible} onNavChange={setNavVisible}>
           
-            <SubMenu name="Regions" handleShow={handleShow} />
+            <SubMenu name="Regions" handleShow={handleShow} availableRegions={availableRegions} />
          
         </NavMenu>
         <Routes>

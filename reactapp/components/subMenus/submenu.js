@@ -17,8 +17,13 @@ import LayerGroup from 'ol/layer/Group';
 
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
 
-export const SubMenu = ({ name,handleShow, ...props}) => {
-
+export const SubMenu = ({ name,handleShow,availableRegions, ...props}) => {
+    useEffect(() => {
+        console.log(availableRegions)
+      
+        return () => {
+        }
+      }, [availableRegions])
     return (
             <Row>
                 <Col sm={10} >
