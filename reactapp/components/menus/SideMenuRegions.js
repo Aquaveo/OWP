@@ -24,7 +24,7 @@ export const SideMenuWrapper = (
         }
 
         let responseRegions = await appAPI.saveUserRegions(dataRequest);
-        console.log(responseRegions.data)
+        console.log(responseRegions)
         setAvailableRegions([])
     }
     const concatGeoJSON = (g1, g2) => {

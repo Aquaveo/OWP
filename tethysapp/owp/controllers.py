@@ -18,6 +18,7 @@ from .app import Owp as app
 from shapely.geometry import GeometryCollection
 import shapely.wkt
 from .model import Region
+import shapely
 
 BASE_API_URL = "https://nwmdata.nohrsc.noaa.gov/latest/forecasts"
 async_client = httpx.AsyncClient()
@@ -96,9 +97,18 @@ def saveUserRegions(request):
         sql_query = f"SELECT * FROM regions WHERE user_name='{user_name}'"
         user_regions_df = gpd.GeoDataFrame.from_postgis(sql_query, engine)
 
-        # session.query(Region).filter(Region.user_name=)
-        # response_obj["region_name"] = "fake_name"
+        response_obj["regions"] = user_regions_df.to_dict(orient="records")
+        default_region = next(
+            (item for item in response_obj["regions"] if item["default"]), None
+        )
 
+        default_region_geometry = shapely.to_geojson(default_region["geom"])
+
+        response_obj["regions"] = [
+            {k: v for k, v in obj.items() if k != "geom"}
+            for obj in response_obj["regions"]
+        ]
+        response_obj["default_geom"] = default_region_geometry
     else:
         response_obj["msge"] = "Please, create an account, and login"
 
