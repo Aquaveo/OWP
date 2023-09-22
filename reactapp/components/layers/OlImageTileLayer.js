@@ -12,15 +12,22 @@ export const OlImageTileLayer = ({ source, name,groupLayerName,groupLayers}) => 
       if (groupLayerName === 'NWM Stream Analysis'){
         groupLayers[1].getLayers().array_.push(Ilayer)
       }
-      if (groupLayerName === 'HUCS'){
-        groupLayers[1].getLayers().array_.push(Ilayer)
+      else{
+        map.addLayer(Ilayer);
       }
+      // if (groupLayerName === 'HUCS'){
+      //   groupLayers[1].getLayers().array_.push(Ilayer)
+      // }
       // console.log(map)
       return () => {
-        if (groupLayerName != 'Basemaps'){
+        if (groupLayerName != 'Basemaps' && groupLayerName === 'NWM Stream Analysis'){
           groupLayers[1].getLayers().array_ = groupLayers[1].getLayers().array_.filter(function( layer ) {
             return layer.get('name') !== name;
           });
+        }
+        else{
+          map.removeLayer(Ilayer);
+
         }
       };
     });

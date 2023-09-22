@@ -8,15 +8,14 @@ import Form from 'react-bootstrap/Form';
 import { BiSolidSave } from "react-icons/bi"
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
-import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 
 export const SideMenuWrapper = (
     { 
-        showRegions,
+        showRegionsMenu,
+        handleShowRegionMenu,
         setShowRegionsVisible,
         selectedRegions,
-        setAvailableRegions,
-        availableRegions
+        setAvailableRegions
     }) => {
 
     const regionTypeRadioButtons = [
@@ -34,8 +33,10 @@ export const SideMenuWrapper = (
     const handleFileTypeOnChangeEvent = (e) =>{
       if(e.target.value == 'file'){
         setFileUploadVisible(true);
+        setShowRegionsVisible(false);
       }
       else{
+        setShowRegionsVisible(true);
         setFileUploadVisible(false);
       }
       setFormRegionData({...formRegionData, regionType: e.target.value})
@@ -78,13 +79,13 @@ export const SideMenuWrapper = (
   
     return(
       
-        <SideMenu isVisible={showRegions} >
+        <SideMenu isVisible={showRegionsMenu} >
           <div className="wrapper_absolute">
            <div className="Myhamburguer">
-            <Hamburger toggled={showRegions} toggle={setShowRegionsVisible} size={20} />
+            <Hamburger toggled={showRegionsMenu} toggle={handleShowRegionMenu} size={20} />
           </div>
             {
-              showRegions && 
+              showRegionsMenu && 
               <Form>
                 <p className="sudo_title">
                     Add Regions Menu

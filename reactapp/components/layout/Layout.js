@@ -12,7 +12,7 @@ import { AppContext } from 'components/context';
 import { Button } from 'react-bootstrap';
 import { SubMenu } from 'components/subMenus/submenu';
 
-function Layout({navLinks, routes,handleShow,availableRegions, children}) {
+function Layout({navLinks, routes,handleShowRegionMenu,availableRegions, children}) {
   const {tethysApp} = useContext(AppContext);
   const [navVisible, setNavVisible] = useState(false);
 
@@ -24,7 +24,7 @@ function Layout({navLinks, routes,handleShow,availableRegions, children}) {
         <Header onNavChange={setNavVisible} />
         <NavMenu navTitle="Navigation"  navVisible={navVisible} onNavChange={setNavVisible}>
           
-            <SubMenu name="Regions" handleShow={handleShow} availableRegions={availableRegions} />
+            <SubMenu name="Regions" handleShowRegionMenu={handleShowRegionMenu} availableRegions={availableRegions} />
          
         </NavMenu>
         <Routes>

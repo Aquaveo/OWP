@@ -20,7 +20,7 @@ import LayerGroup from 'ol/layer/Group';
 
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
 
-export const SubMenu = ({ name,handleShow,availableRegions, ...props}) => {
+export const SubMenu = ({ name,handleShowRegionMenu,availableRegions, ...props}) => {
     useEffect(() => {
         console.log(availableRegions)
       
@@ -33,7 +33,7 @@ export const SubMenu = ({ name,handleShow,availableRegions, ...props}) => {
                     {name}
                 </Col>
                 <Col sm={4}>
-                    <Button variant="primary" size="sm" onClick={handleShow} >
+                    <Button variant="primary" size="sm" onClick={handleShowRegionMenu} >
                         <BsPlusLg />
                     </Button>
                     <Button variant="primary" size="sm"  >
