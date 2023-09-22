@@ -14,7 +14,6 @@ import { fromLonLat } from 'ol/proj';
 import { ArcGISRestTile } from "components/source/TileArcGISRest";
 import LayerGroup from 'ol/layer/Group';
 
-
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
 
 export const SubMenu = ({ name,handleShow,availableRegions, ...props}) => {

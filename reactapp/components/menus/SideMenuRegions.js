@@ -4,6 +4,10 @@ import { Spin as Hamburger } from 'hamburger-react'
 import { SideMenu } from "components/styles/SideMenu.styled";
 import { Button } from "react-bootstrap";
 import appAPI from "services/api/app";
+import Form from 'react-bootstrap/Form';
+import { BiSolidSave } from "react-icons/bi"
+
+
 export const SideMenuWrapper = (
     { 
         showRegions,
@@ -59,9 +63,36 @@ export const SideMenuWrapper = (
               showRegions && 
               <div>
                 <p className="sudo_title">
-                    HUCS Regions
+                    Add Regions Menu
                 </p>
-                <Button variant="primary" onClick={saveRegionsUser}>Save Regions</Button>
+                <div className="row-form-menu">
+                  <Form.Label htmlFor="inputRegionName">Region Name</Form.Label>
+                  <Form.Control size="sm" id="inputRegionName"  type="text" placeholder="Region Name" />
+                </div>
+
+                <div className="row-form-menu">
+                <Form.Check // prettier-ignore
+                  type="switch"
+                  id="custom-switch"
+                  label="HUC Region"
+                />
+                <Form.Check // prettier-ignore
+                  type="switch"
+                  label="Default Region"
+                  id="disabled-custom-switch"
+                />
+                </div>
+                <div className="row-form-menu">
+                  <Form.Group controlId="formFileMultiple" className="mb-3">
+                    <Form.Label>Upload File (*.shp, *.json, geopackage) </Form.Label>
+                    <Form.Control type="file"  size="sm" multiple />
+                  </Form.Group>
+                </div>
+
+
+                <div className="buttons-menu">
+                  <Button variant="primary" onClick={saveRegionsUser}><BiSolidSave /></Button>
+                </div>
               </div>
             }
   
