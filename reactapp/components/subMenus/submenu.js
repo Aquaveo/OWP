@@ -33,13 +33,13 @@ export const SubMenu = ({ name,handleShowRegionMenu,availableRegions, ...props})
                     {name}
                 </Col>
                 <Col sm={4}>
-                    <Button variant="primary" size="sm" onClick={handleShowRegionMenu} >
+                    <Button variant="secondary" size="sm" onClick={handleShowRegionMenu} >
                         <BsPlusLg />
                     </Button>
-                    <Button variant="primary" size="sm"  >
+                    <Button variant="info" size="sm" onClick={handleShowRegionMenu} >
                         <MdOutlineEdit />
                     </Button>
-                    <Button variant="primary" size="sm" >
+                    <Button variant="danger" size="sm"onClick={handleShowRegionMenu} >
                         <BsTrash />
                     </Button>
                 </Col>

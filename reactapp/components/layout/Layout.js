@@ -12,12 +12,9 @@ import { AppContext } from 'components/context';
 import { Button } from 'react-bootstrap';
 import { SubMenu } from 'components/subMenus/submenu';
 
-function Layout({navLinks, routes,handleShowRegionMenu,availableRegions, children}) {
+function Layout({navLinks, routes,handleShowRegionMenu,availableRegions,navVisible, setNavVisible, children}) {
   const {tethysApp} = useContext(AppContext);
-  const [navVisible, setNavVisible] = useState(false);
-
-  // const handleClose = () => setShowRegionsVisible(false);
-  // const handleShow = () => setShowRegionsVisible(true);
+  // const [navVisible, setNavVisible] = useState(false);
 
   return (
     <div className="h-100">

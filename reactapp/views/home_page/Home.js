@@ -52,7 +52,7 @@ const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/M
 
 // const ws = 'ws://' + window.location.href.split('//')[1].split('owp')[0] + 'owp' +'/data-notification/notifications/ws/';
 const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
-function App({showRegionsMenu,handleShowRegionMenu, showRegions, setShowRegionsVisible, setAvailableRegions, availableRegions}) {
+function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, setShowRegionsVisible, setAvailableRegions, availableRegions}) {
   const socketRef = useRef();
   // const [dataChartObject, setDataChartObject] = useState({})
   const [isFullMap, setIsFullMap] = useState(true)

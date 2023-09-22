@@ -12,7 +12,12 @@ import 'App.scss';
 function App() {
   const [showRegions,setShowRegionsVisible] = useState(false);
   const [showRegionsMenu, setShowRegionsMenu] =  useState(false);
-  const handleShowRegionMenu = () => setShowRegionsMenu(true);
+  const [navVisible, setNavVisible] = useState(false);
+
+  const handleShowRegionMenu = () => {
+    setNavVisible(false);
+    setShowRegionsMenu(true)
+  };
 
   const [availableRegions, setAvailableRegions] = useState([]);
   const PATH_HOME = '/',
@@ -28,8 +33,10 @@ function App() {
               ]}
               handleShowRegionMenu={handleShowRegionMenu}
               availableRegions={availableRegions}
+              navVisible={navVisible}
+              setNavVisible={setNavVisible}
               routes={[
-                <Route path={PATH_HOME} element={<Home showRegionsMenu={showRegionsMenu} handleShowRegionMenu={handleShowRegionMenu} showRegions={showRegions} setShowRegionsVisible ={setShowRegionsVisible} setAvailableRegions={setAvailableRegions} availableRegions={availableRegions} />} key='route-home' />,
+                <Route path={PATH_HOME} element={<Home setNavVisible={setNavVisible} showRegionsMenu={showRegionsMenu} handleShowRegionMenu={handleShowRegionMenu} showRegions={showRegions} setShowRegionsVisible ={setShowRegionsVisible} setAvailableRegions={setAvailableRegions} availableRegions={availableRegions} />} key='route-home' />,
                 <Route path={PATH_INFO} element={<LearnReact />} key='route-learn' />
               ]}
             />
