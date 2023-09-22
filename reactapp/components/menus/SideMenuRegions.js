@@ -6,7 +6,9 @@ import { Button } from "react-bootstrap";
 import appAPI from "services/api/app";
 import Form from 'react-bootstrap/Form';
 import { BiSolidSave } from "react-icons/bi"
-
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import ToggleButton from "react-bootstrap/ToggleButton";
+import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 
 export const SideMenuWrapper = (
     { 
@@ -16,20 +18,42 @@ export const SideMenuWrapper = (
         setAvailableRegions,
         availableRegions
     }) => {
-    const saveRegionsUser = async () => {
-        console.log(selectedRegions);
-        let finalGeoJSON = makeGeoJSONFromArray();
-        console.log(finalGeoJSON);
+
+    const regionTypeRadioButtons = [
+        { name: "File Region", value: "file" },
+        { name: "HUC Region", value: "huc" },
+    ]; 
+    
+    const [isFileUploadVisible, setFileUploadVisible]= useState(true);
+    const [formRegionData, setFormRegionData] = useState({
+      name:'',
+      regionType:'file',
+      default: true,
+      files:[]
+    })
+    const handleFileTypeOnChangeEvent = (e) =>{
+      if(e.target.value == 'file'){
+        setFileUploadVisible(true);
+      }
+      else{
+        setFileUploadVisible(false);
+      }
+      setFormRegionData({...formRegionData, regionType: e.target.value})
+    }
+    const saveRegionsUser = async (e) => {
+      console.log(selectedRegions);
+      let finalGeoJSON = makeGeoJSONFromArray();
+      console.log(finalGeoJSON);
 
 
-        //merge geojsons
-        let dataRequest = {
-            region_data: finalGeoJSON
-        }
+      //merge geojsons
+      let dataRequest = {
+          region_data: finalGeoJSON
+      }
 
-        let responseRegions = await appAPI.saveUserRegions(dataRequest);
-        console.log(responseRegions)
-        setAvailableRegions([])
+      let responseRegions = await appAPI.saveUserRegions(dataRequest);
+      console.log(responseRegions)
+      setAvailableRegions([])
     }
     const concatGeoJSON = (g1, g2) => {
         return { 
@@ -48,10 +72,6 @@ export const SideMenuWrapper = (
         return finalGeoJSON;
     }
   
-
-    
-
-
     return(
       
         <SideMenu isVisible={showRegions} >
@@ -61,39 +81,66 @@ export const SideMenuWrapper = (
           </div>
             {
               showRegions && 
-              <div>
+              <Form>
                 <p className="sudo_title">
                     Add Regions Menu
                 </p>
-                <div className="row-form-menu">
+                <Form.Group className="mb-3">
                   <Form.Label htmlFor="inputRegionName">Region Name</Form.Label>
-                  <Form.Control size="sm" id="inputRegionName"  type="text" placeholder="Region Name" />
-                </div>
+                  <Form.Control 
+                    size="sm" 
+                    id="inputRegionName" 
+                    type="text"
+                    value={formRegionData.name}
+                    placeholder="Region Name" 
+                    onChange={(e) => setFormRegionData({...formRegionData, name: e.target.value})}
+                  />
+                </Form.Group>
 
-                <div className="row-form-menu">
-                <Form.Check // prettier-ignore
-                  type="switch"
-                  id="custom-switch"
-                  label="HUC Region"
-                />
-                <Form.Check // prettier-ignore
-                  type="switch"
-                  label="Default Region"
-                  id="disabled-custom-switch"
-                />
-                </div>
-                <div className="row-form-menu">
+                <Form.Group className="mb-3" controlId="formRegionType">
+                  <p>
+                    Region Type
+                  </p>
+                  <ButtonGroup>
+                    {regionTypeRadioButtons.map((radio, index) => (
+                        <ToggleButton
+                          key={index}
+                          id={`radio-${index}`}
+                          variant="secondary"
+                          type="radio"
+                          name="region type"
+                          value={radio.value}
+                          checked={formRegionData.regionType === radio.value}
+                          onChange={(e) => handleFileTypeOnChangeEvent(e)}
+                        >
+                          {radio.name}
+                        </ToggleButton>
+                      ))}
+                  </ButtonGroup>
+
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formRegionDefaults">
+                  <Form.Check // prettier-ignore
+                    type="switch"
+                    label="Default Region"
+                    id="disabled-custom-switch"
+                    value={formRegionData.default}
+                    onChange={(e) => setFormRegionData({...formRegionData, default: e.target.checked})}
+                  />
+                </Form.Group>
+                {
+                  isFileUploadVisible && 
                   <Form.Group controlId="formFileMultiple" className="mb-3">
                     <Form.Label>Upload File (*.shp, *.json, geopackage) </Form.Label>
                     <Form.Control type="file"  size="sm" multiple />
                   </Form.Group>
-                </div>
-
+                }
 
                 <div className="buttons-menu">
-                  <Button variant="primary" onClick={saveRegionsUser}><BiSolidSave /></Button>
+                  <Button variant="secondary"  type="submit" onClick={saveRegionsUser}><BiSolidSave /></Button>
                 </div>
-              </div>
+              </Form>
             }
   
   
