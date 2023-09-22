@@ -70,9 +70,9 @@ def saveUserRegions(request):
             geometry=[GeometryCollection(df["geom"].tolist())],
         )
 
-        dest["region_type"] = "HUC"
-        dest["default"] = True
-        dest["name"] = "fake_name"
+        dest["region_type"] = geojson_object["requestData"]["regionType"]
+        dest["default"] = geojson_object["requestData"]["default"]
+        dest["name"] = geojson_object["requestData"]["name"]
         dest["user_name"] = user_name
         dest["geom"] = dest["geometry"]
         dest = dest.drop("geometry", axis=1)

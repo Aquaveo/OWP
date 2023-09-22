@@ -48,6 +48,10 @@ export const SideMenuWrapper = (
 
       //merge geojsons
       let dataRequest = {
+          name: formRegionData.name,
+          regionType: formRegionData.regionType,
+          default: formRegionData.default,
+          files: formRegionData.files,
           region_data: finalGeoJSON
       }
 
@@ -101,7 +105,7 @@ export const SideMenuWrapper = (
                   <p>
                     Region Type
                   </p>
-                  <ButtonGroup>
+                  <ButtonGroup size="sm">
                     {regionTypeRadioButtons.map((radio, index) => (
                         <ToggleButton
                           key={index}
