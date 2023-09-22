@@ -4,7 +4,11 @@ import Col from 'react-bootstrap/Col';
 import { Badge } from 'react-bootstrap';
 import {Button} from 'react-bootstrap';
 import { FaBeer } from 'react-icons/fa';
-import { MdOutlineAddLocationAlt } from "react-icons/md";
+import {  MdOutlineEdit } from "react-icons/md";
+import { BsPlusLg, BsTrash } from "react-icons/bs";
+
+import {  } from "react-icons/md";
+
 import { SpanBadge } from 'components/styles/Badge.styled';
 import { Modal } from 'react-bootstrap';
 import Layers from 'components/layers/Layers';
@@ -25,14 +29,19 @@ export const SubMenu = ({ name,handleShow,availableRegions, ...props}) => {
       }, [availableRegions])
     return (
             <Row>
-                <Col sm={10} >
+                <Col sm={8} >
                     {name}
                 </Col>
-                <Col sm={2}>
-                    <Button variant="primary" onClick={handleShow} >
-                            <MdOutlineAddLocationAlt />
+                <Col sm={4}>
+                    <Button variant="primary" size="sm" onClick={handleShow} >
+                        <BsPlusLg />
                     </Button>
-
+                    <Button variant="primary" size="sm"  >
+                        <MdOutlineEdit />
+                    </Button>
+                    <Button variant="primary" size="sm" >
+                        <BsTrash />
+                    </Button>
                 </Col>
             </Row>
 
