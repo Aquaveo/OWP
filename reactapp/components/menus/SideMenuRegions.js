@@ -11,6 +11,7 @@ import ToggleButton from "react-bootstrap/ToggleButton";
 
 export const SideMenuWrapper = (
     { 
+        setNavVisible,
         showRegionsMenu,
         handleShowRegionMenu,
         setShowRegionsVisible,
@@ -42,10 +43,12 @@ export const SideMenuWrapper = (
       setFormRegionData({...formRegionData, regionType: e.target.value})
     }
     const saveRegionsUser = async (e) => {
+      //validation for empty form
+      let msge = validateRegionAddition();
+      if(msge != 'success'){return}
       console.log(selectedRegions);
       let finalGeoJSON = makeGeoJSONFromArray();
       console.log(finalGeoJSON);
-
 
       //merge geojsons
       let dataRequest = {
@@ -57,9 +60,28 @@ export const SideMenuWrapper = (
       }
 
       let responseRegions = await appAPI.saveUserRegions(dataRequest);
+
       console.log(responseRegions)
       setAvailableRegions([])
+      if (!responseRegions['msge'].includes('error')){
+        setNavVisible(false);
+      }
     }
+    const validateRegionAddition = () =>{
+      let msge = 'success'
+      if(!formRegionData.name){
+        msge='Region name was not set up'
+      }
+      if(formRegionData.regionType === 'file' && !formRegionData.files){
+        msge='Files were not uploaded'
+      }
+      if(formRegionData.regionType ==='huc' && selectedRegions.length < 1){
+        msge='Select HUCs regions from map'
+      }
+      return msge
+    }
+
+
     const concatGeoJSON = (g1, g2) => {
         return { 
             "type" : "FeatureCollection",
@@ -68,11 +90,17 @@ export const SideMenuWrapper = (
     }
 
     const makeGeoJSONFromArray = () =>{
+      if(selectedRegions.length < 1){
+        return {}
+      }
+      else{
         let finalGeoJSON = selectedRegions[0]['data'];
 
         for (let i = 1; i < selectedRegions.length; i++) {
             finalGeoJSON = concatGeoJSON(finalGeoJSON, selectedRegions[i]['data']);
         }
+      }
+
       
         return finalGeoJSON;
     }

@@ -360,7 +360,7 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
 
   
     <MainContainer>
-    <SideMenuWrapper showRegionsMenu={showRegionsMenu} handleShowRegionMenu={handleShowRegionMenu} showRegions={showRegions} setShowRegionsVisible={setShowRegionsVisible} selectedRegions={selectedRegions} setAvailableRegions={setAvailableRegions} availableRegions={availableRegions}  />
+    <SideMenuWrapper setNavVisible={setNavVisible} showRegionsMenu={showRegionsMenu} handleShowRegionMenu={handleShowRegionMenu} showRegions={showRegions} setShowRegionsVisible={setShowRegionsVisible} selectedRegions={selectedRegions} setAvailableRegions={setAvailableRegions} availableRegions={availableRegions}  />
         <ReMap isFullMap={isFullMap} 
           center={fromLonLat([-94.9065, 38.9884])} 
           zoom={5} 
