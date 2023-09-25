@@ -326,29 +326,16 @@ export const ReMap = (
 		}
 		mapObject.on('click',infoClickHandler)
 
-		return () => {
-			if (!mapObject) return;
-			mapObject.setTarget(undefined)
-		};
-	}, []);
-
-	// map events
-	useEffect(()=>{
-
-		if (!map) return;
-		const viewResolution = /** @type {number} */ (map.getView().getResolution());
-		// map.on('click',infoClickHandler)
-		//   });
-		map.on('pointermove',evt=>{
+		mapObject.on('pointermove',evt=>{
 
 			if (evt.dragging) return;
-			var pixel = evt.map.getEventPixel(evt.originalEvent);
-			var hit = map.hasFeatureAtPixel(evt.pixel, {
-				layerFilter: function(layer) {
-					return layer.get('layer_name') === 'streams_layer';
-				}
-			});
-			evt.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+			// var pixel = evt.map.getEventPixel(evt.originalEvent);
+			// var hit = map.hasFeatureAtPixel(evt.pixel, {
+			// 	layerFilter: function(layer) {
+			// 		return layer.get('layer_name') === 'streams_layer';
+			// 	}
+			// });
+			// evt.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
 
 
 			// const pixel = map.getEventPixel(evt.originalEvent)
@@ -368,18 +355,55 @@ export const ReMap = (
 			//   }
 		});
 
-		map.on('loadstart', function () {
-			handleShowLoading();
-		});
+		// mapObject.on('loadstart', function () {
+		// 	console.log("start")
+		// 	// handleShowLoading();
+		// });
 
-		map.on('loadend', function () {
-			handleHideLoading();
-		});
+		// mapObject.on('loadend', function () {
+		// 	console.log("finish")
+		// 	// handleHideLoading();
+		// });
+
+
+		return () => {
+			if (!mapObject) return;
+			mapObject.setTarget(undefined)
+		};
+	}, []);
+
+	// map events
+	useEffect(()=>{
+
+		if (!map) return;
+		const viewResolution = /** @type {number} */ (map.getView().getResolution());
+		// map.on('click',infoClickHandler)
+		//   });
+		// map.on('pointermove',evt=>{
+
+		// 	if (evt.dragging) return;
+		// 	var pixel = evt.map.getEventPixel(evt.originalEvent);
+		// 	var hit = map.hasFeatureAtPixel(evt.pixel, {
+		// 		layerFilter: function(layer) {
+		// 			return layer.get('layer_name') === 'streams_layer';
+		// 		}
+		// 	});
+		// 	evt.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+		// });
+
+		// map.on('loadstart', function () {
+		// 	console.log("start")
+		// 	handleShowLoading();
+		// });
+
+		// map.on('loadend', function () {
+		// 	console.log("finish")
+		// 	handleHideLoading();
+		// });
 	},[map])
 
 	useEffect(() => {
 		if (!map) return;
-		console.log(curentRegion)
 		const regionFound = isRegionInSelectedRegions(selectedRegions, "name", curentRegion['name']);
 
 		if(regionFound){

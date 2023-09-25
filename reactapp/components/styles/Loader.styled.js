@@ -8,7 +8,7 @@ export const LoaderContainer = styled.div`
         left: 0;
         width: 100%;
         height: 100%;
-        display: flex;
+        display: ${props => props.isVisible ? "flex" : "none"};
         justify-content: center;
         align-items: center;
         z-index: 9999999; /* Adjust the z-index as needed */

@@ -70,7 +70,7 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
       layers: []
     }),
   ]);
-  const [selectedHucs, setSelectedHucs] = useState("exclude:0,2,3,4,5,6,7,8");
+  const [selectedHucs, setSelectedHucs] = useState("include:1,2,3,4,5,6,7,8");
   
   const [showModal, setshowModal] = useState(false);
   const [currentStation, setCurrentStation] = useState();
@@ -350,18 +350,19 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
   return (
     
     <div>
-      { isPlotReady &&
-        <LoaderContainer>
+
+        <LoaderContainer isVisible={isPlotReady}>
           <div className="loading-overlay">
             <div className="loading-spinner"></div>
           </div>
         </LoaderContainer>        
-      }
+
 
   
     <MainContainer>
     <SideMenuWrapper setNavVisible={setNavVisible} showRegionsMenu={showRegionsMenu} handleShowRegionMenu={handleShowRegionMenu} showRegions={showRegions} setShowRegionsVisible={setShowRegionsVisible} selectedRegions={selectedRegions} setAvailableRegions={setAvailableRegions} availableRegions={availableRegions}  />
-        <ReMap isFullMap={isFullMap} 
+        <ReMap 
+          isFullMap={isFullMap} 
           center={fromLonLat([-94.9065, 38.9884])} 
           zoom={5} 
           layerGroups={groupLayers} 
@@ -387,8 +388,8 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
                 Tiled: true,
               })}
               name={"basemap_1"}
-              groupLayerName={"Basemaps"}
-              groupLayers = {groupLayers}
+              // groupLayerName={"Basemaps"}
+              // groupLayers = {groupLayers}
             />                    
             <OlImageTileLayer
               source={TileImageArcGISRest(StreamLayerURL, {
@@ -397,8 +398,8 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
                 LAYERS:"show:1,2,3,4,5,6,21"
               })}
               name={"streams_layer"}
-              groupLayerName={"NWM Stream Analysis"}
-              groupLayers = {groupLayers}
+              // groupLayerName={"NWM Stream Analysis"}
+              // groupLayers = {groupLayers}
    
             />
             { showRegions && 
@@ -407,8 +408,8 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
                 LAYERS:{selectedHucs}
               })}
               name={"huc_levels"}
-              groupLayerName={"HUCS"}
-              groupLayers = {groupLayers}
+              // groupLayerName={"HUCS"}
+              // groupLayers = {groupLayers}
     
             />            
             }
@@ -430,9 +431,9 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
 
           </Layers>
           <Controls>
-              <SwitchControllerContainer>
+              {/* <SwitchControllerContainer>
                 <SwitchLayerControl/>
-              </SwitchControllerContainer>
+              </SwitchControllerContainer> */}
 
           </Controls>
         </ReMap>

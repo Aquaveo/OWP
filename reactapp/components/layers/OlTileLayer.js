@@ -15,17 +15,20 @@ export const OlTileLayer = ({ source, name, groupLayerName,groupLayers}) => {
     // console.log(map);
 
     // if (groupLayers.length < 1){
-    if (groupLayerName === 'Basemaps'){
-        groupLayers[0].getLayers().array_.push(Tlayer)
-    }
-
-
+    // if (groupLayerName === 'Basemaps'){
+    //     groupLayers[0].getLayers().array_.push(Tlayer)
+    // }
+    
+    map.addLayer(Tlayer);
     return () => {
-      if (groupLayerName === 'Basemaps'){
-        groupLayers[0].getLayers().array_ = groupLayers[0].getLayers().array_.filter(function( layer ) {
-          return layer.get('name') !== name;
-        });
-      }
+      // if (groupLayerName === 'Basemaps'){
+      //   groupLayers[0].getLayers().array_ = groupLayers[0].getLayers().array_.filter(function( layer ) {
+      //     return layer.get('name') !== name;
+      //   });
+      // }
+      map.removeLayer(Tlayer);
+      
+      
     };
   });
   return null;
