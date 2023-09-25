@@ -375,6 +375,7 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
           setMetadata = {setMetadata}
           selectedRegions={selectedRegions}
           setSelectedRegions={setSelectedRegions}
+          handleHideLoading={handleHideLoading}
         >
 
           <Layers>

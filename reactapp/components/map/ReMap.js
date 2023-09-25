@@ -33,7 +33,8 @@ export const ReMap = (
 		handleShowLoading,
 		setMetadata,
 		selectedRegions,
-		setSelectedRegions
+		setSelectedRegions,
+		handleHideLoading
 	}) => 
 	
 	{
@@ -365,6 +366,14 @@ export const ReMap = (
 			// else {
 			// 	map.getTargetElement().style.cursor = '';
 			//   }
+		});
+
+		map.on('loadstart', function () {
+			handleShowLoading();
+		});
+
+		map.on('loadend', function () {
+			handleHideLoading();
 		});
 	},[map])
 

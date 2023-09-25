@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form';
 import { BiSolidSave } from "react-icons/bi"
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
+import toast, { Toaster } from 'react-hot-toast';
 
 export const SideMenuWrapper = (
     { 
@@ -19,6 +20,13 @@ export const SideMenuWrapper = (
         setAvailableRegions
     }) => {
 
+
+    const notifyError = (content) => {
+      if (content != 'success'){
+        toast.error(content);
+      }
+    }
+  
     const regionTypeRadioButtons = [
         { name: "File Region", value: "file" },
         { name: "HUC Region", value: "huc" },
@@ -45,10 +53,11 @@ export const SideMenuWrapper = (
 
     const saveRegionsUser = async (e) => {
       //validation for empty form
-      e.preventDefault()
+      e.preventDefault();
       let msge = validateRegionAddition();
       console.log(msge);
       if(msge != 'success'){
+        notifyError(msge);
         return
       }
       console.log(selectedRegions);
@@ -65,6 +74,16 @@ export const SideMenuWrapper = (
       }
 
       let responseRegions = await appAPI.saveUserRegions(dataRequest);
+      toast.promise(
+        responseRegions,
+         {
+           loading: 'Saving...',
+           success: <b>Settings saved!</b>,
+           error: <b>Could not save.</b>,
+         }
+       );
+      
+      // let responseRegions = await appAPI.saveUserRegions(dataRequest);
 
       console.log(responseRegions)
       setAvailableRegions([])
@@ -113,6 +132,8 @@ export const SideMenuWrapper = (
     return(
       
         <SideMenu isVisible={showRegionsMenu} >
+          <Toaster  position="bottom-center" />
+
           <div className="wrapper_absolute">
            <div className="Myhamburguer">
             <Hamburger toggled={showRegionsMenu} toggle={handleShowRegionMenu} size={20} />
