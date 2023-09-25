@@ -42,10 +42,15 @@ export const SideMenuWrapper = (
       }
       setFormRegionData({...formRegionData, regionType: e.target.value})
     }
+
     const saveRegionsUser = async (e) => {
       //validation for empty form
+      e.preventDefault()
       let msge = validateRegionAddition();
-      if(msge != 'success'){return}
+      console.log(msge);
+      if(msge != 'success'){
+        return
+      }
       console.log(selectedRegions);
       let finalGeoJSON = makeGeoJSONFromArray();
       console.log(finalGeoJSON);
@@ -114,7 +119,7 @@ export const SideMenuWrapper = (
           </div>
             {
               showRegionsMenu && 
-              <Form>
+              <Form onSubmit={saveRegionsUser} >
                 <p className="sudo_title">
                     Add Regions Menu
                 </p>
@@ -171,7 +176,7 @@ export const SideMenuWrapper = (
                 }
 
                 <div className="buttons-menu">
-                  <Button variant="secondary"  type="submit" onClick={saveRegionsUser}><BiSolidSave /></Button>
+                  <Button variant="secondary"  type="submit" ><BiSolidSave /></Button>
                 </div>
               </Form>
             }
