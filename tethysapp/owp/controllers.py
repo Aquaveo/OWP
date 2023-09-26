@@ -140,6 +140,12 @@ def getUserRegions(request):
             for obj in regions_repsonse["regions"]
         ]
         regions_repsonse["default_geom"] = default_region_geometry
+
+        for region in regions_repsonse["regions"]:
+            if region["default"]:
+                region["geom"] = default_region_geometry
+            else:
+                region["geom"] = {}
         # get the user_id and user name, get the actual User Object
         # get all the region associated with the userID
         # pass all the regions to front end

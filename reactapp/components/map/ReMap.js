@@ -34,7 +34,8 @@ export const ReMap = (
 		setMetadata,
 		selectedRegions,
 		setSelectedRegions,
-		handleHideLoading
+		handleHideLoading,
+		availableRegions
 	}) => 
 	
 	{
@@ -58,7 +59,7 @@ export const ReMap = (
 	// 		return currentSelectedRegions ;
 	// 	}
 	// }
-
+	
 	function isRegionInSelectedRegions(arr, key, value) {
 		if(arr){
 			return arr.some((obj) => obj[key] === value);
@@ -67,8 +68,37 @@ export const ReMap = (
 			return false
 		}
 	  }
+	//   useEffect(() => {
+    //     if (!map) return;
+    //     console.log(availableRegions);
+    //     for (const availableRegion of availableRegions){
+    //         if (availableRegion.default === true){
+    //             let features_layer_default = JSON.parse(availableRegion['geom']);
+    //             const styles = new Style({
+    //                 stroke: new Stroke({
+    //                 color: 'red',
+    //                 width: 3,
+    //                 })
+    //             })
+    //             const polygonSource = new VectorSource({
+    //                 format: new GeoJSON(),
+    //                 features: new GeoJSON().readFeatures(features_layer_default)
+    //             });
+    //             const polygonLayer = new Vector({
+    //                 source: polygonSource,
+    //                 style: styles,
+    //                 name: curentRegion['name']
+    //             });                
+    //             // map.addLayer(polygonLayer);
+    //     		map.getLayers().insertAt(1, polygonLayer);
 
+    //         }
+    //     }
 
+    //     return () => {
+    //     }
+    // }, [availableRegions])
+	
 	useEffect(() => {
 		console.log("usEffect Map.js");
 		let options = {

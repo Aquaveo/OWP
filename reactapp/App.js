@@ -12,7 +12,7 @@ import 'App.scss';
 function App() {
   const [showRegions,setShowRegionsVisible] = useState(false);
   const [showRegionsMenu, setShowRegionsMenu] =  useState(false);
-  const [navVisible, setNavVisible] = useState(false);
+  const [navVisible, setNavVisible] = useState(true);
 
   const handleShowRegionMenu = () => {
     setNavVisible(false);

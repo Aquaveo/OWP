@@ -42,7 +42,7 @@ import { LineChart } from "components/plots/linePlot";
 import appAPI from "services/api/app";
 import { LoaderContainer } from 'components/styles/Loader.styled';
 import { SideMenuWrapper } from 'components/menus/SideMenuRegions';
-
+import GeoJSON from 'ol/format/GeoJSON';
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
@@ -53,6 +53,7 @@ const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/M
 // const ws = 'ws://' + window.location.href.split('//')[1].split('owp')[0] + 'owp' +'/data-notification/notifications/ws/';
 const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
 function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, setShowRegionsVisible, setAvailableRegions, availableRegions}) {
+  
   const socketRef = useRef();
   // const [dataChartObject, setDataChartObject] = useState({})
   const [isFullMap, setIsFullMap] = useState(true)
@@ -200,7 +201,7 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
       'is_latest': true,
       'tooltip_text':'MR-7'
     }
-}
+  }
 
   const [currentProducts, setCurrentProducts] = useReducer(reducerProducts, currentProductsInitial);
   const [currentReachIdGeometry, setCurrentReachIdGeometry] = useState(new VectorSource());
@@ -278,16 +279,16 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
 			return currentSelectedRegions ;
 		}
 	}
-
+  const [currentDisplayRegions, setCurrentDisplayRegions ] = useState([])
   const getRegionsOfCurrentUser = async () => {    
     let userRegions = await appAPI.getUserRegions();;
     console.log(userRegions)
     setAvailableRegions(userRegions['regions'])
   }
-  useEffect(() => {
-    console.log("change region")
-    console.log(availableRegions)
-  }, [availableRegions])
+  // useEffect(() => {
+  //   console.log("change region")
+  //   console.log(availableRegions)
+  // }, [availableRegions])
 
   useEffect(() => {
     /* 
@@ -351,6 +352,20 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
     handlePlotUpdate();
   },[currentStationID])
 
+
+  useEffect(() => {
+    for (const availableRegion of availableRegions){
+        if (availableRegion.default === true){
+            let features_layer_default = JSON.parse(availableRegion['geom']);
+            setCurrentDisplayRegions(prevState => [...prevState, features_layer_default])
+        }
+    }
+
+    return () => {
+    }
+  }, [availableRegions])
+
+
   return (
     
     <div>
@@ -381,6 +396,7 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
           selectedRegions={selectedRegions}
           setSelectedRegions={setSelectedRegions}
           handleHideLoading={handleHideLoading}
+          availableRegions={availableRegions}
         >
 
           <Layers>
@@ -402,36 +418,49 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
                 LAYERS:"show:1,2,3,4,5,6,21"
               })}
               name={"streams_layer"}
+              zIndex={1}
               // groupLayerName={"NWM Stream Analysis"}
               // groupLayers = {groupLayers}
    
             />
-            {/* { showRegions &&  */}
+            { showRegions && 
               <OlImageTileLayer
-              source={TileImageArcGISRest(WbdMapLayerURL, {
-                LAYERS:{selectedHucs}
-              })}
-              name={"huc_levels"}
-              // groupLayerName={"HUCS"}
-              // groupLayers = {groupLayers}
-    
-            />            
-            {/* } */}
+                source={TileImageArcGISRest(WbdMapLayerURL, {
+                  LAYERS:{selectedHucs}
+                })}
+                name={"huc_levels"}
+                zIndex={2}
+
+                // groupLayerName={"HUCS"}
+                // groupLayers = {groupLayers}
+      
+              />            
+            }
+            {availableRegions.map((availableRegion, index) => (
+              <VectorLayer
+                  key={index}
+                  name={availableRegion.name}
+                  source= {
+                    new VectorSource({
+                      format: new GeoJSON(),
+                      features: new GeoJSON().readFeatures(availableRegion['geom'])
+                  })}
+                  // source={VectorSourceLayer({
+                  //   features: new GeoJSON().readFeatures(JSON.parse(availableRegion['geom']))
+                  // })}
+                  style={
+                    new Style({
+                      stroke: new Stroke({
+                      color: 'red',
+                      width: 3,
+                      })
+                    })
+                  }
+                  zIndex={3}
+              />
+            ))}
 
 
-            {/* <VectorLayer
-              name={"reach_vector"}
-              source={currentReachIdGeometry}
-              style={
-                new Style({                  
-                  stroke : new Stroke({ 
-                      color: '#e1ff00',
-                      width: 5
-                  })
-                })
-              }
-              
-          /> */}
 
           </Layers>
           <Controls>

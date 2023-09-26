@@ -4,13 +4,14 @@ import LayerGroup from 'ol/layer/Group';
 
 import MapContext from "../map/MapContext";
 
-export const OlTileLayer = ({ source, name, groupLayerName,groupLayers}) => {
+export const OlTileLayer = ({ source, name,zIndex=0, groupLayerName,groupLayers}) => {
   const { map } = useContext(MapContext);
   useEffect(() => {
     if (!map) return;
     let Tlayer = new TileLayer({
       source,
       name,
+      zIndex
     });
     // console.log(map);
 
