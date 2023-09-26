@@ -3,26 +3,47 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 
-export const RegionsRow = ({props}) => {
+export const RegionsRow = ({availableRegions}) => {
 
     return (
-        <Row>
-            <Form>
-                <Form.Group as={Col}>
-                    <Form.Control plaintext readOnly defaultValue={props.name} />
-                </Form.Group>
-                <Form.Group as={Col}>
-                    <Form.Control plaintext readOnly defaultValue={props.regionType} />
-                </Form.Group>
-                <Form.Group as={Col}> 
-                        <Form.Check
-                            type="switch"
-                            id="default-region"
-                            label="Check this switch"
-                            value={props.default}
-                        />
-                </Form.Group>
-            </Form>
-        </Row>
+        <>
+            <Row className='mb-2'>
+                <Col sm={4}>
+                    Name
+                </Col>
+                <Col sm={4}>
+                    Type
+                </Col>
+                <Col sm={2} >
+                    Hide/Show
+                </Col>
+            </Row>
+
+            {availableRegions && availableRegions.map((availableRegion, index) => (
+                <Form as={Row} key={index} className='mb-2'>
+                    <Col sm={4}>
+                        <Form.Group >
+                            <Form.Control plaintext readOnly defaultValue={availableRegion.name} />
+                        </Form.Group>
+                    </Col>
+                    <Col sm={4}>
+                        <Form.Group>
+                            <Form.Control plaintext readOnly defaultValue={availableRegion.region_type} />
+                        </Form.Group>
+                    </Col>
+                    <Col sm={2} >
+                        <Form.Group>
+                            <Form.Check
+                                type="switch"
+                                id="default-region"
+                                // value={availableRegion.default}
+                                checked={ availableRegion.default }
+                            />
+                        </Form.Group>
+                    </Col>
+                </Form>
+            ))}
+        </>
     );
+
   }

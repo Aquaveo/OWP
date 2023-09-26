@@ -19,7 +19,7 @@ function Layout({navLinks, routes,handleShowRegionMenu,availableRegions,navVisib
   return (
     <div className="h-100">
         <Header onNavChange={setNavVisible} />
-        <NavMenu navTitle="Navigation"  navVisible={navVisible} onNavChange={setNavVisible}>
+        <NavMenu navTitle="Menu"  navVisible={navVisible} onNavChange={setNavVisible}>
           
             <SubMenu name="Regions" handleShowRegionMenu={handleShowRegionMenu} availableRegions={availableRegions} />
          

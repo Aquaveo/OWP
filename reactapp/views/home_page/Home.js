@@ -282,8 +282,12 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
   const getRegionsOfCurrentUser = async () => {    
     let userRegions = await appAPI.getUserRegions();;
     console.log(userRegions)
-    setAvailableRegions(userRegions)
-}
+    setAvailableRegions(userRegions['regions'])
+  }
+  useEffect(() => {
+    console.log("change region")
+    console.log(availableRegions)
+  }, [availableRegions])
 
   useEffect(() => {
     /* 

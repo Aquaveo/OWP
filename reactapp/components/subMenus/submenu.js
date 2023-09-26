@@ -17,18 +17,17 @@ import { useRef, useState, useEffect } from "react"
 import { fromLonLat } from 'ol/proj';
 import { ArcGISRestTile } from "components/source/TileArcGISRest";
 import LayerGroup from 'ol/layer/Group';
+import { RegionsRow } from './regionsRows';
 
-const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
-
-export const SubMenu = ({ name,handleShowRegionMenu,availableRegions, ...props}) => {
+export const SubMenu = ({ name,handleShowRegionMenu,availableRegions}) => {
     useEffect(() => {
         console.log(availableRegions)
-      
         return () => {
         }
-      }, [availableRegions])
+    }, [availableRegions])
     return (
-            <Row>
+        <>
+            <Row className='mb-2'>
                 <Col sm={8} >
                     {name}
                 </Col>
@@ -44,6 +43,11 @@ export const SubMenu = ({ name,handleShowRegionMenu,availableRegions, ...props})
                     </Button>
                 </Col>
             </Row>
+            <RegionsRow availableRegions={availableRegions}/>
+
+            
+        </>
+
 
     );
   }
