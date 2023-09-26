@@ -38,6 +38,7 @@ export const RegionsRow = ({availableRegions}) => {
                                 id="default-region"
                                 // value={availableRegion.default}
                                 checked={ availableRegion.default }
+                                onChange={(e) => {console.log(e.target.checked)}}
                             />
                         </Form.Group>
                     </Col>

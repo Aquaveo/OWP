@@ -369,7 +369,7 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
           isFullMap={isFullMap} 
           center={fromLonLat([-94.9065, 38.9884])} 
           zoom={5} 
-          layerGroups={groupLayers} 
+          // layerGroups={groupLayers} 
           handleShow={handleShow} 
           setCurrentStation={setCurrentStation} 
           currentProducts={currentProducts} 
@@ -406,7 +406,7 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
               // groupLayers = {groupLayers}
    
             />
-            { showRegions && 
+            {/* { showRegions &&  */}
               <OlImageTileLayer
               source={TileImageArcGISRest(WbdMapLayerURL, {
                 LAYERS:{selectedHucs}
@@ -416,7 +416,7 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
               // groupLayers = {groupLayers}
     
             />            
-            }
+            {/* } */}
 
 
             {/* <VectorLayer

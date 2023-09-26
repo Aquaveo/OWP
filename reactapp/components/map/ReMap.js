@@ -73,7 +73,8 @@ export const ReMap = (
 		console.log("usEffect Map.js");
 		let options = {
 			view: new View({ zoom, center }),
-			layers: layerGroups,
+			layers:[],
+			// layers: layerGroups,
 			controls: [],
 			overlays: []
 		};
@@ -413,6 +414,7 @@ export const ReMap = (
 			setSelectedRegions({type:"delete", region: {name:curentRegion['name'], data:curentRegion['data']}});
 		}
 		else{
+			console.log("added region")
 			const styles = new Style({
 				stroke: new Stroke({
 				  color: 'red',
