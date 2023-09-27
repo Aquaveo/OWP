@@ -52,10 +52,23 @@ const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/M
 
 // const ws = 'ws://' + window.location.href.split('//')[1].split('owp')[0] + 'owp' +'/data-notification/notifications/ws/';
 const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
-function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, setShowRegionsVisible, setAvailableRegions, availableRegions}) {
+function App(
+  {
+    setNavVisible,
+    showRegionsMenu,
+    handleShowRegionMenu, 
+    showRegions, 
+    setShowRegionsVisible, 
+    setAvailableRegions, 
+    availableRegions
+  }
+  ) 
+  {
   
   const socketRef = useRef();
-  // const [dataChartObject, setDataChartObject] = useState({})
+
+  // const [curentRegion, setCurrentRegion] = useState({});
+
   const [isFullMap, setIsFullMap] = useState(true)
   const [groupLayers, setGroupLayers] =  useState([
     new LayerGroup({
@@ -366,6 +379,54 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
   }, [availableRegions])
 
 
+	// useEffect(() => {
+	// 	if (!map) return;
+	// 	const regionFound = isRegionInSelectedRegions(selectedRegions, "name", curentRegion['name']);
+
+	// 	if(regionFound){
+	// 		console.log("found");
+	// 		const layerToRemove = selectedRegions.find((obj) => obj['name'] === curentRegion['name'])
+	// 		map.removeLayer(layerToRemove['layer'])
+	// 		setSelectedRegions({type:"delete", region: {name:curentRegion['name'], data:curentRegion['data']}});
+	// 	}
+	// 	else{
+	// 		console.log("added region")
+	// 		const styles = new Style({
+	// 			stroke: new Stroke({
+	// 			  color: 'red',
+	// 			  width: 3,
+	// 			})
+  //     })
+	// 		const polygonSource = new VectorSource({
+	// 			format: new GeoJSON(),
+	// 			url: curentRegion['url']
+  //     });
+  //     const polygonLayer = new Vector({
+	// 			source: polygonSource,
+	// 			style: styles,
+	// 			name: curentRegion['name'],
+  //       zIndex: 4
+  //     });
+
+	// 		mapObject.addLayer(polygonLayer);
+	// 		// map.getLayers().insertAt(1, polygonLayer);
+	// 		setSelectedRegions({type:"add", region: {name:curentRegion['name'], data:curentRegion['data'], layer:polygonLayer }});
+	// 	}
+
+	//   return () => {
+		
+	//   }
+	// }, [curentRegion])
+
+	// function isRegionInSelectedRegions(arr, key, value) {
+	// 	if(arr){
+	// 		return arr.some((obj) => obj[key] === value);
+	// 	}
+	// 	else{
+	// 		return false
+	// 	}
+  // }
+
   return (
     
     <div>
@@ -397,6 +458,8 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
           setSelectedRegions={setSelectedRegions}
           handleHideLoading={handleHideLoading}
           availableRegions={availableRegions}
+          // curentRegion={curentRegion}
+          // setCurrentRegion={setCurrentRegion}
         >
 
           <Layers>
@@ -418,7 +481,7 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
                 LAYERS:"show:1,2,3,4,5,6,21"
               })}
               name={"streams_layer"}
-              zIndex={1}
+              zIndex={3}
               // groupLayerName={"NWM Stream Analysis"}
               // groupLayers = {groupLayers}
    
@@ -437,17 +500,15 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
               />            
             }
             {availableRegions.map((availableRegion, index) => (
+              availableRegion.is_visible ?
               <VectorLayer
                   key={index}
-                  name={availableRegion.name}
+                  name={`${availableRegion.name}_user_region`}
                   source= {
                     new VectorSource({
                       format: new GeoJSON(),
                       features: new GeoJSON().readFeatures(availableRegion['geom'])
                   })}
-                  // source={VectorSourceLayer({
-                  //   features: new GeoJSON().readFeatures(JSON.parse(availableRegion['geom']))
-                  // })}
                   style={
                     new Style({
                       stroke: new Stroke({
@@ -456,7 +517,10 @@ function App({setNavVisible,showRegionsMenu,handleShowRegionMenu, showRegions, s
                       })
                     })
                   }
-                  zIndex={3}
+                  zIndex={1}
+              />:
+              <VectorLayer
+                name={"empty_vector_layer"}
               />
             ))}
 

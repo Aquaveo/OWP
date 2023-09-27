@@ -144,8 +144,11 @@ def getUserRegions(request):
         for region in regions_repsonse["regions"]:
             if region["default"]:
                 region["geom"] = default_region_geometry
+                region['is_visible'] = True
             else:
                 region["geom"] = {}
+                region['is_visible'] = False
+
         # get the user_id and user name, get the actual User Object
         # get all the region associated with the userID
         # pass all the regions to front end

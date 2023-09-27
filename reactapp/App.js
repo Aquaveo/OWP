@@ -14,14 +14,25 @@ function App() {
   const [showRegionsMenu, setShowRegionsMenu] =  useState(false);
   const [navVisible, setNavVisible] = useState(true);
 
-  const handleShowRegionMenu = () => {
-    setNavVisible(false);
-    setShowRegionsMenu(true)
-  };
 
   const [availableRegions, setAvailableRegions] = useState([]);
   const PATH_HOME = '/',
         PATH_INFO = '/Information/';
+
+  const handleShowRegionMenu = () => {
+    setNavVisible(false);
+    setShowRegionsMenu(true);
+    hideAllUserRegions()
+  };
+
+  const hideAllUserRegions = () => {
+    const updatedHiddenRegions = availableRegions.map(availableRegion => ({
+      ...availableRegion,
+      is_visible: false,
+    }));
+
+    setAvailableRegions(updatedHiddenRegions);
+  };
   return (
     <>
       <ErrorBoundary>

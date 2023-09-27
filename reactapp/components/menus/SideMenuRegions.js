@@ -114,18 +114,16 @@ export const SideMenuWrapper = (
     }
 
     const makeGeoJSONFromArray = () =>{
+      let finalGeoJSON = {}
       if(selectedRegions.length < 1){
-        return {}
+        return finalGeoJSON
       }
       else{
-        let finalGeoJSON = selectedRegions[0]['data'];
-
+          finalGeoJSON = selectedRegions[0]['data'];
         for (let i = 1; i < selectedRegions.length; i++) {
-            finalGeoJSON = concatGeoJSON(finalGeoJSON, selectedRegions[i]['data']);
+          finalGeoJSON = concatGeoJSON(finalGeoJSON, selectedRegions[i]['data']);
         }
       }
-
-      
         return finalGeoJSON;
     }
   

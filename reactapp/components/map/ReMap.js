@@ -35,7 +35,9 @@ export const ReMap = (
 		selectedRegions,
 		setSelectedRegions,
 		handleHideLoading,
-		availableRegions
+		availableRegions,
+		// curentRegion,
+		// setCurrentRegion
 	}) => 
 	
 	{
@@ -43,6 +45,7 @@ export const ReMap = (
 	const mapRef = useRef();
 	const [map, setMap] = useState(null);
 	const [curentRegion, setCurrentRegion] = useState({});
+
 	// const [selectedRegions, setSelectedRegions] = useReducer(reducerSelectedRegions, []);
 	
 	// const currentSelectedRegions = [];
@@ -68,6 +71,48 @@ export const ReMap = (
 			return false
 		}
 	  }
+
+
+	function findKeyWithMaxValue(obj) {
+		let maxValue = -Infinity; // Initialize with a very low value
+		let maxKey = null;
+	  
+		for (const key in obj) {
+		  if (obj.hasOwnProperty(key)) {
+			if (obj[key] > maxValue) {
+			  maxValue = obj[key];
+			  maxKey = key;
+			}
+		  }
+		}
+	  
+		return maxKey;
+	}
+	function findPriorityLayerForOnClickEvent(layers) {
+		let layerWeight={}
+		let priorityLayer = layers[0]
+
+		// let layer = layer;
+		layers.forEach(function(layer_single){
+			if(layer_single.get('name')==='huc_levels'){
+				layerWeight['huc_levels'] = 2
+			}
+			if(layer_single.get('name')==='streams_layer'){
+				layerWeight['streams_layer'] = 1
+			}
+			if(layer_single.get('name').includes('_user_region')){
+				layerWeight[layer_single.get('name')] = 0
+			}
+		});
+		let priorityLayerName = findKeyWithMaxValue(layerWeight);
+		layers.forEach(function(layer_single){
+			if(layer_single.get('name')=== priorityLayerName){
+				priorityLayer = layer_single; 
+			}						
+		});
+		return priorityLayer
+	}
+
 	//   useEffect(() => {
     //     if (!map) return;
     //     console.log(availableRegions);
@@ -130,6 +175,7 @@ export const ReMap = (
 					return (
 						layer.get('ignoreInfo') !== true && // give your non-infoable layers a property to filter by, when creating the OpenLayersObject for the layer, make sure you `layer.set('ignoreInfo', true)` 
 						!layer.get('name').includes('basemap') &&
+						!layer.get('name').includes('empty_vector_layer') &&
 						!(layer instanceof VectorTileLayer) // only if the layer is not a vector layer do we want to query
 						// !(layer instanceof VectorLayer)     // the ${mapServer}/identify endpoint;
 					)
@@ -145,7 +191,10 @@ export const ReMap = (
 				console.log(clickCoordinate)
 				let mapServerInfo = []
 				let promises = [];
-				let layer = layers[0];
+
+				// let layer = layers[0];
+				let layer = findPriorityLayerForOnClickEvent(layers)
+
 				// layers
 					// .forEach( (layer) => {
 						if(layer.get('name') ==='streams_layer'){
@@ -458,7 +507,8 @@ export const ReMap = (
 			  const polygonLayer = new Vector({
 				source: polygonSource,
 				style: styles,
-				name: curentRegion['name']
+				name: curentRegion['name'],
+				zIndex: 4
 			  });
 
 			// mapObject.addLayer(polygonLayer);
