@@ -32,12 +32,12 @@ export const SubMenu = ({ name,handleShowRegionMenu,availableRegions}) => {
                     <Button variant="secondary" size="sm" onClick={handleShowRegionMenu} >
                         <BsPlusLg />
                     </Button>
-                    <Button variant="info" size="sm" onClick={handleShowRegionMenu} >
+                    {/* <Button variant="info" size="sm" onClick={handleShowRegionMenu} >
                         <MdOutlineEdit />
                     </Button>
                     <Button variant="danger" size="sm"onClick={handleShowRegionMenu} >
                         <BsTrash />
-                    </Button>
+                    </Button> */}
                 </Col>
             </Row>
             <RegionsRow availableRegions={availableRegions}/>
