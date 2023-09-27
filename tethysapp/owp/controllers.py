@@ -85,7 +85,7 @@ def saveUserRegions(request):
             dest.to_sql(
                 name="regions",
                 con=engine,
-                if_exists="replace",
+                if_exists="append",
                 index=False,
                 dtype={"geom": Geometry("GEOMETRYCOLLECTION", srid=4326)},
             )
@@ -144,10 +144,10 @@ def getUserRegions(request):
         for region in regions_repsonse["regions"]:
             if region["default"]:
                 region["geom"] = default_region_geometry
-                region['is_visible'] = True
+                region["is_visible"] = True
             else:
                 region["geom"] = {}
-                region['is_visible'] = False
+                region["is_visible"] = False
 
         # get the user_id and user name, get the actual User Object
         # get all the region associated with the userID
