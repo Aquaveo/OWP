@@ -62,7 +62,7 @@ function App(
     setAvailableRegions, 
     availableRegions
   }
-  ) 
+) 
   {
   
   const socketRef = useRef();
@@ -378,55 +378,6 @@ function App(
     }
   }, [availableRegions])
 
-
-	// useEffect(() => {
-	// 	if (!map) return;
-	// 	const regionFound = isRegionInSelectedRegions(selectedRegions, "name", curentRegion['name']);
-
-	// 	if(regionFound){
-	// 		console.log("found");
-	// 		const layerToRemove = selectedRegions.find((obj) => obj['name'] === curentRegion['name'])
-	// 		map.removeLayer(layerToRemove['layer'])
-	// 		setSelectedRegions({type:"delete", region: {name:curentRegion['name'], data:curentRegion['data']}});
-	// 	}
-	// 	else{
-	// 		console.log("added region")
-	// 		const styles = new Style({
-	// 			stroke: new Stroke({
-	// 			  color: 'red',
-	// 			  width: 3,
-	// 			})
-  //     })
-	// 		const polygonSource = new VectorSource({
-	// 			format: new GeoJSON(),
-	// 			url: curentRegion['url']
-  //     });
-  //     const polygonLayer = new Vector({
-	// 			source: polygonSource,
-	// 			style: styles,
-	// 			name: curentRegion['name'],
-  //       zIndex: 4
-  //     });
-
-	// 		mapObject.addLayer(polygonLayer);
-	// 		// map.getLayers().insertAt(1, polygonLayer);
-	// 		setSelectedRegions({type:"add", region: {name:curentRegion['name'], data:curentRegion['data'], layer:polygonLayer }});
-	// 	}
-
-	//   return () => {
-		
-	//   }
-	// }, [curentRegion])
-
-	// function isRegionInSelectedRegions(arr, key, value) {
-	// 	if(arr){
-	// 		return arr.some((obj) => obj[key] === value);
-	// 	}
-	// 	else{
-	// 		return false
-	// 	}
-  // }
-
   return (
     
     <div>
@@ -440,7 +391,17 @@ function App(
 
   
     <MainContainer>
-    <SideMenuWrapper setNavVisible={setNavVisible} showRegionsMenu={showRegionsMenu} handleShowRegionMenu={handleShowRegionMenu} showRegions={showRegions} setShowRegionsVisible={setShowRegionsVisible} selectedRegions={selectedRegions} setAvailableRegions={setAvailableRegions} availableRegions={availableRegions}  />
+    <SideMenuWrapper 
+      setNavVisible={setNavVisible} 
+      showRegionsMenu={showRegionsMenu} 
+      handleShowRegionMenu={handleShowRegionMenu} 
+      showRegions={showRegions} 
+      setShowRegionsVisible={setShowRegionsVisible} 
+      selectedRegions={selectedRegions} 
+      setAvailableRegions={setAvailableRegions} 
+      availableRegions={availableRegions}
+      setSelectedRegions={setSelectedRegions}
+      />
         <ReMap 
           isFullMap={isFullMap} 
           center={fromLonLat([-94.9065, 38.9884])} 
@@ -524,7 +485,27 @@ function App(
               />
             ))}
 
-
+            {selectedRegions.map((selectedRegion, index) => (
+                <VectorLayer
+                    key={index}
+                    name={`${selectedRegion.name}_selected_region`}
+                    source= {
+                      new VectorSource({
+                        format: new GeoJSON(),
+                        url: selectedRegion['url']
+                        })
+                    }
+                    style={
+                      new Style({
+                        stroke: new Stroke({
+                          color: 'green',
+                          width: 3,
+                        })
+                      })
+                    }
+                    zIndex={1}
+                />
+              ))}
 
           </Layers>
           <Controls>

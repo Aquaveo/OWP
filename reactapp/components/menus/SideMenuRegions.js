@@ -17,7 +17,8 @@ export const SideMenuWrapper = (
         handleShowRegionMenu,
         setShowRegionsVisible,
         selectedRegions,
-        setAvailableRegions
+        setAvailableRegions,
+        setSelectedRegions
     }) => {
 
 
@@ -74,19 +75,21 @@ export const SideMenuWrapper = (
       }
 
       let responseRegions = await appAPI.saveUserRegions(dataRequest);
-      toast.promise(
-        responseRegions,
-         {
-           loading: 'Saving...',
-           success: <b>Settings saved!</b>,
-           error: <b>Could not save.</b>,
-         }
-       );
+      // toast.promise(
+      //   responseRegions,
+      //    {
+      //      loading: 'Saving...',
+      //      success: <b>Settings saved!</b>,
+      //      error: <b>Could not save.</b>,
+      //    }
+      //  );
       
       // let responseRegions = await appAPI.saveUserRegions(dataRequest);
 
       console.log(responseRegions)
-      setAvailableRegions([])
+      
+      setSelectedRegions({type:"reset", region: {}});
+
       if (!responseRegions['msge'].includes('error')){
         setNavVisible(false);
       }

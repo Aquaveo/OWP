@@ -483,37 +483,37 @@ export const ReMap = (
 	},[map])
 
 	useEffect(() => {
-		if (!map) return;
+		// if (!map) return;
 		const regionFound = isRegionInSelectedRegions(selectedRegions, "name", curentRegion['name']);
 
 		if(regionFound){
 			console.log("found");
-			const layerToRemove = selectedRegions.find((obj) => obj['name'] === curentRegion['name'])
-			map.removeLayer(layerToRemove['layer'])
+			// const layerToRemove = selectedRegions.find((obj) => obj['name'] === curentRegion['name'])
+			// map.removeLayer(layerToRemove['layer'])
 			setSelectedRegions({type:"delete", region: {name:curentRegion['name'], data:curentRegion['data']}});
 		}
 		else{
 			console.log("added region")
-			const styles = new Style({
-				stroke: new Stroke({
-				  color: 'red',
-				  width: 3,
-				})
-			  })
-			const polygonSource = new VectorSource({
-				format: new GeoJSON(),
-				url: curentRegion['url']
-			  });
-			  const polygonLayer = new Vector({
-				source: polygonSource,
-				style: styles,
-				name: curentRegion['name'],
-				zIndex: 4
-			  });
+			// const styles = new Style({
+			// 	stroke: new Stroke({
+			// 	  color: 'red',
+			// 	  width: 3,
+			// 	})
+			//   })
+			// const polygonSource = new VectorSource({
+			// 	format: new GeoJSON(),
+			// 	url: curentRegion['url']
+			//   });
+			//   const polygonLayer = new Vector({
+			// 	source: polygonSource,
+			// 	style: styles,
+			// 	name: curentRegion['name'],
+			// 	zIndex: 4
+			//   });
 
-			// mapObject.addLayer(polygonLayer);
-			map.getLayers().insertAt(1, polygonLayer);
-			setSelectedRegions({type:"add", region: {name:curentRegion['name'], data:curentRegion['data'], layer:polygonLayer }});
+			// map.getLayers().insertAt(1, polygonLayer);
+			// setSelectedRegions({type:"add", region: {name:curentRegion['name'], data:curentRegion['data'], layer:polygonLayer, url: curentRegion['url'] }});
+			setSelectedRegions({type:"add", region: {name:curentRegion['name'], data:curentRegion['data'], url: curentRegion['url'] }});
 		}
 
 	  return () => {
