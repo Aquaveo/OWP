@@ -42,11 +42,13 @@ import { LineChart } from "components/plots/linePlot";
 import appAPI from "services/api/app";
 import { LoaderContainer } from 'components/styles/Loader.styled';
 
+const TETHYS_PREFIX_URL = process.env.TETHYS_PREFIX_URL;
+
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
 // const ws = 'ws://' + window.location.href.split('//')[1].split('owp')[0] + 'owp' +'/data-notification/notifications/ws/';
-const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
+const ws = 'ws://' + `localhost:8000${TETHYS_PREFIX_URL}apps/owp` + '/data-notification/notifications/ws/';
 function App() {
   const socketRef = useRef();
   // const [dataChartObject, setDataChartObject] = useState({})

@@ -11,7 +11,7 @@ module.exports = (env, argv) => {
 		output: {
 			path: path.resolve(__dirname, '../../tethysapp/owp/public/frontend'),
 			filename: '[name].js',
-			publicPath: '/static/owp/frontend/',
+			publicPath: '/test/prefix/static/owp/frontend/',
 		},
 		resolve: {
 			modules: [
