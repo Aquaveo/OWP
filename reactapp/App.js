@@ -11,8 +11,9 @@ import 'App.scss';
 
 function App() {
   const [showRegions,setShowRegionsVisible] = useState(false);
+  const [showMainRegionsMenu, setShowMainRegionsMenu] = useState(false);
   const [showRegionsMenu, setShowRegionsMenu] =  useState(false);
-  const [navVisible, setNavVisible] = useState(true);
+  const [navVisible, setNavVisible] = useState(false);
 
 
   const [availableRegions, setAvailableRegions] = useState([]);
@@ -24,7 +25,9 @@ function App() {
     setShowRegionsMenu(true);
     hideAllUserRegions()
   };
-
+  const handleShowMainRegionMenu = () => {
+    setShowMainRegionsMenu(true);
+  };
   const hideAllUserRegions = () => {
     const updatedHiddenRegions = availableRegions.map(availableRegion => ({
       ...availableRegion,
@@ -47,7 +50,21 @@ function App() {
               navVisible={navVisible}
               setNavVisible={setNavVisible}
               routes={[
-                <Route path={PATH_HOME} element={<Home setNavVisible={setNavVisible} showRegionsMenu={showRegionsMenu} handleShowRegionMenu={handleShowRegionMenu} showRegions={showRegions} setShowRegionsVisible ={setShowRegionsVisible} setAvailableRegions={setAvailableRegions} availableRegions={availableRegions} />} key='route-home' />,
+                <Route 
+                  path={PATH_HOME} 
+                  element={
+                    <Home 
+                      setNavVisible={setNavVisible}
+                      showRegionsMenu={showRegionsMenu}
+                      handleShowRegionMenu={handleShowRegionMenu}
+                      showRegions={showRegions}
+                      setShowRegionsVisible={setShowRegionsVisible}
+                      setAvailableRegions={setAvailableRegions}
+                      availableRegions={availableRegions} 
+                      showMainRegionsMenu={showMainRegionsMenu}
+                      handleShowMainRegionMenu={handleShowMainRegionMenu}
+                    />} 
+                    key='route-home' />,
                 <Route path={PATH_INFO} element={<LearnReact />} key='route-learn' />
               ]}
             />
