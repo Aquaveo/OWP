@@ -3,7 +3,21 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 
-export const RegionsRow = ({availableRegions}) => {
+export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
+
+      const toggleVisibilityRegion = (index) => {
+          setAvailableRegions((prevData) => {
+          // Create a copy of the previous state array
+          const newData = [...prevData];
+          
+          // Toggle the "is_visible" property of the object at the specified index
+          newData[index] = { ...newData[index], is_visible: !newData[index].is_visible };
+          
+          return newData;
+        });
+      };
+
+
 
     return (
         <>
@@ -36,9 +50,9 @@ export const RegionsRow = ({availableRegions}) => {
                             <Form.Check
                                 type="switch"
                                 id="default-region"
-                                // value={availableRegion.default}
-                                checked={ availableRegion.default }
-                                onChange={(e) => {console.log(e.target.checked)}}
+                                value={availableRegion.is_visible}
+                                checked={availableRegion.is_visible}
+                                onChange={(e) => toggleVisibilityRegion(index)}
                             />
                         </Form.Group>
                     </Col>

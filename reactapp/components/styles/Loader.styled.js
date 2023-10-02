@@ -9,11 +9,22 @@ export const LoaderContainer = styled.div`
         width: 100%;
         height: 100%;
         display: ${props => props.isVisible ? "flex" : "none"};
+        flex-direction: column;
+        color: white;
         justify-content: center;
         align-items: center;
         z-index: 9999999; /* Adjust the z-index as needed */
     }
-    
+    // .loading-text{
+    //     color: white;
+    //     background-color: #16a085;
+    //     width: fit-content
+    //     border: 8px solid #f3f3f3;
+    //     border-top: 8px solid #16a085;
+    //     width: 80px;
+    //     height: 80px;
+    //     font-size: 10px;
+    // }
     /* Style for the loading spinner or indicator */
     .loading-spinner {
         border: 8px solid #f3f3f3;
@@ -28,5 +39,6 @@ export const LoaderContainer = styled.div`
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
+
 
 `;

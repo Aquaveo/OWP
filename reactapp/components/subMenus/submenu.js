@@ -19,7 +19,7 @@ import { ArcGISRestTile } from "components/source/TileArcGISRest";
 import LayerGroup from 'ol/layer/Group';
 import { RegionsRow } from './regionsRows';
 
-export const SubMenu = ({ name,handleShowRegionMenu,availableRegions}) => {
+export const SubMenu = ({ name,handleShowRegionMenu,availableRegions,setAvailableRegions}) => {
 
 
     return (
@@ -40,7 +40,7 @@ export const SubMenu = ({ name,handleShowRegionMenu,availableRegions}) => {
                     </Button> */}
                 </Col>
             </Row>
-            <RegionsRow availableRegions={availableRegions}/>
+            <RegionsRow availableRegions={availableRegions} setAvailableRegions={setAvailableRegions}/>
 
             
         </>

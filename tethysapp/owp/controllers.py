@@ -120,7 +120,7 @@ def saveUserRegions(request):
 @controller
 def getUserRegions(request):
     # breakpoint()
-    regions_repsonse = {}
+    regions_response = {}
     if request.user.is_authenticated:
         print("authenticated")
         user_name = request.user.username
@@ -128,34 +128,25 @@ def getUserRegions(request):
         sql_query = f"SELECT * FROM regions WHERE user_name='{user_name}'"
 
         user_regions_df = gpd.GeoDataFrame.from_postgis(sql_query, engine)
-        regions_repsonse["regions"] = user_regions_df.to_dict(orient="records")
-        default_region = next(
-            (item for item in regions_repsonse["regions"] if item["default"]), None
-        )
+        regions_response["regions"] = user_regions_df.to_dict(orient="records")
+        # breakpoint()
 
-        default_region_geometry = shapely.to_geojson(default_region["geom"])
+        for region in regions_response["regions"]:
+            region["geom"] = shapely.to_geojson(region["geom"])
 
-        regions_repsonse["regions"] = [
-            {k: v for k, v in obj.items() if k != "geom"}
-            for obj in regions_repsonse["regions"]
-        ]
-        regions_repsonse["default_geom"] = default_region_geometry
-
-        for region in regions_repsonse["regions"]:
+        for region in regions_response["regions"]:
             if region["default"]:
-                region["geom"] = default_region_geometry
                 region["is_visible"] = True
             else:
-                region["geom"] = {}
                 region["is_visible"] = False
 
         # get the user_id and user name, get the actual User Object
         # get all the region associated with the userID
         # pass all the regions to front end
     else:
-        regions_repsonse["regions"] = []
-        regions_repsonse["default_geom"] = {}
-    return JsonResponse(regions_repsonse)
+        regions_response["regions"] = []
+        regions_response["default_geom"] = {}
+    return JsonResponse(regions_response)
 
 
 @controller

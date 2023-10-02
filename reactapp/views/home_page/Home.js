@@ -43,6 +43,7 @@ import appAPI from "services/api/app";
 import { LoaderContainer } from 'components/styles/Loader.styled';
 import { SideMenuWrapper } from 'components/menus/SideMenuRegions';
 import GeoJSON from 'ol/format/GeoJSON';
+import { RegionMenuWrapper } from 'components/menus/RegionMenu';
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
@@ -60,7 +61,9 @@ function App(
     showRegions, 
     setShowRegionsVisible, 
     setAvailableRegions, 
-    availableRegions
+    availableRegions,
+    showMainRegionsMenu,
+    handleShowMainRegionMenu
   }
 ) 
   {
@@ -68,7 +71,7 @@ function App(
   const socketRef = useRef();
 
   // const [curentRegion, setCurrentRegion] = useState({});
-
+  const [loadingText, setLoadingText] = useState("Loading Layers ...")
   const [isFullMap, setIsFullMap] = useState(true)
   const [groupLayers, setGroupLayers] =  useState([
     new LayerGroup({
@@ -293,49 +296,56 @@ function App(
 		}
 	}
   const [currentDisplayRegions, setCurrentDisplayRegions ] = useState([])
-  const getRegionsOfCurrentUser = async () => {    
-    let userRegions = await appAPI.getUserRegions();;
-    console.log(userRegions)
-    setAvailableRegions(userRegions['regions'])
-  }
+
   // useEffect(() => {
   //   console.log("change region")
   //   console.log(availableRegions)
   // }, [availableRegions])
 
+  const getRegionsOfCurrentUser = async () => {
+    setLoadingText("Loading User Regions ...")    
+    let userRegions = await appAPI.getUserRegions();;
+    console.log(userRegions)
+    setAvailableRegions(userRegions['regions']);
+    handleShowMainRegionMenu();
+    handleHideLoading();
+  }
+
   useEffect(() => {
     /* 
       Load the regions of the user
     */
-    let dataRequest = {}
+    handleShowLoading();
+
     getRegionsOfCurrentUser();
 
     socketRef.current = new WebSocket(ws);
-      socketRef.current.onopen = () => {
-        console.log("WebSocket is Open");
-      };
-    
-      socketRef.current.onclose = function () {
-        // Try to reconnect in 1 second
-        setTimeout(function () {
-          //implement more logic
-          // this.startWS(websocketServerLocation);
-        }, 1000);
-        console.log("WebSocket is Closed");
-      };
-      socketRef.current.onmessage = function (e) {
-        let data = JSON.parse(e.data);
-        
-        let product_name = data['product'];
-        console.log("receiving data socket")
-        let ts = data['data'][0]['data'].map(obj => ({
-          value: obj.value,
-          'forecast-time': new Date(obj['forecast-time']).getTime()
-        }));
-        setCurrentProducts({type: product_name,is_requested:true, data: ts});
-        handlePlotUpdate();
-        // handleisPlotReady();
-      }
+    socketRef.current.onopen = () => {
+      console.log("WebSocket is Open");
+    };
+  
+    socketRef.current.onclose = function () {
+      // Try to reconnect in 1 second
+      setTimeout(function () {
+        //implement more logic
+        // this.startWS(websocketServerLocation);
+      }, 1000);
+      console.log("WebSocket is Closed");
+    };
+    socketRef.current.onmessage = function (e) {
+      let data = JSON.parse(e.data);
+      
+      let product_name = data['product'];
+      console.log("receiving data socket")
+      let ts = data['data'][0]['data'].map(obj => ({
+        value: obj.value,
+        'forecast-time': new Date(obj['forecast-time']).getTime()
+      }));
+      setCurrentProducts({type: product_name,is_requested:true, data: ts});
+      handlePlotUpdate();
+      // handleisPlotReady();
+    }
+
 	}, []);
   useEffect(() => {
     // here we have changed the currrent products object, so we can send something to the web sockets
@@ -385,12 +395,20 @@ function App(
         <LoaderContainer isVisible={isPlotReady}>
           <div className="loading-overlay">
             <div className="loading-spinner"></div>
+            <div className='loading-text'>{loadingText}</div>
           </div>
         </LoaderContainer>        
-
-
-  
     <MainContainer>
+    <RegionMenuWrapper 
+      name="Regions" 
+      showMainRegionsMenu={showMainRegionsMenu} 
+      handleShowMainRegionMenu={handleShowMainRegionMenu} 
+      availableRegions={availableRegions} 
+      setAvailableRegions={setAvailableRegions}
+    />
+
+
+
     <SideMenuWrapper 
       setNavVisible={setNavVisible} 
       showRegionsMenu={showRegionsMenu} 
@@ -443,9 +461,6 @@ function App(
               })}
               name={"streams_layer"}
               zIndex={3}
-              // groupLayerName={"NWM Stream Analysis"}
-              // groupLayers = {groupLayers}
-   
             />
             { showRegions && 
               <OlImageTileLayer

@@ -31,6 +31,6 @@ export const OlTileLayer = ({ source, name,zIndex=0, groupLayerName,groupLayers}
       
       
     };
-  });
+  },[map]);
   return null;
 };

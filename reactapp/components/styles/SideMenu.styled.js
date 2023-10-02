@@ -9,7 +9,8 @@ export const SideMenu = styled.div`
     padding:5px;
     position:absolute;
     z-index:300;
-    bottom:0px;
+    // ${props => `${props.position}: 10px`};
+    // bottom:0px;
 
     .Myhamburguer{
         display: flex;
