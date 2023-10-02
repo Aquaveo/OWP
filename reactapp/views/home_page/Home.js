@@ -405,6 +405,7 @@ function App(
       handleShowMainRegionMenu={handleShowMainRegionMenu} 
       availableRegions={availableRegions} 
       setAvailableRegions={setAvailableRegions}
+      handleShowRegionMenu={handleShowRegionMenu}
     />
 
 
@@ -450,8 +451,6 @@ function App(
                 Tiled: true,
               })}
               name={"basemap_1"}
-              // groupLayerName={"Basemaps"}
-              // groupLayers = {groupLayers}
             />                    
             <OlImageTileLayer
               source={TileImageArcGISRest(StreamLayerURL, {
@@ -469,10 +468,6 @@ function App(
                 })}
                 name={"huc_levels"}
                 zIndex={2}
-
-                // groupLayerName={"HUCS"}
-                // groupLayers = {groupLayers}
-      
               />            
             }
             {availableRegions.map((availableRegion, index) => (

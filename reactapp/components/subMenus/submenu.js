@@ -19,9 +19,14 @@ import { ArcGISRestTile } from "components/source/TileArcGISRest";
 import LayerGroup from 'ol/layer/Group';
 import { RegionsRow } from './regionsRows';
 
-export const SubMenu = ({ name,handleShowRegionMenu,availableRegions,setAvailableRegions}) => {
-
-
+export const SubMenu = (
+    { 
+        name,
+        handleShowMainRegionMenu,
+        availableRegions,
+        setAvailableRegions, 
+        handleShowRegionMenu
+    }) => {
     return (
         <>
             <Row className='mb-2'>

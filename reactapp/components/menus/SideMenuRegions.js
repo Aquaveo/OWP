@@ -38,7 +38,8 @@ export const SideMenuWrapper = (
       name:'',
       regionType:'file',
       default: true,
-      files:[]
+      files:[],
+      layer_color:'#563d7c'
     })
     const handleFileTypeOnChangeEvent = (e) =>{
       if(e.target.value == 'file'){
@@ -71,6 +72,7 @@ export const SideMenuWrapper = (
           regionType: formRegionData.regionType,
           default: formRegionData.default,
           files: formRegionData.files,
+          layer_color: formRegionData.layer_color,
           region_data: finalGeoJSON
       }
 
@@ -156,7 +158,16 @@ export const SideMenuWrapper = (
                     onChange={(e) => setFormRegionData({...formRegionData, name: e.target.value})}
                   />
                 </Form.Group>
-
+                <Form.Group className="mb-3">
+                  <Form.Label htmlFor="inputRegionColorLayer">Layer Color</Form.Label>
+                  <Form.Control
+                    type="color"
+                    id="inputRegionColorLayer"
+                    defaultValue={formRegionData.layer_color}
+                    title="Choose your color"
+                    onChange={(e) => setFormRegionData({...formRegionData, layer_color: e.target.value})}
+                  />
+                </Form.Group>
                 <Form.Group className="mb-3" controlId="formRegionType">
                   <p>
                     Region Type
@@ -196,6 +207,8 @@ export const SideMenuWrapper = (
                     <Form.Control type="file"  size="sm" multiple />
                   </Form.Group>
                 }
+
+
 
                 <div className="buttons-menu">
                   <Button variant="secondary"  type="submit" ><BiSolidSave /></Button>

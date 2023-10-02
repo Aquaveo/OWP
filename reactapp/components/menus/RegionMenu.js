@@ -2,7 +2,15 @@ import { SideMenu } from "components/styles/SideMenu.styled";
 import { Spin as Hamburger } from 'hamburger-react'
 import { SubMenu } from "components/subMenus/submenu";
 
-export const RegionMenuWrapper = ({name, showMainRegionsMenu, handleShowMainRegionMenu, availableRegions, setAvailableRegions})=>{
+export const RegionMenuWrapper = (
+  {
+    name, 
+    showMainRegionsMenu, 
+    handleShowMainRegionMenu, 
+    availableRegions, 
+    setAvailableRegions,
+    handleShowRegionMenu
+  })=>{
     return(
 
         <SideMenu isVisible={showMainRegionsMenu} position={"top"} >
@@ -11,7 +19,7 @@ export const RegionMenuWrapper = ({name, showMainRegionsMenu, handleShowMainRegi
             <Hamburger toggled={showMainRegionsMenu} toggle={handleShowMainRegionMenu} size={20} />
           </div>
   
-            <SubMenu name={name} handleShowRegionMenu={handleShowMainRegionMenu} availableRegions={availableRegions} setAvailableRegions={setAvailableRegions} />
+            <SubMenu name={name} handleShowMainRegionMenu={handleShowMainRegionMenu} availableRegions={availableRegions} setAvailableRegions={setAvailableRegions} handleShowRegionMenu={handleShowRegionMenu} />
           </div>        
         </SideMenu>
     )

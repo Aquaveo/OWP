@@ -35,7 +35,7 @@ export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
 
             {availableRegions && availableRegions.map((availableRegion, index) => (
                 <Form as={Row} key={index} className='mb-2'>
-                    <Col sm={4}>
+                    <Col sm={4} >
                         <Form.Group >
                             <Form.Control plaintext readOnly defaultValue={availableRegion.name} />
                         </Form.Group>
