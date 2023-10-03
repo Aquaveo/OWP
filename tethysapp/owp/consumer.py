@@ -61,11 +61,11 @@ class DataConsumer(AsyncWebsocketConsumer):
             "data": data,
         }
         await self.send(text_data=json.dumps(resp_obj))
-        print(f"Got message {event} at {self.channel_name}")
+        # print(f"Got message {event} at {self.channel_name}")
 
     async def region_notifications(self, event):
         # print(event)
-        print("data_notifications from consumer")
+        print("region_notifications from consumer")
 
         message = event["mssg"]
         command = event["command"]

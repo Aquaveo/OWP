@@ -20,7 +20,10 @@ export const SideMenuWrapper = (
         selectedRegions,
         setAvailableRegions,
         setSelectedRegions,
-        socketRef
+        socketRef,
+        handleShowLoading,
+        handleHideLoading,
+        setLoadingText
     }) => {
 
 
@@ -52,7 +55,7 @@ export const SideMenuWrapper = (
         setShowRegionsVisible(true);
         setFileUploadVisible(false);
       }
-      setFormRegionData({...formRegionData, regionType: e.target.value})
+      setFormRegionData({...formRegionData, regionType: e.target.value});
     }
 
     const saveRegionsUser = async (e) => {
@@ -64,6 +67,8 @@ export const SideMenuWrapper = (
         notifyError(msge);
         return
       }
+      setLoadingText(`Saving Region ${formRegionData.name} ...`);
+      handleShowLoading();
       console.log(selectedRegions);
       let finalGeoJSON = makeGeoJSONFromArray();
       console.log(finalGeoJSON);
@@ -93,10 +98,7 @@ export const SideMenuWrapper = (
       console.log(responseRegions)
       
       setSelectedRegions({type:"reset", region: {}});
-
-      if (!responseRegions['msge'].includes('error')){
-        setNavVisible(false);
-      }
+      handleHideLoading();
       if (socketRef.current.readyState === WebSocket.OPEN) {
         console.log("availableRegions change")
         socketRef.current.send(

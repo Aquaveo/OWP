@@ -270,7 +270,7 @@ async def getUserRegionsMethod(is_authenticated, user_name):
     json_response["command"] = "update_regions_users"
 
     if is_authenticated:
-        print("authenticated")
+        print("authenticated getUserRegionsMethod")
         # breakpoint()
         engine = await sync_to_async(app.get_persistent_store_database)("user_data")
         sql_query = f"SELECT * FROM regions WHERE user_name='{user_name}'"

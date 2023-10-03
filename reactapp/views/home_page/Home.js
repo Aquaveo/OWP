@@ -302,6 +302,7 @@ function App(
 
 
   const getRegionsOfCurrentUser = async () => {
+    handleShowLoading();
     setLoadingText("Loading User Regions ...")    
     let userRegions = await appAPI.getUserRegions();;
     console.log(userRegions)
@@ -440,12 +441,14 @@ function App(
       availableRegions={availableRegions}
       setSelectedRegions={setSelectedRegions}
       socketRef={socketRef}
+      handleShowLoading={handleShowLoading}
+      handleHideLoading={handleHideLoading}
+      setLoadingText={setLoadingText}
       />
         <ReMap 
           isFullMap={isFullMap} 
           center={fromLonLat([-94.9065, 38.9884])} 
           zoom={5} 
-          // layerGroups={groupLayers} 
           handleShow={handleShow} 
           setCurrentStation={setCurrentStation} 
           currentProducts={currentProducts} 
@@ -458,8 +461,7 @@ function App(
           setSelectedRegions={setSelectedRegions}
           handleHideLoading={handleHideLoading}
           availableRegions={availableRegions}
-          // curentRegion={curentRegion}
-          // setCurrentRegion={setCurrentRegion}
+          setLoadingText={setLoadingText}
         >
 
           <Layers>

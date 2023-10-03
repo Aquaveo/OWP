@@ -36,8 +36,7 @@ export const ReMap = (
 		setSelectedRegions,
 		handleHideLoading,
 		availableRegions,
-		// curentRegion,
-		// setCurrentRegion
+		setLoadingText
 	}) => 
 	
 	{
@@ -170,6 +169,7 @@ export const ReMap = (
 						handleShowLoading();
 
 						if(layer.get('name') ==='streams_layer'){
+							setLoadingText("Loading Timeseries ...");
 							const urlService = layer.getSource().getUrl() // collect mapServer URL
 							const id = layer
 								.getSource()
