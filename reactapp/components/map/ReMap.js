@@ -197,8 +197,9 @@ export const ReMap = (
 
 				// layers
 					// .forEach( (layer) => {
+						handleShowLoading();
+
 						if(layer.get('name') ==='streams_layer'){
-							handleShowLoading();
 							const urlService = layer.getSource().getUrl() // collect mapServer URL
 							const id = layer
 								.getSource()
@@ -513,8 +514,11 @@ export const ReMap = (
 
 			// map.getLayers().insertAt(1, polygonLayer);
 			// setSelectedRegions({type:"add", region: {name:curentRegion['name'], data:curentRegion['data'], layer:polygonLayer, url: curentRegion['url'] }});
-			setSelectedRegions({type:"add", region: {name:curentRegion['name'], data:curentRegion['data'], url: curentRegion['url'] }});
+			if(!(Object.keys(curentRegion).length === 0)){
+				setSelectedRegions({type:"add", region: {name:curentRegion['name'], data:curentRegion['data'], url: curentRegion['url'] }});
+			}
 		}
+			handleHideLoading();
 
 	  return () => {
 		
