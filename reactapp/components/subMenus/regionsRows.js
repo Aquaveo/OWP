@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
 
       const toggleVisibilityRegion = (index) => {
+          console.log("hey")
           setAvailableRegions((prevData) => {
           // Create a copy of the previous state array
           const newData = [...prevData];

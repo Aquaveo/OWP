@@ -300,10 +300,6 @@ function App(
 	}
   const [currentDisplayRegions, setCurrentDisplayRegions ] = useState([])
 
-  // useEffect(() => {
-  //   console.log("change region")
-  //   console.log(availableRegions)
-  // }, [availableRegions])
 
   const getRegionsOfCurrentUser = async () => {
     setLoadingText("Loading User Regions ...")    
@@ -396,22 +392,13 @@ function App(
 
 
   useEffect(() => {
-    // if (socketRef.current.readyState === WebSocket.OPEN) {
-    //   console.log("availableRegions change")
-    //   socketRef.current.send(
-    //     JSON.stringify({
-    //       type: "update_user_regions",
-    //     })
-    //   );
-    // }
-
     // for (const availableRegion of availableRegions){
     //     if (availableRegion.default === true){
     //         let features_layer_default = JSON.parse(availableRegion['geom']);
     //         setCurrentDisplayRegions(prevState => [...prevState, features_layer_default])
     //     }
     // }
-
+    console.log(availableRegions)
     return () => {
     }
   }, [availableRegions])
