@@ -320,11 +320,20 @@ function App(
     */
     handleShowLoading();
 
-    getRegionsOfCurrentUser();
+    // getRegionsOfCurrentUser();
 
     socketRef.current = new WebSocket(ws);
     socketRef.current.onopen = () => {
       console.log("WebSocket is Open");
+      // console.log(availableRegions)
+      if(availableRegions.length < 1){
+        socketRef.current.send(
+          JSON.stringify({
+            type: "update_user_regions",
+          })
+        );
+      }
+
     };
   
     socketRef.current.onclose = function () {
@@ -336,16 +345,23 @@ function App(
       console.log("WebSocket is Closed");
     };
     socketRef.current.onmessage = function (e) {
-      let data = JSON.parse(e.data);
       
-      let product_name = data['product'];
-      console.log("receiving data socket")
-      let ts = data['data'][0]['data'].map(obj => ({
-        value: obj.value,
-        'forecast-time': new Date(obj['forecast-time']).getTime()
-      }));
-      setCurrentProducts({type: product_name,is_requested:true, data: ts});
-      handlePlotUpdate();
+      let data = JSON.parse(e.data);
+      let command = data['command']
+      if(command ==='update_regions_users'){
+        getRegionsOfCurrentUser();
+      }
+      if(command ==='Plot_Data_Retrieved'){
+        let product_name = data['product'];
+        console.log("receiving data socket")
+        let ts = data['data'][0]['data'].map(obj => ({
+          value: obj.value,
+          'forecast-time': new Date(obj['forecast-time']).getTime()
+        }));
+        setCurrentProducts({type: product_name,is_requested:true, data: ts});
+        handlePlotUpdate();
+      }
+
       // handleisPlotReady();
     }
 
@@ -380,12 +396,21 @@ function App(
 
 
   useEffect(() => {
-    for (const availableRegion of availableRegions){
-        if (availableRegion.default === true){
-            let features_layer_default = JSON.parse(availableRegion['geom']);
-            setCurrentDisplayRegions(prevState => [...prevState, features_layer_default])
-        }
-    }
+    // if (socketRef.current.readyState === WebSocket.OPEN) {
+    //   console.log("availableRegions change")
+    //   socketRef.current.send(
+    //     JSON.stringify({
+    //       type: "update_user_regions",
+    //     })
+    //   );
+    // }
+
+    // for (const availableRegion of availableRegions){
+    //     if (availableRegion.default === true){
+    //         let features_layer_default = JSON.parse(availableRegion['geom']);
+    //         setCurrentDisplayRegions(prevState => [...prevState, features_layer_default])
+    //     }
+    // }
 
     return () => {
     }
@@ -427,6 +452,7 @@ function App(
       setAvailableRegions={setAvailableRegions} 
       availableRegions={availableRegions}
       setSelectedRegions={setSelectedRegions}
+      socketRef={socketRef}
       />
         <ReMap 
           isFullMap={isFullMap} 

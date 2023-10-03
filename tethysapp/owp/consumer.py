@@ -1,12 +1,12 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .controllers import updateForecastData
+from .controllers import updateForecastData, getUserRegionsMethod
 
 from tethys_sdk.routing import consumer
 
-@consumer(name='data_notification',url='owp/data-notification/notifications')
-class DataConsumer(AsyncWebsocketConsumer):
 
+@consumer(name="data_notification", url="owp/data-notification/notifications")
+class DataConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
         await self.channel_layer.group_add("notifications_owp", self.channel_name)
@@ -22,31 +22,26 @@ class DataConsumer(AsyncWebsocketConsumer):
         print("receving function to consumer")
         text_data_json = json.loads(text_data)
         # print(text_data_json)
-        updateForecastData(text_data_json['station_id'],text_data_json['product'])
+        # updateForecastData(text_data_json['station_id'],text_data_json['product'])
         # json_obj = updateForecastData(text_data_json['station_id'],text_data_json['product'])
         json_obj = {}
         # await self.channel_layer.group_send (
         #     "notifications_owp",
         #     json_obj,
-        # )        
-        # if "type" in text_data_json and text_data_json["type"] == "plot_hs_data":
+        # )
+        # breakpoint()
+        if "type" in text_data_json and text_data_json["type"] == "update_user_regions":
             # asyncio.run(retrieve_data_from_file(text_data_json['reach_id']))
-            # json_obj = retrieve_data(text_data_json['station_id'],text_data_json['product'])
-            # await self.channel_layer.group_send (
-            #     "notifications_owp",
-            #     json_obj,
-            # )
-        # if "type" in text_data_json and text_data_json["type"] == "plot_bias_corrected_data":
-        #     # asyncio.run(retrieve_data_from_file(text_data_json['reach_id']))
-        #     json_obj = retrieve_data_bias_corrected(text_data_json['station_id'],text_data_json['product'])
-        #     await self.channel_layer.group_send (
-        #         "notifications_owp",
-        #         json_obj,
-        #     )    
+            json_obj = await getUserRegionsMethod(
+                self.scope["user"].is_authenticated, self.scope["user"].username
+            )
+            await self.channel_layer.group_send(
+                "notifications_owp",
+                json_obj,
+            )
 
         # print(mssge_string)
         # await self.send(text_data)
-
 
     async def data_notifications(self, event):
         # print(event)
@@ -56,7 +51,7 @@ class DataConsumer(AsyncWebsocketConsumer):
         station_id = event["station_id"]
         product = event["product"]
         command = event["command"]
-        data = event['data']
+        data = event["data"]
 
         resp_obj = {
             "message": message,
@@ -68,11 +63,36 @@ class DataConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(resp_obj))
         print(f"Got message {event} at {self.channel_name}")
 
+    async def region_notifications(self, event):
+        # print(event)
+        print("data_notifications from consumer")
+
+        message = event["mssg"]
+        command = event["command"]
+        data = event["data"]
+
+        resp_obj = {
+            "message": message,
+            "command": command,
+            "data": data,
+        }
+        await self.send(text_data=json.dumps(resp_obj))
+        # print(f"Got message {event} at {self.channel_name}")
+
     async def simple_notifications(self, event):
         print("simple notification from consumer")
         message = event["mssg"]
         station_id = event["station_id"]
         product = event["product"]
         command = event["command"]
-        await self.send(text_data=json.dumps({"message": message,"station_id":station_id, "product": product,"command":command}))
+        await self.send(
+            text_data=json.dumps(
+                {
+                    "message": message,
+                    "station_id": station_id,
+                    "product": product,
+                    "command": command,
+                }
+            )
+        )
         print(f"Got message {event} at {self.channel_name}")

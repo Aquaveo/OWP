@@ -19,6 +19,7 @@ from shapely.geometry import GeometryCollection
 import shapely.wkt
 from .model import Region
 import shapely
+from asgiref.sync import sync_to_async
 
 BASE_API_URL = "https://nwmdata.nohrsc.noaa.gov/latest/forecasts"
 async_client = httpx.AsyncClient()
@@ -233,7 +234,7 @@ async def api_forecast_call(api_base_url, station_id, method_name):
                 "type": "data_notifications",
                 "station_id": station_id,
                 "method_name": method_name,
-                "command": "Data_Downloaded",
+                "command": "Plot_Data_Retrieved",
                 "mssg": mssge_string,
                 "product": method_name,
                 "data": response_await.json(),
@@ -253,10 +254,44 @@ async def api_forecast_call(api_base_url, station_id, method_name):
                 "station_id": station_id,
                 "product": method_name,
                 "mssg": mssge_string,
-                "command": "Data_Downloaded Error",
+                "command": "Plot_Data_Retrieved Error",
             },
         )
     except Exception as e:
         print("api_call error 2")
         print(e)
     return mssge_string
+
+
+async def getUserRegionsMethod(is_authenticated, user_name):
+    regions_response = {}
+    json_response = {}
+    json_response["type"] = "region_notifications"
+    json_response["command"] = "update_regions_users"
+
+    if is_authenticated:
+        print("authenticated")
+        # breakpoint()
+        engine = await sync_to_async(app.get_persistent_store_database)("user_data")
+        sql_query = f"SELECT * FROM regions WHERE user_name='{user_name}'"
+
+        user_regions_df = gpd.GeoDataFrame.from_postgis(sql_query, engine)
+        regions_response["regions"] = user_regions_df.to_dict(orient="records")
+
+        for region in regions_response["regions"]:
+            region["geom"] = shapely.to_geojson(region["geom"])
+
+        for region in regions_response["regions"]:
+            if region["default"]:
+                region["is_visible"] = True
+            else:
+                region["is_visible"] = False
+        json_response["mssg"] = "completed"
+
+    else:
+        regions_response["regions"] = []
+        json_response["mssg"] = "not aunthenticated"
+
+    json_response["data"] = regions_response["regions"]
+
+    return json_response

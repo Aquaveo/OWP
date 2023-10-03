@@ -19,7 +19,8 @@ export const SideMenuWrapper = (
         setShowRegionsVisible,
         selectedRegions,
         setAvailableRegions,
-        setSelectedRegions
+        setSelectedRegions,
+        socketRef
     }) => {
 
 
@@ -95,6 +96,14 @@ export const SideMenuWrapper = (
 
       if (!responseRegions['msge'].includes('error')){
         setNavVisible(false);
+      }
+      if (socketRef.current.readyState === WebSocket.OPEN) {
+        console.log("availableRegions change")
+        socketRef.current.send(
+          JSON.stringify({
+            type: "update_user_regions",
+          })
+        );
       }
     }
     const validateRegionAddition = () =>{
