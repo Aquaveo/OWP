@@ -1,7 +1,9 @@
 import styled from "styled-components";
 
 export const SideMenu = styled.div`
-    display:  ${props => props.isVisible ? "block" : "none"};
+    display: block;
+    // display:  ${props => props.isVisible ? "block" : "none"};
+
     height: fit-content;
     flex:1 1 20%;
     order: 1;
@@ -9,7 +11,7 @@ export const SideMenu = styled.div`
     padding:5px;
     position:absolute;
     z-index:300;
-    ${props => `${props.position}: 30px`};
+    ${props => `${props.position}: 60px`};
     // bottom:0px;
 
     .Myhamburguer{

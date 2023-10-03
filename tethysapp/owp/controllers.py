@@ -74,6 +74,7 @@ def saveUserRegions(request):
             dest["region_type"] = geojson_object["requestData"]["regionType"]
             dest["default"] = geojson_object["requestData"]["default"]
             dest["name"] = geojson_object["requestData"]["name"]
+            dest["layer_color"] = geojson_object["requestData"]["layer_color"]
             dest["user_name"] = user_name
             dest["geom"] = dest["geometry"]
             dest = dest.drop("geometry", axis=1)

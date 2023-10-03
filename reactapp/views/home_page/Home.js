@@ -57,13 +57,16 @@ function App(
   {
     setNavVisible,
     showRegionsMenu,
-    handleShowRegionMenu, 
+    handleShowRegionMenu,
+    toggleAddRegionMenu,
+    handleHideMainRegionMenu, 
     showRegions, 
     setShowRegionsVisible, 
     setAvailableRegions, 
     availableRegions,
     showMainRegionsMenu,
-    handleShowMainRegionMenu
+    handleShowMainRegionMenu,
+    toggleMainRegionMenu
   }
 ) 
   {
@@ -307,7 +310,7 @@ function App(
     let userRegions = await appAPI.getUserRegions();;
     console.log(userRegions)
     setAvailableRegions(userRegions['regions']);
-    handleShowMainRegionMenu();
+    // handleShowMainRegionMenu();
     handleHideLoading();
   }
 
@@ -399,21 +402,25 @@ function App(
           </div>
         </LoaderContainer>        
     <MainContainer>
+
     <RegionMenuWrapper 
       name="Regions" 
       showMainRegionsMenu={showMainRegionsMenu} 
       handleShowMainRegionMenu={handleShowMainRegionMenu} 
+      handleHideMainRegionMenu = {handleHideMainRegionMenu}
       availableRegions={availableRegions} 
       setAvailableRegions={setAvailableRegions}
       handleShowRegionMenu={handleShowRegionMenu}
+      toggleMainRegionMenu={toggleMainRegionMenu}
     />
 
 
 
     <SideMenuWrapper 
       setNavVisible={setNavVisible} 
-      showRegionsMenu={showRegionsMenu} 
-      handleShowRegionMenu={handleShowRegionMenu} 
+      showRegionsMenu={showRegionsMenu}
+      handleShowRegionMenu={handleShowRegionMenu}
+      toggleAddRegionMenu={toggleAddRegionMenu}
       showRegions={showRegions} 
       setShowRegionsVisible={setShowRegionsVisible} 
       selectedRegions={selectedRegions} 
@@ -483,7 +490,7 @@ function App(
                   style={
                     new Style({
                       stroke: new Stroke({
-                      color: 'red',
+                      color: availableRegion['layer_color'],
                       width: 3,
                       })
                     })

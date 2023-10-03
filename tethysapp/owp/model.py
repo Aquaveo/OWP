@@ -20,6 +20,7 @@ class Region(Base):
     default = Column(Boolean)
     geom = Column(Geometry("GEOMETRYCOLLECTION"))
     user_name = Column(String)
+    layer_color = Column(String)
 
     def __init__(self, wkt, name, region_type, user_name):
         """

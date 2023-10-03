@@ -15,6 +15,7 @@ export const SideMenuWrapper = (
         setNavVisible,
         showRegionsMenu,
         handleShowRegionMenu,
+        toggleAddRegionMenu,
         setShowRegionsVisible,
         selectedRegions,
         setAvailableRegions,
@@ -139,7 +140,7 @@ export const SideMenuWrapper = (
 
           <div className="wrapper_absolute">
            <div className="Myhamburguer">
-            <Hamburger toggled={showRegionsMenu} toggle={handleShowRegionMenu} size={20} />
+            <Hamburger toggled={showRegionsMenu} toggle={toggleAddRegionMenu} size={20} />
           </div>
             {
               showRegionsMenu && 
