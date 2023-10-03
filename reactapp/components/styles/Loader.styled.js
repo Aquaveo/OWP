@@ -14,17 +14,23 @@ export const LoaderContainer = styled.div`
         justify-content: center;
         align-items: center;
         z-index: 9999999; /* Adjust the z-index as needed */
+        // color: white;
+        // font-size: 10px;
     }
-    // .loading-text{
-    //     color: white;
-    //     background-color: #16a085;
-    //     width: fit-content
-    //     border: 8px solid #f3f3f3;
-    //     border-top: 8px solid #16a085;
-    //     width: 80px;
-    //     height: 80px;
-    //     font-size: 10px;
-    // }
+    .loading-tex-span{
+        width: fit-content;
+        font-weight: bold;
+        height: fit-content;
+        color: #16a085;        
+        font-size: 15px;
+        padding: 10px;
+        animation: blinker 2s linear infinite;
+    }
+    @keyframes blinker {
+        50% {
+          opacity: 0;
+        }
+      }
     /* Style for the loading spinner or indicator */
     .loading-spinner {
         border: 8px solid #f3f3f3;

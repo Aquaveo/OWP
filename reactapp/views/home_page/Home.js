@@ -423,7 +423,7 @@ function App(
         <LoaderContainer isVisible={isPlotReady}>
           <div className="loading-overlay">
             <div className="loading-spinner"></div>
-            <div className='loading-text'>{loadingText}</div>
+            <div className='loading-text'><span className='loading-tex-span'>{loadingText}</span></div>
           </div>
         </LoaderContainer>        
     <MainContainer>
@@ -524,6 +524,7 @@ function App(
                   zIndex={1}
               />:
               <VectorLayer
+                key={index}
                 name={"empty_vector_layer"}
               />
             ))}
