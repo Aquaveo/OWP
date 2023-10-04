@@ -30,7 +30,7 @@ export const SubMenu = (
     return (
         <>
             <Row className='mb-2'>
-                <Col sm={8} >
+                <Col className="text-white fw-bold" sm={8} >
                     {name}
                 </Col>
                 <Col sm={4}>

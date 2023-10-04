@@ -418,7 +418,7 @@ function App(
     <MainContainer>
 
     <RegionMenuWrapper 
-      name="Regions" 
+      name="My Regions" 
       showMainRegionsMenu={showMainRegionsMenu} 
       handleShowMainRegionMenu={handleShowMainRegionMenu} 
       handleHideMainRegionMenu = {handleHideMainRegionMenu}
