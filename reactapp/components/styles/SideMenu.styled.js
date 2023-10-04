@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 export const SideMenu = styled.div`
-    display: block;
-    // display:  ${props => props.isVisible ? "block" : "none"};
+    // display: block;
+    display:  ${props => props.isVisible ? "block" : "none"};
 
     height: fit-content;
     flex:1 1 20%;

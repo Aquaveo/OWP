@@ -14,8 +14,6 @@ export const LoaderContainer = styled.div`
         justify-content: center;
         align-items: center;
         z-index: 9999999; /* Adjust the z-index as needed */
-        // color: white;
-        // font-size: 10px;
     }
     .loading-tex-span{
         width: fit-content;
@@ -28,7 +26,7 @@ export const LoaderContainer = styled.div`
     }
     @keyframes blinker {
         50% {
-          opacity: 0;
+          opacity: 0.5;
         }
       }
     /* Style for the loading spinner or indicator */

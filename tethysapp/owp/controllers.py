@@ -71,7 +71,6 @@ def saveUserRegions(request):
                 crs="EPSG:4326",
                 geometry=[GeometryCollection(df["geom"].tolist())],
             )
-
             dest["region_type"] = geojson_object["requestData"]["regionType"]
             dest["default"] = geojson_object["requestData"]["default"]
             dest["name"] = geojson_object["requestData"]["name"]
