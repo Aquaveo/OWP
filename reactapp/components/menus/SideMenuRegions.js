@@ -42,7 +42,7 @@ export const SideMenuWrapper = (
     const [formRegionData, setFormRegionData] = useState({
       name:'',
       regionType:'file',
-      default: true,
+      default: false,
       files:[],
       layer_color:'#563d7c'
     })
@@ -73,6 +73,14 @@ export const SideMenuWrapper = (
       let finalGeoJSON = makeGeoJSONFromArray();
       console.log(finalGeoJSON);
 
+      // const dataRequest = new FormData();
+      // dataRequest.append('name', formRegionData.name);
+      // dataRequest.append('regionType', formRegionData.regionType);
+      // dataRequest.append('default', formRegionData.default);
+      // dataRequest.append('files', formRegionData.files);
+      // dataRequest.append('layer_color', formRegionData.layer_color);
+      // dataRequest.append('region_data', JSON.stringify(finalGeoJSON));
+
       //merge geojsons
       let dataRequest = {
           name: formRegionData.name,
@@ -81,6 +89,7 @@ export const SideMenuWrapper = (
           files: formRegionData.files,
           layer_color: formRegionData.layer_color,
           region_data: finalGeoJSON
+          // region_data: JSON.stringify(finalGeoJSON)
       }
 
       let responseRegions = await appAPI.saveUserRegions(dataRequest);
@@ -216,7 +225,12 @@ export const SideMenuWrapper = (
                   isFileUploadVisible && 
                   <Form.Group controlId="formFileMultiple" className="mb-3">
                     <Form.Label>Upload File (*.shp, *.json, geopackage) </Form.Label>
-                    <Form.Control type="file"  size="sm" multiple />
+                    <Form.Control 
+                      type="file"  
+                      size="sm" 
+                      multiple 
+                      onChange={(e) => setFormRegionData({...formRegionData, files: e.target.files[0]})}
+                      />
                   </Form.Group>
                 }
 

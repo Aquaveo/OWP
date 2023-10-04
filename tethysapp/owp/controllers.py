@@ -57,6 +57,8 @@ def saveUserRegions(request):
             )
             session = SessionMaker()
             user_name = request.user.username
+            # breakpoint()
+
             geojson_object = json.loads(request.body.decode("utf-8"))
             df = gpd.GeoDataFrame.from_features(
                 geojson_object["requestData"]["region_data"], crs=4326
