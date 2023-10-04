@@ -32,6 +32,8 @@ export const SideMenu = styled.div`
         border-color: blue;
         color:#e0f2fe;
         font-size:1rem;
+        border-radius: 10px;
+
     }
     .buttons-menu{
       display: flex;

@@ -23,13 +23,13 @@ export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
     return (
         <>
             <Row className='mb-2'>
-                <Col sm={4}>
+                <Col className="text-white fw-bold" sm={4}>
                     Name
-                </Col>
-                <Col sm={4}>
+                </Col >
+                <Col className="text-white fw-bold" sm={4}>
                     Type
                 </Col>
-                <Col sm={2} >
+                <Col className="text-white fw-bold" sm={2} >
                     Hide/Show
                 </Col>
             </Row>
@@ -37,17 +37,17 @@ export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
             {availableRegions && availableRegions.map((availableRegion, index) => (
                 <Form as={Row} key={index} className='mb-2'>
                     <Col sm={4} >
-                        <Form.Group >
-                            <Form.Control plaintext readOnly defaultValue={availableRegion.name} />
+                        <Form.Group className="text-white" >
+                            <Form.Control className="text-white" plaintext readOnly defaultValue={availableRegion.name} />
                         </Form.Group>
                     </Col>
                     <Col sm={4}>
-                        <Form.Group>
-                            <Form.Control plaintext readOnly defaultValue={availableRegion.region_type} />
+                        <Form.Group className="text-white">
+                            <Form.Control className="text-white" plaintext readOnly defaultValue={availableRegion.region_type} />
                         </Form.Group>
                     </Col>
                     <Col sm={2} >
-                        <Form.Group>
+                        <Form.Group className="text-white">
                             <Form.Check
                                 type="switch"
                                 id="default-region"

@@ -155,7 +155,7 @@ export const SideMenuWrapper = (
   
     return(
       
-        <SideMenu isVisible={showRegionsMenu} position={"bottom"} >
+        <SideMenu isVisible={showRegionsMenu} position={"right"} >
           <Toaster  position="bottom-center" />
 
           <div className="wrapper_absolute">
