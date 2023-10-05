@@ -73,24 +73,28 @@ export const SideMenuWrapper = (
       let finalGeoJSON = makeGeoJSONFromArray();
       console.log(finalGeoJSON);
 
-      // const dataRequest = new FormData();
-      // dataRequest.append('name', formRegionData.name);
-      // dataRequest.append('regionType', formRegionData.regionType);
-      // dataRequest.append('default', formRegionData.default);
-      // dataRequest.append('files', formRegionData.files);
-      // dataRequest.append('layer_color', formRegionData.layer_color);
-      // dataRequest.append('region_data', JSON.stringify(finalGeoJSON));
+      const dataRequest = new FormData();
+      dataRequest.append('name', formRegionData.name);
+      dataRequest.append('regionType', formRegionData.regionType);
+      dataRequest.append('default', formRegionData.default);
+      dataRequest.append('layer_color', formRegionData.layer_color);
+      dataRequest.append('region_data', JSON.stringify(finalGeoJSON));
+      Array.from(formRegionData.files).forEach(file=>{
+        dataRequest.append('files', file);
+      });
+      
+
 
       //merge geojsons
-      let dataRequest = {
-          name: formRegionData.name,
-          regionType: formRegionData.regionType,
-          default: formRegionData.default,
-          files: formRegionData.files,
-          layer_color: formRegionData.layer_color,
-          region_data: finalGeoJSON
-          // region_data: JSON.stringify(finalGeoJSON)
-      }
+      // let dataRequest = {
+      //     name: formRegionData.name,
+      //     regionType: formRegionData.regionType,
+      //     default: formRegionData.default,
+      //     files: formRegionData.files,
+      //     layer_color: formRegionData.layer_color,
+      //     region_data: finalGeoJSON
+      //     // region_data: JSON.stringify(finalGeoJSON)
+      // }
 
       let responseRegions = await appAPI.saveUserRegions(dataRequest);
       // toast.promise(
@@ -229,7 +233,7 @@ export const SideMenuWrapper = (
                       type="file"  
                       size="sm" 
                       multiple 
-                      onChange={(e) => setFormRegionData({...formRegionData, files: e.target.files[0]})}
+                      onChange={(e) => setFormRegionData({...formRegionData, files: e.target.files})}
                       />
                   </Form.Group>
                 }

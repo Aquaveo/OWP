@@ -59,29 +59,57 @@ def saveUserRegions(request):
             user_name = request.user.username
             # breakpoint()
 
-            geojson_object = json.loads(request.body.decode("utf-8"))
-            df = gpd.GeoDataFrame.from_features(
-                geojson_object["requestData"]["region_data"], crs=4326
-            )
+            region_type = request.POST.get("regionType")
+            region_name = request.POST.get("name")
+            region_default = request.POST.get("default")
+            region_layer_color = request.POST.get("layer_color")
+            # breakpoint()
+
+            if region_type == "huc":
+                region_data = json.loads(request.POST.get("region_data"))
+                df = gpd.GeoDataFrame.from_features(region_data, crs=4326)
+            else:
+                file_data = request.FILES.getlist("files")[0]
+                df = gpd.read_file(file_data)
+
             df.crs = "EPSG:4326"
             df["geom"] = df["geometry"]
             # df["geom"] = df["geometry"].apply(shapely.wkt.loads)
             df = df.drop("geometry", axis=1)
-
             dest = gpd.GeoDataFrame(
                 columns=["name", "region_type", "default", "user_name", "geom"],
                 crs="EPSG:4326",
                 geometry=[GeometryCollection(df["geom"].tolist())],
             )
-            dest["region_type"] = geojson_object["requestData"]["regionType"]
-            dest["default"] = geojson_object["requestData"]["default"]
-            dest["name"] = geojson_object["requestData"]["name"]
-            dest["layer_color"] = geojson_object["requestData"]["layer_color"]
+            dest["region_type"] = region_type
+            dest["default"] = region_default
+            dest["name"] = region_name
+            dest["layer_color"] = region_layer_color
             dest["user_name"] = user_name
             dest["geom"] = dest["geometry"]
             dest = dest.drop("geometry", axis=1)
             dest = dest.set_geometry("geom")
             dest["geom"] = dest["geom"].apply(lambda x: WKTElement(x.wkt, srid=4326))
+
+            # geojson_object = json.loads(request.body.decode("utf-8"))
+            # df = gpd.GeoDataFrame.from_features(
+            #     geojson_object["requestData"]["region_data"], crs=4326
+            # )
+            # df.crs = "EPSG:4326"
+            # df["geom"] = df["geometry"]
+            # # df["geom"] = df["geometry"].apply(shapely.wkt.loads)
+            # df = df.drop("geometry", axis=1)
+
+            # dest = gpd.GeoDataFrame(columns=["name", "region_type", "default", "user_name", "geom"],crs="EPSG:4326",geometry=[GeometryCollection(df["geom"].tolist())],)
+            # dest["region_type"] = geojson_object["requestData"]["regionType"]
+            # dest["default"] = geojson_object["requestData"]["default"]
+            # dest["name"] = geojson_object["requestData"]["name"]
+            # dest["layer_color"] = geojson_object["requestData"]["layer_color"]
+            # dest["user_name"] = user_name
+            # dest["geom"] = dest["geometry"]
+            # dest = dest.drop("geometry", axis=1)
+            # dest = dest.set_geometry("geom")
+            # dest["geom"] = dest["geom"].apply(lambda x: WKTElement(x.wkt, srid=4326))
 
             # breakpoint()
 

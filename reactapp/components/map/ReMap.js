@@ -270,6 +270,11 @@ export const ReMap = (
 
 									});
 
+								}).catch((error) => {
+									//try to fix the error or
+									//notify the users about somenthing went wrong
+									handleHideLoading();
+
 								});
 
 	
