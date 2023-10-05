@@ -27,6 +27,25 @@ export const SideMenuWrapper = (
         setPreviewFile
     }) => {
 
+    const initialGeopackageLayersNames = [
+        { name: "First Region", value: "First Region" },
+        { name: "Second Region", value: "Second Region" },
+    ]; 
+    const [geopackageLayersNames, setGeopackageLayersNames ] = useState(initialGeopackageLayersNames)
+
+    const checkFileTypeForPreview = (fileName) =>{
+      let file_type = "shapefile"
+      if (fileName.endsWith(".shp")) {
+        file_type = "shapefile"
+      }
+      if(fileName.endsWith(".gpkg")){
+        file_type = "geopackage"
+      }
+      if(fileName.endsWith(".geojson")){
+        file_type = "geojson"
+      }
+      return file_type
+    }
     const previewFileData = async (e) =>{
       console.log(e)
       setLoadingText(`Previewing Region File ...`);
@@ -34,13 +53,27 @@ export const SideMenuWrapper = (
       setFormRegionData({...formRegionData, files: e.target.files});
       const dataRequest = new FormData();
       handleShowLoading();
-
+      let fileType = 'shapefile'
       Array.from(e.target.files).forEach(file=>{
+        fileType = checkFileTypeForPreview(file.name)
         dataRequest.append('files', file);
       });
+      if(fileType === 'geopackage' ){
+        let responseGeopackageLayers = await appAPI.getGeopackageLayersFromFile(dataRequest).catch((error) => {
+          handleHideLoading();
+          setShowGeopackageLayersNames(false);
+          setGeopackageLayersNames(initialGeopackageLayersNames);
+
+        });
+        setShowGeopackageLayersNames(true);
+        setGeopackageLayersNames(responseGeopackageLayers['layers']);
+
+        // responseGeopackageLayers['layers']
+      }
       let responseRegions = await appAPI.previewUserRegionFromFile(dataRequest).catch((error) => {
         handleHideLoading();
       });
+
       setPreviewFile(JSON.parse(responseRegions['geom']))
       console.log(responseRegions)
       handleHideLoading();
@@ -56,13 +89,16 @@ export const SideMenuWrapper = (
         { name: "HUC Region", value: "huc" },
     ]; 
     
+    const [showGeopackageLayersNames, setShowGeopackageLayersNames ] = useState(false)
+    
     const [isFileUploadVisible, setFileUploadVisible]= useState(true);
     const [formRegionData, setFormRegionData] = useState({
       name:'',
       regionType:'file',
       default: false,
       files:[],
-      layer_color:'#563d7c'
+      layer_color:'#563d7c',
+      geopackage_layer: ''
     })
     const handleFileTypeOnChangeEvent = (e) =>{
       if(e.target.value == 'file'){
@@ -225,7 +261,7 @@ export const SideMenuWrapper = (
                           type="radio"
                           name="region type"
                           value={radio.value}
-                          checked={formRegionData.regionType === radio.value}
+                          checked={regionTypeRadioButtons[0]['value'] === radio.value}
                           onChange={(e) => handleFileTypeOnChangeEvent(e)}
                         >
                           {radio.name}
@@ -255,6 +291,31 @@ export const SideMenuWrapper = (
                       onChange={(e) => previewFileData(e)}
                       />
                   </Form.Group>
+                }
+                {
+                  showGeopackageLayersNames && 
+                  <Form.Group className="mb-3" controlId="formLayersGeopackage">
+                  <p>
+                    GeoPackages Layers
+                  </p>
+                  <ButtonGroup size="sm">
+                    {geopackageLayersNames.map((radio, index) => (
+                        <ToggleButton
+                          key={index}
+                          id={`radio-layer-${index}`}
+                          variant="secondary"
+                          type="radio"
+                          name="region type"
+                          value={radio.value}
+                          checked={formRegionData.regionType === radio.value}
+                          onChange={(e) => setFormRegionData({...formRegionData, geopackage_layer: e.target.value})}
+                        >
+                          {radio.name}
+                        </ToggleButton>
+                      ))}
+                  </ButtonGroup>
+                  
+                </Form.Group>
                 }
 
 

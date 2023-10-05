@@ -5,6 +5,7 @@ import asyncio
 from channels.layers import get_channel_layer
 import httpx
 import json
+import fiona
 from tethys_sdk.routing import controller
 from django.contrib.auth.models import User
 
@@ -149,9 +150,23 @@ def saveUserRegions(request):
 
 
 @controller
+def getGeopackageLayersFromFile(request):
+    region = {}
+    # breakpoint()
+    file_data = request.FILES.getlist("files")[0]
+    layers = fiona.listlayers(file_data)
+    list_layers_dict = []
+    for layer in layers:
+        list_layers_dict.append({"name": layer, "value": layer})
+    region["layers"] = list_layers_dict
+    return JsonResponse(region)
+
+
+@controller
 def previewUserRegionFromFile(request):
     region = {}
     # breakpoint()
+
     file_data = request.FILES.getlist("files")[0]
     df = gpd.read_file(file_data)
     df.crs = "EPSG:4326"

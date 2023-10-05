@@ -9,6 +9,9 @@ const appAPI = {
     getUserRegions:(requestData) => {
         return apiClient.get(`${APP_ROOT_URL}getUserRegions/`, {params: requestData});
     },
+    getGeopackageLayersFromFile:(requestData) => {
+        return apiClient.post(`${APP_ROOT_URL}getGeopackageLayersFromFile/`, requestData);
+    },
     previewUserRegionFromFile:(requestData) => {
         return apiClient.post(`${APP_ROOT_URL}previewUserRegionFromFile/`, requestData);
     },
