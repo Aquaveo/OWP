@@ -91,7 +91,7 @@ function App(
     }),
   ]);
   const [selectedHucs, setSelectedHucs] = useState("include:1,2,3,4,5,6,7,8");
-  
+  const [previewFile, setPreviewFile] = useState(null);
   const [showModal, setshowModal] = useState(false);
   const [currentStation, setCurrentStation] = useState();
   const [currentStationID, setCurrentStationID] = useState(-99999);
@@ -445,6 +445,7 @@ function App(
       handleShowLoading={handleShowLoading}
       handleHideLoading={handleHideLoading}
       setLoadingText={setLoadingText}
+      setPreviewFile={setPreviewFile}
       />
         <ReMap 
           isFullMap={isFullMap} 
@@ -540,6 +541,27 @@ function App(
                     zIndex={1}
                 />
               ))}
+              {
+                previewFile &&
+                <VectorLayer
+                  name={`preview_file_region`}
+                  source= {
+                    new VectorSource({
+                      format: new GeoJSON(),
+                      features: new GeoJSON().readFeatures(previewFile)
+                      })
+                  }
+                  style={
+                    new Style({
+                      stroke: new Stroke({
+                        color: 'green',
+                        width: 3,
+                      })
+                    })
+                  }
+                  zIndex={1}
+                />
+              }
 
           </Layers>
           <Controls>

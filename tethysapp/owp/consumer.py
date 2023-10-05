@@ -39,7 +39,6 @@ class DataConsumer(AsyncWebsocketConsumer):
                 "notifications_owp",
                 json_obj,
             )
-
         # print(mssge_string)
         # await self.send(text_data)
 

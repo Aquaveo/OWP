@@ -23,10 +23,28 @@ export const SideMenuWrapper = (
         socketRef,
         handleShowLoading,
         handleHideLoading,
-        setLoadingText
+        setLoadingText,
+        setPreviewFile
     }) => {
 
+    const previewFileData = async (e) =>{
+      console.log(e)
+      setLoadingText(`Previewing Region File ...`);
+      
+      setFormRegionData({...formRegionData, files: e.target.files});
+      const dataRequest = new FormData();
+      handleShowLoading();
 
+      Array.from(e.target.files).forEach(file=>{
+        dataRequest.append('files', file);
+      });
+      let responseRegions = await appAPI.previewUserRegionFromFile(dataRequest).catch((error) => {
+        handleHideLoading();
+      });
+      setPreviewFile(JSON.parse(responseRegions['geom']))
+      console.log(responseRegions)
+      handleHideLoading();
+    }
     const notifyError = (content) => {
       if (content != 'success'){
         toast.error(content);
@@ -60,6 +78,7 @@ export const SideMenuWrapper = (
 
     const saveRegionsUser = async (e) => {
       //validation for empty form
+      setPreviewFile(null)
       e.preventDefault();
       let msge = validateRegionAddition();
       console.log(msge);
@@ -233,7 +252,7 @@ export const SideMenuWrapper = (
                       type="file"  
                       size="sm" 
                       multiple 
-                      onChange={(e) => setFormRegionData({...formRegionData, files: e.target.files})}
+                      onChange={(e) => previewFileData(e)}
                       />
                   </Form.Group>
                 }

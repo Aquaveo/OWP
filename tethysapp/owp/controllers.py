@@ -149,6 +149,32 @@ def saveUserRegions(request):
 
 
 @controller
+def previewUserRegionFromFile(request):
+    region = {}
+    # breakpoint()
+    file_data = request.FILES.getlist("files")[0]
+    df = gpd.read_file(file_data)
+    df.crs = "EPSG:4326"
+    df["geom"] = df["geometry"]
+    # df["geom"] = df["geometry"].apply(shapely.wkt.loads)
+    df = df.drop("geometry", axis=1)
+    dest = gpd.GeoDataFrame(
+        columns=["name", "geom"],
+        crs="EPSG:4326",
+        geometry=[GeometryCollection(df["geom"].tolist())],
+    )
+    dest["name"] = "preview"
+    dest["geom"] = dest["geometry"]
+    dest = dest.drop("geometry", axis=1)
+    dest = dest.set_geometry("geom")
+    # dest["geom"] = dest["geom"].apply(lambda x: WKTElement(x.wkt, srid=4326))
+    region_dict = dest.to_dict(orient="records")
+    default_region_geometry = shapely.to_geojson(region_dict[0]["geom"])
+    region["geom"] = default_region_geometry
+    return JsonResponse(region)
+
+
+@controller
 def getUserRegions(request):
     # breakpoint()
     regions_response = {}
