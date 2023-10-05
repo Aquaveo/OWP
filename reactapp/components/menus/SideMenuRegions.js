@@ -67,8 +67,7 @@ export const SideMenuWrapper = (
         });
         setShowGeopackageLayersNames(true);
         setGeopackageLayersNames(responseGeopackageLayers['layers']);
-
-        // responseGeopackageLayers['layers']
+        dataRequest.append('layers_geopackage', responseGeopackageLayers['layers'][0]['value']);
       }
       let responseRegions = await appAPI.previewUserRegionFromFile(dataRequest).catch((error) => {
         handleHideLoading();
