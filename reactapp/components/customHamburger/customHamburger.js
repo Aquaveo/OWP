@@ -8,7 +8,9 @@ import {
 } from "react-circular-menu";
 
 export const CircularMenuComponent = ({handleShowRegionMenu}) => {
-
+    //make the menu dissapear here//
+    // make a function to toogle off the menu
+    // make the add menu to appear
   return (
     <CustomHamburgerStyle>
         <CircleMenu

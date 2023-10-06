@@ -8,7 +8,7 @@ export const CustomHamburgerStyle = styled.div`
       border: 0.2rem solid #ffffff;
       background: #16a085;
       text-decoration: none;
-      color: #2F4858;
+      color: #ffffff;
       border-radius: 50%;
       cursor: pointer;
       display: flex;
@@ -23,10 +23,10 @@ export const CustomHamburgerStyle = styled.div`
     }
     button:is(:hover, :focus, :active) > * {
       color: #16a085;
-      background: #2F4858;
+      background: #ffffff;
     }
     button:is(:hover, :focus, :active) {
       color: #16a085;
-      background: #2F4858;
+      background: #ffffff;
     }
 `;
