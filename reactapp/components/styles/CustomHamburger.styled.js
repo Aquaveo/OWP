@@ -19,9 +19,12 @@ export const CustomHamburgerStyle = styled.div`
       transition: all 0.5s;
     }
     button > *{
-      background: #ffffff;
+      background: #16a085;
     }
-  
+    button:is(:hover, :focus, :active) > * {
+      color: #16a085;
+      background: #2F4858;
+    }
     button:is(:hover, :focus, :active) {
       color: #16a085;
       background: #2F4858;
