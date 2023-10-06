@@ -67,6 +67,8 @@ export const SideMenuWrapper = (
       });
       let responseRegions_obj = JSON.parse(responseRegions['geom'])
       setPreviewFile(responseRegions_obj)
+      setFormRegionData({...formRegionData, geopackage_layer: e.target.value})
+
       console.log(responseRegions_obj)
       handleHideLoading();
     }

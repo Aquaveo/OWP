@@ -69,19 +69,27 @@ def saveUserRegions(request):
             if region_type == "huc":
                 region_data = json.loads(request.POST.get("region_data"))
                 df = gpd.GeoDataFrame.from_features(region_data, crs=4326)
+                df.crs = "EPSG:4326"
+                df["geom"] = df["geometry"]
+                # df["geom"] = df["geometry"].apply(shapely.wkt.loads)
+                df = df.drop("geometry", axis=1)
+                dest = gpd.GeoDataFrame(
+                    columns=["name", "region_type", "default", "user_name", "geom"],
+                    crs="EPSG:4326",
+                    geometry=[GeometryCollection(df["geom"].tolist())],
+                )                
             else:
                 file_data = request.FILES.getlist("files")[0]
                 df = gpd.read_file(file_data)
-
-            df.crs = "EPSG:4326"
-            df["geom"] = df["geometry"]
-            # df["geom"] = df["geometry"].apply(shapely.wkt.loads)
-            df = df.drop("geometry", axis=1)
-            dest = gpd.GeoDataFrame(
-                columns=["name", "region_type", "default", "user_name", "geom"],
-                crs="EPSG:4326",
-                geometry=[GeometryCollection(df["geom"].tolist())],
-            )
+                df = df.to_crs(epsg=3857)
+                df["geom"] = df["geometry"]
+                df["geom"] = df["geometry"]
+                df = df.drop("geometry", axis=1)
+                dest = gpd.GeoDataFrame(
+                    columns=["name", "region_type", "default", "user_name", "geom"],
+                    crs="EPSG:3857",
+                    geometry=[GeometryCollection(df["geom"].tolist())],
+                )      
             dest["region_type"] = region_type
             dest["default"] = region_default
             dest["name"] = region_name
