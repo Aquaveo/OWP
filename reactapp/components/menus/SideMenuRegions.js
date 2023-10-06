@@ -46,11 +46,39 @@ export const SideMenuWrapper = (
       }
       return file_type
     }
+
+    const previewFileDataOnChangeGeopackageLayer = async (e) =>{
+      console.log(e)
+      e.preventDefault();
+      setPreviewFile(null);
+
+      setLoadingText(`Previewing Layer ${ e.target.value} ...`);
+      const dataRequest = new FormData();
+      dataRequest.append('layers_geopackage', e.target.value);
+
+      handleShowLoading();
+
+      Array.from(formRegionData.files).forEach(file=>{
+        dataRequest.append('files', file);
+      });
+
+      let responseRegions = await appAPI.previewUserRegionFromFile(dataRequest).catch((error) => {
+        handleHideLoading();
+      });
+      let responseRegions_obj = JSON.parse(responseRegions['geom'])
+      setPreviewFile(responseRegions_obj)
+      console.log(responseRegions_obj)
+      handleHideLoading();
+    }
+
     const previewFileData = async (e) =>{
       console.log(e)
+      e.preventDefault();
+      setPreviewFile(null);
+
       setLoadingText(`Previewing Region File ...`);
       
-      setFormRegionData({...formRegionData, files: e.target.files});
+      // setFormRegionData({...formRegionData, files: e.target.files});
       const dataRequest = new FormData();
       handleShowLoading();
       let fileType = 'shapefile'
@@ -67,6 +95,7 @@ export const SideMenuWrapper = (
         });
         setShowGeopackageLayersNames(true);
         setGeopackageLayersNames(responseGeopackageLayers['layers']);
+        setFormRegionData({...formRegionData, files: e.target.files, geopackage_layer: e.target.value})
         dataRequest.append('layers_geopackage', responseGeopackageLayers['layers'][0]['value']);
       }
       let responseRegions = await appAPI.previewUserRegionFromFile(dataRequest).catch((error) => {
@@ -211,6 +240,14 @@ export const SideMenuWrapper = (
         return finalGeoJSON;
     }
   
+    useEffect(() => {
+      console.log(formRegionData)
+    
+      return () => {
+      }
+    }, [formRegionData])
+    
+
     return(
       
         <SideMenu isVisible={showRegionsMenu} position={"right"} >
@@ -276,7 +313,7 @@ export const SideMenuWrapper = (
                     label="Default Region"
                     id="disabled-custom-switch"
                     value={formRegionData.default}
-                    onChange={(e) => setFormRegionData({...formRegionData, default: e.target.checked})}
+                    onChange={(e) => setFormRegionData({...formRegionData, default: e.target.checked}) }
                   />
                 </Form.Group>
                 {
@@ -297,17 +334,17 @@ export const SideMenuWrapper = (
                   <p>
                     GeoPackages Layers
                   </p>
-                  <ButtonGroup size="sm">
+                  <ButtonGroup vertical size="sm">
                     {geopackageLayersNames.map((radio, index) => (
                         <ToggleButton
                           key={index}
                           id={`radio-layer-${index}`}
                           variant="secondary"
                           type="radio"
-                          name="region type"
+                          name="layers region"
                           value={radio.value}
-                          checked={formRegionData.regionType === radio.value}
-                          onChange={(e) => setFormRegionData({...formRegionData, geopackage_layer: e.target.value})}
+                          checked={geopackageLayersNames[0]['value'] === radio.value}
+                          onChange={(e) =>  previewFileDataOnChangeGeopackageLayer(e) }
                         >
                           {radio.name}
                         </ToggleButton>

@@ -170,6 +170,7 @@ def previewUserRegionFromFile(request):
     layer_name = request.POST.get("layers_geopackage")
 
     if layer_name:
+        print(layer_name)
         df = gpd.read_file(file_data, layer=layer_name)
     else:
         df = gpd.read_file(file_data)
