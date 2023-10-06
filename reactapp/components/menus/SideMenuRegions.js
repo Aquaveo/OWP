@@ -72,9 +72,9 @@ export const SideMenuWrapper = (
       let responseRegions = await appAPI.previewUserRegionFromFile(dataRequest).catch((error) => {
         handleHideLoading();
       });
-
-      setPreviewFile(JSON.parse(responseRegions['geom']))
-      console.log(responseRegions)
+      let responseRegions_obj = JSON.parse(responseRegions['geom'])
+      setPreviewFile(responseRegions_obj)
+      console.log(responseRegions_obj)
       handleHideLoading();
     }
     const notifyError = (content) => {

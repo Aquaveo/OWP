@@ -165,7 +165,7 @@ def getGeopackageLayersFromFile(request):
 @controller
 def previewUserRegionFromFile(request):
     region = {}
-    breakpoint()
+    # breakpoint()
     file_data = request.FILES.getlist("files")[0]
     layer_name = request.POST.get("layers_geopackage")
 
@@ -173,13 +173,14 @@ def previewUserRegionFromFile(request):
         df = gpd.read_file(file_data, layer=layer_name)
     else:
         df = gpd.read_file(file_data)
-    df.crs = "EPSG:4326"
+    crs_df = "EPSG:3857"
+    df = df.to_crs(epsg=3857)
     df["geom"] = df["geometry"]
     # df["geom"] = df["geometry"].apply(shapely.wkt.loads)
     df = df.drop("geometry", axis=1)
     dest = gpd.GeoDataFrame(
         columns=["name", "geom"],
-        crs="EPSG:4326",
+        crs=crs_df,
         geometry=[GeometryCollection(df["geom"].tolist())],
     )
     dest["name"] = "preview"
