@@ -44,7 +44,7 @@ import { LoaderContainer } from 'components/styles/Loader.styled';
 import { SideMenuWrapper } from 'components/menus/SideMenuRegions';
 import GeoJSON from 'ol/format/GeoJSON';
 import { RegionMenuWrapper } from 'components/menus/RegionMenu';
-
+import { CircularMenuComponent } from 'components/customHamburger/customHamburger';
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
@@ -414,9 +414,10 @@ function App(
             <div className="loading-spinner"></div>
             <div><span className='loading-tex-span'>{loadingText}</span></div>
           </div>
-        </LoaderContainer>        
-    <MainContainer>
+        </LoaderContainer>
+    <CircularMenuComponent handleShowRegionMenu={handleShowRegionMenu}/>
 
+    <MainContainer >
     <RegionMenuWrapper 
       name="My Regions" 
       showMainRegionsMenu={showMainRegionsMenu} 
