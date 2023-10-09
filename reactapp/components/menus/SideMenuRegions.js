@@ -97,8 +97,12 @@ export const SideMenuWrapper = (
         });
         setShowGeopackageLayersNames(true);
         setGeopackageLayersNames(responseGeopackageLayers['layers']);
-        setFormRegionData({...formRegionData, files: e.target.files, geopackage_layer: e.target.value})
+        setFormRegionData({...formRegionData, files: e.target.files, geopackage_layer: responseGeopackageLayers['layers'][0]['value']})
         dataRequest.append('layers_geopackage', responseGeopackageLayers['layers'][0]['value']);
+      }
+      else{
+        setFormRegionData({...formRegionData, files: e.target.files})
+
       }
       let responseRegions = await appAPI.previewUserRegionFromFile(dataRequest).catch((error) => {
         handleHideLoading();
@@ -168,6 +172,7 @@ export const SideMenuWrapper = (
         dataRequest.append('files', file);
       });
       
+      dataRequest.append('layers_geopackage',formRegionData.geopackage_layer);
 
 
       //merge geojsons
@@ -196,6 +201,14 @@ export const SideMenuWrapper = (
       console.log(responseRegions)
       
       setSelectedRegions({type:"reset", region: {}});
+      setFormRegionData({
+        name:'',
+        regionType:'file',
+        default: false,
+        files:[],
+        layer_color:'#563d7c',
+        geopackage_layer: ''
+      })
       handleHideLoading();
       if (socketRef.current.readyState === WebSocket.OPEN) {
         console.log("availableRegions change")
@@ -252,7 +265,7 @@ export const SideMenuWrapper = (
 
     return(
       
-        <SideMenu isVisible={showRegionsMenu} position={"right"} >
+        <SideMenu isVisible={showRegionsMenu} position={"top"} >
           <Toaster  position="bottom-center" />
 
           <div className="wrapper_absolute">

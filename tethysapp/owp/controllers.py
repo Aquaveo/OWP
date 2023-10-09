@@ -8,6 +8,8 @@ import json
 import fiona
 from tethys_sdk.routing import controller
 from django.contrib.auth.models import User
+import io
+from fiona.io import ZipMemoryFile
 
 from requests import Request
 import geopandas as gpd
@@ -77,10 +79,36 @@ def saveUserRegions(request):
                     columns=["name", "region_type", "default", "user_name", "geom"],
                     crs="EPSG:4326",
                     geometry=[GeometryCollection(df["geom"].tolist())],
-                )                
+                )
             else:
+                # breakpoint()
+                # check for different files or single file
                 file_data = request.FILES.getlist("files")[0]
-                df = gpd.read_file(file_data)
+                if len(request.FILES.getlist("files")) > 1:
+                    file_data = request.FILES.getlist("files")
+
+                # check for file extension
+                file_extension = file_data.name.split(".")[-1]
+
+                if file_extension == "gpkg":
+                    # check for layers inf geopackage
+                    layer_name = request.POST.get("layers_geopackage")
+                    if layer_name:
+                        df = gpd.read_file(file_data, layer=layer_name)
+                    else:
+                        df = gpd.read_file(file_data)
+
+                if file_extension == "zip":
+                    # https://stackoverflow.com/questions/50638374/expected-str-bytes-or-os-pathlike-object-not-inmemoryuploadedfile
+                    with ZipMemoryFile(file_data) as memfile:
+                        with memfile.open() as src:
+                            crs = src.crs
+                            df = gpd.GeoDataFrame.from_features(src, crs=crs)
+                if file_extension == "geojson" or file_extension == "json":
+                    df = gpd.read_file(file_data)
+
+                # file_data = request.FILES.getlist("files")[0]
+                # df = gpd.read_file(file_data)
                 df = df.to_crs(epsg=3857)
                 df["geom"] = df["geometry"]
                 df["geom"] = df["geometry"]
@@ -89,7 +117,7 @@ def saveUserRegions(request):
                     columns=["name", "region_type", "default", "user_name", "geom"],
                     crs="EPSG:3857",
                     geometry=[GeometryCollection(df["geom"].tolist())],
-                )      
+                )
             dest["region_type"] = region_type
             dest["default"] = region_default
             dest["name"] = region_name
@@ -152,7 +180,7 @@ def saveUserRegions(request):
             response_obj["default_geom"] = default_region_geometry
         else:
             response_obj["msge"] = "Please, create an account, and login"
-    except Exception:
+    except Exception as e:
         response_obj["msge"] = "Error saving the Regions for current user"
     return JsonResponse(response_obj)
 
@@ -173,15 +201,31 @@ def getGeopackageLayersFromFile(request):
 @controller
 def previewUserRegionFromFile(request):
     region = {}
-    # breakpoint()
+    # check for different files or single file
     file_data = request.FILES.getlist("files")[0]
-    layer_name = request.POST.get("layers_geopackage")
+    if len(request.FILES.getlist("files")) > 1:
+        file_data = request.FILES.getlist("files")
 
-    if layer_name:
-        print(layer_name)
-        df = gpd.read_file(file_data, layer=layer_name)
-    else:
+    # check for file extension
+    file_extension = file_data.name.split(".")[-1]
+
+    if file_extension == "gpkg":
+        # check for layers inf geopackage
+        layer_name = request.POST.get("layers_geopackage")
+        if layer_name:
+            df = gpd.read_file(file_data, layer=layer_name)
+        else:
+            df = gpd.read_file(file_data)
+
+    if file_extension == "zip":
+        # https://stackoverflow.com/questions/50638374/expected-str-bytes-or-os-pathlike-object-not-inmemoryuploadedfile
+        with ZipMemoryFile(file_data) as memfile:
+            with memfile.open() as src:
+                crs = src.crs
+                df = gpd.GeoDataFrame.from_features(src, crs=crs)
+    if file_extension == "geojson" or file_extension == "json":
         df = gpd.read_file(file_data)
+
     crs_df = "EPSG:3857"
     df = df.to_crs(epsg=3857)
     df["geom"] = df["geometry"]

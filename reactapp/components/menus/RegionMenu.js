@@ -1,7 +1,6 @@
 import { SideMenu } from "components/styles/SideMenu.styled";
 import { Spin as Hamburger } from 'hamburger-react'
 import { SubMenu } from "components/subMenus/submenu";
-
 export const RegionMenuWrapper = (
   {
     name, 
@@ -25,7 +24,8 @@ export const RegionMenuWrapper = (
               <SubMenu name={name} handleShowMainRegionMenu={handleShowMainRegionMenu} availableRegions={availableRegions} setAvailableRegions={setAvailableRegions} handleShowRegionMenu={handleShowRegionMenu} />
 
           }
-          </div>        
+          </div>
+
         </SideMenu>
     )
 
