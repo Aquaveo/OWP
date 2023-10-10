@@ -10,6 +10,8 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import toast, { Toaster } from 'react-hot-toast';
 import { SmallMenu } from "components/styles/SmallMenu.styled";
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
+
 export const SideMenuWrapper = (
     { 
         setNavVisible,
@@ -27,12 +29,13 @@ export const SideMenuWrapper = (
         setPreviewFile
     }) => {
 
-    const initialGeopackageLayersNames = [
-        { name: "First Region", value: "First Region" },
-        { name: "Second Region", value: "Second Region" },
-    ]; 
+    // const initialGeopackageLayersNames = [
+    //     { name: "First Region", value: "First Region" },
+    //     { name: "Second Region", value: "Second Region" },
+    // ]; 
+    const initialGeopackageLayersNames = ['layer1','layer2']; 
     const [geopackageLayersNames, setGeopackageLayersNames ] = useState(initialGeopackageLayersNames)
-
+    const [geopackageLayersName, setGeopackageLayersName ] = useState('layer1')
     const checkFileTypeForPreview = (fileName) =>{
       let file_type = "shapefile"
       if (fileName.endsWith(".shp")) {
@@ -49,12 +52,13 @@ export const SideMenuWrapper = (
 
     const previewFileDataOnChangeGeopackageLayer = async (e) =>{
       console.log(e)
-      e.preventDefault();
+      setGeopackageLayersName(e)
+      // e.preventDefault();
       setPreviewFile(null);
 
-      setLoadingText(`Previewing Layer ${ e.target.value} ...`);
+      setLoadingText(`Previewing Layer ${ e} ...`);
       const dataRequest = new FormData();
-      dataRequest.append('layers_geopackage', e.target.value);
+      dataRequest.append('layers_geopackage', e);
 
       handleShowLoading();
 
@@ -67,7 +71,7 @@ export const SideMenuWrapper = (
       });
       let responseRegions_obj = JSON.parse(responseRegions['geom'])
       setPreviewFile(responseRegions_obj)
-      setFormRegionData({...formRegionData, geopackage_layer: e.target.value})
+      setFormRegionData({...formRegionData, geopackage_layer: e})
 
       console.log(responseRegions_obj)
       handleHideLoading();
@@ -97,8 +101,8 @@ export const SideMenuWrapper = (
         });
         setShowGeopackageLayersNames(true);
         setGeopackageLayersNames(responseGeopackageLayers['layers']);
-        setFormRegionData({...formRegionData, files: e.target.files, geopackage_layer: responseGeopackageLayers['layers'][0]['value']})
-        dataRequest.append('layers_geopackage', responseGeopackageLayers['layers'][0]['value']);
+        setFormRegionData({...formRegionData, files: e.target.files, geopackage_layer: responseGeopackageLayers['layers'][0]})
+        dataRequest.append('layers_geopackage', responseGeopackageLayers['layers'][0]);
       }
       else{
         setFormRegionData({...formRegionData, files: e.target.files})
@@ -122,7 +126,9 @@ export const SideMenuWrapper = (
         { name: "File Region", value: "file" },
         { name: "HUC Region", value: "huc" },
     ]; 
-    
+   
+    const [regionTypeRadioButton, setRegionTypeRadioButton] = useState( 'file');
+
     const [showGeopackageLayersNames, setShowGeopackageLayersNames ] = useState(false)
     
     const [isFileUploadVisible, setFileUploadVisible]= useState(true);
@@ -135,7 +141,9 @@ export const SideMenuWrapper = (
       geopackage_layer: ''
     })
     const handleFileTypeOnChangeEvent = (e) =>{
-      if(e.target.value == 'file'){
+      setRegionTypeRadioButton(e)
+      console.log(e)
+      if(e == 'file'){
         setFileUploadVisible(true);
         setShowRegionsVisible(false);
       }
@@ -143,7 +151,7 @@ export const SideMenuWrapper = (
         setShowRegionsVisible(true);
         setFileUploadVisible(false);
       }
-      setFormRegionData({...formRegionData, regionType: e.target.value});
+      setFormRegionData({...formRegionData, regionType: e});
     }
 
     const saveRegionsUser = async (e) => {
@@ -303,22 +311,28 @@ export const SideMenuWrapper = (
                   <p>
                     Region Type
                   </p>
-                  <ButtonGroup size="sm">
-                    {regionTypeRadioButtons.map((radio, index) => (
-                        <ToggleButton
-                          key={index}
-                          id={`radio-${index}`}
-                          variant="secondary"
-                          type="radio"
-                          name="region type"
-                          value={radio.value}
-                          checked={regionTypeRadioButtons[0]['value'] === radio.value}
-                          onChange={(e) => handleFileTypeOnChangeEvent(e)}
-                        >
-                          {radio.name}
-                        </ToggleButton>
-                      ))}
-                  </ButtonGroup>
+                  <ToggleButtonGroup 
+                    size="sm"
+                    value={regionTypeRadioButton}
+                    name="region type"
+                    onChange={(e) => handleFileTypeOnChangeEvent(e)}
+                  >
+                      <ToggleButton 
+                        id="tbg-btn-1" 
+                        value={'file'}
+                        variant="outline-light"
+                      >
+                        File Region
+                      </ToggleButton>
+                      <ToggleButton 
+                        id="tbg-btn-2" 
+                        value={'huc'}
+                        variant="outline-light"
+                      >
+                        Huc Region
+                      </ToggleButton>
+
+                  </ToggleButtonGroup>
 
                 </Form.Group>
 
@@ -349,22 +363,24 @@ export const SideMenuWrapper = (
                   <p>
                     GeoPackages Layers
                   </p>
-                  <ButtonGroup vertical size="sm">
+                  <ToggleButtonGroup 
+                    vertical 
+                    size="sm"
+                    value={geopackageLayersName}
+                    name="layers region"
+                    onChange={(e) =>  previewFileDataOnChangeGeopackageLayer(e) }
+                  >
                     {geopackageLayersNames.map((radio, index) => (
                         <ToggleButton
                           key={index}
                           id={`radio-layer-${index}`}
-                          variant="secondary"
-                          type="radio"
-                          name="layers region"
-                          value={radio.value}
-                          checked={geopackageLayersNames[0]['value'] === radio.value}
-                          onChange={(e) =>  previewFileDataOnChangeGeopackageLayer(e) }
+                          variant="outline-light"
+                          value={radio}
                         >
-                          {radio.name}
+                          {radio}
                         </ToggleButton>
                       ))}
-                  </ButtonGroup>
+                  </ToggleButtonGroup>
                   
                 </Form.Group>
                 }

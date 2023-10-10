@@ -193,7 +193,9 @@ def getGeopackageLayersFromFile(request):
     layers = fiona.listlayers(file_data)
     list_layers_dict = []
     for layer in layers:
-        list_layers_dict.append({"name": layer, "value": layer})
+        list_layers_dict.append(layer)
+        # list_layers_dict.append({"name": layer, "value": layer})
+
     region["layers"] = list_layers_dict
     return JsonResponse(region)
 
