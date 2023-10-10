@@ -364,7 +364,8 @@ export const SideMenuWrapper = (
                     GeoPackages Layers
                   </p>
                   <ToggleButtonGroup 
-                    vertical 
+                    vertical
+                    className='w-100'
                     size="sm"
                     value={geopackageLayersName}
                     name="layers region"
