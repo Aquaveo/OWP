@@ -10,7 +10,7 @@ export const RegionMenuWrapper = (
     availableRegions, 
     setAvailableRegions,
     handleShowRegionMenu,
-    toggleMainRegionMenu
+    toggleMainRegionMenu,    
   })=>{
     return(
 
@@ -21,7 +21,13 @@ export const RegionMenuWrapper = (
           </div>
           {
               showMainRegionsMenu && 
-              <SubMenu name={name} handleShowMainRegionMenu={handleShowMainRegionMenu} availableRegions={availableRegions} setAvailableRegions={setAvailableRegions} handleShowRegionMenu={handleShowRegionMenu} />
+              <SubMenu 
+                name={name} 
+                handleShowMainRegionMenu={handleShowMainRegionMenu} 
+                availableRegions={availableRegions} 
+                setAvailableRegions={setAvailableRegions} 
+                handleShowRegionMenu={handleShowRegionMenu}
+                />
 
           }
           </div>

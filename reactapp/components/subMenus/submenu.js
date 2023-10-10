@@ -25,7 +25,7 @@ export const SubMenu = (
         handleShowMainRegionMenu,
         availableRegions,
         setAvailableRegions, 
-        handleShowRegionMenu
+        handleShowRegionMenu,
     }) => {
     return (
         <>
@@ -34,7 +34,11 @@ export const SubMenu = (
                     {name}
                 </Col>
             </Row>
-            <RegionsRow availableRegions={availableRegions} setAvailableRegions={setAvailableRegions}/>
+            <RegionsRow 
+                availableRegions={availableRegions} 
+                setAvailableRegions={setAvailableRegions}
+
+            />
 
             
         </>

@@ -2,11 +2,17 @@
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import { Button } from 'react-bootstrap';
+import { TbZoomPan } from "react-icons/tb";
+import {  useContext, useEffect, useState } from "react";
+import MapContext from "../map/MapContext";
 
 export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
-
+     const { map } = useContext(MapContext);
+     const [currentLayerIndex, setCurrentLayerIndex] = useState()
       const toggleVisibilityRegion = (index) => {
           console.log("hey")
+          setCurrentLayerIndex(index);
           setAvailableRegions((prevData) => {
           // Create a copy of the previous state array
           const newData = [...prevData];
@@ -18,7 +24,30 @@ export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
         });
       };
 
+      const zoomToRegionExtent = (index) => {
+        if (!map) return;
+        setCurrentLayerIndex(index);
 
+        if (!availableRegions[index]['is_visible']) return;
+        const current_region = map.getLayers().getArray().find(layer => layer.get('name') === `${availableRegions[index]['name']}_user_region`);
+        const layerExtent = current_region.getSource().getExtent();
+        map.getView().fit(layerExtent, {
+            padding: [10, 10, 10, 10], // Optional padding around the extent.
+            duration: 1000, // Optional animation duration in milliseconds.
+          });
+      };   
+    
+      useEffect(() => {
+        if (!currentLayerIndex) return;
+        if(availableRegions[currentLayerIndex]['is_visible']){
+            zoomToRegionExtent(currentLayerIndex);
+        }
+      
+        return () => {
+          
+        }
+      }, [currentLayerIndex])
+      
 
     return (
         <>
@@ -26,11 +55,11 @@ export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
                 <Col className="text-white fw-bold" sm={4}>
                     Name
                 </Col >
-                <Col className="text-white fw-bold" sm={4}>
-                    Type
-                </Col>
-                <Col className="text-white fw-bold" sm={2} >
+                <Col className="text-white fw-bold" sm={3} >
                     Hide/Show
+                </Col>
+                <Col className="text-white fw-bold" sm={3} >
+                    Zoom to Region
                 </Col>
             </Row>
 
@@ -41,12 +70,7 @@ export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
                             <Form.Control className="text-white" plaintext readOnly defaultValue={availableRegion.name} />
                         </Form.Group>
                     </Col>
-                    <Col sm={4}>
-                        <Form.Group className="text-white">
-                            <Form.Control className="text-white" plaintext readOnly defaultValue={availableRegion.region_type} />
-                        </Form.Group>
-                    </Col>
-                    <Col sm={2} >
+                    <Col sm={3} >
                         <Form.Group className="text-white">
                             <Form.Check
                                 type="switch"
@@ -56,6 +80,15 @@ export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
                                 onChange={(e) => toggleVisibilityRegion(index)}
                             />
                         </Form.Group>
+                    </Col>
+                    <Col sm={3} >
+                        <Button 
+                            variant="primary" 
+                            className="text-white"
+                            onClick={(e) => zoomToRegionExtent(index)}
+                        >
+                            <TbZoomPan/>
+                        </Button>
                     </Col>
                 </Form>
             ))}

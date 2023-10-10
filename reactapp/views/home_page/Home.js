@@ -72,7 +72,6 @@ function App(
   {
   
   const socketRef = useRef();
-
   // const [curentRegion, setCurrentRegion] = useState({});
   const [loadingText, setLoadingText] = useState("Loading Layers ...")
   const [isFullMap, setIsFullMap] = useState(true)
@@ -409,26 +408,15 @@ function App(
     
     <div>
 
-        <LoaderContainer isVisible={isPlotReady}>
-          <div className="loading-overlay">
-            <div className="loading-spinner"></div>
-            <div><span className='loading-tex-span'>{loadingText}</span></div>
-          </div>
-        </LoaderContainer>
+    <LoaderContainer isVisible={isPlotReady}>
+      <div className="loading-overlay">
+        <div className="loading-spinner"></div>
+        <div><span className='loading-tex-span'>{loadingText}</span></div>
+      </div>
+    </LoaderContainer>
     <CircularMenuComponent handleShowRegionMenu={handleShowRegionMenu}/>
 
     <MainContainer >
-    <RegionMenuWrapper 
-      name="My Regions" 
-      showMainRegionsMenu={showMainRegionsMenu} 
-      handleShowMainRegionMenu={handleShowMainRegionMenu} 
-      handleHideMainRegionMenu = {handleHideMainRegionMenu}
-      availableRegions={availableRegions} 
-      setAvailableRegions={setAvailableRegions}
-      handleShowRegionMenu={handleShowRegionMenu}
-      toggleMainRegionMenu={toggleMainRegionMenu}
-    />
-
 
 
     <SideMenuWrapper 
@@ -466,7 +454,16 @@ function App(
           availableRegions={availableRegions}
           setLoadingText={setLoadingText}
         >
-
+          <RegionMenuWrapper 
+            name="My Regions" 
+            showMainRegionsMenu={showMainRegionsMenu} 
+            handleShowMainRegionMenu={handleShowMainRegionMenu} 
+            handleHideMainRegionMenu = {handleHideMainRegionMenu}
+            availableRegions={availableRegions} 
+            setAvailableRegions={setAvailableRegions}
+            handleShowRegionMenu={handleShowRegionMenu}
+            toggleMainRegionMenu={toggleMainRegionMenu}
+          />
           <Layers>
 
 

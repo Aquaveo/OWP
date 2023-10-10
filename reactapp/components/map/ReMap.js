@@ -22,7 +22,8 @@ export const ReMap = (
 	{ 
 		children, 
 		isFullMap, 
-		zoom, center, 
+		zoom, 
+		center, 
 		layerGroups, 
 		handleShow, 
 		setCurrentStation, 
