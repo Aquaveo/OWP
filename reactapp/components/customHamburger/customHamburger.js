@@ -24,25 +24,28 @@ export const CircularMenuComponent = ({handleShowRegionMenu}) => {
         radius={5}
         rotationAngleInclusive={true}
         >
-        <CircleMenuItem 
-            tooltip="Add Region"
-            onClick={() => handleShowRegionMenu() }
-        >
-        <TbLassoPolygon />
 
-        </CircleMenuItem>
-        <CircleMenuItem 
-            tooltip="Add Reaches"
-        >
-        <MdTimeline />
 
-        </CircleMenuItem>
-        <CircleMenuItem 
-            tooltip="Add Layers"
-        >
-        <BsLayersHalf />
+          <CircleMenuItem 
+              tooltip="Add Layers"
+          >
+            <BsLayersHalf />
 
-        </CircleMenuItem>
+          </CircleMenuItem>
+
+          <CircleMenuItem 
+              tooltip="Add Reaches"
+          >
+            <MdTimeline />
+
+          </CircleMenuItem>
+          <CircleMenuItem 
+              tooltip="Add Region"
+              onClick={() => handleShowRegionMenu() }
+          >
+            <TbLassoPolygon />
+
+          </CircleMenuItem>
 
         </CircleMenu>
     </CustomHamburgerStyle>

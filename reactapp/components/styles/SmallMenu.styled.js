@@ -11,7 +11,9 @@ export const SmallMenu = styled.div`
     padding:5px;
     position:absolute;
     z-index:300;
-    ${props => `${props.position}: 60px`};
+    right: 10px;
+    margin-top: 10px;
+    // ${props => `${props.position}: 60px`};
 
     .Myhamburguer{
         display: flex;
@@ -27,8 +29,9 @@ export const SmallMenu = styled.div`
         width: fit-content;
         height: fit-content;
         padding: 10px;
-        background-color:rgba(12, 74, 110, 0.5);
-        border-color: blue;
+        background-color: rgba(22, 160, 133, 0.5608);
+        // background-color:rgba(12, 74, 110, 0.5);
+        // border-color: blue;
         color:#e0f2fe;
         font-size:1rem;
         border-radius: 10px;
