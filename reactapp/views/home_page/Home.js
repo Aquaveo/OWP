@@ -414,7 +414,6 @@ function App(
         <div><span className='loading-tex-span'>{loadingText}</span></div>
       </div>
     </LoaderContainer>
-    <CircularMenuComponent handleShowRegionMenu={handleShowRegionMenu}/>
 
     <MainContainer >
 
@@ -438,6 +437,8 @@ function App(
           availableRegions={availableRegions}
           setLoadingText={setLoadingText}
         >
+          <CircularMenuComponent handleShowRegionMenu={handleShowRegionMenu}/>
+
           <RegionMenuWrapper 
             name="My Regions" 
             showMainRegionsMenu={showMainRegionsMenu} 

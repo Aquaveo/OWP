@@ -8,11 +8,11 @@ export const SideMenu = styled.div`
     }
 
     .accordeon-body-custom{
-      background-color: rgba(12, 74, 110, 0.5);
+      background-color: rgba(22, 160, 133, 0.5608);
       color: #e0f2fe;
     }
     .accordion-header button{
-      background-color: rgba(12, 74, 110, 0.5);
+      background-color: rgba(22, 160, 133, 0.5608);
       color: #e0f2fe;
 
     }

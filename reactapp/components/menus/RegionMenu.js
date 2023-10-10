@@ -2,7 +2,7 @@ import { SideMenu } from "components/styles/SideMenu.styled";
 import { Spin as Hamburger } from 'hamburger-react'
 import { SubMenu } from "components/subMenus/submenu";
 import Accordion from 'react-bootstrap/Accordion';
-
+import { CircularMenuComponent } from "components/customHamburger/customHamburger";
 export const RegionMenuWrapper = (
   {
     name, 
@@ -20,7 +20,9 @@ export const RegionMenuWrapper = (
             <SideMenu isVisible={showMainRegionsMenu} position={"top"} >
                 <Accordion className="wrapper_absolute">
                   <Accordion.Item eventKey="0">
-                    <Accordion.Header>Regions</Accordion.Header>
+                    <Accordion.Header>
+                      Regions
+                    </Accordion.Header>
                     <Accordion.Body className="accordeon-body-custom">
                       {
                           showMainRegionsMenu && 

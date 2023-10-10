@@ -1,5 +1,9 @@
-import { BsLayersHalf, BsTrash, BsFillPencilFill } from "react-icons/bs";
+import { BsLayersHalf } from "react-icons/bs";
+import { TbLassoPolygon } from "react-icons/tb";
+import { MdTimeline } from "react-icons/md";
 import { CustomHamburgerStyle } from "components/styles/CustomHamburger.styled";
+
+ 
 // Import the circular menu
 import {
   CircleMenu,
@@ -14,19 +18,32 @@ export const CircularMenuComponent = ({handleShowRegionMenu}) => {
   return (
     <CustomHamburgerStyle>
         <CircleMenu
-        startAngle={-135}
+        startAngle={90}
         rotationAngle={90}
         itemSize={2}
         radius={5}
         rotationAngleInclusive={true}
         >
         <CircleMenuItem 
-            tooltip="Add"
+            tooltip="Add Region"
             onClick={() => handleShowRegionMenu() }
+        >
+        <TbLassoPolygon />
+
+        </CircleMenuItem>
+        <CircleMenuItem 
+            tooltip="Add Reaches"
+        >
+        <MdTimeline />
+
+        </CircleMenuItem>
+        <CircleMenuItem 
+            tooltip="Add Layers"
         >
         <BsLayersHalf />
 
         </CircleMenuItem>
+
         </CircleMenu>
     </CustomHamburgerStyle>
   );
