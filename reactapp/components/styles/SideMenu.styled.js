@@ -21,7 +21,7 @@ export const SideMenu = styled.div`
         z-index:300;
         position:absolute;
         padding:5px;
-        width: 35%;
+        width: 100% !important;;
         // background-color:rgba(12, 74, 110, 0.5);
         // border-color: blue;
         // color:#e0f2fe;
@@ -35,7 +35,12 @@ export const SideMenu = styled.div`
         filter: opacity(0.8);
         
     }
-
+    /* 30% width on medium, large, and extra-large screens */
+    @media (min-width: 768px) {
+      .wrapper_absolute {
+        width: 35% !important;
+      }
+    }
     /* Style for Webkit-based browsers (Chrome, Safari) */
     .wrapper_absolute::-webkit-scrollbar {
       width: 0; /* Hide the scrollbar in Webkit-based browsers */
