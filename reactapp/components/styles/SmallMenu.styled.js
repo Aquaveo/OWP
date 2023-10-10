@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const SideMenu = styled.div`
+export const SmallMenu = styled.div`
     // display: block;
     display:  ${props => props.isVisible ? "block" : "none"};
 

@@ -1,6 +1,8 @@
 import { SideMenu } from "components/styles/SideMenu.styled";
 import { Spin as Hamburger } from 'hamburger-react'
 import { SubMenu } from "components/subMenus/submenu";
+import Accordion from 'react-bootstrap/Accordion';
+
 export const RegionMenuWrapper = (
   {
     name, 
@@ -14,25 +16,31 @@ export const RegionMenuWrapper = (
   })=>{
     return(
 
-        <SideMenu isVisible={showMainRegionsMenu} position={"top"} >
-          <div className="wrapper_absolute">
-           <div className="Myhamburguer">
-            <Hamburger toggled={showMainRegionsMenu} toggle={toggleMainRegionMenu} size={20} />
-          </div>
-          {
-              showMainRegionsMenu && 
-              <SubMenu 
-                name={name} 
-                handleShowMainRegionMenu={handleShowMainRegionMenu} 
-                availableRegions={availableRegions} 
-                setAvailableRegions={setAvailableRegions} 
-                handleShowRegionMenu={handleShowRegionMenu}
-                />
 
-          }
-          </div>
+            <SideMenu isVisible={showMainRegionsMenu} position={"top"} >
+                <Accordion className="wrapper_absolute">
+                  <Accordion.Item eventKey="0">
+                    <Accordion.Header>Regions</Accordion.Header>
+                    <Accordion.Body className="accordeon-body-custom">
+                      {
+                          showMainRegionsMenu && 
+                          <SubMenu 
+                            name={name} 
+                            handleShowMainRegionMenu={handleShowMainRegionMenu} 
+                            availableRegions={availableRegions} 
+                            setAvailableRegions={setAvailableRegions} 
+                            handleShowRegionMenu={handleShowRegionMenu}
+                            />
 
-        </SideMenu>
+                      }
+                    </Accordion.Body>
+                  </Accordion.Item>
+                </Accordion>
+            </SideMenu>
+
+
+
+
     )
 
 }

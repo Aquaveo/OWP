@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import { Button } from 'react-bootstrap';
 import { TbZoomPan } from "react-icons/tb";
-import {  useContext, useEffect, useState } from "react";
+import {  useContext, useEffect, useState,Fragment } from "react";
 import MapContext from "../map/MapContext";
 
 export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
@@ -50,18 +50,20 @@ export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
       
 
     return (
-        <>
+        <Fragment>
             <Row className='mb-2'>
                 <Col className="text-white fw-bold" sm={4}>
                     Name
                 </Col >
-                <Col className="text-white fw-bold" sm={3} >
+                <Col className="text-white fw-bold" sm={4} >
                     Hide/Show
                 </Col>
-                <Col className="text-white fw-bold" sm={3} >
+                <Col className="text-white fw-bold" sm={4} >
                     Zoom to Region
                 </Col>
             </Row>
+
+            <Row className='mb-2'>
 
             {availableRegions && availableRegions.map((availableRegion, index) => (
                 <Form as={Row} key={index} className='mb-2'>
@@ -70,7 +72,7 @@ export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
                             <Form.Control className="text-white" plaintext readOnly defaultValue={availableRegion.name} />
                         </Form.Group>
                     </Col>
-                    <Col sm={3} >
+                    <Col sm={4} >
                         <Form.Group className="text-white">
                             <Form.Check
                                 type="switch"
@@ -81,7 +83,7 @@ export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
                             />
                         </Form.Group>
                     </Col>
-                    <Col sm={3} >
+                    <Col sm={4} >
                         <Button 
                             variant="primary" 
                             className="text-white"
@@ -92,7 +94,8 @@ export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
                     </Col>
                 </Form>
             ))}
-        </>
+            </Row>
+        </Fragment>
     );
 
   }

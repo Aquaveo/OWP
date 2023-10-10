@@ -28,21 +28,10 @@ export const SubMenu = (
         handleShowRegionMenu,
     }) => {
     return (
-        <>
-            <Row className='mb-2'>
-                <Col className="text-white fw-bold" sm={8} >
-                    {name}
-                </Col>
-            </Row>
             <RegionsRow 
                 availableRegions={availableRegions} 
                 setAvailableRegions={setAvailableRegions}
 
             />
-
-            
-        </>
-
-
     );
   }

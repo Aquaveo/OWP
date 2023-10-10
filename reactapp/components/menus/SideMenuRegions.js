@@ -9,7 +9,7 @@ import { BiSolidSave } from "react-icons/bi"
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import toast, { Toaster } from 'react-hot-toast';
-
+import { SmallMenu } from "components/styles/SmallMenu.styled";
 export const SideMenuWrapper = (
     { 
         setNavVisible,
@@ -265,7 +265,7 @@ export const SideMenuWrapper = (
 
     return(
       
-        <SideMenu isVisible={showRegionsMenu} position={"top"} >
+        <SmallMenu isVisible={showRegionsMenu} position={"top"} >
           <Toaster  position="bottom-center" />
 
           <div className="wrapper_absolute">
@@ -380,7 +380,7 @@ export const SideMenuWrapper = (
   
           </div>        
   
-        </SideMenu>
+        </SmallMenu>
   
   
     );

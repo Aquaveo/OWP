@@ -419,23 +419,7 @@ function App(
     <MainContainer >
 
 
-    <SideMenuWrapper 
-      setNavVisible={setNavVisible} 
-      showRegionsMenu={showRegionsMenu}
-      handleShowRegionMenu={handleShowRegionMenu}
-      toggleAddRegionMenu={toggleAddRegionMenu}
-      showRegions={showRegions} 
-      setShowRegionsVisible={setShowRegionsVisible} 
-      selectedRegions={selectedRegions} 
-      setAvailableRegions={setAvailableRegions} 
-      availableRegions={availableRegions}
-      setSelectedRegions={setSelectedRegions}
-      socketRef={socketRef}
-      handleShowLoading={handleShowLoading}
-      handleHideLoading={handleHideLoading}
-      setLoadingText={setLoadingText}
-      setPreviewFile={setPreviewFile}
-      />
+
         <ReMap 
           isFullMap={isFullMap} 
           center={fromLonLat([-94.9065, 38.9884])} 
@@ -464,6 +448,25 @@ function App(
             handleShowRegionMenu={handleShowRegionMenu}
             toggleMainRegionMenu={toggleMainRegionMenu}
           />
+
+          <SideMenuWrapper 
+            setNavVisible={setNavVisible} 
+            showRegionsMenu={showRegionsMenu}
+            handleShowRegionMenu={handleShowRegionMenu}
+            toggleAddRegionMenu={toggleAddRegionMenu}
+            showRegions={showRegions} 
+            setShowRegionsVisible={setShowRegionsVisible} 
+            selectedRegions={selectedRegions} 
+            setAvailableRegions={setAvailableRegions} 
+            availableRegions={availableRegions}
+            setSelectedRegions={setSelectedRegions}
+            socketRef={socketRef}
+            handleShowLoading={handleShowLoading}
+            handleHideLoading={handleHideLoading}
+            setLoadingText={setLoadingText}
+            setPreviewFile={setPreviewFile}
+          />
+
           <Layers>
 
 
