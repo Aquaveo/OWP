@@ -10,6 +10,11 @@ export const SideMenu = styled.div`
     .accordeon-body-custom{
       background-color: rgba(22, 160, 133, 0.5608);
       color: #e0f2fe;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      height: 80vh;
     }
     .accordion-header button{
       background-color: rgba(22, 160, 133, 0.5608);
@@ -27,12 +32,9 @@ export const SideMenu = styled.div`
         // color:#e0f2fe;
         font-size:1rem;
         border-radius: 10px;
-        overflow-x: hidden;
-        overflow-y: scroll;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+
         margin-top: 10px;
-        filter: opacity(0.8);
+        // filter: opacity(0.8);
         
     }
     /* 30% width on medium, large, and extra-large screens */
@@ -42,7 +44,7 @@ export const SideMenu = styled.div`
       }
     }
     /* Style for Webkit-based browsers (Chrome, Safari) */
-    .wrapper_absolute::-webkit-scrollbar {
+    .accordeon-body-custom::-webkit-scrollbar {
       width: 0; /* Hide the scrollbar in Webkit-based browsers */
     }
     .buttons-menu{
