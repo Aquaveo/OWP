@@ -302,8 +302,8 @@ function App(
 
   const getRegionsOfCurrentUser = async () => {
     handleShowLoading();
-    setLoadingText("Loading User Regions ...")    
-    let userRegions = await appAPI.getUserRegions();;
+    setLoadingText("Loading User Regions ...");    
+    let userRegions = await appAPI.getUserRegions();
     console.log(userRegions)
     setAvailableRegions(userRegions['regions']);
     // handleShowMainRegionMenu();
@@ -316,6 +316,7 @@ function App(
       Load the regions of the user
     */
     handleShowLoading();
+    setLoadingText("Loading User Regions ...");    
 
     // getRegionsOfCurrentUser();
 
@@ -346,7 +347,11 @@ function App(
       let data = JSON.parse(e.data);
       let command = data['command']
       if(command ==='update_regions_users'){
-        getRegionsOfCurrentUser();
+        console.log(data)
+        // getRegionsOfCurrentUser();
+        setAvailableRegions(data['data']);
+        handleHideLoading();
+        handleShowMainRegionMenu();
       }
       if(command ==='Plot_Data_Retrieved'){
         let product_name = data['product'];

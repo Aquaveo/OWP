@@ -23,6 +23,9 @@ import shapely.wkt
 from .model import Region
 import shapely
 from asgiref.sync import sync_to_async
+from .utilities import measure
+import pyogrio
+import pygeos as pg
 
 BASE_API_URL = "https://nwmdata.nohrsc.noaa.gov/latest/forecasts"
 async_client = httpx.AsyncClient()
@@ -250,6 +253,7 @@ def previewUserRegionFromFile(request):
 
 
 @controller
+@measure
 def getUserRegions(request):
     # breakpoint()
     regions_response = {}
@@ -257,11 +261,21 @@ def getUserRegions(request):
         print("authenticated")
         user_name = request.user.username
         engine = app.get_persistent_store_database("user_data")
-        sql_query = f"SELECT * FROM regions WHERE user_name='{user_name}'"
 
-        user_regions_df = gpd.GeoDataFrame.from_postgis(sql_query, engine)
+        sql_query = (
+            f"SELECT * FROM regions WHERE user_name='{user_name}' AND name='Test 1'"
+        )
+
+        # df = pd.read_sql(sql_query, con=engine)
+        # df["geom"] = pg.from_wkb(df.geom.values)
+        # srid = pg.get_srid(df.geom.values[0])
+        # user_regions_df = gpd.GeoDataFrame(df, geometry="geom", crs=f"EPSG:{srid}")
+        # db_path = engine.url
+        # df = pyogrio.read_dataframe(db_path, layer="regions")
+        user_regions_df = gpd.read_postgis(sql_query, engine)
+        # user_regions_df = gpd.GeoDataFrame.from_postgis(sql_query, engine)
+
         regions_response["regions"] = user_regions_df.to_dict(orient="records")
-        # breakpoint()
 
         for region in regions_response["regions"]:
             region["geom"] = shapely.to_geojson(region["geom"])
@@ -393,11 +407,13 @@ async def api_forecast_call(api_base_url, station_id, method_name):
     return mssge_string
 
 
+@measure
 async def getUserRegionsMethod(is_authenticated, user_name):
     regions_response = {}
     json_response = {}
     json_response["type"] = "region_notifications"
     json_response["command"] = "update_regions_users"
+    # breakpoint()
 
     if is_authenticated:
         print("authenticated getUserRegionsMethod")
