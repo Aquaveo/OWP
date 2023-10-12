@@ -6,49 +6,50 @@ import { Button } from 'react-bootstrap';
 import { TbZoomPan } from "react-icons/tb";
 import {  useContext, useEffect, useState,Fragment } from "react";
 import MapContext from "../map/MapContext";
+import GeoJSON from 'ol/format/GeoJSON';
+import VectorSource from 'ol/source/Vector'
 
 export const RegionsRow = ({availableRegions, setAvailableRegions}) => {
      const { map } = useContext(MapContext);
-     const [currentLayerIndex, setCurrentLayerIndex] = useState()
-      const toggleVisibilityRegion = (index) => {
-          console.log("hey")
-          setCurrentLayerIndex(index);
-          setAvailableRegions((prevData) => {
-          // Create a copy of the previous state array
-          const newData = [...prevData];
-          
-          // Toggle the "is_visible" property of the object at the specified index
-          newData[index] = { ...newData[index], is_visible: !newData[index].is_visible };
-          
-          return newData;
+     const [currentLayerIndex, setCurrentLayerIndex] = useState();
+
+     const focusSourceVectorLayer = (index) =>{
+        const source = new VectorSource({
+            format: new GeoJSON(),
+            features: new GeoJSON().readFeatures(availableRegions[index]['geom'])
+        })
+        const layerExtent = source.getExtent();
+        map.getView().fit(layerExtent, {
+            padding: [10, 10, 10, 10], // Optional padding around the extent.
+            duration: 1000, // Optional animation duration in milliseconds.
         });
-      };
+     };
+
+     const toggleVisibilityRegion = (index) => {
+        setCurrentLayerIndex(index);
+        setAvailableRegions((prevData) => {
+            // Create a copy of the previous state array
+            const newData = [...prevData];
+            
+            // Toggle the "is_visible" property of the object at the specified index
+            newData[index] = { ...newData[index], is_visible: !newData[index].is_visible };
+            
+            return newData;
+        });
+        if(!availableRegions[index].is_visible){
+            focusSourceVectorLayer(index);
+        }
+
+     };
 
       const zoomToRegionExtent = (index) => {
         if (!map) return;
         setCurrentLayerIndex(index);
 
         if (!availableRegions[index]['is_visible']) return;
-        const current_region = map.getLayers().getArray().find(layer => layer.get('name') === `${availableRegions[index]['name']}_user_region`);
-        const layerExtent = current_region.getSource().getExtent();
-        map.getView().fit(layerExtent, {
-            padding: [10, 10, 10, 10], // Optional padding around the extent.
-            duration: 1000, // Optional animation duration in milliseconds.
-          });
+        focusSourceVectorLayer(index);
       };   
-    
-      useEffect(() => {
-        if (!currentLayerIndex) return;
-        if(availableRegions[currentLayerIndex]['is_visible']){
-            zoomToRegionExtent(currentLayerIndex);
-        }
-      
-        return () => {
           
-        }
-      }, [currentLayerIndex])
-      
-
     return (
         <Fragment>
             <Row className='mb-2'>
