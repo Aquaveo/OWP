@@ -12,7 +12,7 @@ export const SmallMenu = styled.div`
     position:absolute;
     z-index:300;
     right: 10px;
-    margin-top: 10px;
+    margin-top: 56px;
     // ${props => `${props.position}: 60px`};
 
     .Myhamburguer{

@@ -33,7 +33,7 @@ export const SideMenu = styled.div`
         font-size:1rem;
         border-radius: 10px;
 
-        margin-top: 10px;
+        margin-top: 56px;
         // filter: opacity(0.8);
         
     }
