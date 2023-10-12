@@ -18,6 +18,7 @@ def measure_sync(func):
     return _time_it
 
 
+# https://gist.github.com/Integralist/77d73b2380e4645b564c28c53fae71fb
 # asynchronious function mesuare time
 def measure_async(func):
     async def process(func, *args, **params):

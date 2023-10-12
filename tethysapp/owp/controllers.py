@@ -195,6 +195,7 @@ def getGeopackageLayersFromFile(request):
 
 
 @controller
+@measure_sync
 def previewUserRegionFromFile(request):
     region = {}
     # check for different files or single file
