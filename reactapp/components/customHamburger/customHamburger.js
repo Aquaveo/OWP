@@ -23,11 +23,13 @@ export const CircularMenuComponent = ({handleShowRegionMenu}) => {
         itemSize={2}
         radius={5}
         rotationAngleInclusive={true}
+        className="custom-circle-menu"
         >
 
 
           <CircleMenuItem 
               tooltip="Add Layers"
+              className="custom-circle-menu-item"
           >
             <BsLayersHalf />
 
@@ -35,6 +37,7 @@ export const CircularMenuComponent = ({handleShowRegionMenu}) => {
 
           <CircleMenuItem 
               tooltip="Add Reaches"
+              className="custom-circle-menu-item"
           >
             <MdTimeline />
 
@@ -42,6 +45,7 @@ export const CircularMenuComponent = ({handleShowRegionMenu}) => {
           <CircleMenuItem 
               tooltip="Add Region"
               onClick={() => handleShowRegionMenu() }
+              className="custom-circle-menu-item"
           >
             <TbLassoPolygon />
 
