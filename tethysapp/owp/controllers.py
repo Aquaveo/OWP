@@ -436,22 +436,7 @@ async def getUserRegionsMethod(is_authenticated, user_name):
                 "is_visible": region[2],
             }
             regions_response["regions"].append(region_obj)
-        # breakpoint()
 
-        # engine = await sync_to_async(app.get_persistent_store_database)("user_data")
-        # sql_query = f"SELECT * FROM regions WHERE user_name='{user_name}'"
-
-        # user_regions_df = gpd.GeoDataFrame.from_postgis(sql_query, engine)
-        # regions_response["regions"] = user_regions_df.to_dict(orient="records")
-
-        # for region in regions_response["regions"]:
-        #     region["geom"] = shapely.to_geojson(region["geom"])
-
-        # for region in regions_response["regions"]:
-        #     if region["default"]:
-        #         region["is_visible"] = True
-        #     else:
-        #         region["is_visible"] = False
         json_response["mssg"] = "completed"
 
     else:
