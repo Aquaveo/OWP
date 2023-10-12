@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const CustomHamburgerStyle = styled.div`
     position:absolute;
     right: 10px;
-    bottom: 10%;
+    bottom: 15px;
     // button{
     //   border: 0.2rem solid #ffffff;
     //   background: #16a085;

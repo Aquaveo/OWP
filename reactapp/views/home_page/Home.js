@@ -348,7 +348,6 @@ function App(
       let command = data['command']
       if(command ==='update_regions_users'){
         console.log(data)
-        // getRegionsOfCurrentUser();
         setAvailableRegions(data['data']);
         handleHideLoading();
         handleShowMainRegionMenu();
@@ -364,7 +363,6 @@ function App(
         handlePlotUpdate();
       }
 
-      // handleisPlotReady();
     }
 
 	}, []);

@@ -18,8 +18,8 @@ export const CircularMenuComponent = ({handleShowRegionMenu}) => {
   return (
     <CustomHamburgerStyle>
         <CircleMenu
-        startAngle={90}
-        rotationAngle={90}
+        startAngle={-90}
+        rotationAngle={-90}
         itemSize={2}
         radius={5}
         rotationAngleInclusive={true}
