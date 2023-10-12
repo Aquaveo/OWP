@@ -193,7 +193,7 @@ export const ReMap = (
 									geometryType: 'esriGeometryPoint',
 									spatialRel: "esriSpatialRelIntersects",
 									units:'esriSRUnit_Meter',
-									distance: 10000,
+									distance: 100,
 									sr: `${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`,
 									// layers: `all:${server.layers}`, // query all the layer ids for htis map server built above
 									returnGeometry: true, // I don't want geometry, but you might want to display it on a 'selection layer'
@@ -328,7 +328,7 @@ export const ReMap = (
 										geometryType: 'esriGeometryPoint',
 										spatialRel: "esriSpatialRelIntersects",
 										units:'esriSRUnit_Meter',
-										distance: 10000,
+										distance: 100,
 										sr: `${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`,
 										returnGeometry: true, // I don't want geometry, but you might want to display it on a 'selection layer'
 										f: 'geojson',
@@ -339,45 +339,15 @@ export const ReMap = (
 									urlQuery.search = new URLSearchParams(queryLayer);
 
 									let responseQuery = await axios.get(urlQuery)
-									// .then((response) => {
-										console.log(responseQuery.data);
+									console.log(responseQuery.data);
+									const layer_name = `${responseQuery.data['features'][0]['id']}_huc_vector_selection}`;
+									setCurrentRegion({name:layer_name, data:responseQuery.data, url: urlQuery.href});
 
-										const layer_name = `${responseQuery.data['features'][0]['id']}_huc_vector_selection}`;
-										// console.log("hey",selectedRegions)
-										
-
-										// if(selectedFeaturesHucs.hasOwnProperty("hola")){
-										// 	mapObject.removeLayer(selectedFeaturesHucs[layer.get('name')])
-										// 	// removeSelectedFeaturesHuc(selectedFeaturesHucs[layer.get('name')]);
-										// 	// removeSelectedRegion(layer_name)
-										// 	setSelectedRegions({type:"delete", region: {name:layer_name, data:responseQuery.data}})
-										// 	setTriggerAddingLayers(false)
-										// }
-										// else{
-
-											  setCurrentRegion({name:layer_name, data:responseQuery.data, url: urlQuery.href});
-
-											//   storeSelectedRegion({name:layer_name, geojson: response.data});
-											  
-											// setSelectedFeaturesHucs(prevVal => ({...prevVal, "hola": polygonLayer }))
-										// }
-										// setSelectedFeaturesHucs({type: 'add', layer_name: layer_name, layer: polygonLayer})
-
-										
-										  // Implement the saving to database for the current user
-									// })
-
-								// });
+				
 
 							}
 						}
-						// if(layer.get('name').includes('huc_vector_selection')){
-						// 	console.log("hey2");
-						// 	mapObject.removeLayer(selectedFeaturesHucs[layer.get('name')])
-						// 	removeSelectedFeaturesHuc(layer.get('name'));
-						// 	// setSelectedFeaturesHucs({type: 'delete', layer_name: layer_name, layer: polygonLayer})
-						// 	// selectedFeaturesHucs[]
-						// }
+
 			}
 		
 		}
@@ -465,31 +435,10 @@ export const ReMap = (
 
 		if(regionFound){
 			console.log("found");
-			// const layerToRemove = selectedRegions.find((obj) => obj['name'] === curentRegion['name'])
-			// map.removeLayer(layerToRemove['layer'])
 			setSelectedRegions({type:"delete", region: {name:curentRegion['name'], data:curentRegion['data']}});
 		}
 		else{
 			console.log("added region")
-			// const styles = new Style({
-			// 	stroke: new Stroke({
-			// 	  color: 'red',
-			// 	  width: 3,
-			// 	})
-			//   })
-			// const polygonSource = new VectorSource({
-			// 	format: new GeoJSON(),
-			// 	url: curentRegion['url']
-			//   });
-			//   const polygonLayer = new Vector({
-			// 	source: polygonSource,
-			// 	style: styles,
-			// 	name: curentRegion['name'],
-			// 	zIndex: 4
-			//   });
-
-			// map.getLayers().insertAt(1, polygonLayer);
-			// setSelectedRegions({type:"add", region: {name:curentRegion['name'], data:curentRegion['data'], layer:polygonLayer, url: curentRegion['url'] }});
 			if(!(Object.keys(curentRegion).length === 0)){
 				setSelectedRegions({type:"add", region: {name:curentRegion['name'], data:curentRegion['data'], url: curentRegion['url'] }});
 			}
@@ -512,17 +461,3 @@ export const ReMap = (
 
 	)
 }
-
-// const query ={
-// 	f: 'json',
-// 	geometryType: 'esriGeometryPoint',
-// 	layers:'all',
-// 	tolerance: 1,
-// 	geometry: clickCoordinate,
-// 	mapExtent: mapObject.getView().calculateExtent(), // get map extent
-// 	imageDisplay: `${mapObject.getSize()},96`,  // get map size/resolution
-// 	sr: mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop() // this is because our OL map is in this SR
-
-// }
-// const urlObject = new URL(`${urlService}/identify`)
-// urlObject.search = new URLSearchParams(query)
