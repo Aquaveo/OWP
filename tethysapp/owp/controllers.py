@@ -23,9 +23,10 @@ import shapely.wkt
 from .model import Region
 import shapely
 from asgiref.sync import sync_to_async
-from .utilities import measure
+from .utilities import measure_sync, measure_async
 import pyogrio
 import pygeos as pg
+from .model import Region
 
 BASE_API_URL = "https://nwmdata.nohrsc.noaa.gov/latest/forecasts"
 async_client = httpx.AsyncClient()
@@ -51,6 +52,7 @@ def home(request):
 
 
 @controller
+@measure_sync
 def saveUserRegions(request):
     response_obj = {}
     response_obj["msge"] = "success"
@@ -129,29 +131,9 @@ def saveUserRegions(request):
             dest["geom"] = dest["geometry"]
             dest = dest.drop("geometry", axis=1)
             dest = dest.set_geometry("geom")
+            # convert to dict before converting geometry to WKTElement
+            response_obj["regions"] = dest.to_dict(orient="records")
             dest["geom"] = dest["geom"].apply(lambda x: WKTElement(x.wkt, srid=4326))
-
-            # geojson_object = json.loads(request.body.decode("utf-8"))
-            # df = gpd.GeoDataFrame.from_features(
-            #     geojson_object["requestData"]["region_data"], crs=4326
-            # )
-            # df.crs = "EPSG:4326"
-            # df["geom"] = df["geometry"]
-            # # df["geom"] = df["geometry"].apply(shapely.wkt.loads)
-            # df = df.drop("geometry", axis=1)
-
-            # dest = gpd.GeoDataFrame(columns=["name", "region_type", "default", "user_name", "geom"],crs="EPSG:4326",geometry=[GeometryCollection(df["geom"].tolist())],)
-            # dest["region_type"] = geojson_object["requestData"]["regionType"]
-            # dest["default"] = geojson_object["requestData"]["default"]
-            # dest["name"] = geojson_object["requestData"]["name"]
-            # dest["layer_color"] = geojson_object["requestData"]["layer_color"]
-            # dest["user_name"] = user_name
-            # dest["geom"] = dest["geometry"]
-            # dest = dest.drop("geometry", axis=1)
-            # dest = dest.set_geometry("geom")
-            # dest["geom"] = dest["geom"].apply(lambda x: WKTElement(x.wkt, srid=4326))
-
-            # breakpoint()
 
             dest.to_sql(
                 name="regions",
@@ -165,22 +147,31 @@ def saveUserRegions(request):
             # Close the connection to prevent issues
             session.close()
             # breakpoint()
-            # return the all regions of the of the user
-            sql_query = f"SELECT * FROM regions WHERE user_name='{user_name}'"
-            user_regions_df = gpd.GeoDataFrame.from_postgis(sql_query, engine)
+            # return only the new added region
 
-            response_obj["regions"] = user_regions_df.to_dict(orient="records")
-            default_region = next(
-                (item for item in response_obj["regions"] if item["default"]), None
-            )
+            for region in response_obj["regions"]:
+                region["geom"] = shapely.to_geojson(region["geom"])
+                if region["default"]:
+                    region["is_visible"] = True
+                else:
+                    region["is_visible"] = False
 
-            default_region_geometry = shapely.to_geojson(default_region["geom"])
+            # # return the all regions of the of the user
+            # sql_query = f"SELECT * FROM regions WHERE user_name='{user_name}'"
+            # user_regions_df = gpd.GeoDataFrame.from_postgis(sql_query, engine)
 
-            response_obj["regions"] = [
-                {k: v for k, v in obj.items() if k != "geom"}
-                for obj in response_obj["regions"]
-            ]
-            response_obj["default_geom"] = default_region_geometry
+            # response_obj["regions"] = user_regions_df.to_dict(orient="records")
+            # default_region = next(
+            #     (item for item in response_obj["regions"] if item["default"]), None
+            # )
+
+            # default_region_geometry = shapely.to_geojson(default_region["geom"])
+
+            # response_obj["regions"] = [
+            #     {k: v for k, v in obj.items() if k != "geom"}
+            #     for obj in response_obj["regions"]
+            # ]
+            # response_obj["default_geom"] = default_region_geometry
         else:
             response_obj["msge"] = "Please, create an account, and login"
     except Exception as e:
@@ -253,7 +244,7 @@ def previewUserRegionFromFile(request):
 
 
 @controller
-@measure
+@measure_sync
 def getUserRegions(request):
     # breakpoint()
     regions_response = {}
@@ -407,7 +398,7 @@ async def api_forecast_call(api_base_url, station_id, method_name):
     return mssge_string
 
 
-@measure
+@measure_async
 async def getUserRegionsMethod(is_authenticated, user_name):
     regions_response = {}
     json_response = {}
@@ -417,21 +408,50 @@ async def getUserRegionsMethod(is_authenticated, user_name):
 
     if is_authenticated:
         print("authenticated getUserRegionsMethod")
+        SessionMaker = await sync_to_async(app.get_persistent_store_database)(
+            "user_data", as_sessionmaker=True
+        )
+        session = SessionMaker()
+        only_user_regions = (
+            session.query(
+                Region.name,
+                Region.region_type,
+                Region.default,
+                Region.geom.ST_AsGeoJSON(),
+                Region.layer_color,
+            )
+            .filter(Region.user_name == user_name)
+            .all()
+        )
+        regions_response["regions"] = []
         # breakpoint()
-        engine = await sync_to_async(app.get_persistent_store_database)("user_data")
-        sql_query = f"SELECT * FROM regions WHERE user_name='{user_name}'"
 
-        user_regions_df = gpd.GeoDataFrame.from_postgis(sql_query, engine)
-        regions_response["regions"] = user_regions_df.to_dict(orient="records")
+        for region in only_user_regions:
+            region_obj = {
+                "name": region[0],
+                "reqion_type": region[1],
+                "default": region[2],
+                "geom": region[3],
+                "layer_color": region[4],
+                "is_visible": region[2],
+            }
+            regions_response["regions"].append(region_obj)
+        # breakpoint()
 
-        for region in regions_response["regions"]:
-            region["geom"] = shapely.to_geojson(region["geom"])
+        # engine = await sync_to_async(app.get_persistent_store_database)("user_data")
+        # sql_query = f"SELECT * FROM regions WHERE user_name='{user_name}'"
 
-        for region in regions_response["regions"]:
-            if region["default"]:
-                region["is_visible"] = True
-            else:
-                region["is_visible"] = False
+        # user_regions_df = gpd.GeoDataFrame.from_postgis(sql_query, engine)
+        # regions_response["regions"] = user_regions_df.to_dict(orient="records")
+
+        # for region in regions_response["regions"]:
+        #     region["geom"] = shapely.to_geojson(region["geom"])
+
+        # for region in regions_response["regions"]:
+        #     if region["default"]:
+        #         region["is_visible"] = True
+        #     else:
+        #         region["is_visible"] = False
         json_response["mssg"] = "completed"
 
     else:

@@ -207,7 +207,8 @@ export const SideMenuWrapper = (
       // let responseRegions = await appAPI.saveUserRegions(dataRequest);
 
       console.log(responseRegions)
-      
+      setAvailableRegions(currentRegions => [...currentRegions, responseRegions['regions'][0]]);
+
       setSelectedRegions({type:"reset", region: {}});
       setFormRegionData({
         name:'',
@@ -218,15 +219,15 @@ export const SideMenuWrapper = (
         geopackage_layer: ''
       })
       handleHideLoading();
-      if (socketRef.current.readyState === WebSocket.OPEN) {
-        console.log("availableRegions change")
-        socketRef.current.send(
-          JSON.stringify({
-            type: "update_user_regions",
-          })
-        );
+      // if (socketRef.current.readyState === WebSocket.OPEN) {
+      //   console.log("availableRegions change")
+      //   socketRef.current.send(
+      //     JSON.stringify({
+      //       type: "update_user_regions",
+      //     })
+      //   );
+      // }
       }
-    }
     const validateRegionAddition = () =>{
       let msge = 'success'
       if(!formRegionData.name){
