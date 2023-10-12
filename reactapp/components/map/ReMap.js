@@ -193,7 +193,7 @@ export const ReMap = (
 									geometryType: 'esriGeometryPoint',
 									spatialRel: "esriSpatialRelIntersects",
 									units:'esriSRUnit_Meter',
-									distance: 100,
+									distance: 10000,
 									sr: `${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`,
 									// layers: `all:${server.layers}`, // query all the layer ids for htis map server built above
 									returnGeometry: true, // I don't want geometry, but you might want to display it on a 'selection layer'
@@ -207,7 +207,7 @@ export const ReMap = (
 								axios.get(url).then((response) => {
 
 
-									// console.log(response.data);
+									console.log(response.data);
 									const filteredArray = response.data['features'].filter(obj => obj.attributes['analysis_assim.streamflow'] > 10 && obj.attributes['raw.gnis_name']);
 									// Sort the array based on analysis_assim.streamflow in descending order
 									filteredArray.sort((a, b) => {
