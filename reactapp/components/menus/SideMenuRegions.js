@@ -11,6 +11,7 @@ import ToggleButton from "react-bootstrap/ToggleButton";
 import toast, { Toaster } from 'react-hot-toast';
 import { SmallMenu } from "components/styles/SmallMenu.styled";
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
+import { geojsonToArcGIS } from '@esri/arcgis-to-geojson-utils';
 
 export const SideMenuWrapper = (
     { 
@@ -169,7 +170,10 @@ export const SideMenuWrapper = (
       console.log(selectedRegions);
       let finalGeoJSON = makeGeoJSONFromArray();
       console.log(finalGeoJSON);
-
+      // // here convert to esri geometry
+      // const arcgisJSON = geojsonToArcGIS(finalGeoJSON);
+      // console.log(arcgisJSON)
+      
       const dataRequest = new FormData();
       dataRequest.append('name', formRegionData.name);
       dataRequest.append('regionType', formRegionData.regionType);
@@ -181,6 +185,7 @@ export const SideMenuWrapper = (
       });
       
       dataRequest.append('layers_geopackage',formRegionData.geopackage_layer);
+      // dataRequest.append('arcgis_geometry', JSON.stringify(arcgisJSON));
 
 
       //merge geojsons

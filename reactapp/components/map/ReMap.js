@@ -287,6 +287,7 @@ export const ReMap = (
 
 
 							const urlService = layer.getSource().getUrl() // collect mapServer URL
+							console.log(urlService)
 							const id = layer
 								.getSource()
 								.getParams()

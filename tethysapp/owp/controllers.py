@@ -51,6 +51,27 @@ def home(request):
 #     #https://nwmdata.nohrsc.noaa.gov/latest/forecasts/medium_range_ensemble_member_7/streamflow?station_id=19266232 this until ensemble 1-7
 
 
+def convert_geometries_to_esri_geometries(geom):
+    rings = None
+    # test for polygon type
+    if geom.geom_type == "MultiPolygon":
+        rings = []
+        for pg in geom.geoms:
+            rings += [list(pg.exterior.coords)] + [
+                list(interior.coords) for interior in pg.interiors
+            ]
+    elif geom.geom_type == "Polygon":
+        rings = [list(geom.exterior.coords)] + [
+            list(interior.coords) for interior in geom.interiors
+        ]
+    else:
+        print("Shape is not a polygon")
+        return None
+    # convert to esrigeometry json
+    esri = json.dumps({"rings": rings})
+    return esri
+
+
 @controller
 @measure_sync
 def saveUserRegions(request):
@@ -78,6 +99,11 @@ def saveUserRegions(request):
                 df = gpd.GeoDataFrame.from_features(region_data, crs=4326)
                 df.crs = "EPSG:4326"
                 df["geom"] = df["geometry"]
+                df_copy = df.copy()
+                df_copy["geom"] = df_copy["geometry"].apply(
+                    convert_geometries_to_esri_geometries
+                )
+
                 # df["geom"] = df["geometry"].apply(shapely.wkt.loads)
                 df = df.drop("geometry", axis=1)
                 dest = gpd.GeoDataFrame(
@@ -85,6 +111,29 @@ def saveUserRegions(request):
                     crs="EPSG:4326",
                     geometry=[GeometryCollection(df["geom"].tolist())],
                 )
+
+                json_geometry = {
+                    "geometry": {
+                        "spatialReference": {"latestWkid": 3857, "wkid": 102100},
+                        "rings": [],
+                    }
+                }
+                list_geoms = df_copy["geom"].tolist()
+                for geom in list_geoms:
+                    # breakpoint()
+                    json_geometry["rings"] = geom
+                    data = {
+                        "geometry": json.dumps(json_geometry["rings"]),
+                        "geometryType": "esriGeometryPolygon",
+                        "layers": "visible",
+                        "f": "json",
+                    }
+                    response_regions = httpx.post(
+                        "https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer/identify",
+                        data=data,
+                        verify=False,
+                    )
+                    response_obj["xx"] = response_regions.json()
             else:
                 # breakpoint()
                 # check for different files or single file
@@ -175,6 +224,7 @@ def saveUserRegions(request):
         else:
             response_obj["msge"] = "Please, create an account, and login"
     except Exception as e:
+        print(e)
         response_obj["msge"] = "Error saving the Regions for current user"
     return JsonResponse(response_obj)
 
