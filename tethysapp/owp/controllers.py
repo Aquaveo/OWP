@@ -125,6 +125,9 @@ def saveUserRegions(request):
 
                 for index, geom in enumerate(list_geoms):
                     # breakpoint()
+
+                    ### two things: we can divide the polygon into smaller chunks if the area is bigger than a certain treshhold
+
                     json_geometry["geometry"]["rings"] = json.loads(geom)["rings"]
                     data = {
                         "geometry": json_geometry["geometry"],
@@ -140,7 +143,7 @@ def saveUserRegions(request):
                         "returnGeometry": False,
                         # "sr": "3857",
                         "f": "json",
-                        "layerDefs": {"19": "stream_order > 5"},
+                        # "layerDefs": {"19": "stream_order > 5"},
                     }
 
                     response_regions = httpx.post(
