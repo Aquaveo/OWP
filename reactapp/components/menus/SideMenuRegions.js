@@ -170,10 +170,9 @@ export const SideMenuWrapper = (
       console.log(selectedRegions);
       let finalGeoJSON = makeGeoJSONFromArray();
       console.log(finalGeoJSON);
-      // // here convert to esri geometry
-      // const arcgisJSON = geojsonToArcGIS(finalGeoJSON);
-      // console.log(arcgisJSON)
-      
+      // make extra params for identify query
+      let arrayExtraParams = makeRequestArrayIdentify();
+      console.log(arrayExtraParams)
       const dataRequest = new FormData();
       dataRequest.append('name', formRegionData.name);
       dataRequest.append('regionType', formRegionData.regionType);
@@ -185,7 +184,7 @@ export const SideMenuWrapper = (
       });
       
       dataRequest.append('layers_geopackage',formRegionData.geopackage_layer);
-      // dataRequest.append('arcgis_geometry', JSON.stringify(arcgisJSON));
+      dataRequest.append('identify_extra_params', JSON.stringify(arrayExtraParams));
 
 
       //merge geojsons
@@ -212,7 +211,12 @@ export const SideMenuWrapper = (
       // let responseRegions = await appAPI.saveUserRegions(dataRequest);
 
       console.log(responseRegions)
-      setAvailableRegions(currentRegions => [...currentRegions, responseRegions['regions'][0]]);
+      if(responseRegions['msge'] === 'Error saving the Regions for current user'){
+        notifyError(responseRegions['msge']);
+      }
+      else{
+        setAvailableRegions(currentRegions => [...currentRegions, responseRegions['regions'][0]]);
+      }
 
       setSelectedRegions({type:"reset", region: {}});
       setFormRegionData({
@@ -233,6 +237,18 @@ export const SideMenuWrapper = (
       //   );
       // }
       }
+    const makeRequestArrayIdentify = () => {
+      let arrayRequests = [];
+
+      for (let i = 0; i < selectedRegions.length; i++) {
+        let tmp_obj = {
+          'region_map_extent':selectedRegions[i]['mapExtent'],
+          'region_image_display':selectedRegions[i]['imageDisplay']
+        }
+        arrayRequests.push(tmp_obj)
+      }
+      return arrayRequests
+    }
     const validateRegionAddition = () =>{
       let msge = 'success'
       if(!formRegionData.name){

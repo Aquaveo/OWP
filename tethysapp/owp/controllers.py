@@ -93,6 +93,9 @@ def saveUserRegions(request):
             region_default = request.POST.get("default")
             region_layer_color = request.POST.get("layer_color")
             # breakpoint()
+            region_identify_extra_params = json.loads(
+                request.POST.get("identify_extra_params")
+            )
 
             if region_type == "huc":
                 region_data = json.loads(request.POST.get("region_data"))
@@ -119,20 +122,34 @@ def saveUserRegions(request):
                     }
                 }
                 list_geoms = df_copy["geom"].tolist()
-                for geom in list_geoms:
+
+                for index, geom in enumerate(list_geoms):
                     # breakpoint()
-                    json_geometry["rings"] = geom
+                    json_geometry["geometry"]["rings"] = json.loads(geom)["rings"]
                     data = {
-                        "geometry": json.dumps(json_geometry["rings"]),
+                        "geometry": json_geometry["geometry"],
                         "geometryType": "esriGeometryPolygon",
                         "layers": "visible",
+                        "tolerance": 1,
+                        "mapExtent": region_identify_extra_params[index][
+                            "region_map_extent"
+                        ],
+                        "imageDisplay": region_identify_extra_params[index][
+                            "region_image_display"
+                        ],
+                        "returnGeometry": False,
+                        # "sr": "3857",
                         "f": "json",
                     }
+
                     response_regions = httpx.post(
                         "https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer/identify",
                         data=data,
                         verify=False,
+                        timeout=10,
                     )
+                    breakpoint()
+
                     response_obj["xx"] = response_regions.json()
             else:
                 # breakpoint()

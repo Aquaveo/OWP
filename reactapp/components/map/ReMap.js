@@ -311,7 +311,7 @@ export const ReMap = (
 									sr: mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop() // this is because our OL map is in this SR
 
 								}
-
+								console.log(queryIdentify)
 								const url = new URL(`${urlService}/identify`);
 								url.search = new URLSearchParams(queryIdentify);
 								// here we can grab the last layer and then run the query for that layer at that point for the geometry :)
@@ -342,7 +342,7 @@ export const ReMap = (
 									let responseQuery = await axios.get(urlQuery)
 									console.log(responseQuery.data);
 									const layer_name = `${responseQuery.data['features'][0]['id']}_huc_vector_selection}`;
-									setCurrentRegion({name:layer_name, data:responseQuery.data, url: urlQuery.href});
+									setCurrentRegion({name:layer_name, data:responseQuery.data, url: urlQuery.href, mapExtent: queryIdentify['mapExtent'], imageDisplay:queryIdentify['imageDisplay'] });
 
 				
 
@@ -441,7 +441,7 @@ export const ReMap = (
 		else{
 			console.log("added region")
 			if(!(Object.keys(curentRegion).length === 0)){
-				setSelectedRegions({type:"add", region: {name:curentRegion['name'], data:curentRegion['data'], url: curentRegion['url'] }});
+				setSelectedRegions({type:"add", region: {name:curentRegion['name'], data:curentRegion['data'], url: curentRegion['url'], mapExtent: curentRegion['mapExtent'], imageDisplay:curentRegion['imageDisplay'] }});
 			}
 		}
 			handleHideLoading();
