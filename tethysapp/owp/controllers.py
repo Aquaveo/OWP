@@ -129,7 +129,7 @@ def saveUserRegions(request):
                     data = {
                         "geometry": json_geometry["geometry"],
                         "geometryType": "esriGeometryPolygon",
-                        "layers": "visible",
+                        "layers": "all:19",
                         "tolerance": 1,
                         "mapExtent": region_identify_extra_params[index][
                             "region_map_extent"
@@ -140,6 +140,7 @@ def saveUserRegions(request):
                         "returnGeometry": False,
                         # "sr": "3857",
                         "f": "json",
+                        "layerDefs": {"19": "stream_order > 5"},
                     }
 
                     response_regions = httpx.post(
@@ -150,7 +151,7 @@ def saveUserRegions(request):
                     )
                     breakpoint()
 
-                    response_obj["xx"] = response_regions.json()
+                    response_obj[f"xxx_{index}"] = response_regions.json()
             else:
                 # breakpoint()
                 # check for different files or single file
