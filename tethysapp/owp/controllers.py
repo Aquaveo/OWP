@@ -109,7 +109,9 @@ def saveUserRegions(request):
                 # df.crs = "EPSG:4326"
                 df["geom"] = df["geometry"]
                 df_copy = df.copy()
+                df_copy = df_copy.set_crs(3857)
                 df_copy = df_copy.to_crs(4326)
+                df_copy["geom"] = df_copy["geometry"]
                 # df_copy["geom"] = df_copy["geometry"].apply(
                 #     convert_geometries_to_esri_geometries
                 # )
@@ -122,61 +124,6 @@ def saveUserRegions(request):
                     geometry=[GeometryCollection(df["geom"].tolist())],
                 )
 
-                # json_geometry = {
-                #     "geometry": {
-                #         "spatialReference": {"latestWkid": 3857, "wkid": 102100},
-                #         "rings": [],
-                #     }
-                # }
-                list_geoms = df_copy["geom"].tolist()
-                mr = NHD("flowline_mr")
-
-                # nldi = NLDI()
-                # station_id = "01031500"
-
-                # basin = nldi.get_basins(station_id)
-                for index, geom in enumerate(list_geoms):
-                    # breakpoint()
-                    # source_epsg = "3857"
-                    # transformed_bounding_bounds = transform_bounds_to_4326(
-                    #     geom.bounds, source_epsg
-                    # )
-                    # nhdp_mr = mr.bygeom(transformed_bounding_bounds)
-                    breakpoint()
-                    nhdp_mr = mr.bygeom(geom.bounds)
-                    # print(nhdp_mr.columns.tolist())
-                # for index, geom in enumerate(list_geoms):
-                #     # breakpoint()
-
-                #     ### two things: we can divide the polygon into smaller chunks if the area is bigger than a certain treshhold
-
-                #     json_geometry["geometry"]["rings"] = json.loads(geom)["rings"]
-                #     data = {
-                #         "geometry": json_geometry["geometry"],
-                #         "geometryType": "esriGeometryPolygon",
-                #         "layers": "all:19",
-                #         "tolerance": 1,
-                #         "mapExtent": region_identify_extra_params[index][
-                #             "region_map_extent"
-                #         ],
-                #         "imageDisplay": region_identify_extra_params[index][
-                #             "region_image_display"
-                #         ],
-                #         "returnGeometry": False,
-                #         # "sr": "3857",
-                #         "f": "json",
-                #         # "layerDefs": {"19": "stream_order > 5"},
-                #     }
-
-                #     response_regions = httpx.post(
-                #         "https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer/identify",
-                #         data=data,
-                #         verify=False,
-                #         timeout=10,
-                #     )
-                # breakpoint()
-
-                # response_obj[f"xxx_{index}"] = response_regions.json()
                 # get the Reach mode
             else:
                 # breakpoint()
@@ -235,8 +182,23 @@ def saveUserRegions(request):
                 index=False,
                 dtype={"geom": Geometry("GEOMETRYCOLLECTION", srid=4326)},
             )
-
             session.commit()
+
+            list_geoms = df_copy["geom"].tolist()
+            mr = NHD("flowline_mr")
+
+            for index, geom in enumerate(list_geoms):
+                nhdp_mr = mr.bygeom(geom)
+                breakpoint()
+                nhdp_mr.to_sql(
+                    name="reaches",
+                    con=engine,
+                    if_exists="append",
+                    index=False,
+                    dtype={"geometry": Geometry("LINESTRING", srid=4326)},
+                )
+                session.commit()
+
             # Close the connection to prevent issues
             session.close()
             # breakpoint()
