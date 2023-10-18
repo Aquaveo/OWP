@@ -1,6 +1,7 @@
 # Put your persistent store initializer functions in here
 import os
 from sqlalchemy.orm import sessionmaker
+# from .model import Base, Region, Reach
 from .model import Base, Region
 
 from requests import Request

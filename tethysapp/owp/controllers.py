@@ -27,6 +27,10 @@ from .utilities import measure_sync, measure_async
 import pyogrio
 import pygeos as pg
 from .model import Region
+from pynhd import NLDI, WaterData, NHDPlusHR, NHD
+import pynhd as nhd
+import pyproj
+from pyproj import Transformer
 
 BASE_API_URL = "https://nwmdata.nohrsc.noaa.gov/latest/forecasts"
 async_client = httpx.AsyncClient()
@@ -103,9 +107,9 @@ def saveUserRegions(request):
                 df.crs = "EPSG:4326"
                 df["geom"] = df["geometry"]
                 df_copy = df.copy()
-                df_copy["geom"] = df_copy["geometry"].apply(
-                    convert_geometries_to_esri_geometries
-                )
+                # df_copy["geom"] = df_copy["geometry"].apply(
+                #     convert_geometries_to_esri_geometries
+                # )
 
                 # df["geom"] = df["geometry"].apply(shapely.wkt.loads)
                 df = df.drop("geometry", axis=1)
@@ -115,46 +119,60 @@ def saveUserRegions(request):
                     geometry=[GeometryCollection(df["geom"].tolist())],
                 )
 
-                json_geometry = {
-                    "geometry": {
-                        "spatialReference": {"latestWkid": 3857, "wkid": 102100},
-                        "rings": [],
-                    }
-                }
+                # json_geometry = {
+                #     "geometry": {
+                #         "spatialReference": {"latestWkid": 3857, "wkid": 102100},
+                #         "rings": [],
+                #     }
+                # }
                 list_geoms = df_copy["geom"].tolist()
+                mr = WaterData("nhdflowline_network")
+                # nldi = NLDI()
+                # station_id = "01031500"
+
+                # basin = nldi.get_basins(station_id)
 
                 for index, geom in enumerate(list_geoms):
-                    # breakpoint()
-
-                    ### two things: we can divide the polygon into smaller chunks if the area is bigger than a certain treshhold
-
-                    json_geometry["geometry"]["rings"] = json.loads(geom)["rings"]
-                    data = {
-                        "geometry": json_geometry["geometry"],
-                        "geometryType": "esriGeometryPolygon",
-                        "layers": "all:19",
-                        "tolerance": 1,
-                        "mapExtent": region_identify_extra_params[index][
-                            "region_map_extent"
-                        ],
-                        "imageDisplay": region_identify_extra_params[index][
-                            "region_image_display"
-                        ],
-                        "returnGeometry": False,
-                        # "sr": "3857",
-                        "f": "json",
-                        # "layerDefs": {"19": "stream_order > 5"},
-                    }
-
-                    response_regions = httpx.post(
-                        "https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer/identify",
-                        data=data,
-                        verify=False,
-                        timeout=10,
-                    )
                     breakpoint()
+                    source_epsg = "3857"
+                    transformed_bounding_bounds = transform_bounds_to_4326(
+                        geom.bounds, source_epsg
+                    )
+                    nhdp_mr = mr.bygeom(transformed_bounding_bounds)
 
-                    response_obj[f"xxx_{index}"] = response_regions.json()
+                # for index, geom in enumerate(list_geoms):
+                #     # breakpoint()
+
+                #     ### two things: we can divide the polygon into smaller chunks if the area is bigger than a certain treshhold
+
+                #     json_geometry["geometry"]["rings"] = json.loads(geom)["rings"]
+                #     data = {
+                #         "geometry": json_geometry["geometry"],
+                #         "geometryType": "esriGeometryPolygon",
+                #         "layers": "all:19",
+                #         "tolerance": 1,
+                #         "mapExtent": region_identify_extra_params[index][
+                #             "region_map_extent"
+                #         ],
+                #         "imageDisplay": region_identify_extra_params[index][
+                #             "region_image_display"
+                #         ],
+                #         "returnGeometry": False,
+                #         # "sr": "3857",
+                #         "f": "json",
+                #         # "layerDefs": {"19": "stream_order > 5"},
+                #     }
+
+                #     response_regions = httpx.post(
+                #         "https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer/identify",
+                #         data=data,
+                #         verify=False,
+                #         timeout=10,
+                #     )
+                # breakpoint()
+
+                # response_obj[f"xxx_{index}"] = response_regions.json()
+                # get the Reach mode
             else:
                 # breakpoint()
                 # check for different files or single file
@@ -518,3 +536,18 @@ async def getUserRegionsMethod(is_authenticated, user_name):
     json_response["data"] = regions_response["regions"]
 
     return json_response
+
+
+def transform_bounds_to_4326(bounds, source_epsg):
+    # Define the source and target CRS
+    source_crs = pyproj.CRS(f"EPSG:{source_epsg}")
+    target_crs = pyproj.CRS("EPSG:4326")  # EPSG:4326 is WGS 84
+
+    # Create a transformer
+    transformer = pyproj.Transformer.from_crs(source_crs, target_crs, always_xy=True)
+
+    # Perform the transformation for each corner of the bounding box
+    lon1, lat1 = transformer.transform(*bounds[:2])  # (x1, y1)
+    lon2, lat2 = transformer.transform(*bounds[2:])  # (x2, y2)
+
+    return lon1, lat1, lon2, lat2
