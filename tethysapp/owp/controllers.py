@@ -103,10 +103,13 @@ def saveUserRegions(request):
 
             if region_type == "huc":
                 region_data = json.loads(request.POST.get("region_data"))
-                df = gpd.GeoDataFrame.from_features(region_data, crs=4326)
-                df.crs = "EPSG:4326"
+                df = gpd.GeoDataFrame.from_features(region_data)
+                df = df.set_crs(3857)
+                # breakpoint()
+                # df.crs = "EPSG:4326"
                 df["geom"] = df["geometry"]
                 df_copy = df.copy()
+                df_copy = df_copy.to_crs(4326)
                 # df_copy["geom"] = df_copy["geometry"].apply(
                 #     convert_geometries_to_esri_geometries
                 # )
@@ -126,20 +129,22 @@ def saveUserRegions(request):
                 #     }
                 # }
                 list_geoms = df_copy["geom"].tolist()
-                mr = WaterData("nhdflowline_network")
+                mr = NHD("flowline_mr")
+
                 # nldi = NLDI()
                 # station_id = "01031500"
 
                 # basin = nldi.get_basins(station_id)
-
                 for index, geom in enumerate(list_geoms):
+                    # breakpoint()
+                    # source_epsg = "3857"
+                    # transformed_bounding_bounds = transform_bounds_to_4326(
+                    #     geom.bounds, source_epsg
+                    # )
+                    # nhdp_mr = mr.bygeom(transformed_bounding_bounds)
                     breakpoint()
-                    source_epsg = "3857"
-                    transformed_bounding_bounds = transform_bounds_to_4326(
-                        geom.bounds, source_epsg
-                    )
-                    nhdp_mr = mr.bygeom(transformed_bounding_bounds)
-
+                    nhdp_mr = mr.bygeom(geom.bounds)
+                    # print(nhdp_mr.columns.tolist())
                 # for index, geom in enumerate(list_geoms):
                 #     # breakpoint()
 

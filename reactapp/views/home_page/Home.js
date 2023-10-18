@@ -89,7 +89,7 @@ function App(
       layers: []
     }),
   ]);
-  const [selectedHucs, setSelectedHucs] = useState("include:1,2,3,4,5,6,7,8");
+  const [selectedHucs, setSelectedHucs] = useState("show:2,3,4,5,6,7,8");
   const [previewFile, setPreviewFile] = useState(null);
   const [showModal, setshowModal] = useState(false);
   const [currentStation, setCurrentStation] = useState();
