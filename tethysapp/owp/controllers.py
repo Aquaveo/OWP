@@ -31,6 +31,7 @@ from pynhd import NLDI, WaterData, NHDPlusHR, NHD
 import pynhd as nhd
 import pyproj
 from pyproj import Transformer
+import uuid
 
 BASE_API_URL = "https://nwmdata.nohrsc.noaa.gov/latest/forecasts"
 async_client = httpx.AsyncClient()
@@ -96,10 +97,6 @@ def saveUserRegions(request):
             region_name = request.POST.get("name")
             region_default = request.POST.get("default")
             region_layer_color = request.POST.get("layer_color")
-            # breakpoint()
-            region_identify_extra_params = json.loads(
-                request.POST.get("identify_extra_params")
-            )
 
             if region_type == "huc":
                 region_data = json.loads(request.POST.get("region_data"))
@@ -112,11 +109,6 @@ def saveUserRegions(request):
                 df_copy = df_copy.set_crs(3857)
                 df_copy = df_copy.to_crs(4326)
                 df_copy["geom"] = df_copy["geometry"]
-                # df_copy["geom"] = df_copy["geometry"].apply(
-                #     convert_geometries_to_esri_geometries
-                # )
-
-                # df["geom"] = df["geometry"].apply(shapely.wkt.loads)
                 df = df.drop("geometry", axis=1)
                 dest = gpd.GeoDataFrame(
                     columns=["name", "region_type", "default", "user_name", "geom"],
@@ -126,7 +118,6 @@ def saveUserRegions(request):
 
                 # get the Reach mode
             else:
-                # breakpoint()
                 # check for different files or single file
                 file_data = request.FILES.getlist("files")[0]
                 if len(request.FILES.getlist("files")) > 1:
@@ -156,7 +147,10 @@ def saveUserRegions(request):
                 # df = gpd.read_file(file_data)
                 df = df.to_crs(epsg=3857)
                 df["geom"] = df["geometry"]
-                df["geom"] = df["geometry"]
+                df_copy = df.copy()
+                df_copy = df_copy.set_crs(3857)
+                df_copy = df_copy.to_crs(4326)
+                df_copy["geom"] = df_copy["geometry"]
                 df = df.drop("geometry", axis=1)
                 dest = gpd.GeoDataFrame(
                     columns=["name", "region_type", "default", "user_name", "geom"],
@@ -183,13 +177,25 @@ def saveUserRegions(request):
                 dtype={"geom": Geometry("GEOMETRYCOLLECTION", srid=4326)},
             )
             session.commit()
+            new_user_region = (
+                session.query(Region.id)
+                .filter(Region.user_name == user_name)
+                .filter(Region.name == region_name)
+                .first()
+            )
+            new_user_region_id = new_user_region.id
 
             list_geoms = df_copy["geom"].tolist()
             mr = NHD("flowline_mr")
 
             for index, geom in enumerate(list_geoms):
                 nhdp_mr = mr.bygeom(geom)
+                nhdp_mr["region_id"] = new_user_region_id
                 breakpoint()
+
+                nhdp_mr["geometry"] = nhdp_mr["geometry"].apply(
+                    lambda x: WKTElement(x.wkt, srid=4326)
+                )
                 nhdp_mr.to_sql(
                     name="reaches",
                     con=engine,

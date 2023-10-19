@@ -90,6 +90,7 @@ class Reach(Base):
     DivDASqKM = Column(Float)
     HWNodeSqKM = Column(Float)
     MAXELEVRAW = Column(Float)
+    MINELEVRAW = Column(Float)
     MAXELEVSMO = Column(Float)
     MINELEVSMO = Column(Float)
     SLOPE = Column(Float)
@@ -224,6 +225,7 @@ class Reach(Base):
         DivDASqKM,
         HWNodeSqKM,
         MAXELEVRAW,
+        MINELEVRAW,
         MAXELEVSMO,
         MINELEVSMO,
         SLOPE,
@@ -360,6 +362,7 @@ class Reach(Base):
         self.DivDASqKM = DivDASqKM
         self.HWNodeSqKM = HWNodeSqKM
         self.MAXELEVRAW = MAXELEVRAW
+        self.MINELEVRAW = MINELEVRAW
         self.MAXELEVSMO = MAXELEVSMO
         self.MINELEVSMO = MINELEVSMO
         self.SLOPE = SLOPE

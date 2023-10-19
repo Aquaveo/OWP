@@ -171,8 +171,7 @@ export const SideMenuWrapper = (
       let finalGeoJSON = makeGeoJSONFromArray();
       console.log(finalGeoJSON);
       // make extra params for identify query
-      let arrayExtraParams = makeRequestArrayIdentify();
-      console.log(arrayExtraParams)
+
       const dataRequest = new FormData();
       dataRequest.append('name', formRegionData.name);
       dataRequest.append('regionType', formRegionData.regionType);
@@ -184,7 +183,6 @@ export const SideMenuWrapper = (
       });
       
       dataRequest.append('layers_geopackage',formRegionData.geopackage_layer);
-      dataRequest.append('identify_extra_params', JSON.stringify(arrayExtraParams));
 
 
       //merge geojsons
@@ -237,18 +235,7 @@ export const SideMenuWrapper = (
       //   );
       // }
       }
-    const makeRequestArrayIdentify = () => {
-      let arrayRequests = [];
 
-      for (let i = 0; i < selectedRegions.length; i++) {
-        let tmp_obj = {
-          'region_map_extent':selectedRegions[i]['mapExtent'],
-          'region_image_display':selectedRegions[i]['imageDisplay']
-        }
-        arrayRequests.push(tmp_obj)
-      }
-      return arrayRequests
-    }
     const validateRegionAddition = () =>{
       let msge = 'success'
       if(!formRegionData.name){
