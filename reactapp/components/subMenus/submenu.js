@@ -21,16 +21,16 @@ export const SubMenu = (
                     COMID
                 </Col >
                 <Col className="text-white fw-bold" sm={2} >
-                    Anomaly
+                    AA
                 </Col>
                 <Col className="text-white fw-bold" sm={2} >
-                    Short Forecast
+                    SF
                 </Col>
                 <Col className="text-white fw-bold" sm={2} >
-                    Long Term Forecast Mean
+                    LF Mean
                 </Col>
                 <Col className="text-white fw-bold" sm={2} >
-                    Medium Term Forecast Mean
+                    MF Mean
                 </Col>
                 <Col className="text-white fw-bold" sm={2} >
                     Actions
