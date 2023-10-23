@@ -1,6 +1,10 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .controllers import updateForecastData, getUserRegionsMethod
+from .controllers import (
+    updateForecastData,
+    getUserRegionsMethod,
+    getUserReachesPerRegionsMethod,
+)
 
 from tethys_sdk.routing import consumer
 
@@ -34,6 +38,19 @@ class DataConsumer(AsyncWebsocketConsumer):
             # asyncio.run(retrieve_data_from_file(text_data_json['reach_id']))
             json_obj = await getUserRegionsMethod(
                 self.scope["user"].is_authenticated, self.scope["user"].username
+            )
+            await self.channel_layer.group_send(
+                "notifications_owp",
+                json_obj,
+            )
+        if "type" in text_data_json and text_data_json["type"] == "update_user_reaches":
+            # asyncio.run(retrieve_data_from_file(text_data_json['reach_id']))
+            json_obj = await getUserReachesPerRegionsMethod(
+                self.scope["user"].is_authenticated,
+                self.scope["user"].username,
+                text_data_json["region_name"],
+                text_data_json["page_number"],
+                text_data_json["page_limit"],
             )
             await self.channel_layer.group_send(
                 "notifications_owp",

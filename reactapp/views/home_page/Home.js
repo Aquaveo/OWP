@@ -352,6 +352,10 @@ function App(
         handleHideLoading();
         handleShowMainRegionMenu();
       }
+      if(command ==='update_reaches_users'){
+        console.log(data);
+      }
+
       if(command ==='Plot_Data_Retrieved'){
         let product_name = data['product'];
         console.log("receiving data socket")
@@ -451,6 +455,7 @@ function App(
             setAvailableRegions={setAvailableRegions}
             handleShowRegionMenu={handleShowRegionMenu}
             toggleMainRegionMenu={toggleMainRegionMenu}
+            socketRef={socketRef}
           />
 
           <SideMenuWrapper 

@@ -18,6 +18,7 @@ const appAPI = {
     saveUserRegions:(requestData) => {
         return apiClient.post(`${APP_ROOT_URL}saveUserRegions/`, requestData);
     },
+
 };
 
 export default appAPI;

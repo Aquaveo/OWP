@@ -11,6 +11,8 @@ import Row from 'react-bootstrap/Row';
 import { Button } from 'react-bootstrap';
 import React, { useRef, useState, useEffect, useContext } from "react"
 import MapContext from "../map/MapContext";
+import VectorSource from 'ol/source/Vector'
+import GeoJSON from 'ol/format/GeoJSON';
 
 import { SlArrowDown } from "react-icons/sl";
 import 'css/RegionMenu.css';
@@ -24,16 +26,22 @@ export const RegionMenuWrapper = (
     availableRegions, 
     setAvailableRegions,
     handleShowRegionMenu,
-    toggleMainRegionMenu,    
+    toggleMainRegionMenu,
+    socketRef 
+
   })=>{
     const [isAccordionOpen, setAccordionOpen] = useState(false);
 
     const toggleAccordion = () => {
       setAccordionOpen(!isAccordionOpen);
     };
+    const [currentPageNumber, setCurrentPageNumber] = useState(0);
     const [selectedRegionDropdownItem, setSelectedRegionDropdownItem] =  useState({});
     const handleSelectRegionDropdown = (key, event) => {
-      setSelectedRegionDropdownItem({index:key, value:availableRegions[key].name});
+      setSelectedRegionDropdownItem({
+        index:key, 
+        value:availableRegions[key].name
+      });
     };
     const { map } = useContext(MapContext);
     const [currentLayerIndex, setCurrentLayerIndex] = useState();
@@ -77,9 +85,30 @@ export const RegionMenuWrapper = (
        focusSourceVectorLayer(index);
      };   
 
+    useEffect(() => {
+      let index = selectedRegionDropdownItem['index'] ? selectedRegionDropdownItem['index']: 0
+      const updatedHiddenRegions = availableRegions.map(availableRegion => ({
+        ...availableRegion,
+        is_visible: false,
+      }));
+      setAvailableRegions(updatedHiddenRegions);
+      if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+        socketRef.current.send(
+          JSON.stringify({
+            type: "update_user_reaches",
+            region_name: availableRegions[index]['name'],
+            page_number: currentPageNumber,
+            page_limit: 50,
+          })
+        );
+      }
 
+      return () => {
+        console.log("need")
+      }
+    }, [selectedRegionDropdownItem])
+    
 
-    //useEffect function to get the regions
 
 
     return(
@@ -89,25 +118,38 @@ export const RegionMenuWrapper = (
                 <Accordion className="wrapper_absolute" defaultActiveKey='1' activeKey={isAccordionOpen ? '0' : ''}>
                   <Accordion.Item eventKey="0">
                     <Accordion.Header>
+                    <div className="accordion-header-container">
                     <Row className="accordion-header-row">
-                      <Col sm={3} >
+                      <Col sm={4} >
+                        Regions
+                      </Col>
+                      <Col sm={7} className="button-menu button-middle">
+                        Actions
+                      </Col>
+
+                      <Col sm={1} className="button-menu">
+                        
+                      </Col>
+                    </Row>
+                    <Row className="accordion-header-row">
+                      <Col sm={4} >
                         <DropdownButton 
                           id="dropdown-basic-button" 
                           onSelect={handleSelectRegionDropdown}
-                          title={selectedRegionDropdownItem.name ? selectedRegionDropdownItem.name : "Select Region"}
+                          title={selectedRegionDropdownItem.value ? selectedRegionDropdownItem.value : "Select Region"}
                         >
                             {availableRegions && availableRegions.map((availableRegion, index) => (
                               <Dropdown.Item eventKey={index}>{availableRegion.name}</Dropdown.Item>
                             ))}
                         </DropdownButton>
                       </Col>
-                        <Col sm={6} className="button-menu button-middle">
+                        <Col sm={7} className="button-menu button-middle">
                           <Form.Group className="text-white">
                               <Form.Check
                                   type="switch"
                                   id="default-region"
-                                  value={selectedRegionDropdownItem.index ? availableRegions['selectedRegionDropdownItem.index'].is_visible : false }
-                                  checked={selectedRegionDropdownItem.index ? availableRegions['selectedRegionDropdownItem.index'].is_visible : false}
+                                  value={selectedRegionDropdownItem.index ? availableRegions[selectedRegionDropdownItem.index].is_visible : false }
+                                  checked={selectedRegionDropdownItem.index ? availableRegions[selectedRegionDropdownItem.index].is_visible : false}
                                   onChange={(e) => toggleVisibilityRegion()}
                               />
                           </Form.Group>
@@ -120,17 +162,19 @@ export const RegionMenuWrapper = (
                           </Button>
                       </Col>
 
-                      <Col sm={3} className="button-menu">
+                      <Col sm={1} className="button-menu">
                         <Button onClick={toggleAccordion} variant="primary">
                           <SlArrowDown/>
                         </Button>
                       </Col>
                     </Row>
+                    </div>
+
 
 
                     </Accordion.Header>
                     <Accordion.Body className="accordeon-body-custom">
-                      {
+                      {/* {
                           showMainRegionsMenu && 
                           <SubMenu 
                             name={name} 
@@ -140,7 +184,7 @@ export const RegionMenuWrapper = (
                             handleShowRegionMenu={handleShowRegionMenu}
                             />
 
-                      }
+                      } */}
                     </Accordion.Body>
                   </Accordion.Item>
                 </Accordion>
