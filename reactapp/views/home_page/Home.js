@@ -298,6 +298,7 @@ function App(
 		}
 	}
   const [currentDisplayRegions, setCurrentDisplayRegions ] = useState([])
+  const [availableReachesList, setAvailableReachesList] =  useState([]);
 
 
   const getRegionsOfCurrentUser = async () => {
@@ -354,6 +355,7 @@ function App(
       }
       if(command ==='update_reaches_users'){
         console.log(data);
+        setAvailableReachesList(data['data'])
       }
 
       if(command ==='Plot_Data_Retrieved'){
@@ -456,6 +458,8 @@ function App(
             handleShowRegionMenu={handleShowRegionMenu}
             toggleMainRegionMenu={toggleMainRegionMenu}
             socketRef={socketRef}
+            availableReachesList={availableReachesList}
+            setAvailableReachesList={setAvailableReachesList}
           />
 
           <SideMenuWrapper 

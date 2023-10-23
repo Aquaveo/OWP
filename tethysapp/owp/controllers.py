@@ -515,7 +515,7 @@ async def getUserReachesPerRegionsMethod(
     json_response = {}
     json_response["type"] = "region_notifications"
     json_response["command"] = "update_reaches_users"
-    breakpoint()
+    # breakpoint()
 
     if is_authenticated:
         print("authenticated getUserReachesPerRegionsMethod")

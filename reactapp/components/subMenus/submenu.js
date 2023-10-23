@@ -1,24 +1,9 @@
-import Container from 'react-bootstrap/Container';
+
+import { RegionsRows } from './regionsRows';
+import {  useContext, useEffect, useState,Fragment } from "react";
+
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { Badge } from 'react-bootstrap';
-import {Button} from 'react-bootstrap';
-import { FaBeer } from 'react-icons/fa';
-import {  MdOutlineEdit } from "react-icons/md";
-import { BsPlusLg, BsTrash } from "react-icons/bs";
-
-import {  } from "react-icons/md";
-
-import { SpanBadge } from 'components/styles/Badge.styled';
-import { Modal } from 'react-bootstrap';
-import Layers from 'components/layers/Layers';
-import { OlTileLayer } from 'components/layers/OlTileLayer';
-import { useRef, useState, useEffect,useContext } from "react"
-import { fromLonLat } from 'ol/proj';
-import { ArcGISRestTile } from "components/source/TileArcGISRest";
-import LayerGroup from 'ol/layer/Group';
-import { RegionsRow } from './regionsRows';
-
 export const SubMenu = (
     { 
         name,
@@ -26,12 +11,39 @@ export const SubMenu = (
         availableRegions,
         setAvailableRegions, 
         handleShowRegionMenu,
+        availableReachesList
     }) => {
     return (
-            <RegionsRow 
+        <Fragment>
+
+            <Row className='mb-2'>
+                <Col className="text-white fw-bold" sm={2}>
+                    COMID
+                </Col >
+                <Col className="text-white fw-bold" sm={2} >
+                    Anomaly
+                </Col>
+                <Col className="text-white fw-bold" sm={2} >
+                    Short Forecast
+                </Col>
+                <Col className="text-white fw-bold" sm={2} >
+                    Long Term Forecast Mean
+                </Col>
+                <Col className="text-white fw-bold" sm={2} >
+                    Medium Term Forecast Mean
+                </Col>
+                <Col className="text-white fw-bold" sm={2} >
+                    Actions
+                </Col>
+            </Row>
+            <RegionsRows 
                 availableRegions={availableRegions} 
                 setAvailableRegions={setAvailableRegions}
+                availableReachesList={availableReachesList}
 
             />
+        </Fragment>
+
+
     );
   }

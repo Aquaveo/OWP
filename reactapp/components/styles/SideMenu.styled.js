@@ -40,7 +40,7 @@ export const SideMenu = styled.div`
     /* 30% width on medium, large, and extra-large screens */
     @media (min-width: 768px) {
       .wrapper_absolute {
-        width: 500px !important;
+        width: 700px !important;
       }
     }
     /* Style for Webkit-based browsers (Chrome, Safari) */

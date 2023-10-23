@@ -27,7 +27,9 @@ export const RegionMenuWrapper = (
     setAvailableRegions,
     handleShowRegionMenu,
     toggleMainRegionMenu,
-    socketRef 
+    socketRef,
+    availableReachesList,
+    setAvailableReachesList
 
   })=>{
     const [isAccordionOpen, setAccordionOpen] = useState(false);
@@ -37,6 +39,7 @@ export const RegionMenuWrapper = (
     };
     const [currentPageNumber, setCurrentPageNumber] = useState(0);
     const [selectedRegionDropdownItem, setSelectedRegionDropdownItem] =  useState({});
+    
     const handleSelectRegionDropdown = (key, event) => {
       setSelectedRegionDropdownItem({
         index:key, 
@@ -174,17 +177,14 @@ export const RegionMenuWrapper = (
 
                     </Accordion.Header>
                     <Accordion.Body className="accordeon-body-custom">
-                      {/* {
-                          showMainRegionsMenu && 
                           <SubMenu 
                             name={name} 
                             handleShowMainRegionMenu={handleShowMainRegionMenu} 
                             availableRegions={availableRegions} 
                             setAvailableRegions={setAvailableRegions} 
                             handleShowRegionMenu={handleShowRegionMenu}
-                            />
-
-                      } */}
+                            availableReachesList={availableReachesList}
+                          />
                     </Accordion.Body>
                   </Accordion.Item>
                 </Accordion>
