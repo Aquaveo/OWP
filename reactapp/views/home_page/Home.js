@@ -460,6 +460,11 @@ function App(
             socketRef={socketRef}
             availableReachesList={availableReachesList}
             setAvailableReachesList={setAvailableReachesList}
+            setCurrentStation={setCurrentStation}
+            setCurrentStationID={setCurrentStationID}
+            setCurrentProducts={setCurrentProducts}
+            handleShow={handleShow}
+            setMetadata={setMetadata}
           />
 
           <SideMenuWrapper 
