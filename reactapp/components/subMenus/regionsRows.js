@@ -80,6 +80,7 @@ export const RegionsRows = ({
                         <Button 
                             variant="primary" 
                             className="text-white"
+                            size="sm"
                             onClick={(e) => openPlot(availableReach)}
                         >
                             <GoGraph/>

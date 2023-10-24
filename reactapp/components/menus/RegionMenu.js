@@ -49,6 +49,12 @@ export const RegionMenuWrapper = (
     const [selectedRegionDropdownItem, setSelectedRegionDropdownItem] =  useState({});
     
     const handleSelectRegionDropdown = (key, event) => {
+      const updatedHiddenRegions = availableRegions.map(availableRegion => ({
+        ...availableRegion,
+        is_visible: false,
+      }));
+      setAvailableRegions(updatedHiddenRegions);
+      toggleVisibilityRegion()
       setSelectedRegionDropdownItem({
         index:key, 
         value:availableRegions[key].name
@@ -98,11 +104,7 @@ export const RegionMenuWrapper = (
 
     useEffect(() => {
       let index = selectedRegionDropdownItem['index'] ? selectedRegionDropdownItem['index']: 0
-      const updatedHiddenRegions = availableRegions.map(availableRegion => ({
-        ...availableRegion,
-        is_visible: false,
-      }));
-      setAvailableRegions(updatedHiddenRegions);
+
       if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
         socketRef.current.send(
           JSON.stringify({
@@ -144,7 +146,8 @@ export const RegionMenuWrapper = (
                         <DropdownButton 
                           id="dropdown-basic-button" 
                           onSelect={handleSelectRegionDropdown}
-                          drop={'down'}
+                          drop={'down-centered'}
+                          size="sm"
                           title={selectedRegionDropdownItem.value ? selectedRegionDropdownItem.value : "Select Region"}
                         >
                             {availableRegions && availableRegions.map((availableRegion, index) => (
@@ -153,26 +156,22 @@ export const RegionMenuWrapper = (
                         </DropdownButton>
                       </Col>
                         <Col sm={7} className="button-menu button-middle">
-                          <Form.Group className="text-white">
-                              <Form.Check
-                                  type="switch"
-                                  id="default-region"
-                                  value={selectedRegionDropdownItem.index ? availableRegions[selectedRegionDropdownItem.index].is_visible : false }
-                                  checked={selectedRegionDropdownItem.index ? availableRegions[selectedRegionDropdownItem.index].is_visible : false}
-                                  onChange={(e) => toggleVisibilityRegion()}
-                              />
-                          </Form.Group>
                           <Button 
                               variant="primary" 
                               className="text-white"
+                              size="sm"
                               onClick={(e) => zoomToRegionExtent()}
                           >
                               <TbZoomPan/>
                           </Button>
-                      </Col>
+                        </Col>
 
                       <Col sm={1} className="button-menu">
-                        <Button onClick={toggleAccordion} variant="primary">
+                        <Button 
+                          onClick={toggleAccordion} 
+                          variant="primary"
+                          size="sm"
+                        >
                           {isAccordionOpen ? <SlArrowUp/> : <SlArrowDown/> }
                           
                         </Button>
