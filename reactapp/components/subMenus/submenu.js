@@ -15,6 +15,7 @@ export const SubMenu = (
         setCurrentStation,
         setCurrentStationID,
         setCurrentProducts,
+        currentProducts,
         handleShow,
         setMetadata,
     }) => {
@@ -48,6 +49,7 @@ export const SubMenu = (
                 setCurrentStation={setCurrentStation}
                 setCurrentStationID={setCurrentStationID}
                 setCurrentProducts={setCurrentProducts}
+                currentProducts={currentProducts}
                 handleShow={handleShow}
                 setMetadata={setMetadata}
             />

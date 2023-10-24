@@ -525,6 +525,7 @@ async def getUserReachesPerRegionsMethod(
         session = SessionMaker()
         only_user_reaches_regions = (
             session.query(
+                Reach.GNIS_NAME,
                 Reach.COMID,
                 Reach.StreamOrde,
                 Reach.StreamCalc,
@@ -541,10 +542,11 @@ async def getUserReachesPerRegionsMethod(
 
         for region in only_user_reaches_regions:
             region_obj = {
-                "COMID": region[0],
-                "StreamOrde": region[1],
-                "StreamCalc": region[2],
-                "QA_MA": region[3],
+                "GNIS_NAME": region[0],
+                "COMID": region[1],
+                "StreamOrde": region[2],
+                "StreamCalc": region[3],
+                "QA_MA": region[4],
             }
             regions_response["reaches"].append(region_obj)
 

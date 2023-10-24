@@ -18,50 +18,28 @@ export const RegionsRows = ({
     setCurrentStationID,
     setCurrentStation,
     setCurrentProducts,
+    currentProducts,
     handleShow,
     setMetadata,
 
 }) => {
 
-      const openPlot = (stationID) => {
+      const openPlot = (availableReach) => {
+        console.log(availableReach)
+        let stationID = availableReach['COMID']
+        let stationName = availableReach['GNIS_NAME']
         setCurrentStationID(stationID);
         // setCurrentStationID(Math.random());
         setCurrentStation(stationID);
         setCurrentProducts({type: "reset"});
         handleShow();
-        let dataRequest = {
-            station_id: stationID,
-            products: currentProducts
-        }
-        appAPI.getForecastData(dataRequest);
+        const metadataArray = [
+            `${stationID} ${stationName} `,
+            `streamflow for Reach ID: ${stationID}`
+        ]
+        setMetadata(metadataArray);
 
-        // GeoReverse API to get the name of the river
-        const urlSGeoReverseService = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode'
-        const queryGeoReverse ={
-            f: 'json',
-            sourceCountry: 'USA',
-            location:JSON.stringify(geometry),
-            distance: 8000,	
-        }
-        
-        const urlGeo = new URL(`${urlSGeoReverseService}`);
-        urlGeo.search = new URLSearchParams(queryGeoReverse);
-        axios.get(urlGeo).then((response) => {
-            //MOVE IT LATER, When only clicking on layer
-            handleShow();
 
-            console.log(response.data);
-            var lat = response.data['location']['x'];
-            var lon = response.data['location']['y'];
-            var regionName = response.data['address']['Region'];
-            var cityName = response.data['address']['City']
-            const metadataArray = [
-                `${stationName} - ${cityName}, ${regionName}`,
-                `streamflow for Reach ID: ${stationID} (lat: ${lat} , lon: ${lon})`
-            ]
-            setMetadata(metadataArray);
-
-        });
       };   
       const sampleData = [5, 10, 5, 20, 8, 15]; 
     return (
@@ -102,7 +80,7 @@ export const RegionsRows = ({
                         <Button 
                             variant="primary" 
                             className="text-white"
-                            onClick={(e) => openPlot(availableReach['COMID'])}
+                            onClick={(e) => openPlot(availableReach)}
                         >
                             <GoGraph/>
                         </Button>

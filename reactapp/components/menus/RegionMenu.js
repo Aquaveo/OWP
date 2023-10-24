@@ -35,6 +35,7 @@ export const RegionMenuWrapper = (
     setCurrentStation,
     setCurrentStationID,
     setCurrentProducts,
+    currentProducts,
     handleShow,
     setMetadata
 
@@ -147,7 +148,7 @@ export const RegionMenuWrapper = (
                           title={selectedRegionDropdownItem.value ? selectedRegionDropdownItem.value : "Select Region"}
                         >
                             {availableRegions && availableRegions.map((availableRegion, index) => (
-                              <Dropdown.Item eventKey={index}>{availableRegion.name}</Dropdown.Item>
+                              <Dropdown.Item key={index} eventKey={index}>{availableRegion.name}</Dropdown.Item>
                             ))}
                         </DropdownButton>
                       </Col>
@@ -193,6 +194,7 @@ export const RegionMenuWrapper = (
                             setCurrentStation={setCurrentStation}
                             setCurrentStationID={setCurrentStationID}
                             setCurrentProducts={setCurrentProducts}
+                            currentProducts={currentProducts}
                             handleShow={handleShow}
                             setMetadata={setMetadata}
                           />

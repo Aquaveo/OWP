@@ -466,6 +466,7 @@ function App(
             setCurrentStation={setCurrentStation}
             setCurrentStationID={setCurrentStationID}
             setCurrentProducts={setCurrentProducts}
+            currentProducts={currentProducts}
             handleShow={handleShow}
             setMetadata={setMetadata}
           />
