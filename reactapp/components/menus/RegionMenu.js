@@ -14,7 +14,7 @@ import MapContext from "../map/MapContext";
 import VectorSource from 'ol/source/Vector'
 import GeoJSON from 'ol/format/GeoJSON';
 
-import { SlArrowDown } from "react-icons/sl";
+import { SlArrowDown, SlArrowUp } from "react-icons/sl";
 import 'css/RegionMenu.css';
 
 export const RegionMenuWrapper = (
@@ -29,7 +29,12 @@ export const RegionMenuWrapper = (
     toggleMainRegionMenu,
     socketRef,
     availableReachesList,
-    setAvailableReachesList
+    setAvailableReachesList,
+    setCurrentStation,
+    setCurrentStationID,
+    setCurrentProducts,
+    handleShow,
+    setMetadata
 
   })=>{
     const [isAccordionOpen, setAccordionOpen] = useState(false);
@@ -139,6 +144,7 @@ export const RegionMenuWrapper = (
                         <DropdownButton 
                           id="dropdown-basic-button" 
                           onSelect={handleSelectRegionDropdown}
+                          drop={'down'}
                           title={selectedRegionDropdownItem.value ? selectedRegionDropdownItem.value : "Select Region"}
                         >
                             {availableRegions && availableRegions.map((availableRegion, index) => (
@@ -167,7 +173,8 @@ export const RegionMenuWrapper = (
 
                       <Col sm={1} className="button-menu">
                         <Button onClick={toggleAccordion} variant="primary">
-                          <SlArrowDown/>
+                          {isAccordionOpen ? <SlArrowUp/> : <SlArrowDown/> }
+                          
                         </Button>
                       </Col>
                     </Row>
@@ -184,6 +191,11 @@ export const RegionMenuWrapper = (
                             setAvailableRegions={setAvailableRegions} 
                             handleShowRegionMenu={handleShowRegionMenu}
                             availableReachesList={availableReachesList}
+                            setCurrentStation={setCurrentStation}
+                            setCurrentStationID={setCurrentStationID}
+                            setCurrentProducts={setCurrentProducts}
+                            handleShow={handleShow}
+                            setMetadata={setMetadata}
                           />
                     </Accordion.Body>
                   </Accordion.Item>

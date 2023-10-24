@@ -11,10 +11,57 @@ import MapContext from "../map/MapContext";
 import GeoJSON from 'ol/format/GeoJSON';
 import VectorSource from 'ol/source/Vector'
 
-export const RegionsRows = ({availableRegions, setAvailableRegions,availableReachesList}) => {
+export const RegionsRows = ({
+    availableRegions, 
+    setAvailableRegions,
+    availableReachesList,
+    setCurrentStationID,
+    setCurrentStation,
+    setCurrentProducts,
+    handleShow,
+    setMetadata
 
-      const openPlot = (index) => {
+}) => {
 
+      const openPlot = (stationID) => {
+        setCurrentStationID(stationID);
+        // setCurrentStationID(Math.random());
+        setCurrentStation(stationID);
+        setCurrentProducts({type: "reset"});
+        handleShow();
+        let dataRequest = {
+            station_id: stationID,
+            products: currentProducts
+        }
+        appAPI.getForecastData(dataRequest);
+
+        // GeoReverse API to get the name of the river
+        const urlSGeoReverseService = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode'
+        const queryGeoReverse ={
+            f: 'json',
+            sourceCountry: 'USA',
+            location:JSON.stringify(geometry),
+            distance: 8000,	
+        }
+        
+        const urlGeo = new URL(`${urlSGeoReverseService}`);
+        urlGeo.search = new URLSearchParams(queryGeoReverse);
+        axios.get(urlGeo).then((response) => {
+            //MOVE IT LATER, When only clicking on layer
+            handleShow();
+
+            console.log(response.data);
+            var lat = response.data['location']['x'];
+            var lon = response.data['location']['y'];
+            var regionName = response.data['address']['Region'];
+            var cityName = response.data['address']['City']
+            const metadataArray = [
+                `${stationName} - ${cityName}, ${regionName}`,
+                `streamflow for Reach ID: ${stationID} (lat: ${lat} , lon: ${lon})`
+            ]
+            setMetadata(metadataArray);
+
+        });
       };   
       const sampleData = [5, 10, 5, 20, 8, 15]; 
     return (

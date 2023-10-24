@@ -11,7 +11,12 @@ export const SubMenu = (
         availableRegions,
         setAvailableRegions, 
         handleShowRegionMenu,
-        availableReachesList
+        availableReachesList,
+        setCurrentStation,
+        setCurrentStationID,
+        setCurrentProducts,
+        handleShow,
+        setMetadata
     }) => {
     return (
         <Fragment>
@@ -40,7 +45,11 @@ export const SubMenu = (
                 availableRegions={availableRegions} 
                 setAvailableRegions={setAvailableRegions}
                 availableReachesList={availableReachesList}
-
+                setCurrentStation={setCurrentStation}
+                setCurrentStationID={setCurrentStationID}
+                setCurrentProducts={setCurrentProducts}
+                handleShow={handleShow}
+                setMetadata={setMetadata}
             />
         </Fragment>
 
