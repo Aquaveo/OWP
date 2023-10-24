@@ -16,7 +16,7 @@ export const SubMenu = (
         setCurrentStationID,
         setCurrentProducts,
         handleShow,
-        setMetadata
+        setMetadata,
     }) => {
     return (
         <Fragment>

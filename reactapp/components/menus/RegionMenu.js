@@ -20,6 +20,8 @@ import 'css/RegionMenu.css';
 export const RegionMenuWrapper = (
   {
     name, 
+    isAccordionOpen,
+    setAccordionOpen,
     showMainRegionsMenu, 
     handleShowMainRegionMenu, 
     handleHideMainRegionMenu,
@@ -37,7 +39,7 @@ export const RegionMenuWrapper = (
     setMetadata
 
   })=>{
-    const [isAccordionOpen, setAccordionOpen] = useState(false);
+    // const [isAccordionOpen, setAccordionOpen] = useState(false);
 
     const toggleAccordion = () => {
       setAccordionOpen(!isAccordionOpen);
@@ -111,9 +113,6 @@ export const RegionMenuWrapper = (
         );
       }
 
-      return () => {
-        console.log("need")
-      }
     }, [selectedRegionDropdownItem])
     
 

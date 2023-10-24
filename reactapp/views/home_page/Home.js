@@ -299,7 +299,7 @@ function App(
 	}
   const [currentDisplayRegions, setCurrentDisplayRegions ] = useState([])
   const [availableReachesList, setAvailableReachesList] =  useState([]);
-
+  const [isAccordionOpen, setAccordionOpen] = useState(false);
 
   const getRegionsOfCurrentUser = async () => {
     handleShowLoading();
@@ -355,7 +355,8 @@ function App(
       }
       if(command ==='update_reaches_users'){
         console.log(data);
-        setAvailableReachesList(data['data'])
+        setAvailableReachesList(data['data']);
+        setAccordionOpen(true);
       }
 
       if(command ==='Plot_Data_Retrieved'){
@@ -449,7 +450,9 @@ function App(
           <CircularMenuComponent handleShowRegionMenu={handleShowRegionMenu}/>
 
           <RegionMenuWrapper 
-            name="My Regions" 
+            name="My Regions"
+            isAccordionOpen={isAccordionOpen}
+            setAccordionOpen={setAccordionOpen}
             showMainRegionsMenu={showMainRegionsMenu} 
             handleShowMainRegionMenu={handleShowMainRegionMenu} 
             handleHideMainRegionMenu = {handleHideMainRegionMenu}

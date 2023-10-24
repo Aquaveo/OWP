@@ -19,7 +19,7 @@ export const RegionsRows = ({
     setCurrentStation,
     setCurrentProducts,
     handleShow,
-    setMetadata
+    setMetadata,
 
 }) => {
 
