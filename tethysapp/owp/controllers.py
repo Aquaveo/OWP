@@ -163,6 +163,7 @@ def saveUserRegions(request):
             dest["layer_color"] = region_layer_color
             dest["user_name"] = user_name
             dest["geom"] = dest["geometry"]
+            dest["number_reaches"] = 0
             dest = dest.drop("geometry", axis=1)
             dest = dest.set_geometry("geom")
             # convert to dict before converting geometry to WKTElement
@@ -178,7 +179,7 @@ def saveUserRegions(request):
             )
             session.commit()
             new_user_region = (
-                session.query(Region.id)
+                session.query(Region.id, Region.number_reaches)
                 .filter(Region.user_name == user_name)
                 .filter(Region.name == region_name)
                 .first()
@@ -188,6 +189,7 @@ def saveUserRegions(request):
             list_geoms = df_copy["geom"].tolist()
             mr = NHD("flowline_mr")
 
+            total_reaches = 0
             for index, geom in enumerate(list_geoms):
                 nhdp_mr = mr.bygeom(geom)
                 nhdp_mr["region_id"] = new_user_region_id
@@ -203,8 +205,11 @@ def saveUserRegions(request):
                     index=False,
                     dtype={"geometry": Geometry("LINESTRING", srid=4326)},
                 )
+                total_reaches = total_reaches + len(nhdp_mr.index)
                 session.commit()
 
+            new_user_region.number_reaches = total_reaches
+            session.commit()
             # Close the connection to prevent issues
             session.close()
             # breakpoint()
@@ -216,23 +221,7 @@ def saveUserRegions(request):
                     region["is_visible"] = True
                 else:
                     region["is_visible"] = False
-
-            # # return the all regions of the of the user
-            # sql_query = f"SELECT * FROM regions WHERE user_name='{user_name}'"
-            # user_regions_df = gpd.GeoDataFrame.from_postgis(sql_query, engine)
-
-            # response_obj["regions"] = user_regions_df.to_dict(orient="records")
-            # default_region = next(
-            #     (item for item in response_obj["regions"] if item["default"]), None
-            # )
-
-            # default_region_geometry = shapely.to_geojson(default_region["geom"])
-
-            # response_obj["regions"] = [
-            #     {k: v for k, v in obj.items() if k != "geom"}
-            #     for obj in response_obj["regions"]
-            # ]
-            # response_obj["default_geom"] = default_region_geometry
+                region["total_reaches"] = total_reaches
         else:
             response_obj["msge"] = "Please, create an account, and login"
     except Exception as e:
@@ -481,6 +470,7 @@ async def getUserRegionsMethod(is_authenticated, user_name):
             Region.default,
             Region.geom.ST_AsGeoJSON(),
             Region.layer_color,
+            Region.number_reaches,
         ).filter(Region.user_name == user_name)
         regions_response["regions"] = []
         # breakpoint()
@@ -492,6 +482,7 @@ async def getUserRegionsMethod(is_authenticated, user_name):
                 "default": region[2],
                 "geom": region[3],
                 "layer_color": region[4],
+                "number_reaches": region[5],
                 "is_visible": region[2],
             }
             regions_response["regions"].append(region_obj)

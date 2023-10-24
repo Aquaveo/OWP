@@ -10,6 +10,7 @@ import {  useContext, useEffect, useState,Fragment } from "react";
 import MapContext from "../map/MapContext";
 import GeoJSON from 'ol/format/GeoJSON';
 import VectorSource from 'ol/source/Vector'
+import Pagination from 'react-bootstrap/Pagination';
 
 export const RegionsRows = ({
     availableRegions, 
@@ -21,7 +22,7 @@ export const RegionsRows = ({
     currentProducts,
     handleShow,
     setMetadata,
-
+    setCurrentPageNumber
 }) => {
 
       const openPlot = (availableReach) => {
@@ -38,9 +39,12 @@ export const RegionsRows = ({
             `streamflow for Reach ID: ${stationID}`
         ]
         setMetadata(metadataArray);
-
-
-      };   
+      };
+      const paginationClicked = (event) => {
+        var itemClicked = event.target.text;
+        console.log(Number(itemClicked)-1)
+        setCurrentPageNumber(Number(itemClicked)-1)
+      }
       const sampleData = [5, 10, 5, 20, 8, 15]; 
     return (
 
@@ -88,6 +92,32 @@ export const RegionsRows = ({
                     </Col>
                 </Row>
             ))}
+            <Pagination>
+            <Pagination.First />
+            <Pagination.Prev />
+            <Pagination.Item 
+                onClick={(event) => paginationClicked(event)}
+            >{1}
+            </Pagination.Item>
+            <Pagination.Item
+                onClick={(event) => paginationClicked(event)}
+            >
+                {2}
+            </Pagination.Item>
+            <Pagination.Item
+             onClick={(event) => paginationClicked(event)}
+            >
+                {3}
+            </Pagination.Item>
+            <Pagination.Item
+                onClick={(event) => paginationClicked(event)}
+            >
+                {4}
+            </Pagination.Item>
+            <Pagination.Next />
+            <Pagination.Last />
+            </Pagination>
+
             </Row>
 
     );

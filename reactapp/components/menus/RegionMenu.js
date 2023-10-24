@@ -118,7 +118,21 @@ export const RegionMenuWrapper = (
 
     }, [selectedRegionDropdownItem])
     
+    useEffect(() => {
+      let index = selectedRegionDropdownItem['index'] ? selectedRegionDropdownItem['index']: 0
 
+      if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+        socketRef.current.send(
+          JSON.stringify({
+            type: "update_user_reaches",
+            region_name: availableRegions[index]['name'],
+            page_number: currentPageNumber,
+            page_limit: 50,
+          })
+        );
+      }
+
+    }, [currentPageNumber])
 
 
     return(
@@ -156,6 +170,15 @@ export const RegionMenuWrapper = (
                         </DropdownButton>
                       </Col>
                         <Col sm={7} className="button-menu button-middle">
+                          {/* <Form.Group className="text-white">
+                              <Form.Check
+                                  type="switch"
+                                  id="default-region"
+                                  value={selectedRegionDropdownItem.index ? availableRegions[selectedRegionDropdownItem.index].is_visible : false }
+                                  checked={selectedRegionDropdownItem.index ? availableRegions[selectedRegionDropdownItem.index].is_visible : false}
+                                  onChange={(e) => toggleVisibilityRegion()}
+                              />
+                          </Form.Group> */}
                           <Button 
                               variant="primary" 
                               className="text-white"
@@ -196,6 +219,7 @@ export const RegionMenuWrapper = (
                             currentProducts={currentProducts}
                             handleShow={handleShow}
                             setMetadata={setMetadata}
+                            setCurrentPageNumber={setCurrentPageNumber}
                           />
                     </Accordion.Body>
                   </Accordion.Item>

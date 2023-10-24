@@ -21,6 +21,7 @@ class Region(Base):
     geom = Column(Geometry("GEOMETRYCOLLECTION"))
     user_name = Column(String)
     layer_color = Column(String)
+    number_reaches = Column(Integer)
     reach = relationship(
         "Reach", back_populates="region", cascade="all,delete, delete-orphan"
     )

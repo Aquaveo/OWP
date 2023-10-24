@@ -14,7 +14,7 @@ export const SideMenu = styled.div`
       overflow-y: scroll;
       scrollbar-width: none;
       -ms-overflow-style: none;
-      height: 90vh;
+      height: 80vh;
     }
     .accordion-header button{
       background-color: rgba(22, 160, 133, 0.5608);
