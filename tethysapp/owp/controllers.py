@@ -528,7 +528,7 @@ async def getUserReachesPerRegionsMethod(
             .join(Region)
             .filter(Region.name == region_name)
             .filter(Region.user_name == user_name)
-            .order_by(Reach.StreamOrde.desc())
+            .order_by(Reach.COMID.desc())
         )
         if page_number > 0:
             only_user_reaches_regions = only_user_reaches_regions.offset(page_offset)

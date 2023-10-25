@@ -16,7 +16,7 @@ export const Paginate = ({
     if(rightSide>currentPageNumber) rightSide = currentPageNumber;
     for (let number = leftSide ; number <= rightSide; number++) {
       items.push(
-        <div key={number} className={(number === currentPage ? 'round-effect-pagination active' : 'round-effect-pagination')} onClick={()=>{ setCurrentPage(number)}}>
+        <div key={number} className={(number === currentPage ? 'round-effect-pagination active-pagination' : 'round-effect-pagination')} onClick={()=>{ setCurrentPage(number)}}>
           {number}
         </div>,
       );
