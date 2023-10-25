@@ -515,6 +515,8 @@ async def getUserReachesPerRegionsMethod(
             "user_data", as_sessionmaker=True
         )
         session = SessionMaker()
+        page_number = page_number - 1
+        page_offset = page_number * page_limit
         only_user_reaches_regions = (
             session.query(
                 Reach.GNIS_NAME,
@@ -526,10 +528,14 @@ async def getUserReachesPerRegionsMethod(
             .join(Region)
             .filter(Region.name == region_name)
             .filter(Region.user_name == user_name)
-            .limit(page_limit)
-            .offset(page_number * page_limit)
+            .order_by(Reach.StreamOrde.desc())
         )
+        if page_number > 0:
+            only_user_reaches_regions = only_user_reaches_regions.offset(page_offset)
 
+        only_user_reaches_regions = only_user_reaches_regions.limit(page_limit)
+
+        print(page_limit, page_number, page_offset)
         regions_response["reaches"] = []
 
         for region in only_user_reaches_regions:
