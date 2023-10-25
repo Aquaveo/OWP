@@ -60,29 +60,18 @@ export const RegionMenuWrapper = (
         index:key, 
         value:availableRegions[key].name
       });
-      getNumberOfPageItems()
+      getNumberOfPageItems();
     };
 
     const getNumberOfPageItems = () =>{
       let index = selectedRegionDropdownItem['index'] ? selectedRegionDropdownItem['index']: 0
       let total_reaches = availableRegions[index]['number_reaches'];
-      const numberOfPageItems = divideIntegerIntoParts(total_reaches, pagesLimit);
+      const numberOfPageItems = Math.ceil(total_reaches, pagesLimit);
       console.log(numberOfPageItems); // Array of part sizes
       setCurrentPageNumber(numberOfPageItems)
     }
 
 
-    function divideIntegerIntoParts(totalItems, currentPage) {
-      const totalPages = Math.ceil(totalItems / currentPage);
-
-      if (currentPage < 1) {
-          currentPage = 1
-      } else if (currentPage > totalPages) {
-          currentPage = totalPages
-      }
-    
-      return totalPages;
-    }
     
     //https://codepen.io/vanderzak/embed/zYxXzmd?height=265&theme-id=light&default-tab=js%2Cresult&user=vanderzak&slug-hash=zYxXzmd&pen-title=React%20Pagination%20Component&name=cp_embed_9
 
@@ -245,7 +234,6 @@ export const RegionMenuWrapper = (
                             currentProducts={currentProducts}
                             handleShow={handleShow}
                             setMetadata={setMetadata}
-                            setCurrentPageNumber={setCurrentPageNumber}
                             currentPageNumber={currentPageNumber}
                             setCurrentPage={setCurrentPage}
                             currentPage={currentPage}

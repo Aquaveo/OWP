@@ -18,6 +18,7 @@ export const SubMenu = (
         currentProducts,
         handleShow,
         setMetadata,
+        currentPageNumber,
         setCurrentPage,
         currentPage
     }) => {
@@ -54,6 +55,7 @@ export const SubMenu = (
                 currentProducts={currentProducts}
                 handleShow={handleShow}
                 setMetadata={setMetadata}
+                currentPageNumber={currentPageNumber}
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
             />

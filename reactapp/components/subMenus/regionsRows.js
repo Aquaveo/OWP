@@ -24,7 +24,6 @@ export const RegionsRows = ({
     currentProducts,
     handleShow,
     setMetadata,
-    setCurrentPageNumber,
     currentPageNumber,
     setCurrentPage,
     currentPage
@@ -100,7 +99,6 @@ export const RegionsRows = ({
 
             <Paginate 
                 currentPageNumber={currentPageNumber}
-                setCurrentPageNumber={setCurrentPageNumber}
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
             />
