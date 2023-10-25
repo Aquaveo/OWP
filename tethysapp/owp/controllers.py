@@ -182,7 +182,6 @@ def saveUserRegions(request):
                 session.query(Region.id, Region.number_reaches)
                 .filter(Region.user_name == user_name)
                 .filter(Region.name == region_name)
-                .first()
             )
             new_user_region_id = new_user_region.id
 
@@ -193,7 +192,7 @@ def saveUserRegions(request):
             for index, geom in enumerate(list_geoms):
                 nhdp_mr = mr.bygeom(geom)
                 nhdp_mr["region_id"] = new_user_region_id
-                breakpoint()
+                # breakpoint()
 
                 nhdp_mr["geometry"] = nhdp_mr["geometry"].apply(
                     lambda x: WKTElement(x.wkt, srid=4326)
@@ -207,7 +206,7 @@ def saveUserRegions(request):
                 )
                 total_reaches = total_reaches + len(nhdp_mr.index)
                 session.commit()
-
+            breakpoint()
             new_user_region.number_reaches = total_reaches
             session.commit()
             # Close the connection to prevent issues
@@ -227,6 +226,8 @@ def saveUserRegions(request):
     except Exception as e:
         print(e)
         response_obj["msge"] = "Error saving the Regions for current user"
+
+    breakpoint()
     return JsonResponse(response_obj)
 
 
@@ -507,7 +508,7 @@ async def getUserReachesPerRegionsMethod(
     json_response["type"] = "region_notifications"
     json_response["command"] = "update_reaches_users"
     # breakpoint()
-
+    # breakpoint()
     if is_authenticated:
         print("authenticated getUserReachesPerRegionsMethod")
         SessionMaker = await sync_to_async(app.get_persistent_store_database)(

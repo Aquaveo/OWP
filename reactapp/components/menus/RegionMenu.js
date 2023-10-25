@@ -41,13 +41,14 @@ export const RegionMenuWrapper = (
 
   })=>{
     // const [isAccordionOpen, setAccordionOpen] = useState(false);
-
+    const pagesLimit = 50;
     const toggleAccordion = () => {
       setAccordionOpen(!isAccordionOpen);
     };
     const [currentPageNumber, setCurrentPageNumber] = useState(0);
     const [selectedRegionDropdownItem, setSelectedRegionDropdownItem] =  useState({});
-    
+    const [currentPage, setCurrentPage] = useState(1);
+
     const handleSelectRegionDropdown = (key, event) => {
       const updatedHiddenRegions = availableRegions.map(availableRegion => ({
         ...availableRegion,
@@ -59,7 +60,32 @@ export const RegionMenuWrapper = (
         index:key, 
         value:availableRegions[key].name
       });
+      getNumberOfPageItems()
     };
+
+    const getNumberOfPageItems = () =>{
+      let index = selectedRegionDropdownItem['index'] ? selectedRegionDropdownItem['index']: 0
+      let total_reaches = availableRegions[index]['number_reaches'];
+      const numberOfPageItems = divideIntegerIntoParts(total_reaches, pagesLimit);
+      console.log(numberOfPageItems); // Array of part sizes
+      setCurrentPageNumber(numberOfPageItems)
+    }
+
+
+    function divideIntegerIntoParts(totalItems, currentPage) {
+      const totalPages = Math.ceil(totalItems / currentPage);
+
+      if (currentPage < 1) {
+          currentPage = 1
+      } else if (currentPage > totalPages) {
+          currentPage = totalPages
+      }
+    
+      return totalPages;
+    }
+    
+    //https://codepen.io/vanderzak/embed/zYxXzmd?height=265&theme-id=light&default-tab=js%2Cresult&user=vanderzak&slug-hash=zYxXzmd&pen-title=React%20Pagination%20Component&name=cp_embed_9
+
     const { map } = useContext(MapContext);
     const [currentLayerIndex, setCurrentLayerIndex] = useState();
 
@@ -110,29 +136,29 @@ export const RegionMenuWrapper = (
           JSON.stringify({
             type: "update_user_reaches",
             region_name: availableRegions[index]['name'],
-            page_number: currentPageNumber,
+            page_number: currentPage,
             page_limit: 50,
           })
         );
       }
 
-    }, [selectedRegionDropdownItem])
+    }, [selectedRegionDropdownItem,currentPage])
     
-    useEffect(() => {
-      let index = selectedRegionDropdownItem['index'] ? selectedRegionDropdownItem['index']: 0
+    // useEffect(() => {
+    //   let index = selectedRegionDropdownItem['index'] ? selectedRegionDropdownItem['index']: 0
 
-      if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-        socketRef.current.send(
-          JSON.stringify({
-            type: "update_user_reaches",
-            region_name: availableRegions[index]['name'],
-            page_number: currentPageNumber,
-            page_limit: 50,
-          })
-        );
-      }
+    //   if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+    //     socketRef.current.send(
+    //       JSON.stringify({
+    //         type: "update_user_reaches",
+    //         region_name: availableRegions[index]['name'],
+    //         page_number: currentPageNumber,
+    //         page_limit: 50,
+    //       })
+    //     );
+    //   }
 
-    }, [currentPageNumber])
+    // }, [currentNumberPage])
 
 
     return(
@@ -220,6 +246,9 @@ export const RegionMenuWrapper = (
                             handleShow={handleShow}
                             setMetadata={setMetadata}
                             setCurrentPageNumber={setCurrentPageNumber}
+                            currentPageNumber={currentPageNumber}
+                            setCurrentPage={setCurrentPage}
+                            currentPage={currentPage}
                           />
                     </Accordion.Body>
                   </Accordion.Item>

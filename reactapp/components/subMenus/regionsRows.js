@@ -11,6 +11,8 @@ import MapContext from "../map/MapContext";
 import GeoJSON from 'ol/format/GeoJSON';
 import VectorSource from 'ol/source/Vector'
 import Pagination from 'react-bootstrap/Pagination';
+import { Paginate } from 'components/Pagination/paginate';
+
 
 export const RegionsRows = ({
     availableRegions, 
@@ -22,7 +24,10 @@ export const RegionsRows = ({
     currentProducts,
     handleShow,
     setMetadata,
-    setCurrentPageNumber
+    setCurrentPageNumber,
+    currentPageNumber,
+    setCurrentPage,
+    currentPage
 }) => {
 
       const openPlot = (availableReach) => {
@@ -92,31 +97,13 @@ export const RegionsRows = ({
                     </Col>
                 </Row>
             ))}
-            <Pagination>
-            <Pagination.First />
-            <Pagination.Prev />
-            <Pagination.Item 
-                onClick={(event) => paginationClicked(event)}
-            >{1}
-            </Pagination.Item>
-            <Pagination.Item
-                onClick={(event) => paginationClicked(event)}
-            >
-                {2}
-            </Pagination.Item>
-            <Pagination.Item
-             onClick={(event) => paginationClicked(event)}
-            >
-                {3}
-            </Pagination.Item>
-            <Pagination.Item
-                onClick={(event) => paginationClicked(event)}
-            >
-                {4}
-            </Pagination.Item>
-            <Pagination.Next />
-            <Pagination.Last />
-            </Pagination>
+
+            <Paginate 
+                currentPageNumber={currentPageNumber}
+                setCurrentPageNumber={setCurrentPageNumber}
+                setCurrentPage={setCurrentPage}
+                currentPage={currentPage}
+            />
 
             </Row>
 

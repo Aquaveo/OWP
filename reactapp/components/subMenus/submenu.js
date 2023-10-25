@@ -18,7 +18,8 @@ export const SubMenu = (
         currentProducts,
         handleShow,
         setMetadata,
-        setCurrentPageNumber
+        setCurrentPage,
+        currentPage
     }) => {
     return (
         <Fragment>
@@ -53,7 +54,8 @@ export const SubMenu = (
                 currentProducts={currentProducts}
                 handleShow={handleShow}
                 setMetadata={setMetadata}
-                setCurrentPageNumber={setCurrentPageNumber}
+                setCurrentPage={setCurrentPage}
+                currentPage={currentPage}
             />
         </Fragment>
 
