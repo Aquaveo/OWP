@@ -103,7 +103,6 @@ def saveUserRegions(request):
                 region_data = json.loads(request.POST.get("region_data"))
                 df = gpd.GeoDataFrame.from_features(region_data)
                 df = df.set_crs(3857)
-                # breakpoint()
                 # df.crs = "EPSG:4326"
                 df["geom"] = df["geometry"]
                 df_copy = df.copy()
@@ -113,9 +112,12 @@ def saveUserRegions(request):
                 df = df.drop("geometry", axis=1)
                 dest = gpd.GeoDataFrame(
                     columns=["name", "region_type", "default", "user_name", "geom"],
-                    crs="EPSG:4326",
+                    # crs="EPSG:4326",
                     geometry=[GeometryCollection(df["geom"].tolist())],
                 )
+                dest = dest.set_crs(3857)
+                dest = dest.to_crs(4326)
+                # breakpoint()
 
                 # get the Reach mode
             else:
@@ -144,20 +146,22 @@ def saveUserRegions(request):
                 if file_extension == "geojson" or file_extension == "json":
                     df = gpd.read_file(file_data)
 
-                # file_data = request.FILES.getlist("files")[0]
-                # df = gpd.read_file(file_data)
-                df = df.to_crs(epsg=3857)
+                # df = df.to_crs(epsg=3857)
+                df = df.to_crs(epsg=4326)
+                # breakpoint()
                 df["geom"] = df["geometry"]
                 df_copy = df.copy()
-                df_copy = df_copy.set_crs(3857)
-                df_copy = df_copy.to_crs(4326)
+                # df_copy = df_copy.set_crs(3857)
+                # df_copy = df_copy.to_crs(4326)
+
                 df_copy["geom"] = df_copy["geometry"]
                 df = df.drop("geometry", axis=1)
                 dest = gpd.GeoDataFrame(
                     columns=["name", "region_type", "default", "user_name", "geom"],
-                    crs="EPSG:3857",
+                    crs="EPSG:4326",
                     geometry=[GeometryCollection(df["geom"].tolist())],
                 )
+
             dest["region_type"] = region_type
             dest["default"] = region_default
             dest["name"] = region_name
@@ -169,6 +173,7 @@ def saveUserRegions(request):
             dest = dest.set_geometry("geom")
             # convert to dict before converting geometry to WKTElement
             response_obj["regions"] = dest.to_dict(orient="records")
+            geometry_collection_clipping = dest["geom"][0]
             dest["geom"] = dest["geom"].apply(lambda x: WKTElement(x.wkt, srid=4326))
 
             dest.to_sql(
@@ -184,14 +189,21 @@ def saveUserRegions(request):
                 .filter(Region.user_name == user_name)
                 .filter(Region.name == region_name)
             )
-            new_user_region_id = new_user_region.id
+            new_user_region_id = new_user_region[0].id
 
             list_geoms = df_copy["geom"].tolist()
             mr = NHD("flowline_mr")
 
             total_reaches = 0
+            # breakpoint()
+
             for index, geom in enumerate(list_geoms):
-                nhdp_mr = mr.bygeom(geom)
+                # nhdp_mr = mr.bygeom(geometry_collection_clipping.bounds)
+                try:
+                    nhdp_mr = mr.bygeom(geom)
+                except Exception as e:
+                    print(e)
+                    continue
                 nhdp_mr["region_id"] = new_user_region_id
                 # breakpoint()
 
@@ -207,13 +219,13 @@ def saveUserRegions(request):
                 )
                 total_reaches = total_reaches + len(nhdp_mr.index)
                 session.commit()
-            breakpoint()
-            new_user_region.number_reaches = total_reaches
+            # breakpoint()
+            session.query(Region).filter(Region.user_name == user_name).filter(
+                Region.name == region_name
+            ).update({Region.number_reaches: total_reaches})
             session.commit()
             # Close the connection to prevent issues
             session.close()
-            # breakpoint()
-            # return only the new added region
 
             for region in response_obj["regions"]:
                 region["geom"] = shapely.to_geojson(region["geom"])
@@ -228,7 +240,7 @@ def saveUserRegions(request):
         print(e)
         response_obj["msge"] = "Error saving the Regions for current user"
 
-    breakpoint()
+    # breakpoint()
     return JsonResponse(response_obj)
 
 
