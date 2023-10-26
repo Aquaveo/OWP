@@ -28,7 +28,8 @@ export const SubMenu = (
         currentPageNumber,
         setCurrentPage,
         currentPage,
-        setSearchReachInput
+        setSearchReachInput,
+        promptTextAvailableReachesList
     }) => {
 
 
@@ -44,7 +45,8 @@ export const SubMenu = (
 
     return (
         <Fragment>
-            {availableReachesList && availableReachesList.length > 0 && 
+
+            {availableReachesList && 
             <Fragment>
                 <Row className='mb-2'>
                     <Form
@@ -56,51 +58,53 @@ export const SubMenu = (
                                 type="text" 
                                 placeholder="Type a Reach COMID" 
                                 onChange={(event) => handleOnChangeInSearchBar(event)}    
-                            />
-                        {/* <Button 
-                            variant="primary" 
-                            type="submit"
-                            size="sm"
-                        >
-                        <p className='text-white'>
-                                Search
-                            </p> 
-                        </Button> */}
+                        />
                         </InputGroup>
     
                     </Form>
                 </Row>
+                {availableReachesList && availableReachesList.length > 0 &&
+                    <Fragment>
+                        <Row className='mb-2'>
+                            <Paginate 
+                                currentPageNumber={currentPageNumber}
+                                setCurrentPage={setCurrentPage}
+                                currentPage={currentPage}
+                            />
+                        </Row>
+                        <Row className='mb-2'>
+                            <Col className="text-white fw-bold" sm={2}>
+                                COMID
+                            </Col >
+                            <Col className="text-white fw-bold" sm={2} >
+                                AA
+                            </Col>
+                            <Col className="text-white fw-bold" sm={2} >
+                                SF
+                            </Col>
+                            <Col className="text-white fw-bold" sm={2} >
+                                LF Mean
+                            </Col>
+                            <Col className="text-white fw-bold" sm={2} >
+                                MF Mean
+                            </Col>
+                            <Col className="text-white fw-bold" sm={2} >
+                                Actions
+                            </Col>
+                        </Row>
+                    </Fragment>
+                }
+                                
+                {availableReachesList && availableReachesList.length < 1 &&
+                    <Row>
+                        <p>{promptTextAvailableReachesList}</p>
+                    </Row>
+                }
 
-                <Row className='mb-2'>
-                    <Paginate 
-                        currentPageNumber={currentPageNumber}
-                        setCurrentPage={setCurrentPage}
-                        currentPage={currentPage}
-                    />
-                </Row>
-                <Row className='mb-2'>
-                    <Col className="text-white fw-bold" sm={2}>
-                        COMID
-                    </Col >
-                    <Col className="text-white fw-bold" sm={2} >
-                        AA
-                    </Col>
-                    <Col className="text-white fw-bold" sm={2} >
-                        SF
-                    </Col>
-                    <Col className="text-white fw-bold" sm={2} >
-                        LF Mean
-                    </Col>
-                    <Col className="text-white fw-bold" sm={2} >
-                        MF Mean
-                    </Col>
-                    <Col className="text-white fw-bold" sm={2} >
-                        Actions
-                    </Col>
-                </Row>
             </Fragment>
 
             }
+
             <RegionsRows 
                 availableRegions={availableRegions} 
                 setAvailableRegions={setAvailableRegions}

@@ -44,14 +44,17 @@ export const RegionMenuWrapper = (
     currentPageNumber,
     setCurrentPageNumber,
     selectedRegionDropdownItem,
-    setSelectedRegionDropdownItem  
+    setSelectedRegionDropdownItem,
+    promptTextAvailableReachesList,
+    currentPage,
+    setCurrentPage
   })=>{
-    // const [isAccordionOpen, setAccordionOpen] = useState(false);
+
     const pagesLimit = 50;
     const toggleAccordion = () => {
       setAccordionOpen(!isAccordionOpen);
     };
-    const [currentPage, setCurrentPage] = useState(1);
+    // const [currentPage, setCurrentPage] = useState(1);
     const [searchReachInput, setSearchReachInput] = useState('');
 
 
@@ -229,6 +232,7 @@ export const RegionMenuWrapper = (
                             setCurrentPage={setCurrentPage}
                             currentPage={currentPage}
                             setSearchReachInput={setSearchReachInput}
+                            promptTextAvailableReachesList={promptTextAvailableReachesList}
                           />
                     </Accordion.Body>
                   </Accordion.Item>

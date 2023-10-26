@@ -286,6 +286,7 @@ function App(
 	const [selectedRegions, setSelectedRegions] = useReducer(reducerSelectedRegions, []);
   const [currentPageNumber, setCurrentPageNumber] = useState(0);
   const [selectedRegionDropdownItem, setSelectedRegionDropdownItem] =  useState({});
+  const [currentPage, setCurrentPage] = useState(1);
 
 	function reducerSelectedRegions(state, action) {
 		switch (action.type) {
@@ -301,6 +302,7 @@ function App(
 	}
   const [currentDisplayRegions, setCurrentDisplayRegions ] = useState([])
   const [availableReachesList, setAvailableReachesList] =  useState([]);
+  const [promptTextAvailableReachesList,setPromptTextAvailableReachesList ] = useState('No Reaches to display, Please select a Region');
   const [isAccordionOpen, setAccordionOpen] = useState(false);
   const pagesLimit = 50;
 
@@ -360,6 +362,7 @@ function App(
         console.log(data);
         setAvailableReachesList(data['data']);
         const numberOfPageItems = Math.ceil(data['total_reaches'], pagesLimit);
+        console.log(numberOfPageItems)
         setCurrentPageNumber(numberOfPageItems)
         setAccordionOpen(true);
       }
@@ -419,7 +422,16 @@ function App(
     }
   }, [availableRegions])
 
+  useEffect(() => {
+    console.log(availableReachesList)
+    if(availableReachesList.length > 0){
+      setPromptTextAvailableReachesList(`Page ${currentPage} of ${currentPageNumber}`)
+    }
+    else{
+      setPromptTextAvailableReachesList(`No Reaches found`)
 
+    }
+	}, [availableReachesList]);
   
 
   return (
@@ -481,6 +493,9 @@ function App(
             setCurrentPageNumber={setCurrentPageNumber}
             selectedRegionDropdownItem={selectedRegionDropdownItem}
             setSelectedRegionDropdownItem={setSelectedRegionDropdownItem}
+            promptTextAvailableReachesList={promptTextAvailableReachesList}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
           />
 
           <SideMenuWrapper 
