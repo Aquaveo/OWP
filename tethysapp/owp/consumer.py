@@ -51,6 +51,7 @@ class DataConsumer(AsyncWebsocketConsumer):
                 text_data_json["region_name"],
                 text_data_json["page_number"],
                 text_data_json["page_limit"],
+                text_data_json["search_term"],
             )
             await self.channel_layer.group_send(
                 "notifications_owp",
@@ -93,7 +94,23 @@ class DataConsumer(AsyncWebsocketConsumer):
             "data": data,
         }
         await self.send(text_data=json.dumps(resp_obj))
-        # print(f"Got message {event} at {self.channel_name}")
+
+
+    async def reach_notifications(self, event):
+        # print(event)
+        print("region_notifications from consumer")
+
+        message = event["mssg"]
+        command = event["command"]
+        data = event["data"]
+
+        resp_obj = {
+            "message": message,
+            "command": command,
+            "data": data,
+            "total_reaches": event['total_reaches']
+        }
+        await self.send(text_data=json.dumps(resp_obj))
 
     async def simple_notifications(self, event):
         print("simple notification from consumer")

@@ -284,6 +284,8 @@ function App(
 	const currentSelectedRegions = []
 
 	const [selectedRegions, setSelectedRegions] = useReducer(reducerSelectedRegions, []);
+  const [currentPageNumber, setCurrentPageNumber] = useState(0);
+  const [selectedRegionDropdownItem, setSelectedRegionDropdownItem] =  useState({});
 
 	function reducerSelectedRegions(state, action) {
 		switch (action.type) {
@@ -300,6 +302,7 @@ function App(
   const [currentDisplayRegions, setCurrentDisplayRegions ] = useState([])
   const [availableReachesList, setAvailableReachesList] =  useState([]);
   const [isAccordionOpen, setAccordionOpen] = useState(false);
+  const pagesLimit = 50;
 
   const getRegionsOfCurrentUser = async () => {
     handleShowLoading();
@@ -356,6 +359,8 @@ function App(
       if(command ==='update_reaches_users'){
         console.log(data);
         setAvailableReachesList(data['data']);
+        const numberOfPageItems = Math.ceil(data['total_reaches'], pagesLimit);
+        setCurrentPageNumber(numberOfPageItems)
         setAccordionOpen(true);
       }
 
@@ -414,6 +419,9 @@ function App(
     }
   }, [availableRegions])
 
+
+  
+
   return (
     
     <div>
@@ -469,6 +477,10 @@ function App(
             currentProducts={currentProducts}
             handleShow={handleShow}
             setMetadata={setMetadata}
+            currentPageNumber={currentPageNumber}
+            setCurrentPageNumber={setCurrentPageNumber}
+            selectedRegionDropdownItem={selectedRegionDropdownItem}
+            setSelectedRegionDropdownItem={setSelectedRegionDropdownItem}
           />
 
           <SideMenuWrapper 

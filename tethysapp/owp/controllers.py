@@ -31,7 +31,8 @@ from pynhd import NLDI, WaterData, NHDPlusHR, NHD
 import pynhd as nhd
 import pyproj
 from pyproj import Transformer
-import uuid
+from sqlalchemy import Integer, String
+from sqlalchemy.sql import cast, func
 
 BASE_API_URL = "https://nwmdata.nohrsc.noaa.gov/latest/forecasts"
 async_client = httpx.AsyncClient()
@@ -501,12 +502,18 @@ async def getUserRegionsMethod(is_authenticated, user_name):
 
 @measure_async
 async def getUserReachesPerRegionsMethod(
-    is_authenticated, user_name, region_name, page_number=0, page_limit=50
+    is_authenticated,
+    user_name,
+    region_name,
+    page_number=0,
+    page_limit=50,
+    search_term="",
 ):
     regions_response = {}
     json_response = {}
-    json_response["type"] = "region_notifications"
+    json_response["type"] = "reach_notifications"
     json_response["command"] = "update_reaches_users"
+    json_response["total_reaches"] = 0
     # breakpoint()
     # breakpoint()
     if is_authenticated:
@@ -530,12 +537,24 @@ async def getUserReachesPerRegionsMethod(
             .filter(Region.user_name == user_name)
             .order_by(Reach.COMID.desc())
         )
+        if search_term:
+            # breakpoint()
+            only_user_reaches_regions = only_user_reaches_regions.filter(
+                cast(Reach.COMID, String).like(f"%{search_term}%")
+            )
         if page_number > 0:
             only_user_reaches_regions = only_user_reaches_regions.offset(page_offset)
 
         only_user_reaches_regions = only_user_reaches_regions.limit(page_limit)
+        json_response["total_reaches"] = len(only_user_reaches_regions.all())
 
-        print(page_limit, page_number, page_offset)
+        print(
+            page_limit,
+            page_number,
+            page_offset,
+            search_term,
+            len(only_user_reaches_regions.all()),
+        )
         regions_response["reaches"] = []
 
         for region in only_user_reaches_regions:

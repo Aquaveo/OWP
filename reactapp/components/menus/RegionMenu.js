@@ -1,3 +1,6 @@
+
+//https://codepen.io/vanderzak/embed/zYxXzmd?height=265&theme-id=light&default-tab=js%2Cresult&user=vanderzak&slug-hash=zYxXzmd&pen-title=React%20Pagination%20Component&name=cp_embed_9
+
 import { SideMenu } from "components/styles/SideMenu.styled";
 import { Spin as Hamburger } from 'hamburger-react'
 import { SubMenu } from "components/subMenus/submenu";
@@ -37,17 +40,20 @@ export const RegionMenuWrapper = (
     setCurrentProducts,
     currentProducts,
     handleShow,
-    setMetadata
-
+    setMetadata,
+    currentPageNumber,
+    setCurrentPageNumber,
+    selectedRegionDropdownItem,
+    setSelectedRegionDropdownItem  
   })=>{
     // const [isAccordionOpen, setAccordionOpen] = useState(false);
     const pagesLimit = 50;
     const toggleAccordion = () => {
       setAccordionOpen(!isAccordionOpen);
     };
-    const [currentPageNumber, setCurrentPageNumber] = useState(0);
-    const [selectedRegionDropdownItem, setSelectedRegionDropdownItem] =  useState({});
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchReachInput, setSearchReachInput] = useState('');
+
 
     const handleSelectRegionDropdown = (key, event) => {
       const updatedHiddenRegions = availableRegions.map(availableRegion => ({
@@ -60,20 +66,20 @@ export const RegionMenuWrapper = (
         index:key, 
         value:availableRegions[key].name
       });
-      getNumberOfPageItems();
+      // console.log("changes")
+      // getNumberOfPageItems();
     };
 
-    const getNumberOfPageItems = () =>{
-      let index = selectedRegionDropdownItem['index'] ? selectedRegionDropdownItem['index']: 0
-      let total_reaches = availableRegions[index]['number_reaches'];
-      const numberOfPageItems = Math.ceil(total_reaches, pagesLimit);
-      console.log(numberOfPageItems); // Array of part sizes
-      setCurrentPageNumber(numberOfPageItems)
-    }
+    // const getNumberOfPageItems = () =>{
+    //   let index = selectedRegionDropdownItem['index'] ? selectedRegionDropdownItem['index']: 0
+    //   let total_reaches = availableRegions[index]['number_reaches'];
+    //   const numberOfPageItems = Math.ceil(total_reaches, pagesLimit);
+    //   console.log(numberOfPageItems); // Array of part sizes
+    //   setCurrentPageNumber(numberOfPageItems)
+    // }
 
 
     
-    //https://codepen.io/vanderzak/embed/zYxXzmd?height=265&theme-id=light&default-tab=js%2Cresult&user=vanderzak&slug-hash=zYxXzmd&pen-title=React%20Pagination%20Component&name=cp_embed_9
 
     const { map } = useContext(MapContext);
     const [currentLayerIndex, setCurrentLayerIndex] = useState();
@@ -127,27 +133,12 @@ export const RegionMenuWrapper = (
             region_name: availableRegions[index]['name'],
             page_number: currentPage,
             page_limit: 50,
+            search_term: searchReachInput
           })
         );
       }
 
-    }, [selectedRegionDropdownItem,currentPage])
-    
-    // useEffect(() => {
-    //   let index = selectedRegionDropdownItem['index'] ? selectedRegionDropdownItem['index']: 0
-
-    //   if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-    //     socketRef.current.send(
-    //       JSON.stringify({
-    //         type: "update_user_reaches",
-    //         region_name: availableRegions[index]['name'],
-    //         page_number: currentPageNumber,
-    //         page_limit: 50,
-    //       })
-    //     );
-    //   }
-
-    // }, [currentNumberPage])
+    }, [selectedRegionDropdownItem,currentPage,searchReachInput])
 
 
     return(
@@ -237,6 +228,7 @@ export const RegionMenuWrapper = (
                             currentPageNumber={currentPageNumber}
                             setCurrentPage={setCurrentPage}
                             currentPage={currentPage}
+                            setSearchReachInput={setSearchReachInput}
                           />
                     </Accordion.Body>
                   </Accordion.Item>

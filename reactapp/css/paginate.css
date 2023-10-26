@@ -8,7 +8,7 @@
 }
 
 .flex-container-pagination > div {
-padding-top:10px;
+/* padding-top:10px; */
 }
 .paginate-ctn{
     display: flex;

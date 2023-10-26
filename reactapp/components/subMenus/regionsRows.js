@@ -44,11 +44,6 @@ export const RegionsRows = ({
         ]
         setMetadata(metadataArray);
       };
-      const paginationClicked = (event) => {
-        var itemClicked = event.target.text;
-        console.log(Number(itemClicked)-1)
-        setCurrentPageNumber(Number(itemClicked)-1)
-      }
       const sampleData = [5, 10, 5, 20, 8, 15]; 
     return (
 
@@ -96,13 +91,6 @@ export const RegionsRows = ({
                     </Col>
                 </Row>
             ))}
-
-            <Paginate 
-                currentPageNumber={currentPageNumber}
-                setCurrentPage={setCurrentPage}
-                currentPage={currentPage}
-            />
-
             </Row>
 
     );

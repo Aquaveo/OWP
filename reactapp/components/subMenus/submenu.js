@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form"
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
-import FormControl from 'react-bootstrap/FormControl'
+import { Paginate } from 'components/Pagination/paginate';
 
 
 export const SubMenu = (
@@ -27,56 +27,80 @@ export const SubMenu = (
         setMetadata,
         currentPageNumber,
         setCurrentPage,
-        currentPage
+        currentPage,
+        setSearchReachInput
     }) => {
-    const {
-        register,
-        handleSubmit,
-        watch,
-        formState: { errors },
-        } = useForm()
 
-    const onSubmit = (data) => console.log(data)
+
+    function handleSubmitReach(event) {
+        event.preventDefault();
+    
+        // Do something with the search input
+    }
+    function handleOnChangeInSearchBar(event){
+        console.log(event.target.value)
+        setSearchReachInput(event.target.value)
+    }
 
     return (
         <Fragment>
-            <Row>
-                <Form
-                    onSubmit={handleSubmit(onSubmit)}
-                >
-                    <InputGroup className="mb-3">
-                        <FormControl
-                            ref={register("reachID")}
-                            isInvalid={errors.term}    
-                        />
+            {availableReachesList && availableReachesList.length > 0 && 
+            <Fragment>
+                <Row className='mb-2'>
+                    <Form
+                        onSubmit={handleSubmitReach}
+                    >
+                        <InputGroup className="mb-3">
+                            <Form.Control 
+                                size="sm" 
+                                type="text" 
+                                placeholder="Type a Reach COMID" 
+                                onChange={(event) => handleOnChangeInSearchBar(event)}    
+                            />
+                        {/* <Button 
+                            variant="primary" 
+                            type="submit"
+                            size="sm"
+                        >
+                        <p className='text-white'>
+                                Search
+                            </p> 
+                        </Button> */}
+                        </InputGroup>
+    
+                    </Form>
+                </Row>
 
-                    <Button variant="primary" type="submit">
-                        Search
-                    </Button>
-                    </InputGroup>
- 
-                </Form>
-            </Row>
-            <Row className='mb-2'>
-                <Col className="text-white fw-bold" sm={2}>
-                    COMID
-                </Col >
-                <Col className="text-white fw-bold" sm={2} >
-                    AA
-                </Col>
-                <Col className="text-white fw-bold" sm={2} >
-                    SF
-                </Col>
-                <Col className="text-white fw-bold" sm={2} >
-                    LF Mean
-                </Col>
-                <Col className="text-white fw-bold" sm={2} >
-                    MF Mean
-                </Col>
-                <Col className="text-white fw-bold" sm={2} >
-                    Actions
-                </Col>
-            </Row>
+                <Row className='mb-2'>
+                    <Paginate 
+                        currentPageNumber={currentPageNumber}
+                        setCurrentPage={setCurrentPage}
+                        currentPage={currentPage}
+                    />
+                </Row>
+                <Row className='mb-2'>
+                    <Col className="text-white fw-bold" sm={2}>
+                        COMID
+                    </Col >
+                    <Col className="text-white fw-bold" sm={2} >
+                        AA
+                    </Col>
+                    <Col className="text-white fw-bold" sm={2} >
+                        SF
+                    </Col>
+                    <Col className="text-white fw-bold" sm={2} >
+                        LF Mean
+                    </Col>
+                    <Col className="text-white fw-bold" sm={2} >
+                        MF Mean
+                    </Col>
+                    <Col className="text-white fw-bold" sm={2} >
+                        Actions
+                    </Col>
+                </Row>
+            </Fragment>
+
+            }
             <RegionsRows 
                 availableRegions={availableRegions} 
                 setAvailableRegions={setAvailableRegions}
