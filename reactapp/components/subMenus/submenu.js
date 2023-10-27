@@ -72,6 +72,9 @@ export const SubMenu = (
                                 currentPage={currentPage}
                             />
                         </Row>
+                        <Row>
+                            <p>{promptTextAvailableReachesList}</p>
+                        </Row>
                         <Row className='mb-2'>
                             <Col className="text-white fw-bold" sm={2}>
                                 COMID
