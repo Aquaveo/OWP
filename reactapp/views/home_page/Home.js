@@ -1,72 +1,58 @@
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+//Boostrap components
+import { Badge, Container,Row,Col,Modal,Button,Tab,Tabs,ButtonGroup,ToggleButton} from "react-bootstrap";
 
-import { SpanBadge } from 'components/styles/Badge.styled';
-import Layers from "../../components/layers/Layers";
-import Controls from "components/control/Controls";
-
-import { SwitchLayerControl } from "components/control/switchLayers";
-import { OlTileLayer } from "../../components/layers/OlTileLayer";
-import { OlImageTileLayer } from "../../components/layers/OlImageTileLayer";
-import { ReMap } from "../../components/map/ReMap";
-import { TileImageArcGISRest } from "../../components/source/TileImageArcGISRest";
+//Maps components
+import Layers from "components/layers/Layers";
+import { OlTileLayer } from "components/layers/OlTileLayer";
+import { OlImageTileLayer } from "components/layers/OlImageTileLayer";
+import { ReMap } from "components/map/ReMap";
+import { TileImageArcGISRest } from "components/source/TileImageArcGISRest";
 import { ArcGISRestTile } from "components/source/TileArcGISRest";
-import { WMSTile } from "../../components/source/TileWMS";
 import { VectorLayer } from "components/layers/VectorLayer";
-import { VectorSourceLayer } from "components/source/Vector"; 
-import VectorSource from 'ol/source/Vector'
-import {Stroke, Style} from 'ol/style.js';
-import Feature from 'ol/Feature.js';
-
-import { useEffect, useState, useReducer, useRef } from 'react';
-import { fromLonLat } from 'ol/proj';
-import LayerGroup from 'ol/layer/Group';
-import LineString from 'ol/geom/LineString.js';
-import { Circle } from 'ol/geom';
-
-import { MainContainer } from "components/styles/ContainerMain.styled";
-import { ModalContainer } from "components/styles/Modal.styled";
-import { SwitchControllerContainer } from "components/styles/SwitchLayerControl.styled";
-import PlotView from "./Plot"; 
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-import Dropdown from 'react-bootstrap/Dropdown';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import  ButtonToolbar  from "react-bootstrap/ButtonToolbar";
-import { Badge } from "react-bootstrap";
-import ToggleButton from 'react-bootstrap/ToggleButton';
 import { LineChart } from "components/plots/linePlot";
-import appAPI from "services/api/app";
-import { LoaderContainer } from 'components/styles/Loader.styled';
+
+//Menus Components
 import { SideMenuWrapper } from 'components/menus/SideMenuRegions';
-import GeoJSON from 'ol/format/GeoJSON';
 import { RegionMenuWrapper } from 'components/menus/RegionMenu';
 import { CircularMenuComponent } from 'components/customHamburger/customHamburger';
+
+//Hooks components
+import { useEffect, useState, useReducer, useRef } from 'react';
+
+//OL modules
+import { fromLonLat } from 'ol/proj';
+import VectorSource from 'ol/source/Vector'
+import {Stroke, Style} from 'ol/style.js';
+import GeoJSON from 'ol/format/GeoJSON';
+import appAPI from "services/api/app";
+
+//Styles modules
+import { SpanBadge } from 'components/styles/Badge.styled';
+import { MainContainer } from "components/styles/ContainerMain.styled";
+import { ModalContainer } from "components/styles/Modal.styled";
+import { LoaderContainer } from 'components/styles/Loader.styled';
+
+
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
 const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer'
 
 
-// const ws = 'ws://' + window.location.href.split('//')[1].split('owp')[0] + 'owp' +'/data-notification/notifications/ws/';
 const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
+
+
 function App(
   {
-    setNavVisible,
     showRegionsMenu,
     handleShowRegionMenu,
     toggleAddRegionMenu,
-    handleHideMainRegionMenu, 
     showRegions, 
     setShowRegionsVisible, 
     setAvailableRegions, 
     availableRegions,
     showMainRegionsMenu,
-    handleShowMainRegionMenu,
-    toggleMainRegionMenu
+    handleShowMainRegionMenu
   }
 ) 
   {
@@ -75,20 +61,6 @@ function App(
   // const [curentRegion, setCurrentRegion] = useState({});
   const [loadingText, setLoadingText] = useState("Loading Layers ...")
   const [isFullMap, setIsFullMap] = useState(true)
-  const [groupLayers, setGroupLayers] =  useState([
-    new LayerGroup({
-      title: "Basemaps",
-      layers: []
-    }),
-    new LayerGroup({
-      title: "NWM Stream Analysis",
-      layers: []
-    }),
-    new LayerGroup({
-      title: "HUCS",
-      layers: []
-    }),
-  ]);
   const [selectedHucs, setSelectedHucs] = useState("show:2,3,4,5,6,7,8");
   const [previewFile, setPreviewFile] = useState(null);
   const [showModal, setshowModal] = useState(false);
@@ -300,22 +272,12 @@ function App(
 			return currentSelectedRegions ;
 		}
 	}
-  const [currentDisplayRegions, setCurrentDisplayRegions ] = useState([])
+
   const [availableReachesList, setAvailableReachesList] =  useState([]);
   const [promptTextAvailableReachesList,setPromptTextAvailableReachesList ] = useState('No Reaches to display, Please select a Region');
   const [isAccordionOpen, setAccordionOpen] = useState(false);
   const pagesLimit = 50;
 
-  const getRegionsOfCurrentUser = async () => {
-    handleShowLoading();
-    setLoadingText("Loading User Regions ...");    
-    let userRegions = await appAPI.getUserRegions();
-    console.log(userRegions)
-    setAvailableRegions(userRegions['regions']);
-    // handleShowMainRegionMenu();
-    handleHideLoading();
-    handleShowMainRegionMenu();
-  }
 
   useEffect(() => {
     /* 
@@ -323,9 +285,6 @@ function App(
     */
     handleShowLoading();
     setLoadingText("Loading User Regions ...");    
-
-    // getRegionsOfCurrentUser();
-
     socketRef.current = new WebSocket(ws);
     socketRef.current.onopen = () => {
       console.log("WebSocket is Open");
@@ -344,7 +303,7 @@ function App(
       // Try to reconnect in 1 second
       setTimeout(function () {
         //implement more logic
-        // this.startWS(websocketServerLocation);
+        socketRef.current = new WebSocket(ws);
       }, 1000);
       console.log("WebSocket is Closed");
     };
@@ -404,19 +363,12 @@ function App(
 
   useEffect(()=>{
     console.log("useEffect currentStationID Home")
-    // setCurrentProducts({type: "reset"})
     //send message to web socket to start again 
     handlePlotUpdate();
   },[currentStationID])
 
 
   useEffect(() => {
-    // for (const availableRegion of availableRegions){
-    //     if (availableRegion.default === true){
-    //         let features_layer_default = JSON.parse(availableRegion['geom']);
-    //         setCurrentDisplayRegions(prevState => [...prevState, features_layer_default])
-    //     }
-    // }
     console.log(availableRegions)
     return () => {
     }
@@ -447,12 +399,10 @@ function App(
 
     <MainContainer >
 
-
-
         <ReMap 
-          isFullMap={isFullMap} 
+          isFullMap={isFullMap}
+          zoom={5}
           center={fromLonLat([-94.9065, 38.9884])} 
-          zoom={5} 
           handleShow={handleShow} 
           setCurrentStation={setCurrentStation} 
           currentProducts={currentProducts} 
@@ -464,33 +414,26 @@ function App(
           selectedRegions={selectedRegions}
           setSelectedRegions={setSelectedRegions}
           handleHideLoading={handleHideLoading}
-          availableRegions={availableRegions}
           setLoadingText={setLoadingText}
         >
-          <CircularMenuComponent handleShowRegionMenu={handleShowRegionMenu}/>
+          <CircularMenuComponent 
+            handleShowRegionMenu={handleShowRegionMenu}
+          />
 
           <RegionMenuWrapper 
-            name="My Regions"
             isAccordionOpen={isAccordionOpen}
             setAccordionOpen={setAccordionOpen}
             showMainRegionsMenu={showMainRegionsMenu} 
-            handleShowMainRegionMenu={handleShowMainRegionMenu} 
-            handleHideMainRegionMenu = {handleHideMainRegionMenu}
             availableRegions={availableRegions} 
             setAvailableRegions={setAvailableRegions}
-            handleShowRegionMenu={handleShowRegionMenu}
-            toggleMainRegionMenu={toggleMainRegionMenu}
             socketRef={socketRef}
             availableReachesList={availableReachesList}
-            setAvailableReachesList={setAvailableReachesList}
             setCurrentStation={setCurrentStation}
             setCurrentStationID={setCurrentStationID}
             setCurrentProducts={setCurrentProducts}
-            currentProducts={currentProducts}
             handleShow={handleShow}
             setMetadata={setMetadata}
             currentPageNumber={currentPageNumber}
-            setCurrentPageNumber={setCurrentPageNumber}
             selectedRegionDropdownItem={selectedRegionDropdownItem}
             setSelectedRegionDropdownItem={setSelectedRegionDropdownItem}
             promptTextAvailableReachesList={promptTextAvailableReachesList}
@@ -499,17 +442,12 @@ function App(
           />
 
           <SideMenuWrapper 
-            setNavVisible={setNavVisible} 
             showRegionsMenu={showRegionsMenu}
-            handleShowRegionMenu={handleShowRegionMenu}
             toggleAddRegionMenu={toggleAddRegionMenu}
-            showRegions={showRegions} 
             setShowRegionsVisible={setShowRegionsVisible} 
             selectedRegions={selectedRegions} 
             setAvailableRegions={setAvailableRegions} 
-            availableRegions={availableRegions}
             setSelectedRegions={setSelectedRegions}
-            socketRef={socketRef}
             handleShowLoading={handleShowLoading}
             handleHideLoading={handleHideLoading}
             setLoadingText={setLoadingText}
@@ -614,12 +552,7 @@ function App(
               }
 
           </Layers>
-          <Controls>
-              {/* <SwitchControllerContainer>
-                <SwitchLayerControl/>
-              </SwitchControllerContainer> */}
 
-          </Controls>
         </ReMap>
       </MainContainer>
 

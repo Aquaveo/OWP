@@ -1,48 +1,42 @@
 
 //https://codepen.io/vanderzak/embed/zYxXzmd?height=265&theme-id=light&default-tab=js%2Cresult&user=vanderzak&slug-hash=zYxXzmd&pen-title=React%20Pagination%20Component&name=cp_embed_9
 
-import { SideMenu } from "components/styles/SideMenu.styled";
-import { Spin as Hamburger } from 'hamburger-react'
+// components
 import { SubMenu } from "components/subMenus/submenu";
-import Accordion from 'react-bootstrap/Accordion';
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Form from 'react-bootstrap/Form';
-import { TbZoomPan } from "react-icons/tb";
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import { Button } from 'react-bootstrap';
+import MapContext from "components/map/MapContext";
+
+//bootstrap components
+import {Accordion,Dropdown,DropdownButton,Form,Col,Row,Button} from 'react-bootstrap';
+
 import React, { useRef, useState, useEffect, useContext } from "react"
-import MapContext from "../map/MapContext";
+
+//ol modules
 import VectorSource from 'ol/source/Vector'
 import GeoJSON from 'ol/format/GeoJSON';
 
+//icons
+import { TbZoomPan } from "react-icons/tb";
 import { SlArrowDown, SlArrowUp } from "react-icons/sl";
+
+//styles
+import { SideMenu } from "components/styles/SideMenu.styled";
 import 'css/RegionMenu.css';
 
 export const RegionMenuWrapper = (
   {
-    name, 
     isAccordionOpen,
     setAccordionOpen,
     showMainRegionsMenu, 
-    handleShowMainRegionMenu, 
-    handleHideMainRegionMenu,
     availableRegions, 
     setAvailableRegions,
-    handleShowRegionMenu,
-    toggleMainRegionMenu,
     socketRef,
     availableReachesList,
-    setAvailableReachesList,
     setCurrentStation,
     setCurrentStationID,
     setCurrentProducts,
-    currentProducts,
     handleShow,
     setMetadata,
     currentPageNumber,
-    setCurrentPageNumber,
     selectedRegionDropdownItem,
     setSelectedRegionDropdownItem,
     promptTextAvailableReachesList,
@@ -50,11 +44,10 @@ export const RegionMenuWrapper = (
     setCurrentPage
   })=>{
 
-    const pagesLimit = 50;
     const toggleAccordion = () => {
       setAccordionOpen(!isAccordionOpen);
     };
-    // const [currentPage, setCurrentPage] = useState(1);
+
     const [searchReachInput, setSearchReachInput] = useState('');
 
 
@@ -68,8 +61,6 @@ export const RegionMenuWrapper = (
         index:key, 
         value:availableRegions[key].name
       });
-
-      console.log("changes")
       
     };
 
@@ -176,15 +167,6 @@ export const RegionMenuWrapper = (
                         </DropdownButton>
                       </Col>
                         <Col sm={7} className="button-menu button-middle">
-                          {/* <Form.Group className="text-white">
-                              <Form.Check
-                                  type="switch"
-                                  id="default-region"
-                                  value={selectedRegionDropdownItem.index ? availableRegions[selectedRegionDropdownItem.index].is_visible : false }
-                                  checked={selectedRegionDropdownItem.index ? availableRegions[selectedRegionDropdownItem.index].is_visible : false}
-                                  onChange={(e) => toggleVisibilityRegion()}
-                              />
-                          </Form.Group> */}
                           <Button 
                               variant="primary" 
                               className="text-white"
@@ -213,16 +195,10 @@ export const RegionMenuWrapper = (
                     </Accordion.Header>
                     <Accordion.Body className="accordeon-body-custom">
                           <SubMenu 
-                            name={name} 
-                            handleShowMainRegionMenu={handleShowMainRegionMenu} 
-                            availableRegions={availableRegions} 
-                            setAvailableRegions={setAvailableRegions} 
-                            handleShowRegionMenu={handleShowRegionMenu}
                             availableReachesList={availableReachesList}
                             setCurrentStation={setCurrentStation}
                             setCurrentStationID={setCurrentStationID}
                             setCurrentProducts={setCurrentProducts}
-                            currentProducts={currentProducts}
                             handleShow={handleShow}
                             setMetadata={setMetadata}
                             currentPageNumber={currentPageNumber}

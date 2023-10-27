@@ -1,32 +1,18 @@
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import { Button } from 'react-bootstrap';
+
+import { Button,Col, Row } from 'react-bootstrap';
 import { GoGraph } from "react-icons/go";
 import { Sparklines, SparklinesLine } from '@jrwats/react-sparklines';
 
-import {  useContext, useEffect, useState,Fragment } from "react";
-import MapContext from "../map/MapContext";
-import GeoJSON from 'ol/format/GeoJSON';
-import VectorSource from 'ol/source/Vector'
-import Pagination from 'react-bootstrap/Pagination';
-import { Paginate } from 'components/Pagination/paginate';
 
 
 export const RegionsRows = ({
-    availableRegions, 
-    setAvailableRegions,
     availableReachesList,
     setCurrentStationID,
     setCurrentStation,
     setCurrentProducts,
-    currentProducts,
     handleShow,
     setMetadata,
-    currentPageNumber,
-    setCurrentPage,
-    currentPage
 }) => {
 
       const openPlot = (availableReach) => {

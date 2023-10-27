@@ -1,28 +1,16 @@
 
-import { RegionsRows } from './regionsRows';
-import {  useContext, useEffect, useState,Fragment } from "react";
-
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { useForm } from "react-hook-form"
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
+import { RegionsRows } from 'components/subMenus/regionsRows';
+import { Fragment } from "react";
+import {Row, Col, Form, InputGroup} from 'react-bootstrap';
 import { Paginate } from 'components/Pagination/paginate';
 
 
 export const SubMenu = (
     { 
-        name,
-        handleShowMainRegionMenu,
-        availableRegions,
-        setAvailableRegions, 
-        handleShowRegionMenu,
         availableReachesList,
         setCurrentStation,
         setCurrentStationID,
         setCurrentProducts,
-        currentProducts,
         handleShow,
         setMetadata,
         currentPageNumber,
@@ -109,18 +97,12 @@ export const SubMenu = (
             }
 
             <RegionsRows 
-                availableRegions={availableRegions} 
-                setAvailableRegions={setAvailableRegions}
                 availableReachesList={availableReachesList}
-                setCurrentStation={setCurrentStation}
                 setCurrentStationID={setCurrentStationID}
+                setCurrentStation={setCurrentStation}
                 setCurrentProducts={setCurrentProducts}
-                currentProducts={currentProducts}
                 handleShow={handleShow}
                 setMetadata={setMetadata}
-                currentPageNumber={currentPageNumber}
-                setCurrentPage={setCurrentPage}
-                currentPage={currentPage}
             />
         </Fragment>
 

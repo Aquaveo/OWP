@@ -21,26 +21,18 @@ function App() {
         PATH_INFO = '/Information/';
 
   const handleShowRegionMenu = () => {
-    // setNavVisible(false);
     setShowRegionsMenu(true);
     hideAllUserRegions();
   };
-  const handleHideRegionMenu = () =>{
-    setShowRegionsMenu(false);
 
-  }
   const handleShowMainRegionMenu = () => {
     setShowMainRegionsMenu(true);
   };
-  const handleHideMainRegionMenu = () => {
-    setShowMainRegionsMenu(false);
-  };
+
   const toggleAddRegionMenu = () => {
     setShowRegionsMenu((prevValue) => !prevValue);
   };
-  const toggleMainRegionMenu = () => {
-    setShowMainRegionsMenu((prevValue) => !prevValue);
-  };
+
   const hideAllUserRegions = () => {
     const updatedHiddenRegions = availableRegions.map(availableRegion => ({
       ...availableRegion,
@@ -67,18 +59,15 @@ function App() {
                   path={PATH_HOME} 
                   element={
                     <Home 
-                      setNavVisible={setNavVisible}
                       showRegionsMenu={showRegionsMenu}
                       handleShowRegionMenu={handleShowRegionMenu}
                       toggleAddRegionMenu={toggleAddRegionMenu}
-                      handleHideMainRegionMenu= {handleHideMainRegionMenu}
                       showRegions={showRegions}
                       setShowRegionsVisible={setShowRegionsVisible}
                       setAvailableRegions={setAvailableRegions}
                       availableRegions={availableRegions} 
                       showMainRegionsMenu={showMainRegionsMenu}
                       handleShowMainRegionMenu={handleShowMainRegionMenu}
-                      toggleMainRegionMenu={toggleMainRegionMenu}
                     />} 
                     key='route-home' />,
                 <Route path={PATH_INFO} element={<LearnReact />} key='route-learn' />

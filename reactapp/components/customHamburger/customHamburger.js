@@ -8,7 +8,6 @@ import { CustomHamburgerStyle } from "components/styles/CustomHamburger.styled";
 import {
   CircleMenu,
   CircleMenuItem,
-  TooltipPlacement,
 } from "react-circular-menu";
 
 export const CircularMenuComponent = ({handleShowRegionMenu}) => {

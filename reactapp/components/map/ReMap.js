@@ -1,22 +1,24 @@
-import React, { useRef, useState, useEffect,useReducer } from "react"
-import "./Map.css";
-import Map from "ol/Map";
-import MapContext from "./MapContext";
+import React, { useRef, useState, useEffect} from "react"
 import axios from 'axios';
 
+//context
+import MapContext from "./MapContext";
+
+//service modules
+import appAPI from "services/api/app";
+
+//OL modules
+import Map from "ol/Map";
 import View from "ol/View";
 import VectorTileLayer from 'ol/layer/VectorTile.js';
-import VectorLayer from 'ol/layer/Vector.js';
 import LineString from 'ol/geom/LineString.js';
 import { Feature } from "ol";
-import { MapContainer } from '../styles/Map.styled'
-import appAPI from "services/api/app";
-import { VectorSourceLayer } from "components/source/Vector";
 import VectorSource from "ol/source/Vector";
-import { Vector } from "ol/layer";
-import GeoJSON from 'ol/format/GeoJSON';
-import {Fill, Stroke, Style} from 'ol/style.js';
-import { set } from "ol/transform";
+
+//style modules
+import { MapContainer } from 'components/styles/Map.styled'
+import "./Map.css";
+
 
 export const ReMap = (
 	{ 
@@ -24,7 +26,6 @@ export const ReMap = (
 		isFullMap, 
 		zoom, 
 		center, 
-		layerGroups, 
 		handleShow, 
 		setCurrentStation, 
 		currentProducts, 
@@ -36,7 +37,6 @@ export const ReMap = (
 		selectedRegions,
 		setSelectedRegions,
 		handleHideLoading,
-		availableRegions,
 		setLoadingText
 	}) => 
 	
@@ -46,23 +46,6 @@ export const ReMap = (
 	const [map, setMap] = useState(null);
 	const [curentRegion, setCurrentRegion] = useState({});
 
-	// const [selectedRegions, setSelectedRegions] = useReducer(reducerSelectedRegions, []);
-	
-	// const currentSelectedRegions = [];
-
-	// function reducerSelectedRegions(state, action) {
-	// 	switch (action.type) {
-	// 	  case 'delete':
-	// 		return state.filter(region => region.name !== action.region['name']);
-	// 	  case 'add':
-	// 		return [ ...state, action.region ];
-	// 	  case 'update':
-	// 		return removeDuplicatesRegions(state,'name');			
-	// 	  case 'reset':
-	// 		return currentSelectedRegions ;
-	// 	}
-	// }
-	
 	function isRegionInSelectedRegions(arr, key, value) {
 		if(arr){
 			return arr.some((obj) => obj[key] === value);
@@ -92,7 +75,6 @@ export const ReMap = (
 		let layerWeight={}
 		let priorityLayer = layers[0]
 
-		// let layer = layer;
 		layers.forEach(function(layer_single){
 			if(layer_single.get('name')==='huc_levels'){
 				layerWeight['huc_levels'] = 2
@@ -162,11 +144,8 @@ export const ReMap = (
 				let mapServerInfo = []
 				let promises = [];
 
-				// let layer = layers[0];
 				let layer = findPriorityLayerForOnClickEvent(layers)
 
-				// layers
-					// .forEach( (layer) => {
 						handleShowLoading();
 
 						if(layer.get('name') ==='streams_layer'){
@@ -354,84 +333,21 @@ export const ReMap = (
 		}
 		mapObject.on('click',infoClickHandler)
 
-		mapObject.on('pointermove',evt=>{
-
-			if (evt.dragging) return;
-			// var pixel = evt.map.getEventPixel(evt.originalEvent);
-			// var hit = map.hasFeatureAtPixel(evt.pixel, {
-			// 	layerFilter: function(layer) {
-			// 		return layer.get('layer_name') === 'streams_layer';
-			// 	}
-			// });
-			// evt.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
-
-
-			// const pixel = map.getEventPixel(evt.originalEvent)
-		
-			// // generate list of layers
-
-			// let hit = map.forEachFeatureAtPixel(pixel, function(layer) {
-			// 	return layer.get('name') === 'streams_layer';
-
-			// });
-
-			// if(hit){
-			// 	map.getTargetElement().style.cursor = 'pointer';
-			// }
-			// else {
-			// 	map.getTargetElement().style.cursor = '';
-			//   }
-		});
-
-		// mapObject.on('loadstart', function () {
-		// 	console.log("start")
-		// 	// handleShowLoading();
-		// });
-
-		// mapObject.on('loadend', function () {
-		// 	console.log("finish")
-		// 	// handleHideLoading();
-		// });
-
-
 		return () => {
 			if (!mapObject) return;
 			mapObject.setTarget(undefined)
 		};
 	}, []);
 
-	// map events
+	// map events make the cursor pointer
 	useEffect(()=>{
 
 		if (!map) return;
 		const viewResolution = /** @type {number} */ (map.getView().getResolution());
-		// map.on('click',infoClickHandler)
-		//   });
-		// map.on('pointermove',evt=>{
-
-		// 	if (evt.dragging) return;
-		// 	var pixel = evt.map.getEventPixel(evt.originalEvent);
-		// 	var hit = map.hasFeatureAtPixel(evt.pixel, {
-		// 		layerFilter: function(layer) {
-		// 			return layer.get('layer_name') === 'streams_layer';
-		// 		}
-		// 	});
-		// 	evt.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
-		// });
-
-		// map.on('loadstart', function () {
-		// 	console.log("start")
-		// 	handleShowLoading();
-		// });
-
-		// map.on('loadend', function () {
-		// 	console.log("finish")
-		// 	handleHideLoading();
-		// });
 	},[map])
 
 	useEffect(() => {
-		// if (!map) return;
+	
 		const regionFound = isRegionInSelectedRegions(selectedRegions, "name", curentRegion['name']);
 
 		if(regionFound){
@@ -441,7 +357,16 @@ export const ReMap = (
 		else{
 			console.log("added region")
 			if(!(Object.keys(curentRegion).length === 0)){
-				setSelectedRegions({type:"add", region: {name:curentRegion['name'], data:curentRegion['data'], url: curentRegion['url'], mapExtent: curentRegion['mapExtent'], imageDisplay:curentRegion['imageDisplay'] }});
+				setSelectedRegions({
+					type:"add", 
+					region: {
+						name:curentRegion['name'], 
+						data:curentRegion['data'], 
+						url: curentRegion['url'], 
+						mapExtent: curentRegion['mapExtent'], 
+						imageDisplay:curentRegion['imageDisplay'] 
+					}
+				});
 			}
 		}
 			handleHideLoading();

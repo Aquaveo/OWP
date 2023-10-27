@@ -1,39 +1,29 @@
 import React, { useState,useEffect  } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Spin as Hamburger } from 'hamburger-react'
-import { SideMenu } from "components/styles/SideMenu.styled";
-import { Button } from "react-bootstrap";
+
+import { Button,ToggleButton,ToggleButtonGroup,Form } from "react-bootstrap";
 import appAPI from "services/api/app";
-import Form from 'react-bootstrap/Form';
 import { BiSolidSave } from "react-icons/bi"
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import ToggleButton from "react-bootstrap/ToggleButton";
+
 import toast, { Toaster } from 'react-hot-toast';
 import { SmallMenu } from "components/styles/SmallMenu.styled";
-import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
-import { geojsonToArcGIS } from '@esri/arcgis-to-geojson-utils';
+
 
 export const SideMenuWrapper = (
     { 
-        setNavVisible,
         showRegionsMenu,
-        handleShowRegionMenu,
         toggleAddRegionMenu,
         setShowRegionsVisible,
         selectedRegions,
         setAvailableRegions,
         setSelectedRegions,
-        socketRef,
         handleShowLoading,
         handleHideLoading,
         setLoadingText,
         setPreviewFile
     }) => {
 
-    // const initialGeopackageLayersNames = [
-    //     { name: "First Region", value: "First Region" },
-    //     { name: "Second Region", value: "Second Region" },
-    // ]; 
     const initialGeopackageLayersNames = ['layer1','layer2']; 
     const [geopackageLayersNames, setGeopackageLayersNames ] = useState(initialGeopackageLayersNames)
     const [geopackageLayersName, setGeopackageLayersName ] = useState('layer1')
@@ -123,11 +113,6 @@ export const SideMenuWrapper = (
       }
     }
   
-    const regionTypeRadioButtons = [
-        { name: "File Region", value: "file" },
-        { name: "HUC Region", value: "huc" },
-    ]; 
-   
     const [regionTypeRadioButton, setRegionTypeRadioButton] = useState( 'file');
 
     const [showGeopackageLayersNames, setShowGeopackageLayersNames ] = useState(false)
@@ -185,28 +170,9 @@ export const SideMenuWrapper = (
       dataRequest.append('layers_geopackage',formRegionData.geopackage_layer);
 
 
-      //merge geojsons
-      // let dataRequest = {
-      //     name: formRegionData.name,
-      //     regionType: formRegionData.regionType,
-      //     default: formRegionData.default,
-      //     files: formRegionData.files,
-      //     layer_color: formRegionData.layer_color,
-      //     region_data: finalGeoJSON
-      //     // region_data: JSON.stringify(finalGeoJSON)
-      // }
+
 
       let responseRegions = await appAPI.saveUserRegions(dataRequest);
-      // toast.promise(
-      //   responseRegions,
-      //    {
-      //      loading: 'Saving...',
-      //      success: <b>Settings saved!</b>,
-      //      error: <b>Could not save.</b>,
-      //    }
-      //  );
-      
-      // let responseRegions = await appAPI.saveUserRegions(dataRequest);
 
       console.log(responseRegions)
       if(responseRegions['msge'] === 'Error saving the Regions for current user'){
@@ -226,14 +192,7 @@ export const SideMenuWrapper = (
         geopackage_layer: ''
       })
       handleHideLoading();
-      // if (socketRef.current.readyState === WebSocket.OPEN) {
-      //   console.log("availableRegions change")
-      //   socketRef.current.send(
-      //     JSON.stringify({
-      //       type: "update_user_regions",
-      //     })
-      //   );
-      // }
+
       }
 
     const validateRegionAddition = () =>{
