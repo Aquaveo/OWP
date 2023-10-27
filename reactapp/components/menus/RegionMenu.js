@@ -64,25 +64,15 @@ export const RegionMenuWrapper = (
         is_visible: false,
       }));
       setAvailableRegions(updatedHiddenRegions);
-      toggleVisibilityRegion()
       setSelectedRegionDropdownItem({
         index:key, 
         value:availableRegions[key].name
       });
-      // console.log("changes")
-      // getNumberOfPageItems();
+
+      console.log("changes")
+      
     };
 
-    // const getNumberOfPageItems = () =>{
-    //   let index = selectedRegionDropdownItem['index'] ? selectedRegionDropdownItem['index']: 0
-    //   let total_reaches = availableRegions[index]['number_reaches'];
-    //   const numberOfPageItems = Math.ceil(total_reaches, pagesLimit);
-    //   console.log(numberOfPageItems); // Array of part sizes
-    //   setCurrentPageNumber(numberOfPageItems)
-    // }
-
-
-    
 
     const { map } = useContext(MapContext);
     const [currentLayerIndex, setCurrentLayerIndex] = useState();
@@ -143,6 +133,12 @@ export const RegionMenuWrapper = (
 
     }, [selectedRegionDropdownItem,currentPage,searchReachInput])
 
+    useEffect(() => {
+      if( availableRegions.length > 0 && availableRegions){
+        toggleVisibilityRegion();
+
+      }
+    }, [selectedRegionDropdownItem])
 
     return(
 
@@ -169,9 +165,10 @@ export const RegionMenuWrapper = (
                         <DropdownButton 
                           id="dropdown-basic-button" 
                           onSelect={handleSelectRegionDropdown}
-                          drop={'down-centered'}
+                          drop={'down'}
                           size="sm"
                           title={selectedRegionDropdownItem.value ? selectedRegionDropdownItem.value : "Select Region"}
+                          flip={true}
                         >
                             {availableRegions && availableRegions.map((availableRegion, index) => (
                               <Dropdown.Item key={index} eventKey={index}>{availableRegion.name}</Dropdown.Item>
