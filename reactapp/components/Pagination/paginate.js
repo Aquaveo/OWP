@@ -22,7 +22,6 @@ export const Paginate = ({
       );
     }
   const nextPage = () => {
-    console.log("s")
     if(currentPage<currentPageNumber){
       setCurrentPage(currentPage+1)
     }
@@ -39,7 +38,9 @@ export const Paginate = ({
     }
   }
   const lastPage = () => {
-    if(currentPage>1){
+    console.log("s")
+
+    if(currentPage> 0 ){
       setCurrentPage(currentPageNumber);
     }
   }
