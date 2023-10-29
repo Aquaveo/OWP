@@ -549,6 +549,8 @@ async def getUserReachesPerRegionsMethod(
             .filter(Region.user_name == user_name)
             .order_by(Reach.COMID.desc())
         )
+        json_response["total_reaches"] = len(only_user_reaches_regions.all())
+
         if search_term:
             # breakpoint()
             only_user_reaches_regions = only_user_reaches_regions.filter(
@@ -558,7 +560,6 @@ async def getUserReachesPerRegionsMethod(
             only_user_reaches_regions = only_user_reaches_regions.offset(page_offset)
 
         only_user_reaches_regions = only_user_reaches_regions.limit(page_limit)
-        json_response["total_reaches"] = len(only_user_reaches_regions.all())
 
         print(
             page_limit,

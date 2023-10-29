@@ -320,7 +320,7 @@ function App(
       if(command ==='update_reaches_users'){
         console.log(data);
         setAvailableReachesList(data['data']);
-        const numberOfPageItems = Math.ceil(data['total_reaches'], pagesLimit);
+        const numberOfPageItems = Math.ceil(data['total_reaches']/pagesLimit);
         console.log(numberOfPageItems)
         setCurrentPageNumber(numberOfPageItems)
         setAccordionOpen(true);
