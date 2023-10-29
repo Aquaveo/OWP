@@ -29,6 +29,7 @@ export const SubMenu = (
     function handleOnChangeInSearchBar(event){
         console.log(event.target.value)
         setSearchReachInput(event.target.value)
+        setCurrentPage(1)
     }
 
     return (
