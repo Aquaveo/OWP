@@ -36,7 +36,7 @@ export const ReachListMenu = (
     const [columnNames, setcolumnNames ] = useState(initialColumnNames)
 
     const onChangeColumnName = async (e) =>{
-        console.log(e)
+        // console.log(e)
         setColumnName(e);
         setFormRegionData({...formRegionData, column_name: e})
     }
@@ -92,7 +92,7 @@ export const ReachListMenu = (
       });
       
       let responseRegions = await appAPI.saveUserRegionsFromReaches(dataRequest);
-
+      console.log("save region reach")
       console.log(responseRegions)
       if(responseRegions['msge'] === 'Error saving the Regions for current user'){
         notifyError(responseRegions['msge']);
@@ -123,7 +123,7 @@ export const ReachListMenu = (
 
   
     useEffect(() => {
-      console.log(formRegionData)
+    //   console.log(formRegionData)
     
       return () => {
       }

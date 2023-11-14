@@ -134,16 +134,14 @@ def saveUserRegionsFromReaches(request):
 
             if file_extension == "csv":
                 df_reaches = pd.read_csv(file_data)
+                # response_obj["regions"] = df_reaches.to_dict(orient="records")
                 list_of_reaches = df_reaches[column_id].tolist()
                 number_reaches = len(list_of_reaches)
-            breakpoint()
+            # breakpoint()
 
             # Create an instance of the Region model
             region_instance = Region(
-                name=region_name,
-                region_type="file",
-                user_name=user_name,
-                number_reaches=number_reaches,
+                wkt=None, name=region_name, region_type="file", user_name=user_name
             )
             session.add(region_instance)
             session.commit()
@@ -163,7 +161,7 @@ def saveUserRegionsFromReaches(request):
                 print(e)
             nhdp_mr["region_id"] = new_user_region_id
             # breakpoint()
-
+            # geometry_region = shapely.to_geojson(nhdp_mr.geometry.total_bounds)
             nhdp_mr["geometry"] = nhdp_mr["geometry"].apply(
                 lambda x: WKTElement(x.wkt, srid=4326)
             )
@@ -184,13 +182,18 @@ def saveUserRegionsFromReaches(request):
             # Close the connection to prevent issues
             session.close()
 
-            for region in response_obj["regions"]:
-                region["geom"] = shapely.to_geojson(region["geom"])
-                if region["default"]:
-                    region["is_visible"] = True
-                else:
-                    region["is_visible"] = False
-                region["total_reaches"] = number_reaches
+            # for region in response_obj["regions"]:
+            response_obj["regions"] = []
+            region = {}
+            region["region_type"] = "file"
+            region["default"] = False
+            region["name"] = region_name
+            region["layer_color"] = None
+            region["user_name"] = user_name
+            region["geom"] = None
+            region["is_visible"] = False
+            region["total_reaches"] = number_reaches
+            response_obj["regions"].append(region)
         else:
             response_obj["msge"] = "Please, create an account, and login"
     except Exception as e:
