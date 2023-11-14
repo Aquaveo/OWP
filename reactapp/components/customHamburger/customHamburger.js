@@ -10,7 +10,7 @@ import {
   CircleMenuItem,
 } from "react-circular-menu";
 
-export const CircularMenuComponent = ({handleShowRegionMenu}) => {
+export const CircularMenuComponent = ({handleShowRegionMenu,handleShowReachesListRegionMenu}) => {
     //make the menu dissapear here//
     // make a function to toogle off the menu
     // make the add menu to appear
@@ -35,14 +35,16 @@ export const CircularMenuComponent = ({handleShowRegionMenu}) => {
           </CircleMenuItem>
 
           <CircleMenuItem 
-              tooltip="Add Reaches"
+              tooltip="Create Region from Reaches"
+              onClick={() => handleShowReachesListRegionMenu() }
               className="custom-circle-menu-item"
+              
           >
             <MdTimeline />
 
           </CircleMenuItem>
           <CircleMenuItem 
-              tooltip="Add Region"
+              tooltip="Create Region from Geometry"
               onClick={() => handleShowRegionMenu() }
               className="custom-circle-menu-item"
           >

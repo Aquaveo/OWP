@@ -15,7 +15,7 @@ import { LineChart } from "components/plots/linePlot";
 import { SideMenuWrapper } from 'components/menus/SideMenuRegions';
 import { RegionMenuWrapper } from 'components/menus/RegionMenu';
 import { CircularMenuComponent } from 'components/customHamburger/customHamburger';
-
+import { ReachListMenu } from "components/menus/ReachListBasedMenu";
 //Hooks components
 import { useEffect, useState, useReducer, useRef } from 'react';
 
@@ -45,8 +45,11 @@ const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notificatio
 function App(
   {
     showRegionsMenu,
+    showReachesListMenu,
     handleShowRegionMenu,
+    handleShowReachesListRegionMenu,
     toggleAddRegionMenu,
+    toggleReachesListRegionMenu,
     showRegions, 
     setShowRegionsVisible, 
     setAvailableRegions, 
@@ -418,6 +421,7 @@ function App(
         >
           <CircularMenuComponent 
             handleShowRegionMenu={handleShowRegionMenu}
+            handleShowReachesListRegionMenu={handleShowReachesListRegionMenu}
           />
 
           <RegionMenuWrapper 
@@ -453,7 +457,18 @@ function App(
             setLoadingText={setLoadingText}
             setPreviewFile={setPreviewFile}
           />
-
+          <ReachListMenu 
+            showReachesListMenu={showReachesListMenu}
+            toggleReachesListRegionMenu={toggleReachesListRegionMenu}
+            setShowRegionsVisible={setShowRegionsVisible} 
+            selectedRegions={selectedRegions} 
+            setAvailableRegions={setAvailableRegions} 
+            setSelectedRegions={setSelectedRegions}
+            handleShowLoading={handleShowLoading}
+            handleHideLoading={handleHideLoading}
+            setLoadingText={setLoadingText}
+            setPreviewFile={setPreviewFile}
+          />
           <Layers>
 
 

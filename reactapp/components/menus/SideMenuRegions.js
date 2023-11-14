@@ -252,7 +252,7 @@ export const SideMenuWrapper = (
               showRegionsMenu && 
               <Form onSubmit={saveRegionsUser} >
                 <p className="sudo_title">
-                    Add Regions Menu
+                  Create Region from Geometry
                 </p>
                 <Form.Group className="mb-3">
                   <Form.Label htmlFor="inputRegionName">Region Name</Form.Label>

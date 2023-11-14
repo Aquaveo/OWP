@@ -13,12 +13,20 @@ function App() {
   const [showRegions,setShowRegionsVisible] = useState(false);
   const [showMainRegionsMenu, setShowMainRegionsMenu] = useState(false);
   const [showRegionsMenu, setShowRegionsMenu] =  useState(false);
+  const [showReachesListMenu, setShowReachesListMenu] =  useState(false);
   const [navVisible, setNavVisible] = useState(false);
 
 
   const [availableRegions, setAvailableRegions] = useState([]);
   const PATH_HOME = '/',
         PATH_INFO = '/Information/';
+
+
+
+  const handleShowReachesListRegionMenu = () => {
+    setShowReachesListMenu(true);
+    hideAllUserRegions();
+  };
 
   const handleShowRegionMenu = () => {
     setShowRegionsMenu(true);
@@ -32,6 +40,11 @@ function App() {
   const toggleAddRegionMenu = () => {
     setShowRegionsMenu((prevValue) => !prevValue);
   };
+
+  const toggleReachesListRegionMenu = () => {
+    setShowReachesListMenu((prevValue) => !prevValue);
+  };
+
 
   const hideAllUserRegions = () => {
     const updatedHiddenRegions = availableRegions.map(availableRegion => ({
@@ -60,8 +73,11 @@ function App() {
                   element={
                     <Home 
                       showRegionsMenu={showRegionsMenu}
+                      showReachesListMenu={showReachesListMenu}
                       handleShowRegionMenu={handleShowRegionMenu}
+                      handleShowReachesListRegionMenu={handleShowReachesListRegionMenu}
                       toggleAddRegionMenu={toggleAddRegionMenu}
+                      toggleReachesListRegionMenu={toggleReachesListRegionMenu}
                       showRegions={showRegions}
                       setShowRegionsVisible={setShowRegionsVisible}
                       setAvailableRegions={setAvailableRegions}

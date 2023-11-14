@@ -15,10 +15,15 @@ const appAPI = {
     previewUserRegionFromFile:(requestData) => {
         return apiClient.post(`${APP_ROOT_URL}previewUserRegionFromFile/`, requestData);
     },
+    previewUserColumnsFromFile:(requestData) => {
+        return apiClient.post(`${APP_ROOT_URL}previewUserColumnsFromFile/`, requestData);
+    },
     saveUserRegions:(requestData) => {
         return apiClient.post(`${APP_ROOT_URL}saveUserRegions/`, requestData);
     },
-
+    saveUserRegionsFromReaches:(requestData) => {
+        return apiClient.post(`${APP_ROOT_URL}saveUserRegionsFromReaches/`, requestData);
+    },
 };
 
 export default appAPI;
