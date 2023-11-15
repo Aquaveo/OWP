@@ -25,11 +25,13 @@ function App() {
 
   const handleShowReachesListRegionMenu = () => {
     setShowReachesListMenu(true);
+    setShowRegionsMenu(false);
     hideAllUserRegions();
   };
 
   const handleShowRegionMenu = () => {
     setShowRegionsMenu(true);
+    setShowReachesListMenu(false);
     hideAllUserRegions();
   };
 
