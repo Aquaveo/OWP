@@ -236,8 +236,8 @@ def saveUserRegionsFromReaches(request):
             )
             # create json with comids
             comids_json = create_reaches_json(nhdp_mr_final)
-            bytes_data = pickle.dumps(comids_json)
-            file_object = io.BytesIO(bytes_data)
+            json_data = json.dumps(comids_json)
+            file_object = io.BytesIO(json_data.encode("utf-8"))
 
             add_file_to_hydroshare_resource_for_region(
                 file_object,
