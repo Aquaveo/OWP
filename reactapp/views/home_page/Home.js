@@ -505,7 +505,12 @@ function App(
                   source= {
                     new VectorSource({
                       format: new GeoJSON(),
-                      features: new GeoJSON().readFeatures(availableRegion['geom'])
+                      features: new GeoJSON(
+                        {
+                          dataProjection: 'EPSG:4326',
+                          featureProjection: 'EPSG:3857'
+                        }
+                      ).readFeatures((availableRegion['geom']))
                   })}
                   style={
                     new Style({

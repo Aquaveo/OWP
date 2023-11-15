@@ -317,7 +317,7 @@ export const ReMap = (
 									}
 									const urlQuery = new URL(`${urlService}/${layerId}/query`);
 									urlQuery.search = new URLSearchParams(queryLayer);
-
+									console.log(`${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`)
 									let responseQuery = await axios.get(urlQuery)
 									console.log(responseQuery.data);
 									const layer_name = `${responseQuery.data['features'][0]['id']}_huc_vector_selection}`;

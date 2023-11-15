@@ -71,7 +71,12 @@ export const RegionMenuWrapper = (
     const focusSourceVectorLayer = (index) =>{
         const source = new VectorSource({
           format: new GeoJSON(),
-          features: new GeoJSON().readFeatures(availableRegions[index]['geom'])
+          features: new GeoJSON(
+            {
+              dataProjection: 'EPSG:4326',
+              featureProjection: 'EPSG:3857'
+            }
+          ).readFeatures(availableRegions[index]['geom'])
         })
         const layerExtent = source.getExtent();
         map.getView().fit(layerExtent, {
