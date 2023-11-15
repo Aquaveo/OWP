@@ -669,9 +669,9 @@ async def getUserRegionsMethod(is_authenticated, user_name):
                 "name": region[0],
                 "reqion_type": region[1],
                 "geom": region[2],
-                "layer_color": region[4],
-                "number_reaches": region[5],
-                "is_visible": region[2],
+                "layer_color": region[3],
+                "number_reaches": region[4],
+                "is_visible": False,
             }
             regions_response["regions"].append(region_obj)
 
