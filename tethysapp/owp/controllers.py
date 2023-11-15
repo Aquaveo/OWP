@@ -166,7 +166,7 @@ def saveUserRegionsFromReaches(request):
 
             # Create an instance of the Region model
             region_instance = Region(
-                wkt=None, name=region_name, region_type="file", user_name=user_name
+                name=region_name, region_type="file", user_name=user_name
             )
             session.add(region_instance)
             session.commit()
@@ -248,7 +248,6 @@ def saveUserRegionsFromReaches(request):
             response_obj["regions"] = []
             region = {}
             region["region_type"] = "file"
-            region["default"] = False
             region["name"] = region_name
             region["layer_color"] = None
             region["user_name"] = user_name
@@ -284,7 +283,6 @@ def saveUserRegions(request):
 
             region_type = request.POST.get("regionType")
             region_name = request.POST.get("name")
-            region_default = request.POST.get("default")
             region_layer_color = request.POST.get("layer_color")
 
             if region_type == "huc":
@@ -299,7 +297,7 @@ def saveUserRegions(request):
                 df_copy["geom"] = df_copy["geometry"]
                 df = df.drop("geometry", axis=1)
                 dest = gpd.GeoDataFrame(
-                    columns=["name", "region_type", "default", "user_name", "geom"],
+                    columns=["name", "region_type", "user_name", "geom"],
                     # crs="EPSG:4326",
                     geometry=[GeometryCollection(df["geom"].tolist())],
                 )
@@ -345,13 +343,12 @@ def saveUserRegions(request):
                 df_copy["geom"] = df_copy["geometry"]
                 df = df.drop("geometry", axis=1)
                 dest = gpd.GeoDataFrame(
-                    columns=["name", "region_type", "default", "user_name", "geom"],
+                    columns=["name", "region_type", "user_name", "geom"],
                     crs="EPSG:4326",
                     geometry=[GeometryCollection(df["geom"].tolist())],
                 )
 
             dest["region_type"] = region_type
-            dest["default"] = region_default
             dest["name"] = region_name
             dest["layer_color"] = region_layer_color
             dest["user_name"] = user_name
@@ -439,10 +436,7 @@ def saveUserRegions(request):
 
             for region in response_obj["regions"]:
                 region["geom"] = shapely.to_geojson(region["geom"])
-                if region["default"]:
-                    region["is_visible"] = True
-                else:
-                    region["is_visible"] = False
+                region["is_visible"] = False
                 region["total_reaches"] = total_reaches
         else:
             response_obj["msge"] = "Please, create an account, and login"
@@ -532,49 +526,6 @@ def previewUserColumnsFromFile(request):
     column_list = df_reaches.columns.tolist()
     response["columns"] = column_list
     return JsonResponse(response)
-
-
-@controller
-@measure_sync
-def getUserRegions(request):
-    # breakpoint()
-    regions_response = {}
-    if request.user.is_authenticated:
-        print("authenticated")
-        user_name = request.user.username
-        engine = app.get_persistent_store_database("user_data")
-
-        sql_query = (
-            f"SELECT * FROM regions WHERE user_name='{user_name}' AND name='Test 1'"
-        )
-
-        # df = pd.read_sql(sql_query, con=engine)
-        # df["geom"] = pg.from_wkb(df.geom.values)
-        # srid = pg.get_srid(df.geom.values[0])
-        # user_regions_df = gpd.GeoDataFrame(df, geometry="geom", crs=f"EPSG:{srid}")
-        # db_path = engine.url
-        # df = pyogrio.read_dataframe(db_path, layer="regions")
-        user_regions_df = gpd.read_postgis(sql_query, engine)
-        # user_regions_df = gpd.GeoDataFrame.from_postgis(sql_query, engine)
-
-        regions_response["regions"] = user_regions_df.to_dict(orient="records")
-
-        for region in regions_response["regions"]:
-            region["geom"] = shapely.to_geojson(region["geom"])
-
-        for region in regions_response["regions"]:
-            if region["default"]:
-                region["is_visible"] = True
-            else:
-                region["is_visible"] = False
-
-        # get the user_id and user name, get the actual User Object
-        # get all the region associated with the userID
-        # pass all the regions to front end
-    else:
-        regions_response["regions"] = []
-        regions_response["default_geom"] = {}
-    return JsonResponse(regions_response)
 
 
 @controller
@@ -706,7 +657,6 @@ async def getUserRegionsMethod(is_authenticated, user_name):
         only_user_regions = session.query(
             Region.name,
             Region.region_type,
-            Region.default,
             Region.geom.ST_AsGeoJSON(),
             Region.layer_color,
             Region.number_reaches,
@@ -718,8 +668,7 @@ async def getUserRegionsMethod(is_authenticated, user_name):
             region_obj = {
                 "name": region[0],
                 "reqion_type": region[1],
-                "default": region[2],
-                "geom": region[3],
+                "geom": region[2],
                 "layer_color": region[4],
                 "number_reaches": region[5],
                 "is_visible": region[2],

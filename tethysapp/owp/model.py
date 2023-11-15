@@ -17,7 +17,6 @@ class Region(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     region_type = Column(String)
-    default = Column(Boolean)
     geom = Column(Geometry("GEOMETRYCOLLECTION"))
     user_name = Column(String)
     layer_color = Column(String)
@@ -26,7 +25,7 @@ class Region(Base):
         "Reach", back_populates="region", cascade="all,delete, delete-orphan"
     )
 
-    def __init__(self, wkt, name, region_type, user_name):
+    def __init__(self, name, region_type, user_name):
         """
         Constructor
         """

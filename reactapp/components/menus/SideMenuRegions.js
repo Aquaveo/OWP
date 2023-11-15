@@ -121,7 +121,6 @@ export const SideMenuWrapper = (
     const [formRegionData, setFormRegionData] = useState({
       name:'',
       regionType:'file',
-      default: false,
       files:[],
       layer_color:'#563d7c',
       geopackage_layer: ''
@@ -160,7 +159,6 @@ export const SideMenuWrapper = (
       const dataRequest = new FormData();
       dataRequest.append('name', formRegionData.name);
       dataRequest.append('regionType', formRegionData.regionType);
-      dataRequest.append('default', formRegionData.default);
       dataRequest.append('layer_color', formRegionData.layer_color);
       dataRequest.append('region_data', JSON.stringify(finalGeoJSON));
       Array.from(formRegionData.files).forEach(file=>{
@@ -186,7 +184,6 @@ export const SideMenuWrapper = (
       setFormRegionData({
         name:'',
         regionType:'file',
-        default: false,
         files:[],
         layer_color:'#563d7c',
         geopackage_layer: ''
@@ -304,15 +301,6 @@ export const SideMenuWrapper = (
 
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="formRegionDefaults">
-                  <Form.Check // prettier-ignore
-                    type="switch"
-                    label="Default Region"
-                    id="disabled-custom-switch"
-                    value={formRegionData.default}
-                    onChange={(e) => setFormRegionData({...formRegionData, default: e.target.checked}) }
-                  />
-                </Form.Group>
                 {
                   isFileUploadVisible && 
                   <Form.Group controlId="formFileMultiple" className="mb-3">
