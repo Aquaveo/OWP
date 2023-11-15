@@ -766,3 +766,44 @@ async def getUserReachesPerRegionsMethod(
     json_response["data"] = regions_response["reaches"]
 
     return json_response
+
+
+@measure_async
+async def getUserSpecificReachMethod(is_authenticated, user_name, reach_comid):
+    json_response = {}
+    json_response["type"] = "single_reach_notifications"
+    json_response["command"] = "zoom_to_specific_reach"
+
+    if is_authenticated:
+        print("authenticated getUserSpecificReachMethod")
+        SessionMaker = await sync_to_async(app.get_persistent_store_database)(
+            "user_data", as_sessionmaker=True
+        )
+        session = SessionMaker()
+
+        reach_data = (
+            session.query(
+                Reach.COMID,
+                Reach.geometry.ST_AsGeoJSON(),
+            )
+            .join(Region)
+            .filter(cast(Reach.COMID, String).like(f"%{reach_comid}%"))
+            .filter(Region.user_name == user_name)
+            .order_by(Reach.COMID.desc())
+            .first()
+        )
+
+        region_obj = {
+            "COMID": reach_data[0],
+            "geometry": reach_data[1],
+        }
+
+        json_response["mssg"] = "completed"
+
+    else:
+        json_response["mssg"] = "not aunthenticated"
+        json_response["data"] = {}
+
+    json_response["data"] = region_obj
+
+    return json_response

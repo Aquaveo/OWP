@@ -17,7 +17,8 @@ export const SubMenu = (
         setCurrentPage,
         currentPage,
         setSearchReachInput,
-        promptTextAvailableReachesList
+        promptTextAvailableReachesList,
+        socketRef
     }) => {
 
 
@@ -104,6 +105,8 @@ export const SubMenu = (
                 setCurrentProducts={setCurrentProducts}
                 handleShow={handleShow}
                 setMetadata={setMetadata}
+                socketRef={socketRef}
+
             />
         </Fragment>
 

@@ -61,6 +61,7 @@ function App(
   {
   
   const socketRef = useRef();
+  const [currentReachGeometry, setCurrentReachGeometry] = useState(null)
   // const [curentRegion, setCurrentRegion] = useState({});
   const [loadingText, setLoadingText] = useState("Loading Layers ...")
   const [isFullMap, setIsFullMap] = useState(true)
@@ -314,6 +315,7 @@ function App(
       
       let data = JSON.parse(e.data);
       let command = data['command']
+      console.log(command)
       if(command ==='update_regions_users'){
         console.log(data)
         setAvailableRegions(data['data']);
@@ -339,6 +341,13 @@ function App(
         setCurrentProducts({type: product_name,is_requested:true, data: ts});
         handlePlotUpdate();
       }
+
+      if(command ==='zoom_to_specific_reach'){
+        console.log(data['data'])
+        let responseRegions_obj = JSON.parse(data['data']['geometry'])
+        setCurrentReachGeometry(responseRegions_obj)
+      }
+
 
     }
 
@@ -388,7 +397,6 @@ function App(
     }
 	}, [availableReachesList]);
   
-
   return (
     
     <div>
@@ -443,6 +451,8 @@ function App(
             promptTextAvailableReachesList={promptTextAvailableReachesList}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
+            currentReachGeometry={currentReachGeometry}
+
           />
 
           <SideMenuWrapper 
@@ -568,6 +578,32 @@ function App(
                     })
                   }
                   zIndex={1}
+                />
+              }
+              {
+                currentReachGeometry &&
+                <VectorLayer
+                  name={`reach_from_region`}
+                  source= {
+                    new VectorSource({
+                      format: new GeoJSON(),
+                      features: new GeoJSON(
+                        {
+                          dataProjection: 'EPSG:4326',
+                          featureProjection: 'EPSG:3857'
+                        }
+                      ).readFeatures(currentReachGeometry)
+                      })
+                  }
+                  style={
+                    new Style({
+                      stroke: new Stroke({
+                        color: '#f5e154',
+                        width: 3,
+                      })
+                    })
+                  }
+                  zIndex={4}
                 />
               }
 

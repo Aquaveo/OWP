@@ -42,7 +42,9 @@ export const RegionMenuWrapper = (
     setSelectedRegionDropdownItem,
     promptTextAvailableReachesList,
     currentPage,
-    setCurrentPage
+    setCurrentPage,
+    currentReachGeometry
+
   })=>{
 
     const toggleAccordion = () => {
@@ -65,7 +67,6 @@ export const RegionMenuWrapper = (
       
     };
 
-
     const { map } = useContext(MapContext);
     const [currentLayerIndex, setCurrentLayerIndex] = useState();
 
@@ -82,8 +83,6 @@ export const RegionMenuWrapper = (
         const layerExtent = source.getExtent();
 
         map.getView().fit(layerExtent, {
-
-
             padding: [200, 200, 200, 200], // Optional padding around the extent.
             duration: 1000, // Optional animation duration in milliseconds.
             nearest: true,
@@ -145,6 +144,30 @@ export const RegionMenuWrapper = (
 
       }
     }, [selectedRegionDropdownItem])
+
+    useEffect(() => {
+      console.log(currentReachGeometry);
+      if(currentReachGeometry){
+        const source = new VectorSource({
+          format: new GeoJSON(),
+          features: new GeoJSON(
+            {
+              dataProjection: 'EPSG:4326',
+              featureProjection: 'EPSG:3857'
+            }
+          ).readFeatures(currentReachGeometry)
+        })
+        const layerExtent = source.getExtent();
+    
+        map.getView().fit(layerExtent, {
+            padding: [100,100,100,100],
+            duration: 1000, // Optional animation duration in milliseconds.
+            nearest: true,
+        });
+      }
+  
+    }, [currentReachGeometry]);
+
 
     return(
 
@@ -221,6 +244,7 @@ export const RegionMenuWrapper = (
                             currentPage={currentPage}
                             setSearchReachInput={setSearchReachInput}
                             promptTextAvailableReachesList={promptTextAvailableReachesList}
+                            socketRef={socketRef}
                           />
                     </Accordion.Body>
                   </Accordion.Item>

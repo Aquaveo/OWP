@@ -4,6 +4,7 @@ from .controllers import (
     updateForecastData,
     getUserRegionsMethod,
     getUserReachesPerRegionsMethod,
+    getUserSpecificReachMethod
 )
 
 from tethys_sdk.routing import consumer
@@ -57,6 +58,17 @@ class DataConsumer(AsyncWebsocketConsumer):
                 "notifications_owp",
                 json_obj,
             )
+        if "type" in text_data_json and text_data_json["type"] == "get_specific_reach":
+            json_obj = await getUserSpecificReachMethod(
+                self.scope["user"].is_authenticated,
+                self.scope["user"].username,
+                text_data_json["reach_comid"],
+            )
+            await self.channel_layer.group_send(
+                "notifications_owp",
+                json_obj,
+            )
+
         # print(mssge_string)
         # await self.send(text_data)
 
@@ -95,6 +107,20 @@ class DataConsumer(AsyncWebsocketConsumer):
         }
         await self.send(text_data=json.dumps(resp_obj))
 
+    async def single_reach_notifications(self, event):
+        # print(event)
+        print("single_reach_notifications from consumer")
+
+        message = event["mssg"]
+        command = event["command"]
+        data = event["data"]
+
+        resp_obj = {
+            "message": message,
+            "command": command,
+            "data": data,
+        }
+        await self.send(text_data=json.dumps(resp_obj))
 
     async def reach_notifications(self, event):
         # print(event)

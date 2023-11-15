@@ -13,6 +13,8 @@ export const RegionsRows = ({
     setCurrentProducts,
     handleShow,
     setMetadata,
+    socketRef
+
 }) => {
 
       const openPlot = (availableReach) => {
@@ -30,6 +32,19 @@ export const RegionsRows = ({
         ]
         setMetadata(metadataArray);
       };
+      const zoomToReach = (availableReach) =>{
+        //send message to get the geometry
+        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+            socketRef.current.send(
+              JSON.stringify({
+                type: "get_specific_reach",
+                reach_comid: availableReach['COMID'],
+              })
+            );
+          }
+    
+      }
+
       const sampleData = [5, 10, 5, 20, 8, 15]; 
     return (
 
@@ -38,7 +53,16 @@ export const RegionsRows = ({
             {availableReachesList && availableReachesList.map((availableReach, index) => (
                 <Row key={index} className='mb-2'>
                     <Col sm={2} >
-                    {availableReach['COMID']}
+                        <Button 
+                            variant="links" 
+                            size="sm"
+                            onClick={(e) => zoomToReach(availableReach)}
+                        >
+                            {availableReach['COMID']}
+                        </Button>
+
+
+                        
                     </Col>
                     <Col sm={2} >
                     <Sparklines data={sampleData}>
