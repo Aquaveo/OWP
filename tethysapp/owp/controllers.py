@@ -31,7 +31,7 @@ from pynhd import NLDI, WaterData, NHDPlusHR, NHD
 import pynhd as nhd
 import pyproj
 from pyproj import Transformer
-from sqlalchemy import Integer, String
+from sqlalchemy import Integer, String, or_
 from sqlalchemy.sql import cast, func
 from oauthlib.oauth2 import TokenExpiredError
 from hs_restclient import (
@@ -779,7 +779,10 @@ async def getUserReachesPerRegionsMethod(
         if search_term:
             # breakpoint()
             only_user_reaches_regions = only_user_reaches_regions.filter(
-                cast(Reach.COMID, String).like(f"%{search_term}%")
+                or_(
+                    cast(Reach.COMID, String).like(f"%{search_term}%"),
+                    cast(Reach.GNIS_NAME, String).like(f"%{search_term}%"),
+                )
             )
         if page_number > 0:
             only_user_reaches_regions = only_user_reaches_regions.offset(page_offset)
