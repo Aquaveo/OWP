@@ -70,6 +70,9 @@ export const SubMenu = (
                             <Col className="text-white fw-bold" sm={2}>
                                 COMID
                             </Col >
+                            <Col className="text-white fw-bold" sm={2}>
+                                Reach Name
+                            </Col >
                             <Col className="text-white fw-bold" sm={2} >
                                 AA
                             </Col>
@@ -82,9 +85,9 @@ export const SubMenu = (
                             <Col className="text-white fw-bold" sm={2} >
                                 MF Mean
                             </Col>
-                            <Col className="text-white fw-bold" sm={2} >
+                            {/* <Col className="text-white fw-bold" sm={2} >
                                 Actions
-                            </Col>
+                            </Col> */}
                         </Row>
                     </Fragment>
                 }

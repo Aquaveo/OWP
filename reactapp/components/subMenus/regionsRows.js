@@ -61,11 +61,13 @@ export const RegionsRows = ({
                             onClick={(e) => zoomToReach(availableReach)}
                         >
                             {availableReach['COMID']}
-                        </Button>
-
-
-                        
+                        </Button>                        
                     </Col>
+                    <Col sm={2} >
+                        {availableReach['GNIS_NAME'] !== " " ? availableReach['GNIS_NAME'] : "-" }
+                    </Col>
+
+
                     <Col sm={2} >
                     <Sparklines data={sampleData}>
                         <SparklinesLine color="#FFFC31" />
@@ -91,7 +93,7 @@ export const RegionsRows = ({
                     </Sparklines>
 
                     </Col>
-                    <Col sm={2} >
+                    {/* <Col sm={2} >
                         <Button 
                             variant="primary" 
                             className="text-white"
@@ -100,7 +102,7 @@ export const RegionsRows = ({
                         >
                             <GoGraph/>
                         </Button>
-                    </Col>
+                    </Col> */}
                 </Row>
             ))}
             </Row>
