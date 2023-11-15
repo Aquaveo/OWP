@@ -13,6 +13,7 @@ import React, { useRef, useState, useEffect, useContext } from "react"
 //ol modules
 import VectorSource from 'ol/source/Vector'
 import GeoJSON from 'ol/format/GeoJSON';
+import { Polygon } from "ol/geom";
 
 //icons
 import { TbZoomPan } from "react-icons/tb";
@@ -79,9 +80,14 @@ export const RegionMenuWrapper = (
           ).readFeatures(availableRegions[index]['geom'])
         })
         const layerExtent = source.getExtent();
+
         map.getView().fit(layerExtent, {
-            padding: [10, 10, 10, 10], // Optional padding around the extent.
+
+
+            padding: [200, 200, 200, 200], // Optional padding around the extent.
             duration: 1000, // Optional animation duration in milliseconds.
+            nearest: true,
+            // maxZoom: map.getView().getZoom() -1 
         });
 
     };
