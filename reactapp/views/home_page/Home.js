@@ -452,7 +452,7 @@ function App(
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             currentReachGeometry={currentReachGeometry}
-
+            setCurrentReachGeometry={setCurrentReachGeometry}
           />
 
           <SideMenuWrapper 

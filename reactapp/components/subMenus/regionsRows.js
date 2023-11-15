@@ -13,7 +13,8 @@ export const RegionsRows = ({
     setCurrentProducts,
     handleShow,
     setMetadata,
-    socketRef
+    socketRef,
+    setCurrentReachGeometry
 
 }) => {
 
@@ -34,6 +35,7 @@ export const RegionsRows = ({
       };
       const zoomToReach = (availableReach) =>{
         //send message to get the geometry
+        setCurrentReachGeometry(null);
         if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
             socketRef.current.send(
               JSON.stringify({

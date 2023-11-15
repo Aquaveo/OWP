@@ -43,7 +43,8 @@ export const RegionMenuWrapper = (
     promptTextAvailableReachesList,
     currentPage,
     setCurrentPage,
-    currentReachGeometry
+    currentReachGeometry,
+    setCurrentReachGeometry
 
   })=>{
 
@@ -146,8 +147,9 @@ export const RegionMenuWrapper = (
     }, [selectedRegionDropdownItem])
 
     useEffect(() => {
-      console.log(currentReachGeometry);
+      // console.log(currentReachGeometry);
       if(currentReachGeometry){
+        console.log(currentReachGeometry);
         const source = new VectorSource({
           format: new GeoJSON(),
           features: new GeoJSON(
@@ -160,9 +162,9 @@ export const RegionMenuWrapper = (
         const layerExtent = source.getExtent();
     
         map.getView().fit(layerExtent, {
-            padding: [100,100,100,100],
-            duration: 1000, // Optional animation duration in milliseconds.
-            nearest: true,
+            // padding: [100,100,100,100],
+            duration: 3000, // Optional animation duration in milliseconds.
+            // nearest: true,
         });
       }
   
@@ -245,6 +247,7 @@ export const RegionMenuWrapper = (
                             setSearchReachInput={setSearchReachInput}
                             promptTextAvailableReachesList={promptTextAvailableReachesList}
                             socketRef={socketRef}
+                            setCurrentReachGeometry={setCurrentReachGeometry}
                           />
                     </Accordion.Body>
                   </Accordion.Item>

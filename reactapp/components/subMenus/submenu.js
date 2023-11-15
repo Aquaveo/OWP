@@ -18,7 +18,8 @@ export const SubMenu = (
         currentPage,
         setSearchReachInput,
         promptTextAvailableReachesList,
-        socketRef
+        socketRef,
+        setCurrentReachGeometry
     }) => {
 
 
@@ -106,6 +107,7 @@ export const SubMenu = (
                 handleShow={handleShow}
                 setMetadata={setMetadata}
                 socketRef={socketRef}
+                setCurrentReachGeometry={setCurrentReachGeometry}
 
             />
         </Fragment>
