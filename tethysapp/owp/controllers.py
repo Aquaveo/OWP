@@ -384,11 +384,13 @@ def saveUserRegions(request):
 
             total_reaches = 0
             # breakpoint()
+            list_df_nhdp = []
 
             for index, geom in enumerate(list_geoms):
                 # nhdp_mr = mr.bygeom(geometry_collection_clipping.bounds)
                 try:
                     nhdp_mr = mr.bygeom(geom)
+                    list_df_nhdp.append(nhdp_mr)
                 except Exception as e:
                     print(e)
                     continue
@@ -408,6 +410,26 @@ def saveUserRegions(request):
                 total_reaches = total_reaches + len(nhdp_mr.index)
                 session.commit()
             # breakpoint()
+            nhdp_mr_final = pd.concat(list_df_nhdp, ignore_index=True)
+
+            # create Hydroshare_resource
+            s_buf = io.StringIO()
+            nhdp_mr_final.to_csv(s_buf)
+            response_dict = create_hydroshare_resource_for_region(
+                s_buf, "reaches_nhd_data.csv", region_name
+            )
+            # create json with comids
+            comids_json = create_reaches_json(nhdp_mr_final)
+            json_data = json.dumps(comids_json)
+            file_object = io.BytesIO(json_data.encode("utf-8"))
+
+            add_file_to_hydroshare_resource_for_region(
+                file_object,
+                "nwm_comids.json",
+                region_name,
+                response_dict["resource_id"],
+            )
+
             session.query(Region).filter(Region.user_name == user_name).filter(
                 Region.name == region_name
             ).update({Region.number_reaches: total_reaches})
