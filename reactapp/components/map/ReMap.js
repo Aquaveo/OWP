@@ -40,7 +40,8 @@ export const ReMap = (
 		selectedRegions,
 		setSelectedRegions,
 		handleHideLoading,
-		setLoadingText
+		setLoadingText,
+		setCurrentReachGeometryOnClick
 	}) => 
 	
 	{
@@ -54,6 +55,14 @@ export const ReMap = (
 		return (!str || /^\s*$/.test(str) || str === null);
 	}
 
+	function drawCurrentReachOnClick(esriPaths){
+		// Transform ESRI paths into coordinates array for LineString
+		const coordinates = esriPaths.map(path => path.map(point => [point[0], point[1]]));
+
+		// Create an OpenLayers LineString
+		const lineString = new LineString(coordinates);
+		setCurrentReachGeometryOnClick(lineString)
+	}
 	function getDistanceByZoom(zoom) {
 		switch (true) {
 			case (zoom > 20):
@@ -136,6 +145,7 @@ export const ReMap = (
 		console.log("STATION ID", stationID)
 		setCurrentStationID(stationID);
 		setCurrentStation(stationName);
+		drawCurrentReachOnClick(validFeatures[0].geometry.paths)
 	}
 
 

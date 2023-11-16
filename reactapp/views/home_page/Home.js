@@ -61,6 +61,8 @@ function App(
   {
   
   const socketRef = useRef();
+  const [currentReachGeometryOnClick, setCurrentReachGeometryOnClick] = useState(null)
+
   const [currentReachGeometry, setCurrentReachGeometry] = useState(null)
   // const [curentRegion, setCurrentRegion] = useState({});
   const [loadingText, setLoadingText] = useState("Loading Layers ...")
@@ -426,6 +428,7 @@ function App(
           setSelectedRegions={setSelectedRegions}
           handleHideLoading={handleHideLoading}
           setLoadingText={setLoadingText}
+          setCurrentReachGeometryOnClick={setCurrentReachGeometryOnClick}
         >
           <CircularMenuComponent 
             handleShowRegionMenu={handleShowRegionMenu}
@@ -604,6 +607,26 @@ function App(
                     })
                   }
                   zIndex={4}
+                />
+              }
+              {
+                currentReachGeometryOnClick &&
+                <VectorLayer
+                  name={`reach_on_click_from_region`}
+                  source= {
+                    new VectorSource({
+                      features: [currentReachGeometryOnClick]
+                  })
+                }
+                  style={
+                    new Style({
+                      stroke: new Stroke({
+                        color: '#f5e154',
+                        width: 3,
+                      })
+                    })
+                  }
+                  zIndex={5}
                 />
               }
 
