@@ -162,7 +162,7 @@ export const RegionMenuWrapper = (
         const layerExtent = source.getExtent();
     
         map.getView().fit(layerExtent, {
-            // padding: [100,100,100,100],
+            padding: [100,100,100,100],
             duration: 3000, // Optional animation duration in milliseconds.
             // nearest: true,
         });

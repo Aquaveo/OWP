@@ -19,6 +19,9 @@ import VectorSource from "ol/source/Vector";
 import { MapContainer } from 'components/styles/Map.styled'
 import "./Map.css";
 
+//esri
+import * as geometryEngine from "@arcgis/core/geometry/geometryEngine.js";
+import Point from "@arcgis/core/geometry/Point.js";
 
 export const ReMap = (
 	{ 
@@ -46,6 +49,96 @@ export const ReMap = (
 	const [map, setMap] = useState(null);
 	const [curentRegion, setCurrentRegion] = useState({});
 
+
+	function isBlank(str) {
+		return (!str || /^\s*$/.test(str) || str === null);
+	}
+
+	function getDistanceByZoom(zoom) {
+		switch (true) {
+			case (zoom > 20):
+				return 25;
+			case (zoom > 17):
+				return 125;
+			case (zoom > 14):
+				return 250;
+			case (zoom > 11):
+				return 500;
+			case (zoom > 8):
+				return 1000;
+			case (zoom > 5):
+				return 2000;
+		}
+
+		return 10000;
+	}
+
+
+	function processStreamServiceQueryResult(zoom,point, name, response) {
+		console.log(response.features)
+		var minStreamOrder = 5;
+		var soAttrName = null;
+		var fidAttrName = null;
+		var nameAttrName = null;
+
+		if (response.features.length === 0) {
+			// window.modules.MapFeatureReport.addFeatureContent(name, '<p>No feature information for coordinate selected.</p>');
+			return;
+		}
+
+		if (zoom >= 5) minStreamOrder--;
+		if (zoom >= 6) minStreamOrder--;
+		if (zoom >= 8) minStreamOrder--;
+		if (zoom >= 10) minStreamOrder--;
+
+
+		response.fields.forEach(function (field) {
+			if (!fidAttrName && /^(reach_id|station_id|feature_id)$/i.test(field.alias)) {
+				fidAttrName = field.name;
+			}
+
+			if (!soAttrName && /^(stream_?order)$/i.test(field.alias)) {
+				soAttrName = field.name;
+			}
+
+			if (!nameAttrName && /^((reach|gnis)?_?name)$/i.test(field.alias)) {
+				nameAttrName = field.name;
+			}
+		});
+
+		var validFeatures = [];
+
+		response.features.forEach(function (feature) {
+			if (feature.attributes[soAttrName] < minStreamOrder) {
+				return;
+			}
+
+			validFeatures.push(feature);
+		});
+
+		validFeatures.map(function getDistanceFromPoint(feature) {
+			feature.distance = geometryEngine.distance(point, feature.geometry);
+			return feature;
+		})
+		validFeatures.sort(function sortByDistance(a, b) {
+			return a.distance - b.distance;
+		});
+
+		if (validFeatures.length === 0) {
+			// window.modules.MapFeatureReport.addFeatureContent(
+			// 	name,
+			// 	'<p>No feature information for coordinate selected at the given Zoom level.</p>');
+			return;
+		}
+		console.log(validFeatures)
+		let stationName = isBlank(validFeatures[0].attributes[nameAttrName]) ? 'N/A' : validFeatures[0].attributes[nameAttrName]
+		let stationID = validFeatures[0].attributes[fidAttrName]
+		console.log("STATION ID", stationID)
+		setCurrentStationID(stationID);
+		setCurrentStation(stationName);
+	}
+
+
 	function isRegionInSelectedRegions(arr, key, value) {
 		if(arr){
 			return arr.some((obj) => obj[key] === value);
@@ -72,6 +165,7 @@ export const ReMap = (
 		return maxKey;
 	}
 	function findPriorityLayerForOnClickEvent(layers) {
+		console.log(layers)		
 		let layerWeight={}
 		let priorityLayer = layers[0]
 
@@ -162,6 +256,7 @@ export const ReMap = (
 								// Query Layer 5 
 								const spatialReference= {"latestWkid":3857,"wkid":102100}
 								const geometry = {"spatialReference":spatialReference ,"x":clickCoordinate[0],"y":clickCoordinate[1]}
+								
 								// var lonlat = olProj.transform(clickCoordinate, 'EPSG:3857', 'EPSG:4326');
 								// var lon = lonlat[0];
 								// var lat = lonlat[1];
@@ -172,7 +267,7 @@ export const ReMap = (
 									geometryType: 'esriGeometryPoint',
 									spatialRel: "esriSpatialRelIntersects",
 									units:'esriSRUnit_Meter',
-									distance: 10000,
+									distance: getDistanceByZoom(mapObject.getView().getZoom()),
 									sr: `${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`,
 									// layers: `all:${server.layers}`, // query all the layer ids for htis map server built above
 									returnGeometry: true, // I don't want geometry, but you might want to display it on a 'selection layer'
@@ -187,33 +282,43 @@ export const ReMap = (
 
 
 									console.log(response.data);
-									const filteredArray = response.data['features'].filter(obj => obj.attributes['analysis_assim.streamflow'] > 10 && obj.attributes['raw.gnis_name']);
+									// const filteredArray = response.data['features'].filter(obj => obj.attributes['analysis_assim.streamflow'] > 10 && obj.attributes['raw.gnis_name']);
 									// Sort the array based on analysis_assim.streamflow in descending order
-									filteredArray.sort((a, b) => {
-										const shapeLengthA = a.attributes['raw.Shape_Length'];
-										const shapeLengthB = b.attributes['raw.Shape_Length'];
-										return shapeLengthB - shapeLengthA
-									});
-
+									// filteredArray.sort((a, b) => {
+									// 	const shapeLengthA = a.attributes['raw.Shape_Length'];
+									// 	const shapeLengthB = b.attributes['raw.Shape_Length'];
+									// 	return shapeLengthB - shapeLengthA
+									// });
+									const filteredArray = response.data['features'][0]
 									console.log(filteredArray)
-									const selectedLayer = filteredArray[0]
-									let reachIDPath = selectedLayer['geometry']['paths'];
-									const feature = new Feature({
-										geometry: new LineString(reachIDPath),
-										name: stationID,
-									});
-									let sourceVector = new VectorSource({
-										features: [feature]
-									})
-									setCurrentReachIdGeometry(sourceVector);
+									// const selectedLayer = filteredArray[0]
+									// const selectedLayer = filteredArray
+									// let reachIDPath = selectedLayer['geometry']['paths'];
+									// const feature = new Feature({
+									// 	geometry: new LineString(reachIDPath),
+									// 	name: stationID,
+									// });
+									// let sourceVector = new VectorSource({
+									// 	features: [feature]
+									// })
+									// setCurrentReachIdGeometry(sourceVector);
 
-									console.log(reachIDPath)
-									let stationName = selectedLayer['attributes']['raw.gnis_name']
-									let stationID = selectedLayer['attributes']['raw.feature_id']
-									console.log("STATION ID", stationID)
-									setCurrentStationID(stationID);
-									// setCurrentStationID(Math.random());
-									setCurrentStation(stationName);
+									// console.log(reachIDPath)
+									// let stationName = selectedLayer['attributes']['raw.gnis_name']
+									// let stationID = selectedLayer['attributes']['raw.feature_id']
+									// console.log("STATION ID", stationID)
+									// setCurrentStationID(stationID);
+									// // setCurrentStationID(Math.random());
+									// setCurrentStation(stationName);
+									const actual_zoom = mapObject.getView().getZoom()
+									var esriMapPoint = new Point({
+										longitude: clickCoordinate[0],
+										latitude: clickCoordinate[1],
+										spatialReference: spatialReference,
+									});
+									
+									// processStreamServiceQueryResult(zoom,esriMapPoint,response.data)
+									processStreamServiceQueryResult(actual_zoom,esriMapPoint, 'streams_layer', response.data)
 									setCurrentProducts({type: "reset"});
 									handleShow();
 									let dataRequest = {

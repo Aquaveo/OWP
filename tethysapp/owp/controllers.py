@@ -721,7 +721,7 @@ async def getUserReachesPerRegionsMethod(
             .join(Region)
             .filter(Region.name == region_name)
             .filter(Region.user_name == user_name)
-            .order_by(Reach.COMID.desc())
+            .order_by(Reach.GNIS_NAME.desc())
         )
         json_response["total_reaches"] = len(only_user_reaches_regions.all())
 
