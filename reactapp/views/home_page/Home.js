@@ -457,6 +457,7 @@ function App(
             setCurrentPage={setCurrentPage}
             currentReachGeometry={currentReachGeometry}
             setCurrentReachGeometry={setCurrentReachGeometry}
+            setCurrentReachGeometryOnClick={setCurrentReachGeometryOnClick}
           />
 
           <SideMenuWrapper 
@@ -628,7 +629,7 @@ function App(
                 style={
                   new Style({
                     stroke: new Stroke({
-                      color: 'green',
+                      color: '#f5e154',
                       width: 3,
                     })
                   })

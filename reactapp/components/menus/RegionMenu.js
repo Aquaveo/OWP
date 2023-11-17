@@ -44,7 +44,8 @@ export const RegionMenuWrapper = (
     currentPage,
     setCurrentPage,
     currentReachGeometry,
-    setCurrentReachGeometry
+    setCurrentReachGeometry,
+    setCurrentReachGeometryOnClick
 
   })=>{
 
@@ -248,6 +249,7 @@ export const RegionMenuWrapper = (
                             promptTextAvailableReachesList={promptTextAvailableReachesList}
                             socketRef={socketRef}
                             setCurrentReachGeometry={setCurrentReachGeometry}
+                            setCurrentReachGeometryOnClick={setCurrentReachGeometryOnClick}
                           />
                     </Accordion.Body>
                   </Accordion.Item>

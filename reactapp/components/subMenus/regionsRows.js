@@ -14,7 +14,8 @@ export const RegionsRows = ({
     handleShow,
     setMetadata,
     socketRef,
-    setCurrentReachGeometry
+    setCurrentReachGeometry,
+    setCurrentReachGeometryOnClick
 
 }) => {
 
@@ -35,6 +36,7 @@ export const RegionsRows = ({
       };
       const zoomToReach = (availableReach) =>{
         //send message to get the geometry
+        setCurrentReachGeometryOnClick(null);
         setCurrentReachGeometry(null);
         if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
             socketRef.current.send(

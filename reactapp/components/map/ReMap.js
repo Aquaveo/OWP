@@ -70,6 +70,7 @@ export const ReMap = (
 			}
 
 		console.log(geojsonObject)
+		// setCurrentReachGeometry(null);
 		setCurrentReachGeometryOnClick(geojsonObject);
 	}
 	function getDistanceByZoom(zoom) {
@@ -262,6 +263,8 @@ export const ReMap = (
 						handleShowLoading();
 
 						if(layer.get('name') ==='streams_layer'){
+							setCurrentReachGeometry(null);
+							setCurrentReachGeometryOnClick(null);
 							setLoadingText("Loading Timeseries ...");
 							const urlService = layer.getSource().getUrl() // collect mapServer URL
 							const id = layer
@@ -339,7 +342,6 @@ export const ReMap = (
 									// processStreamServiceQueryResult(zoom,esriMapPoint,response.data)
 									processStreamServiceQueryResult(actual_zoom,esriMapPoint, 'streams_layer', response.data, mapObject)
 									setCurrentProducts({type: "reset"});
-									setCurrentReachGeometry(null)
 									handleShow();
 									let dataRequest = {
 										station_id: stationID,
