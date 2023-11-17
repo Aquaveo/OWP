@@ -12,8 +12,11 @@ import Map from "ol/Map";
 import View from "ol/View";
 import VectorTileLayer from 'ol/layer/VectorTile.js';
 import LineString from 'ol/geom/LineString.js';
+
 import { Feature } from "ol";
 import VectorSource from "ol/source/Vector";
+import { fromLonLat,transform } from 'ol/proj';
+import EsriJSON from 'ol/format/EsriJSON.js';
 
 //style modules
 import { MapContainer } from 'components/styles/Map.styled'
@@ -22,6 +25,7 @@ import "./Map.css";
 //esri
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine.js";
 import Point from "@arcgis/core/geometry/Point.js";
+import Polyline from "@arcgis/core/geometry/Polyline.js";
 
 export const ReMap = (
 	{ 
@@ -41,7 +45,8 @@ export const ReMap = (
 		setSelectedRegions,
 		handleHideLoading,
 		setLoadingText,
-		setCurrentReachGeometryOnClick
+		setCurrentReachGeometryOnClick,
+		setCurrentReachGeometry
 	}) => 
 	
 	{
@@ -55,13 +60,17 @@ export const ReMap = (
 		return (!str || /^\s*$/.test(str) || str === null);
 	}
 
-	function drawCurrentReachOnClick(esriPaths){
+	function drawCurrentReachOnClick(esriPaths,mapObject){
 		// Transform ESRI paths into coordinates array for LineString
-		const coordinates = esriPaths.map(path => path.map(point => [point[0], point[1]]));
+		const coordinates = esriPaths.map(path => path.map(point =>[point[0], point[1]]))[0];
+		const geojsonObject = 
+			{
+				'type': 'LineString',
+				'coordinates': coordinates
+			}
 
-		// Create an OpenLayers LineString
-		const lineString = new LineString(coordinates);
-		setCurrentReachGeometryOnClick(lineString)
+		console.log(geojsonObject)
+		setCurrentReachGeometryOnClick(geojsonObject);
 	}
 	function getDistanceByZoom(zoom) {
 		switch (true) {
@@ -83,7 +92,7 @@ export const ReMap = (
 	}
 
 
-	function processStreamServiceQueryResult(zoom,point, name, response) {
+	function processStreamServiceQueryResult(zoom,point, name, response,mapObject) {
 		console.log(response.features)
 		var minStreamOrder = 5;
 		var soAttrName = null;
@@ -145,7 +154,7 @@ export const ReMap = (
 		console.log("STATION ID", stationID)
 		setCurrentStationID(stationID);
 		setCurrentStation(stationName);
-		drawCurrentReachOnClick(validFeatures[0].geometry.paths)
+		drawCurrentReachOnClick(validFeatures[0].geometry.paths, mapObject)
 	}
 
 
@@ -283,7 +292,7 @@ export const ReMap = (
 									returnGeometry: true, // I don't want geometry, but you might want to display it on a 'selection layer'
 									f: 'json',
 									inSR:102100,
-									outSR:102100
+									outSR:4326
 								}
 								const url = new URL(`${urlService}/5/query`);
 								url.search = new URLSearchParams(queryLayer5);
@@ -328,8 +337,9 @@ export const ReMap = (
 									});
 									
 									// processStreamServiceQueryResult(zoom,esriMapPoint,response.data)
-									processStreamServiceQueryResult(actual_zoom,esriMapPoint, 'streams_layer', response.data)
+									processStreamServiceQueryResult(actual_zoom,esriMapPoint, 'streams_layer', response.data, mapObject)
 									setCurrentProducts({type: "reset"});
+									setCurrentReachGeometry(null)
 									handleShow();
 									let dataRequest = {
 										station_id: stationID,

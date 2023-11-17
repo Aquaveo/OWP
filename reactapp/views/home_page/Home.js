@@ -429,6 +429,7 @@ function App(
           handleHideLoading={handleHideLoading}
           setLoadingText={setLoadingText}
           setCurrentReachGeometryOnClick={setCurrentReachGeometryOnClick}
+          setCurrentReachGeometry={setCurrentReachGeometry}
         >
           <CircularMenuComponent 
             handleShowRegionMenu={handleShowRegionMenu}
@@ -612,22 +613,45 @@ function App(
               {
                 currentReachGeometryOnClick &&
                 <VectorLayer
-                  name={`reach_on_click_from_region`}
-                  source= {
-                    new VectorSource({
-                      features: [currentReachGeometryOnClick]
+                name={`reach_on_click_from_region`}
+                source= {
+                  new VectorSource({
+                    format: new GeoJSON(),
+                    features: new GeoJSON(
+                      {
+                        dataProjection: 'EPSG:4326',
+                        featureProjection: 'EPSG:3857'
+                      }
+                    ).readFeatures(currentReachGeometryOnClick)
+                    })
+                }
+                style={
+                  new Style({
+                    stroke: new Stroke({
+                      color: 'green',
+                      width: 3,
+                    })
                   })
                 }
-                  style={
-                    new Style({
-                      stroke: new Stroke({
-                        color: '#f5e154',
-                        width: 3,
-                      })
-                    })
-                  }
-                  zIndex={5}
-                />
+                zIndex={4}
+              />
+                // <VectorLayer
+                //   name={`reach_on_click_from_region`}
+                //   source= {
+                //     new VectorSource({
+                //       features: [currentReachGeometryOnClick]
+                //   })
+                // }
+                //   style={
+                //     new Style({
+                //       stroke: new Stroke({
+                //         color: '#f5e154',
+                //         width: 3,
+                //       })
+                //     })
+                //   }
+                //   zIndex={4}
+                // />
               }
 
           </Layers>
