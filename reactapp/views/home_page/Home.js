@@ -507,8 +507,10 @@ function App(
           />
           <RegionFormFromHydroShare
             showAddRegionMenuFromHydroShare={showAddRegionMenuFromHydroShare}
-            toggleShowAddRegionMenuFromHydroShare={toggleShowAddRegionMenuFromHydroShare}
             hydroshareRegionsOptions={hydroshareRegionsOptions}
+            setAvailableRegions={setAvailableRegions}
+            setSelectedRegions={setSelectedRegions}
+            handleHideLoading={handleHideLoading}
           />
           <Layers>
 

@@ -14,8 +14,10 @@ import appAPI from "services/api/app";
 export const RegionFormFromHydroShare = (
     {
         showAddRegionMenuFromHydroShare,
-        toggleShowAddRegionMenuFromHydroShare,
-        hydroshareRegionsOptions
+        hydroshareRegionsOptions,
+        setAvailableRegions,
+        setSelectedRegions,
+        handleHideLoading
     }
 ) => {
   const { register, handleSubmit } = useForm();
@@ -23,6 +25,15 @@ export const RegionFormFromHydroShare = (
   const onSubmit = async (data) => {
     console.log(data); // Use the data as needed, like sending it to an API endpoint
     let responseRegions = await appAPI.saveUserRegionsFromHydroShareResource(data);
+    console.log(responseRegions)
+    if(responseRegions['msge'] === 'Error saving the Regions for current user'){
+      notifyError(responseRegions['msge']);
+    }
+    else{
+      setAvailableRegions(currentRegions => [...currentRegions, responseRegions['regions'][0]]);
+    }
+    setSelectedRegions({type:"reset", region: {}});
+    handleHideLoading();
   };
 
   return (

@@ -876,123 +876,80 @@ def saveUserRegionsFromHydroShareResource(request):
             )
             hs = HydroShare(auth=auth)
 
-            list_files = (
-                hs.resource("7838319ef89c4f2eb105026167e391f9")
-                .files.all()
-                .json()["results"]
-            )
+            list_files = hs.resource(resource_id).files.all().json()["results"]
             url_file = get_url_by_filename(list_files, "reaches_nhd_data.csv")
+            df = pd.read_csv(url_file, index_col=False)
             breakpoint()
-            df = pd.read_file(url_file)
-            geo_df = gpd.GeoDataFrame(df, crs=4326, geometry=df["geometry"])
+            df = df.drop(["Unnamed: 0"], axis=1)
+            df_reaches = gpd.GeoDataFrame(
+                df, crs=4326, geometry=gpd.GeoSeries.from_wkt(df["geometry"])
+            )
+            list_of_reaches = df_reaches["geometry"].tolist()
+            number_reaches = len(list_of_reaches)
             # basically convert back to geometry
             # second create the bounding box one more time
             # create the region model
             # create the reach model
             # append the reach model
 
-    #         # check for file extension
-    #         file_extension = file_data.name.split(".")[-1]
+            # Create an instance of the Region model
+            region_instance = Region(
+                name=region_name, region_type="file", user_name=user_name
+            )
+            session.add(region_instance)
+            session.commit()
 
-    #         if file_extension == "csv":
-    #             df_reaches = pd.read_csv(file_data)
-    #             list_of_reaches = df_reaches[column_id].tolist()
-    #             number_reaches = len(list_of_reaches)
-    #         # breakpoint()
+            new_user_region = (
+                session.query(Region.id, Region.number_reaches)
+                .filter(Region.user_name == user_name)
+                .filter(Region.name == region_name)
+            )
 
-    #         # Create an instance of the Region model
-    #         region_instance = Region(
-    #             name=region_name, region_type="file", user_name=user_name
-    #         )
-    #         session.add(region_instance)
-    #         session.commit()
+            new_user_region_id = new_user_region[0].id
+            df_reaches["region_id"] = new_user_region_id
+            # make the geometry from bounding box of all the geometries in the nhdp_mr
+            bounding_box = df_reaches.total_bounds
+            minx, miny, maxx, maxy = bounding_box
+            bbox_polygon = box(minx, miny, maxx, maxy)
+            geometry_collection = GeometryCollection([bbox_polygon])
+            geometry_collection_wkt = WKTElement(geometry_collection.wkt, srid=4326)
 
-    #         new_user_region = (
-    #             session.query(Region.id, Region.number_reaches)
-    #             .filter(Region.user_name == user_name)
-    #             .filter(Region.name == region_name)
-    #         )
+            df_reaches["geometry"] = df_reaches["geometry"].apply(
+                lambda x: WKTElement(x.wkt, srid=4326)
+            )
+            breakpoint()
 
-    #         new_user_region_id = new_user_region[0].id
+            df_reaches.to_sql(
+                name="reaches",
+                con=engine,
+                if_exists="append",
+                index=False,
+                dtype={"geometry": Geometry("LINESTRING", srid=4326)},
+            )
+            session.commit()
+            session.query(Region).filter(Region.user_name == user_name).filter(
+                Region.name == region_name
+            ).update({Region.number_reaches: number_reaches})
 
-    #         mr = NHD("flowline_mr")
-    #         # breakpoint()
-    #         list_df_nhdp = []
-    #         chunk_size = 3000
-    #         chunks = [
-    #             list_of_reaches[i : i + chunk_size]
-    #             for i in range(0, len(list_of_reaches), chunk_size)
-    #         ]
-    #         try:
-    #             for chunk in chunks:
-    #                 # nhdp_mr = mr.byids("COMID", list_of_reaches)
-    #                 nhdp_mr = mr.byids("COMID", chunk)
-    #                 list_df_nhdp.append(nhdp_mr)
-    #         except Exception as e:
-    #             print(e)
-    #         nhdp_mr_final = pd.concat(list_df_nhdp, ignore_index=True)
-    #         nhdp_mr_final["region_id"] = new_user_region_id
-    #         # breakpoint()
-    #         # make the geometry from bounding box of all the geometries in the nhdp_mr
-    #         bounding_box = nhdp_mr_final.total_bounds
-    #         minx, miny, maxx, maxy = bounding_box
-    #         bbox_polygon = box(minx, miny, maxx, maxy)
-    #         geometry_collection = GeometryCollection([bbox_polygon])
-    #         geometry_collection_wkt = WKTElement(geometry_collection.wkt, srid=4326)
+            session.query(Region).filter(Region.user_name == user_name).filter(
+                Region.name == region_name
+            ).update({Region.geom: geometry_collection_wkt})
 
-    #         nhdp_mr_final["geometry"] = nhdp_mr_final["geometry"].apply(
-    #             lambda x: WKTElement(x.wkt, srid=4326)
-    #         )
-    #         nhdp_mr_final.to_sql(
-    #             name="reaches",
-    #             con=engine,
-    #             if_exists="append",
-    #             index=False,
-    #             dtype={"geometry": Geometry("LINESTRING", srid=4326)},
-    #         )
-    #         session.commit()
+            session.commit()
 
-    #         session.query(Region).filter(Region.user_name == user_name).filter(
-    #             Region.name == region_name
-    #         ).update({Region.number_reaches: number_reaches})
-
-    #         session.query(Region).filter(Region.user_name == user_name).filter(
-    #             Region.name == region_name
-    #         ).update({Region.geom: geometry_collection_wkt})
-
-    #         session.commit()
-    #         # Close the connection to prevent issues
-    #         session.close()
-
-    #         # create Hydroshare_resource
-    #         s_buf = io.StringIO()
-    #         nhdp_mr_final.to_csv(s_buf)
-    #         response_dict = create_hydroshare_resource_for_region(
-    #             s_buf, "reaches_nhd_data.csv", region_name
-    #         )
-    #         # create json with comids
-    #         comids_json = create_reaches_json(nhdp_mr_final)
-    #         json_data = json.dumps(comids_json)
-    #         file_object = io.BytesIO(json_data.encode("utf-8"))
-
-    #         add_file_to_hydroshare_resource_for_region(
-    #             file_object,
-    #             "nwm_comids.json",
-    #             region_name,
-    #             response_dict["resource_id"],
-    #         )
-    #         response_obj["regions"] = []
-    #         region = {}
-    #         region["region_type"] = "file"
-    #         region["name"] = region_name
-    #         region["layer_color"] = None
-    #         region["user_name"] = user_name
-    #         region["geom"] = shapely.to_geojson(geometry_collection)
-    #         region["is_visible"] = False
-    #         region["total_reaches"] = number_reaches
-    #         response_obj["regions"].append(region)
-    #     else:
-    #         response_obj["msge"] = "Please, create an account, and login"
+            session.close()
+            response_obj["regions"] = []
+            region = {}
+            region["region_type"] = "file"
+            region["name"] = region_name
+            region["layer_color"] = None
+            region["user_name"] = user_name
+            region["geom"] = shapely.to_geojson(geometry_collection)
+            region["is_visible"] = False
+            region["total_reaches"] = number_reaches
+            response_obj["regions"].append(region)
+        else:
+            response_obj["msge"] = "Please, create an account, and login"
     except Exception as e:
         print(e)
         response_obj["msge"] = "Error saving the Regions for current user"
