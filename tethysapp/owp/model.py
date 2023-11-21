@@ -47,6 +47,441 @@ class Reach(Base):
     region_id = Column(Integer, ForeignKey("regions.id"))
     region = relationship("Region", back_populates="reach")
     geometry = Column(Geometry("LINESTRING"))
+    fdate = Column(String)
+    gnis_id = Column(String)
+    gnis_name = Column(String)
+    lengthkm = Column(Float)
+    reachcode = Column(String)
+    fcode = Column(Integer)
+    shape_length = Column(Float)
+    resolution = Column(String)
+    flowdir = Column(String)
+    ftype = Column(String)
+    comid = Column(Integer)
+    wbareacomi = Column(Integer)
+    streamleve = Column(Integer)
+    streamorde = Column(Integer)
+    streamcalc = Column(Integer)
+    fromnode = Column(Float)
+    tonode = Column(Float)
+    hydroseq = Column(Float)
+    levelpathi = Column(Float)
+    pathlength = Column(Float)
+    terminalpa = Column(Float)
+    arbolatesu = Column(Float)
+    divergence = Column(Integer)
+    startflag = Column(Integer)
+    terminalfl = Column(Integer)
+    dnlevel = Column(Integer)
+    uplevelpat = Column(Float)
+    uphydroseq = Column(Float)
+    dnlevelpat = Column(Float)
+    dnminorhyd = Column(Float)
+    dndraincou = Column(Integer)
+    dnhydroseq = Column(Float)
+    frommeas = Column(Float)
+    tomeas = Column(Float)
+    rtndiv = Column(Integer)
+    vpuin = Column(Integer)
+    vpuout = Column(Integer)
+    areasqkm = Column(Float)
+    totdasqkm = Column(Float)
+    divdasqkm = Column(Float)
+    tidal = Column(Float)
+    totma = Column(Float)
+    wbareatype = Column(String)
+    pathtimema = Column(Float)
+    hwnodesqkm = Column(Float)
+    maxelevraw = Column(Float)
+    minelevraw = Column(Float)
+    maxelevsmo = Column(Float)
+    minelevsmo = Column(Float)
+    slope = Column(Float)
+    elevfixed = Column(String)
+    hwtype = Column(String)
+    slopelenkm = Column(Float)
+    qa_ma = Column(Float)
+    va_ma = Column(Float)
+    qc_ma = Column(Float)
+    vc_ma = Column(Float)
+    qe_ma = Column(Float)
+    ve_ma = Column(Float)
+    qa_01 = Column(Float)
+    va_01 = Column(Float)
+    qc_01 = Column(Float)
+    vc_01 = Column(Float)
+    qe_01 = Column(Float)
+    ve_01 = Column(Float)
+    qa_02 = Column(Float)
+    va_02 = Column(Float)
+    qc_02 = Column(Float)
+    vc_02 = Column(Float)
+    qe_02 = Column(Float)
+    ve_02 = Column(Float)
+    qa_03 = Column(Float)
+    va_03 = Column(Float)
+    qc_03 = Column(Float)
+    vc_03 = Column(Float)
+    qe_03 = Column(Float)
+    ve_03 = Column(Float)
+    qa_04 = Column(Float)
+    va_04 = Column(Float)
+    qc_04 = Column(Float)
+    vc_04 = Column(Float)
+    qe_04 = Column(Float)
+    ve_04 = Column(Float)
+    qa_05 = Column(Float)
+    va_05 = Column(Float)
+    qc_05 = Column(Float)
+    vc_05 = Column(Float)
+    qe_05 = Column(Float)
+    ve_05 = Column(Float)
+    qa_06 = Column(Float)
+    va_06 = Column(Float)
+    qc_06 = Column(Float)
+    vc_06 = Column(Float)
+    qe_06 = Column(Float)
+    ve_06 = Column(Float)
+    qa_07 = Column(Float)
+    va_07 = Column(Float)
+    qc_07 = Column(Float)
+    vc_07 = Column(Float)
+    qe_07 = Column(Float)
+    ve_07 = Column(Float)
+    qa_08 = Column(Float)
+    va_08 = Column(Float)
+    qc_08 = Column(Float)
+    vc_08 = Column(Float)
+    qe_08 = Column(Float)
+    ve_08 = Column(Float)
+    qa_09 = Column(Float)
+    va_09 = Column(Float)
+    qc_09 = Column(Float)
+    vc_09 = Column(Float)
+    qe_09 = Column(Float)
+    ve_09 = Column(Float)
+    qa_10 = Column(Float)
+    va_10 = Column(Float)
+    qc_10 = Column(Float)
+    vc_10 = Column(Float)
+    qe_10 = Column(Float)
+    ve_10 = Column(Float)
+    qa_11 = Column(Float)
+    va_11 = Column(Float)
+    qc_11 = Column(Float)
+    vc_11 = Column(Float)
+    qe_11 = Column(Float)
+    ve_11 = Column(Float)
+    qa_12 = Column(Float)
+    va_12 = Column(Float)
+    qc_12 = Column(Float)
+    vc_12 = Column(Float)
+    qe_12 = Column(Float)
+    ve_12 = Column(Float)
+    lakefract = Column(Float)
+    surfarea = Column(Float)
+    rareahload = Column(Float)
+    rpuid = Column(String)
+    vpuid = Column(String)
+    enabled = Column(Integer)
+    keep_gaz_string = Column(String)
+
+    def __init__(
+        self,
+        fdate,
+        gnis_id,
+        gnis_name,
+        lengthkm,
+        reachcode,
+        fcode,
+        shape_length,
+        resolution,
+        flowdir,
+        ftype,
+        comid,
+        wbareacomi,
+        streamleve,
+        streamorde,
+        streamcalc,
+        fromnode,
+        tonode,
+        hydroseq,
+        levelpathi,
+        pathlength,
+        terminalpa,
+        arbolatesu,
+        divergence,
+        startflag,
+        terminalfl,
+        dnlevel,
+        uplevelpat,
+        uphydroseq,
+        dnlevelpat,
+        dnminorhyd,
+        dndraincou,
+        dnhydroseq,
+        frommeas,
+        tomeas,
+        rtndiv,
+        vpuin,
+        vpuout,
+        areasqkm,
+        totdasqkm,
+        divdasqkm,
+        tidal,
+        totma,
+        wbareatype,
+        pathtimema,
+        hwnodesqkm,
+        maxelevraw,
+        minelevraw,
+        maxelevsmo,
+        minelevsmo,
+        slope,
+        elevfixed,
+        hwtype,
+        slopelenkm,
+        qa_ma,
+        va_ma,
+        qc_ma,
+        vc_ma,
+        qe_ma,
+        ve_ma,
+        qa_01,
+        va_01,
+        qc_01,
+        vc_01,
+        qe_01,
+        ve_01,
+        qa_02,
+        va_02,
+        qc_02,
+        vc_02,
+        qe_02,
+        ve_02,
+        qa_03,
+        va_03,
+        qc_03,
+        vc_03,
+        qe_03,
+        ve_03,
+        qa_04,
+        va_04,
+        qc_04,
+        vc_04,
+        qe_04,
+        ve_04,
+        qa_05,
+        va_05,
+        qc_05,
+        vc_05,
+        qe_05,
+        ve_05,
+        qa_06,
+        va_06,
+        qc_06,
+        vc_06,
+        qe_06,
+        ve_06,
+        qa_07,
+        va_07,
+        qc_07,
+        vc_07,
+        qe_07,
+        ve_07,
+        qa_08,
+        va_08,
+        qc_08,
+        vc_08,
+        qe_08,
+        ve_08,
+        qa_09,
+        va_09,
+        qc_09,
+        vc_09,
+        qe_09,
+        ve_09,
+        qa_10,
+        va_10,
+        qc_10,
+        vc_10,
+        qe_10,
+        ve_10,
+        qa_11,
+        va_11,
+        qc_11,
+        vc_11,
+        qe_11,
+        ve_11,
+        qa_12,
+        va_12,
+        qc_12,
+        vc_12,
+        qe_12,
+        ve_12,
+        lakefract,
+        surfarea,
+        rareahload,
+        rpuid,
+        vpuid,
+        enabled,
+        keep_gaz_string,
+    ):
+        """
+        Constructor
+        """
+
+        self.fdate = fdate
+        self.gnis_id = gnis_id
+        self.gnis_name = gnis_name
+        self.lengthkm = lengthkm
+        self.reachcode = reachcode
+        self.fcode = fcode
+        self.shape_length = shape_length
+        self.resolution = resolution
+        self.flowdir = flowdir
+        self.ftype = ftype
+        self.comid = comid
+        self.wbareacomi = wbareacomi
+        self.streamleve = streamleve
+        self.streamorde = streamorde
+        self.streamcalc = streamcalc
+        self.fromnode = fromnode
+        self.tonode = tonode
+        self.hydroseq = hydroseq
+        self.levelpathi = levelpathi
+        self.pathlength = pathlength
+        self.terminalpa = terminalpa
+        self.arbolatesu = arbolatesu
+        self.divergence = divergence
+        self.startflag = startflag
+        self.terminalfl = terminalfl
+        self.dnlevel = dnlevel
+        self.uplevelpat = uplevelpat
+        self.uphydroseq = uphydroseq
+        self.dnlevelpat = dnlevelpat
+        self.dnminorhyd = dnminorhyd
+        self.dndraincou = dndraincou
+        self.dnhydroseq = dnhydroseq
+        self.frommeas = frommeas
+        self.tomeas = tomeas
+        self.rtndiv = rtndiv
+        self.vpuin = vpuin
+        self.vpuout = vpuout
+        self.areasqkm = areasqkm
+        self.totdasqkm = totdasqkm
+        self.divdasqkm = divdasqkm
+        self.tidal = tidal
+        self.totma = totma
+        self.wbareatype = wbareatype
+        self.pathtimema = pathtimema
+        self.hwnodesqkm = hwnodesqkm
+        self.maxelevraw = maxelevraw
+        self.minelevraw = minelevraw
+        self.maxelevsmo = maxelevsmo
+        self.minelevsmo = minelevsmo
+        self.slope = slope
+        self.elevfixed = elevfixed
+        self.hwtype = hwtype
+        self.slopelenkm = slopelenkm
+        self.qa_ma = qa_ma
+        self.va_ma = va_ma
+        self.qc_ma = qc_ma
+        self.vc_ma = vc_ma
+        self.qe_ma = qe_ma
+        self.ve_ma = ve_ma
+        self.qa_01 = qa_01
+        self.va_01 = va_01
+        self.qc_01 = qc_01
+        self.vc_01 = vc_01
+        self.qe_01 = qe_01
+        self.ve_01 = ve_01
+        self.qa_02 = qa_02
+        self.va_02 = va_02
+        self.qc_02 = qc_02
+        self.vc_02 = vc_02
+        self.qe_02 = qe_02
+        self.ve_02 = ve_02
+        self.qa_03 = qa_03
+        self.va_03 = va_03
+        self.qc_03 = qc_03
+        self.vc_03 = vc_03
+        self.qe_03 = qe_03
+        self.ve_03 = ve_03
+        self.qa_04 = qa_04
+        self.va_04 = va_04
+        self.qc_04 = qc_04
+        self.vc_04 = vc_04
+        self.qe_04 = qe_04
+        self.ve_04 = ve_04
+        self.qa_05 = qa_05
+        self.va_05 = va_05
+        self.qc_05 = qc_05
+        self.vc_05 = vc_05
+        self.qe_05 = qe_05
+        self.ve_05 = ve_05
+        self.qa_06 = qa_06
+        self.va_06 = va_06
+        self.qc_06 = qc_06
+        self.vc_06 = vc_06
+        self.qe_06 = qe_06
+        self.ve_06 = ve_06
+        self.qa_07 = qa_07
+        self.va_07 = va_07
+        self.qc_07 = qc_07
+        self.vc_07 = vc_07
+        self.qe_07 = qe_07
+        self.ve_07 = ve_07
+        self.qa_08 = qa_08
+        self.va_08 = va_08
+        self.qc_08 = qc_08
+        self.vc_08 = vc_08
+        self.qe_08 = qe_08
+        self.ve_08 = ve_08
+        self.qa_09 = qa_09
+        self.va_09 = va_09
+        self.qc_09 = qc_09
+        self.vc_09 = vc_09
+        self.qe_09 = qe_09
+        self.ve_09 = ve_09
+        self.qa_10 = qa_10
+        self.va_10 = va_10
+        self.qc_10 = qc_10
+        self.vc_10 = vc_10
+        self.qe_10 = qe_10
+        self.ve_10 = ve_10
+        self.qa_11 = qa_11
+        self.va_11 = va_11
+        self.qc_11 = qc_11
+        self.vc_11 = vc_11
+        self.qe_11 = qe_11
+        self.ve_11 = ve_11
+        self.qa_12 = qa_12
+        self.va_12 = va_12
+        self.qc_12 = qc_12
+        self.vc_12 = vc_12
+        self.qe_12 = qe_12
+        self.ve_12 = ve_12
+        self.lakefract = lakefract
+        self.surfarea = surfarea
+        self.rareahload = rareahload
+        self.rpuid = rpuid
+        self.vpuid = vpuid
+        self.enabled = enabled
+        self.keep_gaz_string = keep_gaz_string
+
+
+'''
+class Reach(Base):
+
+
+    __tablename__ = "reaches"
+
+    # Columns
+    id = Column(Integer, primary_key=True)
+    region_id = Column(Integer, ForeignKey("regions.id"))
+    region = relationship("Region", back_populates="reach")
+    geometry = Column(Geometry("LINESTRING"))
     OBJECTID = Column(String)
     FDATE = Column(String)
     GNIS_ID = Column(String)
@@ -96,19 +531,19 @@ class Reach(Base):
     SLOPE = Column(Float)
     ELEVFIXED = Column(String)
     HWTYPE = Column(String)
-    SLOPELENKM = Column(Float)
-    QA_MA = Column(Float)
-    VA_MA = Column(Float)
-    QC_MA = Column(Float)
-    VC_MA = Column(Float)
-    QE_MA = Column(Float)
-    VE_MA = Column(Float)
-    QA_01 = Column(Float)
-    VA_01 = Column(Float)
-    QC_01 = Column(Float)
-    VC_01 = Column(Float)
-    QE_01 = Column(Float)
-    VE_01 = Column(Float)
+    slopelenkm = Column(Float)
+    qa_ma = Column(Float)
+    va_ma = Column(Float)
+    qc_ma = Column(Float)
+    vc_ma = Column(Float)
+    qe_ma = Column(Float)
+    ve_ma = Column(Float)
+    qa_01 = Column(Float)
+    va_01 = Column(Float)
+    qc_01 = Column(Float)
+    vc_01 = Column(Float)
+    qe_01 = Column(Float)
+    ve_01 = Column(Float)
     QA_02 = Column(Float)
     VA_02 = Column(Float)
     QC_02 = Column(Float)
@@ -231,19 +666,19 @@ class Reach(Base):
         SLOPE,
         ELEVFIXED,
         HWTYPE,
-        SLOPELENKM,
-        QA_MA,
-        VA_MA,
-        QC_MA,
-        VC_MA,
-        QE_MA,
-        VE_MA,
-        QA_01,
-        VA_01,
-        QC_01,
-        VC_01,
-        QE_01,
-        VE_01,
+        slopelenkm,
+        qa_ma,
+        va_ma,
+        qc_ma,
+        vc_ma,
+        qe_ma,
+        ve_ma,
+        qa_01,
+        va_01,
+        qc_01,
+        vc_01,
+        qe_01,
+        ve_01,
         QA_02,
         VA_02,
         QC_02,
@@ -368,19 +803,19 @@ class Reach(Base):
         self.SLOPE = SLOPE
         self.ELEVFIXED = ELEVFIXED
         self.HWTYPE = HWTYPE
-        self.SLOPELENKM = SLOPELENKM
-        self.QA_MA = QA_MA
-        self.VA_MA = VA_MA
-        self.QC_MA = QC_MA
-        self.VC_MA = VC_MA
-        self.QE_MA = QE_MA
-        self.VE_MA = VE_MA
-        self.QA_01 = QA_01
-        self.VA_01 = VA_01
-        self.QC_01 = QC_01
-        self.VC_01 = VC_01
-        self.QE_01 = QE_01
-        self.VE_01 = VE_01
+        self.slopelenkm = slopelenkm
+        self.qa_ma = qa_ma
+        self.va_ma = va_ma
+        self.qc_ma = qc_ma
+        self.vc_ma = vc_ma
+        self.qe_ma = qe_ma
+        self.ve_ma = ve_ma
+        self.qa_01 = qa_01
+        self.va_01 = va_01
+        self.qc_01 = qc_01
+        self.vc_01 = vc_01
+        self.qe_01 = qe_01
+        self.ve_01 = ve_01
         self.QA_02 = QA_02
         self.VA_02 = VA_02
         self.QC_02 = QC_02
@@ -451,3 +886,7 @@ class Reach(Base):
         self.VPUID = VPUID
         self.Enabled = Enabled
         self.keep_gaz_string = keep_gaz_string
+
+
+
+'''

@@ -18,7 +18,7 @@ import os
 from sqlalchemy.orm import sessionmaker
 from .model import Base, Region, Reach
 from .app import Owp as app
-from shapely.geometry import GeometryCollection, box
+from shapely.geometry import GeometryCollection, box, MultiLineString
 import shapely.wkt
 from .model import Region
 import shapely
@@ -70,12 +70,6 @@ def create_hydroshare_resource_for_region(file_obj, file_name, region_name):
     hydroshare_user = app.get_custom_setting("hydroshare_username")
     hydroshare_passwd = app.get_custom_setting("hydroshare_password")
 
-    client_id = app.get_custom_setting("hydroshare_client_id")
-    client_secret = app.get_custom_setting("hydroshare_client_secret")
-
-    # auth = HydroShareAuthOAuth2(
-    #     client_id, client_secret, username=hydroshare_user, password=hydroshare_passwd
-    # )
     auth = HydroShareAuthBasic(username=hydroshare_user, password=hydroshare_passwd)
     abstract = f"{region_name} Region created using the OWP Hydroviewer"
     title = f"{region_name}"
@@ -132,9 +126,14 @@ def add_file_to_hydroshare_resource_for_region(
 
 
 def create_reaches_json(df):
-    data = df["COMID"].tolist()
+    data = df["comid"].tolist()
     result = [{"comid": comid} for comid in data]
     return result
+
+
+# Define a function to convert MultiLineString with 3 dimensions to 2 dimensions
+def _to_2d(x, y, z):
+    return tuple(filter(None, [x, y]))
 
 
 @controller
@@ -179,8 +178,9 @@ def saveUserRegionsFromReaches(request):
 
             new_user_region_id = new_user_region[0].id
 
-            mr = NHD("flowline_mr")
-            # breakpoint()
+            # mr = NHD("flowline_mr")
+            mr = WaterData("nhdflowline_network")
+
             list_df_nhdp = []
             chunk_size = 3000
             chunks = [
@@ -190,11 +190,15 @@ def saveUserRegionsFromReaches(request):
             try:
                 for chunk in chunks:
                     # nhdp_mr = mr.byids("COMID", list_of_reaches)
-                    nhdp_mr = mr.byids("COMID", chunk)
+                    nhdp_mr = mr.byid("comid", chunk)
                     list_df_nhdp.append(nhdp_mr)
             except Exception as e:
                 print(e)
             nhdp_mr_final = pd.concat(list_df_nhdp, ignore_index=True)
+            nhdp_mr_final["geometry"] = nhdp_mr_final["geometry"].apply(
+                lambda geom: shapely.ops.transform(_to_2d, geom)
+            )
+            nhdp_mr_final = nhdp_mr_final.explode(index_parts=False)
             nhdp_mr_final["region_id"] = new_user_region_id
             # breakpoint()
             # make the geometry from bounding box of all the geometries in the nhdp_mr
@@ -207,6 +211,8 @@ def saveUserRegionsFromReaches(request):
             nhdp_mr_final["geometry"] = nhdp_mr_final["geometry"].apply(
                 lambda x: WKTElement(x.wkt, srid=4326)
             )
+            breakpoint()
+
             nhdp_mr_final.to_sql(
                 name="reaches",
                 con=engine,
@@ -230,7 +236,7 @@ def saveUserRegionsFromReaches(request):
 
             # create Hydroshare_resource
             s_buf = io.StringIO()
-            nhdp_mr_final.to_csv(s_buf)
+            nhdp_mr_final.to_csv(s_buf, index=False)
             response_dict = create_hydroshare_resource_for_region(
                 s_buf, "reaches_nhd_data.csv", region_name
             )
@@ -377,7 +383,7 @@ def saveUserRegions(request):
             new_user_region_id = new_user_region[0].id
 
             list_geoms = df_copy["geom"].tolist()
-            mr = NHD("flowline_mr")
+            mr = WaterData("nhdflowline_network")
 
             total_reaches = 0
             # breakpoint()
@@ -387,16 +393,21 @@ def saveUserRegions(request):
                 # nhdp_mr = mr.bygeom(geometry_collection_clipping.bounds)
                 try:
                     nhdp_mr = mr.bygeom(geom)
+                    # breakpoint()
                     list_df_nhdp.append(nhdp_mr)
                 except Exception as e:
                     print(e)
                     continue
                 nhdp_mr["region_id"] = new_user_region_id
                 # breakpoint()
-
+                nhdp_mr["geometry"] = nhdp_mr["geometry"].apply(
+                    lambda geom: shapely.ops.transform(_to_2d, geom)
+                )
+                nhdp_mr = nhdp_mr.explode(index_parts=False)
                 nhdp_mr["geometry"] = nhdp_mr["geometry"].apply(
                     lambda x: WKTElement(x.wkt, srid=4326)
                 )
+
                 nhdp_mr.to_sql(
                     name="reaches",
                     con=engine,
@@ -411,7 +422,7 @@ def saveUserRegions(request):
 
             # create Hydroshare_resource
             s_buf = io.StringIO()
-            nhdp_mr_final.to_csv(s_buf)
+            nhdp_mr_final.to_csv(s_buf, index=False)
             response_dict = create_hydroshare_resource_for_region(
                 s_buf, "reaches_nhd_data.csv", region_name
             )
@@ -712,16 +723,16 @@ async def getUserReachesPerRegionsMethod(
         page_offset = page_number * page_limit
         only_user_reaches_regions = (
             session.query(
-                Reach.GNIS_NAME,
-                Reach.COMID,
-                Reach.StreamOrde,
-                Reach.StreamCalc,
-                Reach.QA_MA,
+                Reach.gnis_name,
+                Reach.comid,
+                Reach.streamorde,
+                Reach.streamcalc,
+                Reach.qa_ma,
             )
             .join(Region)
             .filter(Region.name == region_name)
             .filter(Region.user_name == user_name)
-            .order_by(Reach.GNIS_NAME.desc())
+            .order_by(Reach.gnis_name.desc())
         )
         json_response["total_reaches"] = len(only_user_reaches_regions.all())
 
@@ -729,8 +740,8 @@ async def getUserReachesPerRegionsMethod(
             # breakpoint()
             only_user_reaches_regions = only_user_reaches_regions.filter(
                 or_(
-                    cast(Reach.COMID, String).like(f"%{search_term}%"),
-                    cast(Reach.GNIS_NAME, String).like(f"%{search_term}%"),
+                    cast(Reach.comid, String).like(f"%{search_term}%"),
+                    cast(Reach.gnis_name, String).like(f"%{search_term}%"),
                 )
             )
         if page_number > 0:
@@ -783,13 +794,13 @@ async def getUserSpecificReachMethod(is_authenticated, user_name, reach_comid):
 
         reach_data = (
             session.query(
-                Reach.COMID,
+                Reach.comid,
                 Reach.geometry.ST_AsGeoJSON(),
             )
             .join(Region)
-            .filter(cast(Reach.COMID, String).like(f"%{reach_comid}%"))
+            .filter(cast(Reach.comid, String).like(f"%{reach_comid}%"))
             .filter(Region.user_name == user_name)
-            .order_by(Reach.COMID.desc())
+            .order_by(Reach.comid.desc())
             .first()
         )
 
@@ -879,18 +890,12 @@ def saveUserRegionsFromHydroShareResource(request):
             list_files = hs.resource(resource_id).files.all().json()["results"]
             url_file = get_url_by_filename(list_files, "reaches_nhd_data.csv")
             df = pd.read_csv(url_file, index_col=False)
-            breakpoint()
-            df = df.drop(["Unnamed: 0"], axis=1)
+            # breakpoint()
             df_reaches = gpd.GeoDataFrame(
                 df, crs=4326, geometry=gpd.GeoSeries.from_wkt(df["geometry"])
             )
             list_of_reaches = df_reaches["geometry"].tolist()
             number_reaches = len(list_of_reaches)
-            # basically convert back to geometry
-            # second create the bounding box one more time
-            # create the region model
-            # create the reach model
-            # append the reach model
 
             # Create an instance of the Region model
             region_instance = Region(
