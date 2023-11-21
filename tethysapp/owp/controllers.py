@@ -807,3 +807,195 @@ async def getUserSpecificReachMethod(is_authenticated, user_name, reach_comid):
     json_response["data"] = region_obj
 
     return json_response
+
+
+@measure_async
+async def getUserSpecificHydroShareRegions(is_authenticated):
+    json_response = {}
+    json_response["type"] = "hydroshare_regions_notifications"
+    json_response["command"] = "show_hydroshare_regions_notifications"
+
+    if is_authenticated:
+        print("authenticated getUserSpecificReachMethod")
+        hydroshare_user = await sync_to_async(app.get_custom_setting)(
+            "hydroshare_username"
+        )
+        hydroshare_passwd = await sync_to_async(app.get_custom_setting)(
+            "hydroshare_password"
+        )
+        auth = HydroShareAuthBasic(username=hydroshare_user, password=hydroshare_passwd)
+        hs = HydroShare(auth=auth)
+        resources = hs.resources(subject=["OWP", "NHD", "CIROH", "NWM", "comid_json"])
+        # breakpoint()
+        json_response["data"] = []
+        for resource in resources:
+            resource_data = {}
+            resource_data["resource_id"] = resource["resource_id"]
+            resource_data["resource_title"] = resource["resource_title"]
+            json_response["data"].append(resource_data)
+        json_response["mssg"] = "completed"
+
+    else:
+        json_response["mssg"] = "not aunthenticated"
+        json_response["data"] = {}
+
+    # json_response["data"] = resources
+
+    return json_response
+
+
+def get_url_by_filename(file_info, file_name):
+    for file_data in file_info:
+        if file_data["file_name"] == file_name:
+            return file_data["url"]
+    return None  # Return None if file_name not found in the list
+
+
+@controller
+@measure_sync
+def saveUserRegionsFromHydroShareResource(request):
+    response_obj = {}
+    response_obj["msge"] = "success"
+    try:
+        if request.user.is_authenticated:
+            # Create a session object in preparation for interacting with the database
+            engine = app.get_persistent_store_database("user_data")
+            SessionMaker = app.get_persistent_store_database(
+                "user_data", as_sessionmaker=True
+            )
+            session = SessionMaker()
+            user_name = request.user.username
+            region_name = request.POST.get("regionName")
+            resource_id = request.POST.get("hydrosharePublicRegions")
+
+            # please create own function to auth and return hs object
+            hydroshare_user = app.get_custom_setting("hydroshare_username")
+            hydroshare_passwd = app.get_custom_setting("hydroshare_password")
+            auth = HydroShareAuthBasic(
+                username=hydroshare_user, password=hydroshare_passwd
+            )
+            hs = HydroShare(auth=auth)
+
+            list_files = (
+                hs.resource("7838319ef89c4f2eb105026167e391f9")
+                .files.all()
+                .json()["results"]
+            )
+            url_file = get_url_by_filename(list_files, "reaches_nhd_data.csv")
+            breakpoint()
+            df = pd.read_file(url_file)
+            geo_df = gpd.GeoDataFrame(df, crs=4326, geometry=df["geometry"])
+            # basically convert back to geometry
+            # second create the bounding box one more time
+            # create the region model
+            # create the reach model
+            # append the reach model
+
+    #         # check for file extension
+    #         file_extension = file_data.name.split(".")[-1]
+
+    #         if file_extension == "csv":
+    #             df_reaches = pd.read_csv(file_data)
+    #             list_of_reaches = df_reaches[column_id].tolist()
+    #             number_reaches = len(list_of_reaches)
+    #         # breakpoint()
+
+    #         # Create an instance of the Region model
+    #         region_instance = Region(
+    #             name=region_name, region_type="file", user_name=user_name
+    #         )
+    #         session.add(region_instance)
+    #         session.commit()
+
+    #         new_user_region = (
+    #             session.query(Region.id, Region.number_reaches)
+    #             .filter(Region.user_name == user_name)
+    #             .filter(Region.name == region_name)
+    #         )
+
+    #         new_user_region_id = new_user_region[0].id
+
+    #         mr = NHD("flowline_mr")
+    #         # breakpoint()
+    #         list_df_nhdp = []
+    #         chunk_size = 3000
+    #         chunks = [
+    #             list_of_reaches[i : i + chunk_size]
+    #             for i in range(0, len(list_of_reaches), chunk_size)
+    #         ]
+    #         try:
+    #             for chunk in chunks:
+    #                 # nhdp_mr = mr.byids("COMID", list_of_reaches)
+    #                 nhdp_mr = mr.byids("COMID", chunk)
+    #                 list_df_nhdp.append(nhdp_mr)
+    #         except Exception as e:
+    #             print(e)
+    #         nhdp_mr_final = pd.concat(list_df_nhdp, ignore_index=True)
+    #         nhdp_mr_final["region_id"] = new_user_region_id
+    #         # breakpoint()
+    #         # make the geometry from bounding box of all the geometries in the nhdp_mr
+    #         bounding_box = nhdp_mr_final.total_bounds
+    #         minx, miny, maxx, maxy = bounding_box
+    #         bbox_polygon = box(minx, miny, maxx, maxy)
+    #         geometry_collection = GeometryCollection([bbox_polygon])
+    #         geometry_collection_wkt = WKTElement(geometry_collection.wkt, srid=4326)
+
+    #         nhdp_mr_final["geometry"] = nhdp_mr_final["geometry"].apply(
+    #             lambda x: WKTElement(x.wkt, srid=4326)
+    #         )
+    #         nhdp_mr_final.to_sql(
+    #             name="reaches",
+    #             con=engine,
+    #             if_exists="append",
+    #             index=False,
+    #             dtype={"geometry": Geometry("LINESTRING", srid=4326)},
+    #         )
+    #         session.commit()
+
+    #         session.query(Region).filter(Region.user_name == user_name).filter(
+    #             Region.name == region_name
+    #         ).update({Region.number_reaches: number_reaches})
+
+    #         session.query(Region).filter(Region.user_name == user_name).filter(
+    #             Region.name == region_name
+    #         ).update({Region.geom: geometry_collection_wkt})
+
+    #         session.commit()
+    #         # Close the connection to prevent issues
+    #         session.close()
+
+    #         # create Hydroshare_resource
+    #         s_buf = io.StringIO()
+    #         nhdp_mr_final.to_csv(s_buf)
+    #         response_dict = create_hydroshare_resource_for_region(
+    #             s_buf, "reaches_nhd_data.csv", region_name
+    #         )
+    #         # create json with comids
+    #         comids_json = create_reaches_json(nhdp_mr_final)
+    #         json_data = json.dumps(comids_json)
+    #         file_object = io.BytesIO(json_data.encode("utf-8"))
+
+    #         add_file_to_hydroshare_resource_for_region(
+    #             file_object,
+    #             "nwm_comids.json",
+    #             region_name,
+    #             response_dict["resource_id"],
+    #         )
+    #         response_obj["regions"] = []
+    #         region = {}
+    #         region["region_type"] = "file"
+    #         region["name"] = region_name
+    #         region["layer_color"] = None
+    #         region["user_name"] = user_name
+    #         region["geom"] = shapely.to_geojson(geometry_collection)
+    #         region["is_visible"] = False
+    #         region["total_reaches"] = number_reaches
+    #         response_obj["regions"].append(region)
+    #     else:
+    #         response_obj["msge"] = "Please, create an account, and login"
+    except Exception as e:
+        print(e)
+        response_obj["msge"] = "Error saving the Regions for current user"
+
+    # breakpoint()
+    return JsonResponse(response_obj)

@@ -14,6 +14,7 @@ function App() {
   const [showMainRegionsMenu, setShowMainRegionsMenu] = useState(false);
   const [showRegionsMenu, setShowRegionsMenu] =  useState(false);
   const [showReachesListMenu, setShowReachesListMenu] =  useState(false);
+  const [showAddRegionMenuFromHydroShare, setShowAddRegionMenuFromHydroShare] = useState(false);
   const [navVisible, setNavVisible] = useState(false);
 
 
@@ -26,12 +27,14 @@ function App() {
   const handleShowReachesListRegionMenu = () => {
     setShowReachesListMenu(true);
     setShowRegionsMenu(false);
+    setShowAddRegionMenuFromHydroShare(false);
     hideAllUserRegions();
   };
 
   const handleShowRegionMenu = () => {
     setShowRegionsMenu(true);
     setShowReachesListMenu(false);
+    setShowAddRegionMenuFromHydroShare(false);
     hideAllUserRegions();
   };
 
@@ -39,12 +42,24 @@ function App() {
     setShowMainRegionsMenu(true);
   };
 
+  const handleShowAddRegionMenuFromHydroShare = () => {
+    setShowAddRegionMenuFromHydroShare(true);
+    setShowRegionsMenu(false);
+    setShowReachesListMenu(false);
+    hideAllUserRegions();
+  };
+
+
   const toggleAddRegionMenu = () => {
     setShowRegionsMenu((prevValue) => !prevValue);
   };
 
   const toggleReachesListRegionMenu = () => {
     setShowReachesListMenu((prevValue) => !prevValue);
+  };
+
+  const toggleShowAddRegionMenuFromHydroShare = () => {
+    setShowAddRegionMenuFromHydroShare((prevValue) => !prevValue);
   };
 
 
@@ -86,6 +101,9 @@ function App() {
                       availableRegions={availableRegions} 
                       showMainRegionsMenu={showMainRegionsMenu}
                       handleShowMainRegionMenu={handleShowMainRegionMenu}
+                      showAddRegionMenuFromHydroShare={showAddRegionMenuFromHydroShare}
+                      handleShowAddRegionMenuFromHydroShare={handleShowAddRegionMenuFromHydroShare}
+                      toggleShowAddRegionMenuFromHydroShare={toggleShowAddRegionMenuFromHydroShare}
                     />} 
                     key='route-home' />,
                 <Route path={PATH_INFO} element={<LearnReact />} key='route-learn' />

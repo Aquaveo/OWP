@@ -4,7 +4,8 @@ from .controllers import (
     updateForecastData,
     getUserRegionsMethod,
     getUserReachesPerRegionsMethod,
-    getUserSpecificReachMethod
+    getUserSpecificReachMethod,
+    getUserSpecificHydroShareRegions,
 )
 
 from tethys_sdk.routing import consumer
@@ -69,6 +70,18 @@ class DataConsumer(AsyncWebsocketConsumer):
                 json_obj,
             )
 
+        if (
+            "type" in text_data_json
+            and text_data_json["type"] == "retrieve_hydroshare_regions"
+        ):
+            json_obj = await getUserSpecificHydroShareRegions(
+                self.scope["user"].is_authenticated,
+            )
+            await self.channel_layer.group_send(
+                "notifications_owp",
+                json_obj,
+            )
+
         # print(mssge_string)
         # await self.send(text_data)
 
@@ -124,7 +137,7 @@ class DataConsumer(AsyncWebsocketConsumer):
 
     async def reach_notifications(self, event):
         # print(event)
-        print("region_notifications from consumer")
+        print("reach_notifications from consumer")
 
         message = event["mssg"]
         command = event["command"]
@@ -134,7 +147,22 @@ class DataConsumer(AsyncWebsocketConsumer):
             "message": message,
             "command": command,
             "data": data,
-            "total_reaches": event['total_reaches']
+            "total_reaches": event["total_reaches"],
+        }
+        await self.send(text_data=json.dumps(resp_obj))
+
+    async def hydroshare_regions_notifications(self, event):
+        # print(event)
+        print("hydroshare_regions_notifications from consumer")
+
+        message = event["mssg"]
+        command = event["command"]
+        data = event["data"]
+
+        resp_obj = {
+            "message": message,
+            "command": command,
+            "data": data,
         }
         await self.send(text_data=json.dumps(resp_obj))
 

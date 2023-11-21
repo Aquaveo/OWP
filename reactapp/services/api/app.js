@@ -24,6 +24,9 @@ const appAPI = {
     saveUserRegionsFromReaches:(requestData) => {
         return apiClient.post(`${APP_ROOT_URL}saveUserRegionsFromReaches/`, requestData);
     },
+    saveUserRegionsFromHydroShareResource:(requestData) => {
+        return apiClient.post(`${APP_ROOT_URL}saveUserRegionsFromHydroShareResource/`, requestData);
+    },
 };
 
 export default appAPI;

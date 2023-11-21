@@ -1,6 +1,6 @@
 import { BsLayersHalf } from "react-icons/bs";
 import { TbLassoPolygon } from "react-icons/tb";
-import { MdTimeline } from "react-icons/md";
+import { MdTimeline, MdOutlineCloud } from "react-icons/md";
 import { CustomHamburgerStyle } from "components/styles/CustomHamburger.styled";
 
  
@@ -10,7 +10,7 @@ import {
   CircleMenuItem,
 } from "react-circular-menu";
 
-export const CircularMenuComponent = ({handleShowRegionMenu,handleShowReachesListRegionMenu}) => {
+export const CircularMenuComponent = ({handleShowRegionMenu,handleShowReachesListRegionMenu,handleShowAddRegionMenuFromHydroShareWithAsync}) => {
     //make the menu dissapear here//
     // make a function to toogle off the menu
     // make the add menu to appear
@@ -27,10 +27,12 @@ export const CircularMenuComponent = ({handleShowRegionMenu,handleShowReachesLis
 
 
           <CircleMenuItem 
-              tooltip="Add Layers"
+              tooltip="Create Region from HydroShare"
               className="custom-circle-menu-item"
+              onClick={() => handleShowAddRegionMenuFromHydroShareWithAsync() }
+
           >
-            <BsLayersHalf />
+            <MdOutlineCloud/>
 
           </CircleMenuItem>
 
@@ -44,7 +46,7 @@ export const CircularMenuComponent = ({handleShowRegionMenu,handleShowReachesLis
 
           </CircleMenuItem>
           <CircleMenuItem 
-              tooltip="Create Region from Geometry"
+              tooltip="Create Region from Polygon"
               onClick={() => handleShowRegionMenu() }
               className="custom-circle-menu-item"
           >

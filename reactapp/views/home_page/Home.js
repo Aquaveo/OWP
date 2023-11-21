@@ -16,6 +16,7 @@ import { SideMenuWrapper } from 'components/menus/SideMenuRegions';
 import { RegionMenuWrapper } from 'components/menus/RegionMenu';
 import { CircularMenuComponent } from 'components/customHamburger/customHamburger';
 import { ReachListMenu } from "components/menus/ReachListBasedMenu";
+import { RegionFormFromHydroShare } from "components/menus/AddRegionMenuFromHydroShare";
 //Hooks components
 import { useEffect, useState, useReducer, useRef } from 'react';
 
@@ -55,14 +56,18 @@ function App(
     setAvailableRegions, 
     availableRegions,
     showMainRegionsMenu,
-    handleShowMainRegionMenu
+    handleShowMainRegionMenu,
+    showAddRegionMenuFromHydroShare,
+    handleShowAddRegionMenuFromHydroShare,
+    toggleShowAddRegionMenuFromHydroShare
   }
 ) 
   {
   
   const socketRef = useRef();
-  const [currentReachGeometryOnClick, setCurrentReachGeometryOnClick] = useState(null)
 
+  const [hydroshareRegionsOptions, setHydroShareRegionsOptions] = useState([])
+  const [currentReachGeometryOnClick, setCurrentReachGeometryOnClick] = useState(null)
   const [currentReachGeometry, setCurrentReachGeometry] = useState(null)
   // const [curentRegion, setCurrentRegion] = useState({});
   const [loadingText, setLoadingText] = useState("Loading Layers ...")
@@ -284,6 +289,15 @@ function App(
   const [isAccordionOpen, setAccordionOpen] = useState(false);
   const pagesLimit = 50;
 
+  function handleShowAddRegionMenuFromHydroShareWithAsync(){
+    handleShowAddRegionMenuFromHydroShare();
+    //send mesage to get the different public resources
+    socketRef.current.send(
+      JSON.stringify({
+        type: "retrieve_hydroshare_regions",
+      })
+    );
+  }
 
   useEffect(() => {
     /* 
@@ -349,7 +363,10 @@ function App(
         let responseRegions_obj = JSON.parse(data['data']['geometry'])
         setCurrentReachGeometry(responseRegions_obj)
       }
-
+      if(command ==='show_hydroshare_regions_notifications'){
+        console.log(data['data'])
+        setHydroShareRegionsOptions(data['data'])
+      }
 
     }
 
@@ -380,6 +397,9 @@ function App(
     //send message to web socket to start again 
     handlePlotUpdate();
   },[currentStationID])
+
+
+
 
 
   useEffect(() => {
@@ -434,6 +454,7 @@ function App(
           <CircularMenuComponent 
             handleShowRegionMenu={handleShowRegionMenu}
             handleShowReachesListRegionMenu={handleShowReachesListRegionMenu}
+            handleShowAddRegionMenuFromHydroShareWithAsync={handleShowAddRegionMenuFromHydroShareWithAsync}
           />
 
           <RegionMenuWrapper 
@@ -483,6 +504,11 @@ function App(
             handleHideLoading={handleHideLoading}
             setLoadingText={setLoadingText}
             setPreviewFile={setPreviewFile}
+          />
+          <RegionFormFromHydroShare
+            showAddRegionMenuFromHydroShare={showAddRegionMenuFromHydroShare}
+            toggleShowAddRegionMenuFromHydroShare={toggleShowAddRegionMenuFromHydroShare}
+            hydroshareRegionsOptions={hydroshareRegionsOptions}
           />
           <Layers>
 
