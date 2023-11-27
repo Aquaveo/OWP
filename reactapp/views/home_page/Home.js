@@ -33,7 +33,10 @@ import { MainContainer } from "components/styles/ContainerMain.styled";
 import { ModalContainer } from "components/styles/Modal.styled";
 import { LoaderContainer } from 'components/styles/Loader.styled';
 
-
+import { showToast } from "services/notifications/notificationService";
+import { Toaster } from 'react-hot-toast';
+import { Notification } from "components/notifications/notification";
+import logo from "css/hs-icon-sm.png"
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
@@ -300,6 +303,7 @@ function App(
   }
 
   useEffect(() => {
+
     /* 
       Load the regions of the user
     */
@@ -365,6 +369,10 @@ function App(
       }
       if(command ==='show_hydroshare_regions_notifications'){
         console.log(data['data'])
+        if (data['message'] ==='Not logged in through HydroShare'){
+          let custom_message=<a className="btn btn-block btn-social btn-hydroshare" href="/oauth2/login/hydroshare/"><img src={logo} className="App-logo" alt="logo" /> Log in with HydroShare</a>
+          showToast('custom',custom_message)
+        }
         setHydroShareRegionsOptions(data['data'])
       }
 
@@ -422,7 +430,6 @@ function App(
   return (
     
     <div>
-
     <LoaderContainer isVisible={isPlotReady}>
       <div className="loading-overlay">
         <div className="loading-spinner"></div>
@@ -451,6 +458,8 @@ function App(
           setCurrentReachGeometryOnClick={setCurrentReachGeometryOnClick}
           setCurrentReachGeometry={setCurrentReachGeometry}
         >
+          
+
           <CircularMenuComponent 
             handleShowRegionMenu={handleShowRegionMenu}
             handleShowReachesListRegionMenu={handleShowReachesListRegionMenu}

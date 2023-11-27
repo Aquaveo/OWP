@@ -1,11 +1,13 @@
 import { Route } from 'react-router-dom';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import ErrorBoundary from 'components/error/ErrorBoundary';
 import Layout from 'components/layout/Layout';
 import Loader from 'components/loader/Loader';
 
 import LearnReact from 'views/learn/LearnReact';
 import Home from 'views/home_page/Home';
+import { Notification } from 'components/notifications/notification';
+import { showToast } from "services/notifications/notificationService";
 
 import 'App.scss';
 
@@ -21,8 +23,6 @@ function App() {
   const [availableRegions, setAvailableRegions] = useState([]);
   const PATH_HOME = '/',
         PATH_INFO = '/Information/';
-
-
 
   const handleShowReachesListRegionMenu = () => {
     setShowReachesListMenu(true);
@@ -71,10 +71,22 @@ function App() {
 
     setAvailableRegions(updatedHiddenRegions);
   };
+  useEffect(() => {
+    console.log(home_context.message)
+    if (home_context.message === 'Error saving the Regions for current user'){
+      setTimeout(showToast('info',home_context.message),5000)
+      
+    }
+  }, [])
+  
+
+
+
   return (
     <>
       <ErrorBoundary>
           <Loader>
+
             <Layout 
               navLinks={[
                 {title: 'OWP Application', to: PATH_HOME, eventKey: 'link-home'},
@@ -88,6 +100,9 @@ function App() {
                 <Route 
                   path={PATH_HOME} 
                   element={
+                    <div>
+                    <Notification/>
+
                     <Home 
                       showRegionsMenu={showRegionsMenu}
                       showReachesListMenu={showReachesListMenu}
@@ -104,7 +119,11 @@ function App() {
                       showAddRegionMenuFromHydroShare={showAddRegionMenuFromHydroShare}
                       handleShowAddRegionMenuFromHydroShare={handleShowAddRegionMenuFromHydroShare}
                       toggleShowAddRegionMenuFromHydroShare={toggleShowAddRegionMenuFromHydroShare}
-                    />} 
+                    />
+
+                    </div>
+
+                  } 
                     key='route-home' />,
                 <Route path={PATH_INFO} element={<LearnReact />} key='route-learn' />
               ]}

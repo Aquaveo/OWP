@@ -40,7 +40,8 @@ from hs_restclient import (
     HydroShareNotFound,
     HydroShareAuthBasic,
 )
-
+from tethys_services.backends.hs_restclient_helper import get_oauth_hs
+from .helpers import get_oauth_hs_channels, HSClientInitException
 import pickle
 
 BASE_API_URL = "https://nwmdata.nohrsc.noaa.gov/latest/forecasts"
@@ -51,7 +52,14 @@ async_client = httpx.AsyncClient()
 def home(request):
     """Controller for the app home page."""
     # The index.html template loads the React frontend
-    return render(request, "owp/index.html")
+    try:
+        hs = get_oauth_hs(request)
+        context = {}
+    except HSClientInitException:
+        context = {"message": "Error saving the Regions for current user"}
+    except Exception:
+        context = {"message": "Error saving the Regions for current user"}
+    return render(request, "owp/index.html", context)
 
 
 #     station_id = request.GET.get('station_id')
@@ -66,7 +74,7 @@ def home(request):
 #     #https://nwmdata.nohrsc.noaa.gov/latest/forecasts/medium_range_ensemble_member_7/streamflow?station_id=19266232 this until ensemble 1-7
 
 
-def create_hydroshare_resource_for_region(file_obj, file_name, region_name):
+def create_hydroshare_resource_for_region(hs, file_obj, file_name, region_name):
     hydroshare_user = app.get_custom_setting("hydroshare_username")
     hydroshare_passwd = app.get_custom_setting("hydroshare_password")
 
@@ -77,7 +85,8 @@ def create_hydroshare_resource_for_region(file_obj, file_name, region_name):
     # https://www.hydroshare.org/terms/
     rtype = "CompositeResource"
     fpath = file_obj
-    hs = HydroShare(auth=auth)
+    # hs = get_oauth_hs(request)
+    # hs = HydroShare(auth=auth)
 
     try:
         resource_id = hs.createResource(
@@ -105,12 +114,12 @@ def create_hydroshare_resource_for_region(file_obj, file_name, region_name):
 
 
 def add_file_to_hydroshare_resource_for_region(
-    file_obj, file_name, region_name, resource_id
+    hs, file_obj, file_name, region_name, resource_id
 ):
     hydroshare_user = app.get_custom_setting("hydroshare_username")
     hydroshare_passwd = app.get_custom_setting("hydroshare_password")
     auth = HydroShareAuthBasic(username=hydroshare_user, password=hydroshare_passwd)
-    hs = HydroShare(auth=auth)
+    # hs = HydroShare(auth=auth)
 
     try:
         result = hs.addResourceFile(
@@ -237,15 +246,19 @@ def saveUserRegionsFromReaches(request):
             # create Hydroshare_resource
             s_buf = io.StringIO()
             nhdp_mr_final.to_csv(s_buf, index=False)
+            hs = get_oauth_hs(request)
+
             response_dict = create_hydroshare_resource_for_region(
-                s_buf, "reaches_nhd_data.csv", region_name
+                hs, s_buf, "reaches_nhd_data.csv", region_name
             )
             # create json with comids
             comids_json = create_reaches_json(nhdp_mr_final)
             json_data = json.dumps(comids_json)
             file_object = io.BytesIO(json_data.encode("utf-8"))
+            hs = get_oauth_hs(request)
 
             add_file_to_hydroshare_resource_for_region(
+                hs,
                 file_object,
                 "nwm_comids.json",
                 region_name,
@@ -430,8 +443,9 @@ def saveUserRegions(request):
             comids_json = create_reaches_json(nhdp_mr_final)
             json_data = json.dumps(comids_json)
             file_object = io.BytesIO(json_data.encode("utf-8"))
-
+            hs = get_oauth_hs(request)
             add_file_to_hydroshare_resource_for_region(
+                hs,
                 file_object,
                 "nwm_comids.json",
                 region_name,
@@ -821,35 +835,40 @@ async def getUserSpecificReachMethod(is_authenticated, user_name, reach_comid):
 
 
 @measure_async
-async def getUserSpecificHydroShareRegions(is_authenticated):
+async def getUserSpecificHydroShareRegions(is_authenticated, self_scope):
     json_response = {}
     json_response["type"] = "hydroshare_regions_notifications"
     json_response["command"] = "show_hydroshare_regions_notifications"
+    try:
+        if is_authenticated:
+            print("authenticated getUserSpecificReachMethod")
+            # hydroshare_user = await sync_to_async(app.get_custom_setting)(
+            #     "hydroshare_username"
+            # )
+            # hydroshare_passwd = await sync_to_async(app.get_custom_setting)(
+            #     "hydroshare_password"
+            # )
+            # auth = HydroShareAuthBasic(username=hydroshare_user, password=hydroshare_passwd)
+            # hs = HydroShare(auth=auth)
+            hs = await sync_to_async(get_oauth_hs_channels)(self_scope)
+            resources = hs.resources(
+                subject=["OWP", "NHD", "CIROH", "NWM", "comid_json"]
+            )
+            # breakpoint()
+            json_response["data"] = []
+            for resource in resources:
+                resource_data = {}
+                resource_data["resource_id"] = resource["resource_id"]
+                resource_data["resource_title"] = resource["resource_title"]
+                json_response["data"].append(resource_data)
+            json_response["mssg"] = "completed"
 
-    if is_authenticated:
-        print("authenticated getUserSpecificReachMethod")
-        hydroshare_user = await sync_to_async(app.get_custom_setting)(
-            "hydroshare_username"
-        )
-        hydroshare_passwd = await sync_to_async(app.get_custom_setting)(
-            "hydroshare_password"
-        )
-        auth = HydroShareAuthBasic(username=hydroshare_user, password=hydroshare_passwd)
-        hs = HydroShare(auth=auth)
-        resources = hs.resources(subject=["OWP", "NHD", "CIROH", "NWM", "comid_json"])
-        # breakpoint()
+        else:
+            json_response["mssg"] = "not aunthenticated"
+            json_response["data"] = []
+    except HSClientInitException:
+        json_response["mssg"] = "Not logged in through HydroShare"
         json_response["data"] = []
-        for resource in resources:
-            resource_data = {}
-            resource_data["resource_id"] = resource["resource_id"]
-            resource_data["resource_title"] = resource["resource_title"]
-            json_response["data"].append(resource_data)
-        json_response["mssg"] = "completed"
-
-    else:
-        json_response["mssg"] = "not aunthenticated"
-        json_response["data"] = {}
-
     # json_response["data"] = resources
 
     return json_response

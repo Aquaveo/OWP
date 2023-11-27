@@ -8,7 +8,8 @@ import 'css/menus.css'
 import { MenuSingleRow } from 'components/styled-components/MenuSingleRow.styled';
 import { BsInput } from 'components/styled-components/BsInput.styled';
 import appAPI from "services/api/app";
-
+import { Toaster } from 'react-hot-toast';
+import { Notification } from 'components/notifications/notification';
 
 
 export const RegionFormFromHydroShare = (
@@ -38,6 +39,7 @@ export const RegionFormFromHydroShare = (
 
   return (
     <SmallMenu isVisible={showAddRegionMenuFromHydroShare} position={"top"} >
+        <Notification/>
         <div className="wrapper_absolute">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <p className="sudo_title">

@@ -11,6 +11,14 @@
 	<body style="margin: 0;">
 		<noscript>You need to enable JavaScript to run this app.</noscript>
 		<div id="root"></div>
+		<script type="text/javascript">
+			/* Put your context vars here. I recommend putting them under 
+			   a variable to avoid naming conflicts. 
+			*/
+			var home_context = {
+			  message: '{{message}}',
+			};
+		  </script>
 		<script src="{% static 'owp/frontend/main.js' %}"></script>
 	</body>
 </html>

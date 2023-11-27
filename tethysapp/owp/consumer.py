@@ -7,6 +7,7 @@ from .controllers import (
     getUserSpecificReachMethod,
     getUserSpecificHydroShareRegions,
 )
+from asgiref.sync import sync_to_async
 
 from tethys_sdk.routing import consumer
 
@@ -76,6 +77,7 @@ class DataConsumer(AsyncWebsocketConsumer):
         ):
             json_obj = await getUserSpecificHydroShareRegions(
                 self.scope["user"].is_authenticated,
+                self.scope
             )
             await self.channel_layer.group_send(
                 "notifications_owp",
