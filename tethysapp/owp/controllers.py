@@ -75,40 +75,23 @@ def home(request):
 
 
 def create_hydroshare_resource_for_region(hs, file_obj, file_name, region_name):
-    hydroshare_user = app.get_custom_setting("hydroshare_username")
-    hydroshare_passwd = app.get_custom_setting("hydroshare_password")
-
-    auth = HydroShareAuthBasic(username=hydroshare_user, password=hydroshare_passwd)
     abstract = f"{region_name} Region created using the OWP Hydroviewer"
     title = f"{region_name}"
-    keywords = ("OWP", "NHD", "CIROH", "NWM", "comid_json")
+    keywords = ("OWP_Tethys_App", "NHD", "CIROH", "NWM", "comid_json", "OWP")
     # https://www.hydroshare.org/terms/
     rtype = "CompositeResource"
     fpath = file_obj
-    # hs = get_oauth_hs(request)
-    # hs = HydroShare(auth=auth)
 
-    try:
-        resource_id = hs.createResource(
-            rtype, title, keywords=keywords, abstract=abstract
-        )
-        # check if folder for region was created or not
-        # breakpoint()
+    resource_id = hs.createResource(
+        rtype, title, resource_file=fpath, keywords=keywords, abstract=abstract
+    )
+    # check if folder for region was created or not
+    # breakpoint()
 
-        result = hs.addResourceFile(
-            resource_id, resource_file=file_obj, resource_filename=file_name
-        )
-        hs.setAccessRules(resource_id, public=True)
-    except TokenExpiredError as e:
-        hs = HydroShare(auth=auth)
-        resource_id = hs.createResource(
-            rtype, title, resource_file=fpath, keywords=keywords, abstract=abstract
-        )
-        # check if folder for region was created or not
-        result = hs.addResourceFile(
-            resource_id, resource_file=file_obj, resource_filename=file_name
-        )
-        hs.setAccessRules(resource_id, public=True)
+    result = hs.addResourceFile(
+        resource_id, resource_file=file_obj, resource_filename=file_name
+    )
+    hs.setAccessRules(resource_id, public=True)
 
     return result
 
@@ -116,21 +99,9 @@ def create_hydroshare_resource_for_region(hs, file_obj, file_name, region_name):
 def add_file_to_hydroshare_resource_for_region(
     hs, file_obj, file_name, region_name, resource_id
 ):
-    hydroshare_user = app.get_custom_setting("hydroshare_username")
-    hydroshare_passwd = app.get_custom_setting("hydroshare_password")
-    auth = HydroShareAuthBasic(username=hydroshare_user, password=hydroshare_passwd)
-    # hs = HydroShare(auth=auth)
-
-    try:
-        result = hs.addResourceFile(
-            resource_id, resource_file=file_obj, resource_filename=file_name
-        )
-    except TokenExpiredError as e:
-        hs = HydroShare(auth=auth)
-        result = hs.addResourceFile(
-            resource_id, resource_file=file_obj, resource_filename=file_name
-        )
-
+    result = hs.addResourceFile(
+        resource_id, resource_file=file_obj, resource_filename=file_name
+    )
     return result
 
 
@@ -247,7 +218,6 @@ def saveUserRegionsFromReaches(request):
             s_buf = io.StringIO()
             nhdp_mr_final.to_csv(s_buf, index=False)
             hs = get_oauth_hs(request)
-
             response_dict = create_hydroshare_resource_for_region(
                 hs, s_buf, "reaches_nhd_data.csv", region_name
             )
@@ -842,14 +812,6 @@ async def getUserSpecificHydroShareRegions(is_authenticated, self_scope):
     try:
         if is_authenticated:
             print("authenticated getUserSpecificReachMethod")
-            # hydroshare_user = await sync_to_async(app.get_custom_setting)(
-            #     "hydroshare_username"
-            # )
-            # hydroshare_passwd = await sync_to_async(app.get_custom_setting)(
-            #     "hydroshare_password"
-            # )
-            # auth = HydroShareAuthBasic(username=hydroshare_user, password=hydroshare_passwd)
-            # hs = HydroShare(auth=auth)
             hs = await sync_to_async(get_oauth_hs_channels)(self_scope)
             resources = hs.resources(
                 subject=["OWP", "NHD", "CIROH", "NWM", "comid_json"]
@@ -899,12 +861,7 @@ def saveUserRegionsFromHydroShareResource(request):
             resource_id = request.POST.get("hydrosharePublicRegions")
 
             # please create own function to auth and return hs object
-            hydroshare_user = app.get_custom_setting("hydroshare_username")
-            hydroshare_passwd = app.get_custom_setting("hydroshare_password")
-            auth = HydroShareAuthBasic(
-                username=hydroshare_user, password=hydroshare_passwd
-            )
-            hs = HydroShare(auth=auth)
+            hs = get_oauth_hs(request)
 
             list_files = hs.resource(resource_id).files.all().json()["results"]
             url_file = get_url_by_filename(list_files, "reaches_nhd_data.csv")
