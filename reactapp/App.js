@@ -101,8 +101,6 @@ function App() {
                   path={PATH_HOME} 
                   element={
                     <div>
-                    <Notification/>
-
                     <Home 
                       showRegionsMenu={showRegionsMenu}
                       showReachesListMenu={showReachesListMenu}
