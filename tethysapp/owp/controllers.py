@@ -82,9 +82,7 @@ def create_hydroshare_resource_for_region(hs, file_obj, file_name, region_name):
     rtype = "CompositeResource"
     fpath = file_obj
 
-    resource_id = hs.createResource(
-        rtype, title, resource_file=fpath, keywords=keywords, abstract=abstract
-    )
+    resource_id = hs.createResource(rtype, title, keywords=keywords, abstract=abstract)
     # check if folder for region was created or not
     # breakpoint()
 
@@ -407,7 +405,7 @@ def saveUserRegions(request):
             s_buf = io.StringIO()
             nhdp_mr_final.to_csv(s_buf, index=False)
             hs = get_oauth_hs(request)
-
+            # breakpoint()
             response_dict = create_hydroshare_resource_for_region(
                 hs, s_buf, "reaches_nhd_data.csv", region_name
             )
