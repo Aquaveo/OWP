@@ -36,6 +36,8 @@ import { LoaderContainer } from 'components/styles/Loader.styled';
 import { showToast } from "services/notifications/notificationService";
 import { Toaster } from 'react-hot-toast';
 import { Notification } from "components/notifications/notification";
+import { CustomNotification } from 'components/styled-components/BsNotification.styled';
+
 import logo from "css/hs-icon-sm.png"
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
@@ -370,7 +372,7 @@ function App(
       if(command ==='show_hydroshare_regions_notifications'){
         console.log(data['data'])
         if (data['message'] ==='Not logged in through HydroShare'){
-          let custom_message=<a className="btn btn-block btn-social btn-hydroshare" href="/oauth2/login/hydroshare/"><img src={logo} className="App-logo" alt="logo" /> Log in with HydroShare</a>
+          let custom_message=<CustomNotification><a href="/oauth2/login/hydroshare/"><img src={logo} className="App-logo" alt="logo" /> Log in with HydroShare</a></CustomNotification>
           showToast('custom',custom_message)
         }
         setHydroShareRegionsOptions(data['data'])

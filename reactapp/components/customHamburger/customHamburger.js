@@ -2,6 +2,7 @@ import { BsLayersHalf } from "react-icons/bs";
 import { TbLassoPolygon } from "react-icons/tb";
 import { MdTimeline, MdOutlineCloud } from "react-icons/md";
 import { CustomHamburgerStyle } from "components/styles/CustomHamburger.styled";
+import logo from "css/hs-icon-sm.png"
 
  
 // Import the circular menu
@@ -32,7 +33,7 @@ export const CircularMenuComponent = ({handleShowRegionMenu,handleShowReachesLis
               onClick={() => handleShowAddRegionMenuFromHydroShareWithAsync() }
 
           >
-            <MdOutlineCloud/>
+           <img src={logo} className="App-logo" alt="logo" />
 
           </CircleMenuItem>
 
