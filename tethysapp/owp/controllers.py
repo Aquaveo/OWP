@@ -406,14 +406,15 @@ def saveUserRegions(request):
             # create Hydroshare_resource
             s_buf = io.StringIO()
             nhdp_mr_final.to_csv(s_buf, index=False)
+            hs = get_oauth_hs(request)
+
             response_dict = create_hydroshare_resource_for_region(
-                s_buf, "reaches_nhd_data.csv", region_name
+                hs, s_buf, "reaches_nhd_data.csv", region_name
             )
             # create json with comids
             comids_json = create_reaches_json(nhdp_mr_final)
             json_data = json.dumps(comids_json)
             file_object = io.BytesIO(json_data.encode("utf-8"))
-            hs = get_oauth_hs(request)
             add_file_to_hydroshare_resource_for_region(
                 hs,
                 file_object,
@@ -428,7 +429,6 @@ def saveUserRegions(request):
             session.commit()
             # Close the connection to prevent issues
             session.close()
-
             for region in response_obj["regions"]:
                 region["geom"] = shapely.to_geojson(region["geom"])
                 region["is_visible"] = False
