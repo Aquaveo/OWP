@@ -12,6 +12,18 @@ import { Toaster } from 'react-hot-toast';
 import { Notification } from 'components/notifications/notification';
 import Select, { components } from "react-select";
 
+const colourStyles = {
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+      // const color = chroma(data.color);
+      console.log({ data, isDisabled, isFocused, isSelected });
+      return {
+        ...styles,
+        backgroundColor: isFocused ? "#999999" : null,
+        color: "#333333"
+      };
+    }
+  };
+
 
 const { Option } = components;
 const IconOption = props => (
@@ -55,7 +67,7 @@ export const RegionFormFromHydroShare = (
   return (
     <SmallMenu isVisible={showAddRegionMenuFromHydroShare} position={"top"} >
         <Notification/>
-        <div className="wrapper_absolute">
+        <div className="wrapper_hs-region">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <p className="sudo_title">
                     Create Region from HydroShare
@@ -76,6 +88,7 @@ export const RegionFormFromHydroShare = (
                             // {...register('hydrosharePublicRegions')}
                             options={hydroshareRegionsOptions}
                             components={{ Option: IconOption }}
+                            styles={colourStyles}
                         />
                         :
                         <p className="sudo_title">

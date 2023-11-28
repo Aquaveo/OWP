@@ -30,12 +30,9 @@ export const SmallMenu = styled.div`
         height: fit-content;
         padding: 10px;
         background-color: rgba(22, 160, 133, 0.5608);
-        // background-color:rgba(12, 74, 110, 0.5);
-        // border-color: blue;
         color:#e0f2fe;
         font-size:1rem;
         border-radius: 10px;
-
     }
     .buttons-menu{
       display: flex;

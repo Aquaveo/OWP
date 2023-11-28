@@ -29,3 +29,13 @@ p {
 label{
   display: block !important;
 }
+
+.wrapper_hs-region{
+  width: fit-content;
+  height: fit-content;
+  background-color: rgba(22, 160, 133, 0.5608);
+  color:#e0f2fe;
+  padding: 10px;
+  font-size:1rem;
+  border-radius: 10px;
+}
