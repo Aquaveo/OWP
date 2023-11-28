@@ -72,6 +72,7 @@ function App(
   const socketRef = useRef();
 
   const [hydroshareRegionsOptions, setHydroShareRegionsOptions] = useState([])
+  const [hydrosharePrivateRegionsOptions, setHydroSharePrivateRegionsOptions] = useState([])
   const [currentReachGeometryOnClick, setCurrentReachGeometryOnClick] = useState(null)
   const [currentReachGeometry, setCurrentReachGeometry] = useState(null)
   // const [curentRegion, setCurrentRegion] = useState({});
@@ -376,6 +377,7 @@ function App(
           showToast('custom',custom_message)
         }
         setHydroShareRegionsOptions(data['data'])
+        setHydroSharePrivateRegionsOptions(data['private_data'])
       }
 
     }
@@ -519,6 +521,7 @@ function App(
           <RegionFormFromHydroShare
             showAddRegionMenuFromHydroShare={showAddRegionMenuFromHydroShare}
             hydroshareRegionsOptions={hydroshareRegionsOptions}
+            hydrosharePrivateRegionsOptions={hydrosharePrivateRegionsOptions}
             setAvailableRegions={setAvailableRegions}
             setSelectedRegions={setSelectedRegions}
             handleHideLoading={handleHideLoading}

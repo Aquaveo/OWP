@@ -63,5 +63,5 @@ const getSize = (props) => {
     border-color: ${getColor};
     height: ${({ size }) => getSize(size).height};
     line-height: ${({ size }) => getSize(size).height};
-    width: 100%;
+    width: 400px;
 `;

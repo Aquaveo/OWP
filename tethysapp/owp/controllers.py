@@ -110,7 +110,9 @@ def create_reaches_json(df):
 
 
 # Define a function to convert MultiLineString with 3 dimensions to 2 dimensions
-def _to_2d(x, y, z):
+def _to_2d(x, y, z=None):
+    if z is None:
+        return (x, y)
     return tuple(filter(None, [x, y]))
 
 
@@ -189,7 +191,7 @@ def saveUserRegionsFromReaches(request):
             nhdp_mr_final["geometry"] = nhdp_mr_final["geometry"].apply(
                 lambda x: WKTElement(x.wkt, srid=4326)
             )
-            breakpoint()
+            # breakpoint()
 
             nhdp_mr_final.to_sql(
                 name="reaches",
@@ -802,33 +804,52 @@ async def getUserSpecificReachMethod(is_authenticated, user_name, reach_comid):
     return json_response
 
 
-@measure_async
+# @measure_async
 async def getUserSpecificHydroShareRegions(is_authenticated, self_scope):
     json_response = {}
     json_response["type"] = "hydroshare_regions_notifications"
     json_response["command"] = "show_hydroshare_regions_notifications"
+    keywords = ["OWP_Tethys_App", "comid_json"]
     try:
         if is_authenticated:
             print("authenticated getUserSpecificReachMethod")
             hs = await sync_to_async(get_oauth_hs_channels)(self_scope)
-            resources = hs.resources(
-                subject=["OWP", "NHD", "CIROH", "NWM", "comid_json"]
-            )
-            # breakpoint()
+            resources = hs.resources(subject=keywords)
             json_response["data"] = []
             for resource in resources:
                 resource_data = {}
-                resource_data["resource_id"] = resource["resource_id"]
-                resource_data["resource_title"] = resource["resource_title"]
+                resource_data["value"] = resource["resource_id"]
+                resource_data["label"] = resource["resource_title"]
+                # resource_data["public"] = resource["public"]
                 json_response["data"].append(resource_data)
+            json_response["mssg"] = "completed"
+            # breakpoint()
+
+            hs = await sync_to_async(get_oauth_hs_channels)(self_scope)
+            private_resources = hs.resources(
+                subject=keywords,
+                # metadata={"public": False},
+            )
+            json_response["private_data"] = []
+            for private_resource in private_resources:
+                if not private_resource["public"]:
+                    resource_data = {}
+                    resource_data["value"] = private_resource["resource_id"]
+                    resource_data["label"] = private_resource["resource_title"]
+                    json_response["private_data"].append(private_resource)
             json_response["mssg"] = "completed"
 
         else:
             json_response["mssg"] = "not aunthenticated"
             json_response["data"] = []
-    except HSClientInitException:
+            json_response["private_data"] = []
+
+    except HSClientInitException as e:
+        print(e)
         json_response["mssg"] = "Not logged in through HydroShare"
         json_response["data"] = []
+        json_response["private_data"] = []
+
     # json_response["data"] = resources
 
     return json_response
@@ -886,6 +907,11 @@ def saveUserRegionsFromHydroShareResource(request):
 
             new_user_region_id = new_user_region[0].id
             df_reaches["region_id"] = new_user_region_id
+            breakpoint()
+            df_reaches["geometry"] = df_reaches["geometry"].apply(
+                lambda geom: shapely.ops.transform(_to_2d, geom)
+            )
+            df_reaches = df_reaches.explode(index_parts=False)
             # make the geometry from bounding box of all the geometries in the nhdp_mr
             bounding_box = df_reaches.total_bounds
             minx, miny, maxx, maxy = bounding_box
@@ -896,7 +922,7 @@ def saveUserRegionsFromHydroShareResource(request):
             df_reaches["geometry"] = df_reaches["geometry"].apply(
                 lambda x: WKTElement(x.wkt, srid=4326)
             )
-            breakpoint()
+            # breakpoint()
 
             df_reaches.to_sql(
                 name="reaches",

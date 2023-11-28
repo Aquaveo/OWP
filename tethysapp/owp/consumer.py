@@ -76,8 +76,7 @@ class DataConsumer(AsyncWebsocketConsumer):
             and text_data_json["type"] == "retrieve_hydroshare_regions"
         ):
             json_obj = await getUserSpecificHydroShareRegions(
-                self.scope["user"].is_authenticated,
-                self.scope
+                self.scope["user"].is_authenticated, self.scope
             )
             await self.channel_layer.group_send(
                 "notifications_owp",
@@ -160,11 +159,13 @@ class DataConsumer(AsyncWebsocketConsumer):
         message = event["mssg"]
         command = event["command"]
         data = event["data"]
+        private_data = event["private_data"]
 
         resp_obj = {
             "message": message,
             "command": command,
             "data": data,
+            "private_data": private_data,
         }
         await self.send(text_data=json.dumps(resp_obj))
 
