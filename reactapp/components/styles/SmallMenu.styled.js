@@ -7,13 +7,12 @@ export const SmallMenu = styled.div`
     height: fit-content;
     flex:1 1 20%;
     order: 1;
-    overflow-y: hidden;
+    // overflow-y: hidden;
     padding:5px;
     position:absolute;
     z-index:300;
     right: 10px;
     margin-top: 56px;
-    // ${props => `${props.position}: 60px`};
 
     .Myhamburguer{
         display: flex;

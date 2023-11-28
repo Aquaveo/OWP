@@ -159,13 +159,13 @@ class DataConsumer(AsyncWebsocketConsumer):
         message = event["mssg"]
         command = event["command"]
         data = event["data"]
-        private_data = event["private_data"]
+        # private_data = event["private_data"]
 
         resp_obj = {
             "message": message,
             "command": command,
             "data": data,
-            "private_data": private_data,
+            # "private_data": private_data,
         }
         await self.send(text_data=json.dumps(resp_obj))
 

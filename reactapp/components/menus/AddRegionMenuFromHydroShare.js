@@ -10,17 +10,37 @@ import { BsInput } from 'components/styled-components/BsInput.styled';
 import appAPI from "services/api/app";
 import { Toaster } from 'react-hot-toast';
 import { Notification } from 'components/notifications/notification';
-import Select, { components } from "react-select";
+import Select, { components, } from "react-select";
+import chroma from 'chroma-js';
+
+import { IconContext } from "react-icons";
+
+
 
 const colourStyles = {
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-      // const color = chroma(data.color);
-      console.log({ data, isDisabled, isFocused, isSelected });
+    // const color_public = chroma('#16a085');
+    // const color_private = chroma('#ffc2c2');
+    // const color =  data.public ? color_public : color_private
+    const color = chroma(data.color);
+    //   console.log({ data, isDisabled, isFocused, isSelected });
       return {
         ...styles,
-        backgroundColor: isFocused ? "#999999" : null,
-        color: "#333333"
-      };
+        backgroundColor: isDisabled
+            ? undefined
+            : isSelected
+            ? data.color
+            : isFocused
+            ? color.alpha(0.1).css()
+            : undefined,
+        color: isDisabled
+            ? '#ccc'
+            : isSelected
+            ? chroma.contrast(color, 'white') > 2
+            ? 'white'
+            : 'black'
+            : data.color,
+        };
     }
   };
 
@@ -28,8 +48,9 @@ const colourStyles = {
 const { Option } = components;
 const IconOption = props => (
     <Option {...props}>
-        <BiLockOpenAlt/>
-        {/* {props.data.public ? <BiLockOpenAlt/> : <BiLockAlt/> } */}
+        <IconContext.Provider value={{ size: '1.4em'  ,className: "global-class-name" }}>
+            {props.data.public ? <BiLockOpenAlt/> : <BiLockAlt/> }
+        </IconContext.Provider>
       {props.data.label}
     </Option>
   );
@@ -38,7 +59,7 @@ export const RegionFormFromHydroShare = (
     {
         showAddRegionMenuFromHydroShare,
         hydroshareRegionsOptions,
-        hydrosharePrivateRegionsOptions,
+        // hydrosharePrivateRegionsOptions,
         setAvailableRegions,
         setSelectedRegions,
         handleHideLoading
@@ -78,14 +99,13 @@ export const RegionFormFromHydroShare = (
                 </MenuSingleRow>
 
                 <MenuSingleRow>
-                    <label>Hydroshare Public Regions:</label>
+                    <label>Hydroshare Regions:</label>
                     <br></br>
                     {                    
                         hydroshareRegionsOptions.length > 0 ?
                         <Select
                             value = {hydroshareRegionsOptions.find(({value}) => value === field.value ) }
                             onChange={handleSelectOnChange}
-                            // {...register('hydrosharePublicRegions')}
                             options={hydroshareRegionsOptions}
                             components={{ Option: IconOption }}
                             styles={colourStyles}

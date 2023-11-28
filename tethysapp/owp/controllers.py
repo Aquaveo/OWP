@@ -820,35 +820,37 @@ async def getUserSpecificHydroShareRegions(is_authenticated, self_scope):
                 resource_data = {}
                 resource_data["value"] = resource["resource_id"]
                 resource_data["label"] = resource["resource_title"]
-                # resource_data["public"] = resource["public"]
+                resource_data["public"] = resource["public"]
+                resource_data["color"] = "#16A085" if resource["public"] else "#DB3A34"
+
                 json_response["data"].append(resource_data)
             json_response["mssg"] = "completed"
             # breakpoint()
 
-            hs = await sync_to_async(get_oauth_hs_channels)(self_scope)
-            private_resources = hs.resources(
-                subject=keywords,
-                # metadata={"public": False},
-            )
-            json_response["private_data"] = []
-            for private_resource in private_resources:
-                if not private_resource["public"]:
-                    resource_data = {}
-                    resource_data["value"] = private_resource["resource_id"]
-                    resource_data["label"] = private_resource["resource_title"]
-                    json_response["private_data"].append(private_resource)
+            # hs = await sync_to_async(get_oauth_hs_channels)(self_scope)
+            # private_resources = hs.resources(
+            #     subject=keywords,
+            #     # metadata={"public": False},
+            # )
+            # json_response["private_data"] = []
+            # for private_resource in private_resources:
+            #     if not private_resource["public"]:
+            #         resource_data = {}
+            #         resource_data["value"] = private_resource["resource_id"]
+            #         resource_data["label"] = private_resource["resource_title"]
+            #         json_response["private_data"].append(private_resource)
             json_response["mssg"] = "completed"
 
         else:
             json_response["mssg"] = "not aunthenticated"
             json_response["data"] = []
-            json_response["private_data"] = []
+            # json_response["private_data"] = []
 
     except HSClientInitException as e:
         print(e)
         json_response["mssg"] = "Not logged in through HydroShare"
         json_response["data"] = []
-        json_response["private_data"] = []
+        # json_response["private_data"] = []
 
     # json_response["data"] = resources
 
