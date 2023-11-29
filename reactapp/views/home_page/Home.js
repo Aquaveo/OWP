@@ -17,6 +17,7 @@ import { RegionMenuWrapper } from 'components/menus/RegionMenu';
 import { CircularMenuComponent } from 'components/customHamburger/customHamburger';
 import { ReachListMenu } from "components/menus/ReachListBasedMenu";
 import { RegionFormFromHydroShare } from "components/menus/AddRegionMenuFromHydroShare";
+import MenuWrapper from "components/menus/CircleMenu";
 //Hooks components
 import { useEffect, useState, useReducer, useRef } from 'react';
 
@@ -463,7 +464,7 @@ function App(
           setCurrentReachGeometry={setCurrentReachGeometry}
         >
           
-
+          {/* <MenuWrapper /> */}
           <CircularMenuComponent 
             handleShowRegionMenu={handleShowRegionMenu}
             handleShowReachesListRegionMenu={handleShowReachesListRegionMenu}
