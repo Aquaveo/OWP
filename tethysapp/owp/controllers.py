@@ -45,6 +45,10 @@ from .helpers import get_oauth_hs_channels, HSClientInitException
 import pickle
 
 BASE_API_URL = "https://nwmdata.nohrsc.noaa.gov/latest/forecasts"
+BASE_NWM_API_URL = (
+    "https://nwm-api-9f6idmxh.uc.gateway.dev/retroactive_forecast_records"
+)
+
 async_client = httpx.AsyncClient()
 
 
@@ -963,3 +967,96 @@ def saveUserRegionsFromHydroShareResource(request):
 
     # breakpoint()
     return JsonResponse(response_obj)
+
+
+async def make_nwm_api_calls(
+    api_base_url, feature_ids, ensemble, start_date, end_date, reference_time
+):
+    list_async_task = []
+
+    for feature_id in feature_ids:
+        params = {
+            "feature_id": feature_id,
+            "start_date": start_date,
+            "end_date": end_date,
+            "reference_time": reference_time,
+            "ensemble": ensemble,
+        }
+        task_get_nwm_data = asyncio.create_task(nwm_api_call(api_base_url, params))
+        list_async_task.append(task_get_nwm_data)
+
+    results = await asyncio.gather(*list_async_task)
+
+    return results
+
+
+async def nwm_api_call(api_base_url, params):
+    mssge_string = "Complete"
+    channel_layer = get_channel_layer()
+    headers = {"x-api-key": "AIzaSyDEEsdo0lm2aOmPX9NxGEncyVYGtwhsfMc"}
+    try:
+        async with httpx.AsyncClient() as client:
+            response_await = await client.get(
+                api_base_url, headers=headers, params=params
+            )
+
+        await channel_layer.group_send(
+            "notifications_owp",
+            {
+                "type": "data_notifications",
+                "feature_id": params["feature_id"],
+                "start_date": params["start_date"],
+                "end_date": params["end_date"],
+                "reference_time": params["reference_time"],
+                "ensemble": params["ensemble"],
+                "command": "Plot_Data_Retrieved",
+                "mssg": mssge_string,
+                "data": response_await.json(),
+            },
+        )
+        return mssge_string
+
+    except httpx.HTTPError as exc:
+        print(f"Error while requesting {exc.request.url!r}.")
+
+        print(str(exc.__class__.__name__))
+        mssge_string = "incomplete"
+        await channel_layer.group_send(
+            "notifications_owp",
+            {
+                "type": "simple_notifications",
+                "feature_id": params["feature_id"],
+                "start_date": params["start_date"],
+                "end_date": params["end_date"],
+                "reference_time": params["reference_time"],
+                "ensemble": params["ensemble"],
+                "mssg": mssge_string,
+                "command": "Plot_Data_Retrieved Error",
+            },
+        )
+    except Exception as e:
+        print("api_call error 2")
+        print(e)
+    return mssge_string
+
+
+async def get_nwm_data(feature_ids, ensemble, start_date, end_date, reference_time):
+    response = "updating"
+    try:
+        api_base_url = BASE_NWM_API_URL
+        asyncio.run(
+            make_nwm_api_calls(
+                api_base_url,
+                feature_ids,
+                ensemble,
+                start_date,
+                end_date,
+                reference_time,
+            )
+        )
+
+    except Exception as e:
+        print("got NWM data error")
+        print(e)
+
+    return JsonResponse({"state": response})
