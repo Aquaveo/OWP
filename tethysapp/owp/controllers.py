@@ -51,6 +51,8 @@ BASE_NWM_API_URL = (
 
 async_client = httpx.AsyncClient()
 
+limit = asyncio.Semaphore(8)
+
 
 @controller
 def home(request):
@@ -745,7 +747,14 @@ async def getUserReachesPerRegionsMethod(
             len(only_user_reaches_regions.all()),
         )
         regions_response["reaches"] = []
+        # breakpoint()
+        comid_values = [d[1] for d in only_user_reaches_regions.all()]
 
+        list_api_data = await getNwmDataAsync(
+            comid_values, 0, "2023-04-04", "2023-04-10", "2023-03-25T00:00:00"
+        )
+
+        print("comid_values", len(comid_values))
         for region in only_user_reaches_regions:
             region_obj = {
                 "GNIS_NAME": region[0],
@@ -753,6 +762,7 @@ async def getUserReachesPerRegionsMethod(
                 "StreamOrde": region[2],
                 "StreamCalc": region[3],
                 "QA_MA": region[4],
+                "long_forecast": [],
             }
             regions_response["reaches"].append(region_obj)
 
@@ -913,7 +923,7 @@ def saveUserRegionsFromHydroShareResource(request):
 
             new_user_region_id = new_user_region[0].id
             df_reaches["region_id"] = new_user_region_id
-            breakpoint()
+            # breakpoint()
             df_reaches["geometry"] = df_reaches["geometry"].apply(
                 lambda geom: shapely.ops.transform(_to_2d, geom)
             )
@@ -994,10 +1004,10 @@ async def make_nwm_api_calls(
 async def nwm_api_call(api_base_url, params):
     mssge_string = "Complete"
     channel_layer = get_channel_layer()
-    headers = {"x-api-key": "XXXXXX"}
+    headers = {"x-api-key": "xxxxxxxx"}
     try:
         # breakpoint()
-        async with httpx.AsyncClient() as client:
+        async with limit and httpx.AsyncClient() as client:
             response_await = await client.get(
                 api_base_url, headers=headers, params=params, timeout=None
             )
@@ -1068,3 +1078,26 @@ def getNwmData(request):
         print("got NWM data error")
         print(e)
     return JsonResponse({"state": response})
+
+
+async def getNwmDataAsync(feature_ids, ensemble, start_date, end_date, reference_time):
+    response = "updating"
+    try:
+        api_base_url = BASE_NWM_API_URL
+        # loop = asyncio.get_event_loop()
+        # loop.run_until_complete(main())
+        # loop.run_until_complete(
+        await make_nwm_api_calls(
+            api_base_url,
+            feature_ids,
+            ensemble,
+            start_date,
+            end_date,
+            reference_time,
+        )
+        # )
+
+    except Exception as e:
+        print("got NWM data error")
+        print(e)
+    return {"state": response}

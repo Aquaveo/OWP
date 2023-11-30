@@ -201,7 +201,7 @@ class DataConsumer(AsyncWebsocketConsumer):
         print(f"Got message {event} at {self.channel_name}")
 
     async def data_nwm_notifications(self, event):
-        print(event)
+        # print(event)
         print("data_nwm_notifications from consumer")
 
         message = event["mssg"]

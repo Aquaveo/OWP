@@ -382,8 +382,24 @@ function App(
       }
 
       if(command ==='nwm_spark_Data_Retrieved'){
-        console.log(data['data'])
-        // setHydroSharePrivateRegionsOptions(data['private_data'])
+        try {
+          console.log(JSON.parse(data['data']));
+          let sparkLineData = JSON.parse(data['data'])
+          let plot_data = sparkLineData.map((reach) => reach.streamflow)
+          let comidToUpdate = data['feature_id']
+          setAvailableReachesList(prevList =>
+            prevList.map(item =>
+              item.COMID === comidToUpdate
+                ? { ...item, long_forecast: plot_data }
+                : item
+            )
+          );
+
+
+
+        } catch (error) {
+          console.log(error)
+        }
       }
       
 
@@ -440,7 +456,7 @@ function App(
         end_date:"2023-04-10",
         reference_time: "2023-03-25T00:00:00"
       }
-      appAPI.getNwmData(dataRequest);
+      // appAPI.getNwmData(dataRequest);
     }
     else{
       setPromptTextAvailableReachesList(`No Reaches found`)
