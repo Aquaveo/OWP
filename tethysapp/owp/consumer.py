@@ -6,6 +6,7 @@ from .controllers import (
     getUserReachesPerRegionsMethod,
     getUserSpecificReachMethod,
     getUserSpecificHydroShareRegions,
+    # get_nwm_data,
 )
 from asgiref.sync import sync_to_async
 
@@ -28,7 +29,7 @@ class DataConsumer(AsyncWebsocketConsumer):
         # You can call:
         print("receving function to consumer")
         text_data_json = json.loads(text_data)
-        # print(text_data_json)
+        print(text_data_json)
         # updateForecastData(text_data_json['station_id'],text_data_json['product'])
         # json_obj = updateForecastData(text_data_json['station_id'],text_data_json['product'])
         json_obj = {}
@@ -82,7 +83,19 @@ class DataConsumer(AsyncWebsocketConsumer):
                 "notifications_owp",
                 json_obj,
             )
-
+        # if "type" in text_data_json and text_data_json["type"] == "update_nwm_data":
+        #     json_obj = await get_nwm_data(
+        #         text_data_json["feature_ids"],
+        #         text_data_json["ensemble"],
+        #         text_data_json["start_date"],
+        #         text_data_json["end_date"],
+        #         text_data_json["reference_time"],
+        #     )
+        #     print(json_obj)
+        #     await self.channel_layer.group_send(
+        #         "notifications_owp",
+        #         json_obj,
+        #     )
         # print(mssge_string)
         # await self.send(text_data)
 
@@ -181,6 +194,45 @@ class DataConsumer(AsyncWebsocketConsumer):
                     "message": message,
                     "station_id": station_id,
                     "product": product,
+                    "command": command,
+                }
+            )
+        )
+        print(f"Got message {event} at {self.channel_name}")
+
+    async def data_nwm_notifications(self, event):
+        print(event)
+        print("data_nwm_notifications from consumer")
+
+        message = event["mssg"]
+        feature_id = event["feature_id"]
+        start_date = event["start_date"]
+        end_date = event["end_date"]
+        reference_time = event["reference_time"]
+        ensemble = event["ensemble"]
+        command = event["command"]
+        data = event["data"]
+
+        resp_obj = {
+            "message": message,
+            "feature_id": feature_id,
+            "start_date": start_date,
+            "end_date": end_date,
+            "reference_time": reference_time,
+            "ensemble": ensemble,
+            "command": command,
+            "data": data,
+        }
+        await self.send(text_data=json.dumps(resp_obj))
+
+    async def simple_api_notifications(self, event):
+        print("simple simple_api_notifications from consumer")
+        message = event["mssg"]
+        command = event["command"]
+        await self.send(
+            text_data=json.dumps(
+                {
+                    "message": message,
                     "command": command,
                 }
             )

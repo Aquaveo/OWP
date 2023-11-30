@@ -27,6 +27,9 @@ const appAPI = {
     saveUserRegionsFromHydroShareResource:(requestData) => {
         return apiClient.post(`${APP_ROOT_URL}saveUserRegionsFromHydroShareResource/`, requestData);
     },
+    getNwmData:(requestData) => {
+        return apiClient.post(`${APP_ROOT_URL}getNwmData/`, requestData);
+    },
 };
 
 export default appAPI;

@@ -990,28 +990,29 @@ async def make_nwm_api_calls(
     return results
 
 
+@measure_async
 async def nwm_api_call(api_base_url, params):
     mssge_string = "Complete"
     channel_layer = get_channel_layer()
-    headers = {"x-api-key": "AIzaSyDEEsdo0lm2aOmPX9NxGEncyVYGtwhsfMc"}
+    headers = {"x-api-key": "XXXXXX"}
     try:
+        # breakpoint()
         async with httpx.AsyncClient() as client:
             response_await = await client.get(
-                api_base_url, headers=headers, params=params
+                api_base_url, headers=headers, params=params, timeout=None
             )
-
         await channel_layer.group_send(
             "notifications_owp",
             {
-                "type": "data_notifications",
+                "type": "data_nwm_notifications",
                 "feature_id": params["feature_id"],
                 "start_date": params["start_date"],
                 "end_date": params["end_date"],
                 "reference_time": params["reference_time"],
                 "ensemble": params["ensemble"],
-                "command": "Plot_Data_Retrieved",
+                "command": "nwm_spark_Data_Retrieved",
                 "mssg": mssge_string,
-                "data": response_await.json(),
+                "data": response_await.text,
             },
         )
         return mssge_string
@@ -1024,14 +1025,14 @@ async def nwm_api_call(api_base_url, params):
         await channel_layer.group_send(
             "notifications_owp",
             {
-                "type": "simple_notifications",
+                "type": "data_nwm_notifications",
                 "feature_id": params["feature_id"],
                 "start_date": params["start_date"],
                 "end_date": params["end_date"],
                 "reference_time": params["reference_time"],
                 "ensemble": params["ensemble"],
                 "mssg": mssge_string,
-                "command": "Plot_Data_Retrieved Error",
+                "command": "nwm_spark_Data_Retrieved Error",
             },
         )
     except Exception as e:
@@ -1040,7 +1041,15 @@ async def nwm_api_call(api_base_url, params):
     return mssge_string
 
 
-async def get_nwm_data(feature_ids, ensemble, start_date, end_date, reference_time):
+@controller
+@measure_sync
+def getNwmData(request):
+    # breakpoint()
+    feature_ids = json.loads(request.POST.getlist("feature_ids")[0])
+    ensemble = request.POST.get("ensemble")
+    start_date = request.POST.get("start_date")
+    end_date = request.POST.get("end_date")
+    reference_time = request.POST.get("reference_time")
     response = "updating"
     try:
         api_base_url = BASE_NWM_API_URL
@@ -1058,5 +1067,4 @@ async def get_nwm_data(feature_ids, ensemble, start_date, end_date, reference_ti
     except Exception as e:
         print("got NWM data error")
         print(e)
-
     return JsonResponse({"state": response})
