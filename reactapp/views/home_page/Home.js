@@ -447,15 +447,15 @@ function App(
     console.log(availableReachesList)
     if(availableReachesList.length > 0){
       setPromptTextAvailableReachesList(`Page ${currentPage} of ${currentPageNumber}`);
-      console.log(availableReachesList.map((reach) => reach.COMID))
-      let dataRequest = {
-        // type: "update_nwm_data",
-        feature_ids: JSON.stringify(availableReachesList.map((reach) => reach.COMID)),
-        ensemble: 0,
-        start_date:'2023-04-04',
-        end_date:"2023-04-10",
-        reference_time: "2023-03-25T00:00:00"
-      }
+      // console.log(availableReachesList.map((reach) => reach.COMID))
+      // let dataRequest = {
+      //   // type: "update_nwm_data",
+      //   feature_ids: JSON.stringify(availableReachesList.map((reach) => reach.COMID)),
+      //   ensemble: 0,
+      //   start_date:'2023-04-04',
+      //   end_date:"2023-04-10",
+      //   reference_time: "2023-03-25T00:00:00"
+      // }
       // appAPI.getNwmData(dataRequest);
     }
     else{

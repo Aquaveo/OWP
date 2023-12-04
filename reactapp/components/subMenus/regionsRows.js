@@ -71,7 +71,7 @@ export const RegionsRows = ({
 
 
                     <Col sm={2} >
-                    <Sparklines data={sampleData}>
+                    <Sparklines data={availableReachesList['long_forecast']}>
                         <SparklinesLine color="#FFFC31" />
                     </Sparklines>
 

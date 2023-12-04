@@ -51,7 +51,7 @@ BASE_NWM_API_URL = (
 
 async_client = httpx.AsyncClient()
 
-limit = asyncio.Semaphore(8)
+limit = asyncio.Semaphore(3)
 
 
 @controller
@@ -750,11 +750,12 @@ async def getUserReachesPerRegionsMethod(
         # breakpoint()
         comid_values = [d[1] for d in only_user_reaches_regions.all()]
 
-        list_api_data = await getNwmDataAsync(
-            comid_values, 0, "2023-04-04", "2023-04-10", "2023-03-25T00:00:00"
-        )
+        # list_api_data = await getNwmDataAsync(
+        #     comid_values, 0, "2023-04-04", "2023-04-10", "2023-03-25T00:00:00"
+        # )
+        # breakpoint()
+        # print(type(list_api_data), len(list_api_data))
 
-        print("comid_values", len(comid_values))
         for region in only_user_reaches_regions:
             region_obj = {
                 "GNIS_NAME": region[0],
@@ -835,7 +836,8 @@ async def getUserSpecificHydroShareRegions(is_authenticated, self_scope):
                 resource_data["value"] = resource["resource_id"]
                 resource_data["label"] = resource["resource_title"]
                 resource_data["public"] = resource["public"]
-                resource_data["color"] = "#16A085" if resource["public"] else "#DB3A34"
+                # resource_data["color"] = "#16A085" if resource["public"] else "#DB3A34"
+                resource_data["color"] = "#16A085" if resource["public"] else "#16A085"
 
                 json_response["data"].append(resource_data)
             json_response["mssg"] = "completed"
@@ -1000,55 +1002,66 @@ async def make_nwm_api_calls(
     return results
 
 
-@measure_async
+# @measure_async
 async def nwm_api_call(api_base_url, params):
     mssge_string = "Complete"
     channel_layer = get_channel_layer()
-    headers = {"x-api-key": "xxxxxxxx"}
+    headers = {"x-api-key": "AIzaSyDEEsdo0lm2aOmPX9NxGEncyVYGtwhsfMc"}
     try:
         # breakpoint()
-        async with limit and httpx.AsyncClient() as client:
-            response_await = await client.get(
+        async with limit:
+            # await asyncio.sleep(0.3)
+            print(f"Making request {params['feature_id']}")
+            response_await = await async_client.get(
                 api_base_url, headers=headers, params=params, timeout=None
             )
-        await channel_layer.group_send(
-            "notifications_owp",
-            {
-                "type": "data_nwm_notifications",
-                "feature_id": params["feature_id"],
-                "start_date": params["start_date"],
-                "end_date": params["end_date"],
-                "reference_time": params["reference_time"],
-                "ensemble": params["ensemble"],
-                "command": "nwm_spark_Data_Retrieved",
-                "mssg": mssge_string,
-                "data": response_await.text,
-            },
-        )
-        return mssge_string
+            if limit.locked():
+                print("Concurrency limit reached, waiting ...")
+                await asyncio.sleep(1)
+            if response_await.status_code == httpx.codes.OK:
+                print(response_await.status_code)
+                return {"data": response_await.text, "feature_id": params["feature_id"]}
+            if response_await.status_code == 429:
+                print(response_await.text)
+                # await channel_layer.group_send(
+                #     "notifications_owp",
+                #     {
+                #         "type": "data_nwm_notifications",
+                #         "feature_id": params["feature_id"],
+                #         "start_date": params["start_date"],
+                #         "end_date": params["end_date"],
+                #         "reference_time": params["reference_time"],
+                #         "ensemble": params["ensemble"],
+                #         "command": "nwm_spark_Data_Retrieved",
+                #         "mssg": mssge_string,
+                #         "data": response_await.text,
+                #     },
+                # )
+        # return mssge_string
 
     except httpx.HTTPError as exc:
         print(f"Error while requesting {exc.request.url!r}.")
 
         print(str(exc.__class__.__name__))
         mssge_string = "incomplete"
-        await channel_layer.group_send(
-            "notifications_owp",
-            {
-                "type": "data_nwm_notifications",
-                "feature_id": params["feature_id"],
-                "start_date": params["start_date"],
-                "end_date": params["end_date"],
-                "reference_time": params["reference_time"],
-                "ensemble": params["ensemble"],
-                "mssg": mssge_string,
-                "command": "nwm_spark_Data_Retrieved Error",
-            },
-        )
+        return mssge_string
+        # await channel_layer.group_send(
+        #     "notifications_owp",
+        #     {
+        #         "type": "data_nwm_notifications",
+        #         "feature_id": params["feature_id"],
+        #         "start_date": params["start_date"],
+        #         "end_date": params["end_date"],
+        #         "reference_time": params["reference_time"],
+        #         "ensemble": params["ensemble"],
+        #         "mssg": mssge_string,
+        #         "command": "nwm_spark_Data_Retrieved Error",
+        #     },
+        # )
     except Exception as e:
         print("api_call error 2")
         print(e)
-    return mssge_string
+    # return mssge_string
 
 
 @controller
@@ -1087,7 +1100,7 @@ async def getNwmDataAsync(feature_ids, ensemble, start_date, end_date, reference
         # loop = asyncio.get_event_loop()
         # loop.run_until_complete(main())
         # loop.run_until_complete(
-        await make_nwm_api_calls(
+        all_calls = await make_nwm_api_calls(
             api_base_url,
             feature_ids,
             ensemble,
@@ -1096,8 +1109,7 @@ async def getNwmDataAsync(feature_ids, ensemble, start_date, end_date, reference
             reference_time,
         )
         # )
-
     except Exception as e:
         print("got NWM data error")
         print(e)
-    return {"state": response}
+    return all_calls

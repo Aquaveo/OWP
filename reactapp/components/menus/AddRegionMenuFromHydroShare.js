@@ -1,7 +1,10 @@
 import React from 'react';
 import { useForm,UseController, useController } from 'react-hook-form';
 import { SmallMenu } from 'components/styles/SmallMenu.styled';
-import { BiSolidSave,BiLockAlt,BiLockOpenAlt } from "react-icons/bi"
+import { BiSolidSave,BiSolidUser } from "react-icons/bi"
+import { FaUsers } from "react-icons/fa";
+import { LiaUserSolid, LiaUsersSolid } from "react-icons/lia";
+
 import { BsButton } from 'components/styled-components/BsButton.styled';
 import { BsSelect } from 'components/styled-components/BsSelect.styled';
 import 'css/menus.css'
@@ -49,8 +52,9 @@ const { Option } = components;
 const IconOption = props => (
     <Option {...props}>
         <IconContext.Provider value={{ size: '1.4em'  ,className: "global-class-name" }}>
-            {props.data.public ? <BiLockOpenAlt/> : <BiLockAlt/> }
+            {props.data.public ? <LiaUsersSolid/> : <LiaUserSolid/> }
         </IconContext.Provider>
+        <div class="horizontalgap" styles="width:10px"></div>
       {props.data.label}
     </Option>
   );

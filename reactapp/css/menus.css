@@ -39,3 +39,10 @@ label{
   font-size:1rem;
   border-radius: 10px;
 }
+
+.horizontalgap {
+  float: left;
+  overflow: hidden;
+  height: 1px;
+  width: 0px;
+}
