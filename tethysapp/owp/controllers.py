@@ -22,7 +22,7 @@ from shapely.geometry import GeometryCollection, box, MultiLineString
 import shapely.wkt
 from .model import Region
 import shapely
-from asgiref.sync import sync_to_async
+from asgiref.sync import sync_to_async, async_to_sync
 from .utilities import measure_sync, measure_async
 import pyogrio
 import pygeos as pg
@@ -58,14 +58,51 @@ limit = asyncio.Semaphore(3)
 def home(request):
     """Controller for the app home page."""
     # The index.html template loads the React frontend
-    try:
-        hs = get_oauth_hs(request)
-        context = {}
-    except HSClientInitException:
-        context = {"message": "Error saving the Regions for current user"}
-    except Exception:
-        context = {"message": "Error saving the Regions for current user"}
+    # json_response = {}
+    # json_response["type"] = "simple_api_notifications"
+    # json_response["command"] = "show_hs_login_status"
+    # json_response["mssg"] = "Logged in through HydroShare"
+
+    # channel_layer = get_channel_layer()
+
+    # try:
+    # hs = get_oauth_hs(request)
+    # if not hs.auth:
+    #     json_response["mssg"] = "Not logged in through HydroShare"
+    context = {}
+
+    # except HSClientInitException:
+    # context = {"message": "Error saving the Regions for current user"}
+    # json_response["mssg"] = "Not logged in through HydroShare"
+
+    # except Exception:
+    # context = {"message": "Error saving the Regions for current user"}
+    # json_response["mssg"] = "Not logged in through HydroShare"
+
+    # print(json_response)
+    # async_to_sync(channel_layer.group_send)("notifications_owp", json_response)
+
     return render(request, "owp/index.html", context)
+
+
+@measure_async
+async def get_hs_login_status_method(self_scope):
+    json_response = {}
+    json_response["type"] = "simple_api_notifications"
+    json_response["command"] = "show_hs_login_status"
+    json_response["mssg"] = "Logged in through HydroShare"
+
+    try:
+        hs = await sync_to_async(get_oauth_hs_channels)(self_scope)
+        if not hs.auth:
+            json_response["mssg"] = "Not logged in through HydroShare"
+
+    except HSClientInitException:
+        json_response["mssg"] = "Not logged in through HydroShare"
+    except Exception:
+        json_response["mssg"] = "Not logged in through HydroShare"
+
+    return json_response
 
 
 #     station_id = request.GET.get('station_id')
@@ -824,11 +861,18 @@ async def getUserSpecificHydroShareRegions(is_authenticated, self_scope):
     json_response = {}
     json_response["type"] = "hydroshare_regions_notifications"
     json_response["command"] = "show_hydroshare_regions_notifications"
+    json_response["mssg"] = "completed"
+
     keywords = ["OWP_Tethys_App", "comid_json"]
     try:
         if is_authenticated:
             print("authenticated getUserSpecificReachMethod")
             hs = await sync_to_async(get_oauth_hs_channels)(self_scope)
+            print(hs.auth)
+
+            if not hs.auth:
+                json_response["mssg"] = "Not logged in through HydroShare"
+
             resources = hs.resources(subject=keywords)
             json_response["data"] = []
             for resource in resources:
@@ -840,7 +884,6 @@ async def getUserSpecificHydroShareRegions(is_authenticated, self_scope):
                 resource_data["color"] = "#16A085" if resource["public"] else "#16A085"
 
                 json_response["data"].append(resource_data)
-            json_response["mssg"] = "completed"
             # breakpoint()
 
             # hs = await sync_to_async(get_oauth_hs_channels)(self_scope)
@@ -855,10 +898,10 @@ async def getUserSpecificHydroShareRegions(is_authenticated, self_scope):
             #         resource_data["value"] = private_resource["resource_id"]
             #         resource_data["label"] = private_resource["resource_title"]
             #         json_response["private_data"].append(private_resource)
-            json_response["mssg"] = "completed"
+            # json_response["mssg"] = "completed"
 
         else:
-            json_response["mssg"] = "not aunthenticated"
+            json_response["mssg"] = "Not logged in through HydroShare"
             json_response["data"] = []
             # json_response["private_data"] = []
 

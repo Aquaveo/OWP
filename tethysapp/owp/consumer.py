@@ -6,6 +6,7 @@ from .controllers import (
     getUserReachesPerRegionsMethod,
     getUserSpecificReachMethod,
     getUserSpecificHydroShareRegions,
+    get_hs_login_status_method,
     # get_nwm_data,
 )
 from asgiref.sync import sync_to_async
@@ -83,6 +84,16 @@ class DataConsumer(AsyncWebsocketConsumer):
                 "notifications_owp",
                 json_obj,
             )
+        if (
+            "type" in text_data_json
+            and text_data_json["type"] == "get_hs_login_status_method"
+        ):
+            json_obj = await get_hs_login_status_method(self.scope)
+            await self.channel_layer.group_send(
+                "notifications_owp",
+                json_obj,
+            )
+
         # if "type" in text_data_json and text_data_json["type"] == "update_nwm_data":
         #     json_obj = await get_nwm_data(
         #         text_data_json["feature_ids"],
@@ -237,4 +248,3 @@ class DataConsumer(AsyncWebsocketConsumer):
                 }
             )
         )
-        print(f"Got message {event} at {self.channel_name}")

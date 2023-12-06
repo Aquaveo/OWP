@@ -53,7 +53,9 @@ def get_oauth_hs_channels(self_scope):
                     )
 
         if hs is None:
-            raise Exception("Not logged in through HydroShare")
+            hs = hs_r.HydroShare(prompt_auth=False)
+            logger.debug("Not logged in through HydroShare")
+            # raise Exception("Not logged in through HydroShare")
         return hs
 
     except Exception as ex:

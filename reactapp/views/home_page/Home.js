@@ -323,8 +323,13 @@ function App(
             type: "update_user_regions",
           })
         );
-      }
 
+      }
+      socketRef.current.send(
+        JSON.stringify({
+          type: "get_hs_login_status_method",
+        })
+      );
     };
   
     socketRef.current.onclose = function () {
@@ -336,7 +341,7 @@ function App(
       console.log("WebSocket is Closed");
     };
     socketRef.current.onmessage = function (e) {
-      
+      // console.log(e)
       let data = JSON.parse(e.data);
       let command = data['command']
       console.log(command)
@@ -374,11 +379,44 @@ function App(
       if(command ==='show_hydroshare_regions_notifications'){
         console.log(data['data'])
         if (data['message'] ==='Not logged in through HydroShare'){
-          let custom_message=<CustomNotification><a href="/oauth2/login/hydroshare/"><img src={logo} className="App-logo" alt="logo" /> Log in with HydroShare</a></CustomNotification>
+          let custom_message=<CustomNotification>
+            <a href="/oauth2/login/hydroshare/">
+              <div className="container-hs-notification">
+                <div>
+                  <img src={logo} className="App-logo" alt="logo" />
+                  Log in with HydroShare
+                </div>
+                <div>
+                  <p>Please Login to see your private regions display in the dropdown menu</p>
+                </div>
+              </div>
+
+            </a>
+          </CustomNotification>
           showToast('custom',custom_message)
         }
         setHydroShareRegionsOptions(data['data'])
         // setHydroSharePrivateRegionsOptions(data['private_data'])
+      }
+      if(command ==='show_hs_login_status'){
+        console.log(data)
+        if (data['message'] ==='Not logged in through HydroShare'){
+          let custom_message=<CustomNotification>
+            <a href="/oauth2/login/hydroshare/">
+              <div className="container-hs-notification">
+                <div>
+                  <img src={logo} className="App-logo" alt="logo" />
+                  Log in with HydroShare
+                </div>
+                <div>
+                  <p>Please Login to see your private regions display in the dropdown menu</p>
+                </div>
+              </div>
+
+            </a>
+          </CustomNotification>
+          showToast('custom',custom_message)
+        }
       }
 
       if(command ==='nwm_spark_Data_Retrieved'){
@@ -473,6 +511,7 @@ function App(
         <div><span className='loading-tex-span'>{loadingText}</span></div>
       </div>
     </LoaderContainer>
+    <Notification/>
 
     <MainContainer >
 
