@@ -596,6 +596,7 @@ function App(
             setAvailableRegions={setAvailableRegions}
             setSelectedRegions={setSelectedRegions}
             handleHideLoading={handleHideLoading}
+            setLoadingText={setLoadingText}
           />
           <Layers>
 

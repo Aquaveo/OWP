@@ -15,8 +15,10 @@ import { Toaster } from 'react-hot-toast';
 import { Notification } from 'components/notifications/notification';
 import Select, { components, } from "react-select";
 import chroma from 'chroma-js';
-
+import { showToast } from "services/notifications/notificationService";
 import { IconContext } from "react-icons";
+import { CustomNotification } from 'components/styled-components/BsNotification.styled';
+import { MdError } from "react-icons/md";
 
 
 
@@ -66,7 +68,8 @@ export const RegionFormFromHydroShare = (
         // hydrosharePrivateRegionsOptions,
         setAvailableRegions,
         setSelectedRegions,
-        handleHideLoading
+        handleHideLoading,
+        setLoadingText
     }
 ) => {
 
@@ -74,12 +77,25 @@ export const RegionFormFromHydroShare = (
   const {field} = useController({name: 'hydrosharePublicRegions', control})
   const onSubmit = async (data) => {
     console.log(data); // Use the data as needed, like sending it to an API endpoint
+    setLoadingText(`Importing region from HydroShare ...`);
     let responseRegions = await appAPI.saveUserRegionsFromHydroShareResource(data);
     console.log(responseRegions)
     if(responseRegions['msge'] === 'Error saving the Regions for current user'){
-      notifyError(responseRegions['msge']);
+      let custom_message=<CustomNotification> 
+        <div className='container-row-notification'>
+          <div>
+              <MdError />
+          </div>
+          <div>
+              <em>{responseRegions['msge']}</em>
+
+          </div>
+        </div>
+        </CustomNotification>
+      showToast('custom',custom_message)
     }
     else{
+      setLoadingText(`Region ${data['regionName']} saved`);
       setAvailableRegions(currentRegions => [...currentRegions, responseRegions['regions'][0]]);
     }
     setSelectedRegions({type:"reset", region: {}});

@@ -118,10 +118,16 @@ function App() {
       let custom_message=<CustomNotification>
       <a href="/oauth2/login/hydroshare/">
         <div className="container-hs-notification">
+
+        <div className='container-row-notification'>
           <div>
             <img src={logo} className="App-logo" alt="logo" />
+          </div>
+          <div>
             Log in with HydroShare
           </div>
+        </div>
+
           <div>
             <p>{prompt}</p>
           </div>

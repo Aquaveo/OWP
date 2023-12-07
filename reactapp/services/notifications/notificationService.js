@@ -1,6 +1,7 @@
 import { toast } from 'react-hot-toast';
 
 export const showToast = (type, message) => {
+  toast.remove();
   switch (type) {
     case 'error':
       toast.error(message);
@@ -14,8 +15,6 @@ export const showToast = (type, message) => {
     case 'info':
     default:
       toast(message); // Default to info notification
-      break;
-
-      
+      break;  
   }
 };

@@ -11,3 +11,10 @@
   justify-content: center;
   width: 400px;
 }
+
+.container-row-notification{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+}
