@@ -16,14 +16,12 @@ import {
 export const CircularMenuComponent = ({
   handleShowRegionMenu,
   handleShowReachesListRegionMenu,
-  handleShowAddRegionMenuFromHydroShareWithAsync
+  handleShowAddRegionMenuFromHydroShareWithAsync,
+  isCircularAddingMenuOpen
 }) => {
 
 
     function handleClick(event) {
-      // Your logic when the button is clicked
-      // console.log("Button clicked!", event.target);
-      // You can perform any action you want here
     }
 
     
@@ -36,6 +34,7 @@ export const CircularMenuComponent = ({
         radius={5}
         rotationAngleInclusive={true}
         className="custom-circle-menu"
+        open={isCircularAddingMenuOpen}
         menuToggleElement={
           <CircleCustomButton size={2} onclick={handleClick}>
             <FaPlus/>

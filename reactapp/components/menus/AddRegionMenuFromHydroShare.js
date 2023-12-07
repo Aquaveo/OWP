@@ -2,16 +2,12 @@ import React from 'react';
 import { useForm,UseController, useController } from 'react-hook-form';
 import { SmallMenu } from 'components/styles/SmallMenu.styled';
 import { BiSolidSave,BiSolidUser } from "react-icons/bi"
-import { FaUsers } from "react-icons/fa";
 import { LiaUserSolid, LiaUsersSolid } from "react-icons/lia";
-
 import { BsButton } from 'components/styled-components/BsButton.styled';
-import { BsSelect } from 'components/styled-components/BsSelect.styled';
 import 'css/menus.css'
 import { MenuSingleRow } from 'components/styled-components/MenuSingleRow.styled';
 import { BsInput } from 'components/styled-components/BsInput.styled';
 import appAPI from "services/api/app";
-import { Toaster } from 'react-hot-toast';
 import { Notification } from 'components/notifications/notification';
 import Select, { components, } from "react-select";
 import chroma from 'chroma-js';
@@ -53,11 +49,18 @@ const colourStyles = {
 const { Option } = components;
 const IconOption = props => (
     <Option {...props}>
-        <IconContext.Provider value={{ size: '1.4em'  ,className: "global-class-name" }}>
-            {props.data.public ? <LiaUsersSolid/> : <LiaUserSolid/> }
-        </IconContext.Provider>
-        <div className="horizontalgap" styles="width:10px"></div>
-      {props.data.label}
+        <div className='select-option-custom'>
+          <div>
+            <IconContext.Provider value={{ size: '1.4em'  ,className: "global-class-name" }}>
+                {props.data.public ? <LiaUsersSolid/> : <LiaUserSolid/> }
+            </IconContext.Provider>
+          </div>
+          <div>
+            {props.data.label}
+          </div>
+        </div>
+        
+        
     </Option>
   );
 

@@ -14,6 +14,7 @@ import logo from "css/hs-icon-sm.png"
 import 'App.scss';
 
 function App() {
+  const [isCircularAddingMenuOpen, setIsCircularAddingMenuOpen] = useState(false)
   const [showRegions,setShowRegionsVisible] = useState(false);
   const [showMainRegionsMenu, setShowMainRegionsMenu] = useState(false);
   const [showRegionsMenu, setShowRegionsMenu] =  useState(false);
@@ -29,6 +30,7 @@ function App() {
   const handleShowReachesListRegionMenu = () => {
     setShowRegionsMenu(false);
     setShowAddRegionMenuFromHydroShare(false);
+    setIsCircularAddingMenuOpen(false)
     if(!isHydroShareLogin){
       let promptText = 'Please Login to HydroShare to add regions based on a list of stream reaches';
       let prompt = makePromptForHydroShareLogin(promptText)
@@ -178,6 +180,7 @@ function App() {
                       toggleShowAddRegionMenuFromHydroShare={toggleShowAddRegionMenuFromHydroShare}
                       isHydroShareLogin={isHydroShareLogin}
                       setIsHydroShareLogin={setIsHydroShareLogin}
+                      isCircularAddingMenuOpen={isCircularAddingMenuOpen}
                     />
 
                     </div>

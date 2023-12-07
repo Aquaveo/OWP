@@ -46,3 +46,9 @@ label{
   height: 1px;
   width: 0px;
 }
+
+.select-option-custom{
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}

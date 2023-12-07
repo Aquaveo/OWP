@@ -67,7 +67,8 @@ function App(
     handleShowAddRegionMenuFromHydroShare,
     toggleShowAddRegionMenuFromHydroShare,
     isHydroShareLogin,
-    setIsHydroShareLogin
+    setIsHydroShareLogin,
+    isCircularAddingMenuOpen
 
   }
 ) 
@@ -539,6 +540,7 @@ function App(
             handleShowRegionMenu={handleShowRegionMenu}
             handleShowReachesListRegionMenu={handleShowReachesListRegionMenu}
             handleShowAddRegionMenuFromHydroShareWithAsync={handleShowAddRegionMenuFromHydroShareWithAsync}
+            isCircularAddingMenuOpen={isCircularAddingMenuOpen}
           />
 
           <RegionMenuWrapper 
