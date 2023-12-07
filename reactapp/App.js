@@ -59,6 +59,8 @@ function App() {
   const handleShowAddRegionMenuFromHydroShare = () => {
     setShowRegionsMenu(false);
     setShowReachesListMenu(false);
+    setShowAddRegionMenuFromHydroShare(true);
+    hideAllUserRegions();
     if(!isHydroShareLogin){
       let promptText = `Please Login to HydroShare to import private regions from HydroShare. 
       Currently only available importing existing public regions from HydroShare.`;
@@ -66,9 +68,7 @@ function App() {
       showToast('custom',prompt)
       return
     }
-    setShowAddRegionMenuFromHydroShare(true);
 
-    hideAllUserRegions();
   };
 
 
