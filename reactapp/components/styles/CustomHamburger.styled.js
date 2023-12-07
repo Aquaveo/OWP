@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 export const CustomHamburgerStyle = styled.div`
     position:absolute;
-    right: 10px;
-    bottom: 15px;
+    right: 2%;
+    bottom: 5%;
     .custom-circle-menu button div{
         background: #16a085;
     }

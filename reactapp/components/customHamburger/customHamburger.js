@@ -18,13 +18,11 @@ export const CircularMenuComponent = ({
   handleShowReachesListRegionMenu,
   handleShowAddRegionMenuFromHydroShareWithAsync
 }) => {
-    //make the menu dissapear here//
-    // make a function to toogle off the menu
-    // make the add menu to appear
+
 
     function handleClick(event) {
       // Your logic when the button is clicked
-      console.log("Button clicked!", event.target);
+      // console.log("Button clicked!", event.target);
       // You can perform any action you want here
     }
 
@@ -49,7 +47,7 @@ export const CircularMenuComponent = ({
               tooltip="Create Region from HydroShare"
               className="custom-circle-menu-item"
               onClick={() => handleShowAddRegionMenuFromHydroShareWithAsync() }
-
+              tooltipPlacement= 'left'
           >
            <img src={logo} className="App-logo" alt="logo" />
 
@@ -59,7 +57,7 @@ export const CircularMenuComponent = ({
               tooltip="Create Region from Reaches"
               onClick={() => handleShowReachesListRegionMenu() }
               className="custom-circle-menu-item"
-              
+              tooltipPlacement= 'left'
           >
             <MdTimeline />
 
@@ -68,6 +66,7 @@ export const CircularMenuComponent = ({
               tooltip="Create Region from Polygon"
               onClick={() => handleShowRegionMenu() }
               className="custom-circle-menu-item"
+              tooltipPlacement= 'left'
           >
             <TbLassoPolygon />
 
