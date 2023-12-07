@@ -63,7 +63,7 @@ def get_oauth_hs_channels(self_scope):
         raise HSClientInitException(ex)
 
 
-def get_oauth_hs(request):
+def get_oauth_hs_sync(request):
     hs = None
     error_msg_head = "Failed to initialize hs object: "
 
@@ -109,7 +109,9 @@ def get_oauth_hs(request):
                     )
 
         if hs is None:
-            raise Exception("Not logged in through HydroShare")
+            hs = hs_r.HydroShare(prompt_auth=False)
+            logger.debug("Not logged in through HydroShare")
+            # raise Exception("Not logged in through HydroShare")
 
         return hs
 

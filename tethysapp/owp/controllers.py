@@ -41,7 +41,7 @@ from hs_restclient import (
     HydroShareAuthBasic,
 )
 from tethys_services.backends.hs_restclient_helper import get_oauth_hs
-from .helpers import get_oauth_hs_channels, HSClientInitException
+from .helpers import get_oauth_hs_channels, get_oauth_hs_sync, HSClientInitException
 import pickle
 
 BASE_API_URL = "https://nwmdata.nohrsc.noaa.gov/latest/forecasts"
@@ -928,6 +928,7 @@ def get_url_by_filename(file_info, file_name):
 def saveUserRegionsFromHydroShareResource(request):
     response_obj = {}
     response_obj["msge"] = "success"
+
     try:
         if request.user.is_authenticated:
             # Create a session object in preparation for interacting with the database
@@ -941,8 +942,7 @@ def saveUserRegionsFromHydroShareResource(request):
             resource_id = request.POST.get("hydrosharePublicRegions")
 
             # please create own function to auth and return hs object
-            hs = get_oauth_hs(request)
-
+            hs = get_oauth_hs_sync(request)
             list_files = hs.resource(resource_id).files.all().json()["results"]
             url_file = get_url_by_filename(list_files, "reaches_nhd_data.csv")
             df = pd.read_csv(url_file, index_col=False)
