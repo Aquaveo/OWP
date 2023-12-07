@@ -22,6 +22,9 @@ import { SlArrowDown, SlArrowUp } from "react-icons/sl";
 //styles
 import { SideMenu } from "components/styles/SideMenu.styled";
 import 'css/RegionMenu.css';
+import Select, { components, } from "react-select";
+import { useForm,UseController, useController } from 'react-hook-form';
+
 
 export const RegionMenuWrapper = (
   {
@@ -53,8 +56,17 @@ export const RegionMenuWrapper = (
       setAccordionOpen(!isAccordionOpen);
     };
 
+    
     const [searchReachInput, setSearchReachInput] = useState('');
+    const { register,control, handleSubmit } = useForm();
 
+    const {field} = useController({name: 'hydrosharePublicRegions', control})
+
+
+    const handleSelectOnChange=(option) =>{
+      field.onChange(option.value)
+    }
+  
 
     const handleSelectRegionDropdown = (key, event) => {
       const updatedHiddenRegions = availableRegions.map(availableRegion => ({
@@ -194,18 +206,27 @@ export const RegionMenuWrapper = (
                     </Row>
                     <Row className="accordion-header-row">
                       <Col sm={4} >
-                        <DropdownButton 
-                          id="dropdown-basic-button" 
-                          onSelect={handleSelectRegionDropdown}
-                          drop={'down'}
-                          size="sm"
-                          title={selectedRegionDropdownItem.value ? selectedRegionDropdownItem.value : "Select Region"}
-                          flip={true}
-                        >
-                            {availableRegions && availableRegions.map((availableRegion, index) => (
+
+
+                        {availableRegions.length > 0 ? (
+                          <DropdownButton 
+                            id="dropdown-basic-button" 
+                            onSelect={handleSelectRegionDropdown}
+                            drop={'down'}
+                            size="sm"
+                            title={selectedRegionDropdownItem.value ? selectedRegionDropdownItem.value : "Select Region"}
+                            flip={true}
+                          >   
+                            {availableRegions.map((availableRegion, index) => (
                               <Dropdown.Item key={index} eventKey={index}>{availableRegion.name}</Dropdown.Item>
                             ))}
-                        </DropdownButton>
+                          </DropdownButton>
+                        ) : (
+                          <p>No regions available</p>
+                        )}
+
+
+
                       </Col>
                         <Col sm={7} className="button-menu button-middle">
                           <Button 

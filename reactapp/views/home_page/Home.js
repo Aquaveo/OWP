@@ -400,7 +400,7 @@ function App(
           // showToast('custom',custom_message)
         }
         else{
-          isHydroShareLogin(true);
+          setIsHydroShareLogin(true);
         }
         setHydroShareRegionsOptions(data['data'])
         // setHydroSharePrivateRegionsOptions(data['private_data'])

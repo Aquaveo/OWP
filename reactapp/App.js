@@ -20,7 +20,7 @@ function App() {
   const [showReachesListMenu, setShowReachesListMenu] =  useState(false);
   const [showAddRegionMenuFromHydroShare, setShowAddRegionMenuFromHydroShare] = useState(false);
   const [navVisible, setNavVisible] = useState(false);
-  const [isHydroShareLogin, setIsHydroShareLogin] = useState(false)
+  const [isHydroShareLogin, setIsHydroShareLogin] = useState(true)
 
   const [availableRegions, setAvailableRegions] = useState([]);
   const PATH_HOME = '/',
@@ -102,11 +102,14 @@ function App() {
   }, [])
   
   useEffect(()=>{
-    let promptText = `Please Login to HydroShare to addition of regions using a list of reaches or using a Geometry Polygon. 
-    Currently only available importing existing public regions from HydroShare.`;
-    let prompt = makePromptForHydroShareLogin(promptText)
-    showToast('custom',prompt)
-    
+    if(!isHydroShareLogin){
+      let promptText = `Please Login to HydroShare to add regions using a list of reaches, a Geometry Polygon. 
+      Currently only available importing existing public regions from HydroShare.`;
+      let prompt = makePromptForHydroShareLogin(promptText)
+      showToast('custom',prompt)
+    }
+
+
     //send message to web socket to start again 
   },[isHydroShareLogin])
 
