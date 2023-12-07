@@ -8,6 +8,8 @@ import LearnReact from 'views/learn/LearnReact';
 import Home from 'views/home_page/Home';
 import { Notification } from 'components/notifications/notification';
 import { showToast } from "services/notifications/notificationService";
+import { CustomNotification } from 'components/styled-components/BsNotification.styled';
+import logo from "css/hs-icon-sm.png"
 
 import 'App.scss';
 
@@ -18,23 +20,35 @@ function App() {
   const [showReachesListMenu, setShowReachesListMenu] =  useState(false);
   const [showAddRegionMenuFromHydroShare, setShowAddRegionMenuFromHydroShare] = useState(false);
   const [navVisible, setNavVisible] = useState(false);
-
+  const [isHydroShareLogin, setIsHydroShareLogin] = useState(false)
 
   const [availableRegions, setAvailableRegions] = useState([]);
   const PATH_HOME = '/',
         PATH_INFO = '/Information/';
 
   const handleShowReachesListRegionMenu = () => {
-    setShowReachesListMenu(true);
     setShowRegionsMenu(false);
     setShowAddRegionMenuFromHydroShare(false);
+    if(!isHydroShareLogin){
+      let promptText = 'Please Login to HydroShare to add regions based on a list of stream reaches';
+      let prompt = makePromptForHydroShareLogin(promptText)
+      showToast('custom',prompt)
+      return
+    }
+    setShowReachesListMenu(true);
     hideAllUserRegions();
   };
 
   const handleShowRegionMenu = () => {
-    setShowRegionsMenu(true);
     setShowReachesListMenu(false);
     setShowAddRegionMenuFromHydroShare(false);
+    if(!isHydroShareLogin){
+      let promptText = 'Please Login to HydroShare to add regions based on a Geometry Polygon';
+      let prompt = makePromptForHydroShareLogin(promptText)
+      showToast('custom',prompt)
+      return
+    }
+    setShowRegionsMenu(true);
     hideAllUserRegions();
   };
 
@@ -43,9 +57,17 @@ function App() {
   };
 
   const handleShowAddRegionMenuFromHydroShare = () => {
-    setShowAddRegionMenuFromHydroShare(true);
     setShowRegionsMenu(false);
     setShowReachesListMenu(false);
+    if(!isHydroShareLogin){
+      let promptText = `Please Login to HydroShare to import private regions from HydroShare. 
+      Currently only available importing existing public regions from HydroShare.`;
+      let prompt = makePromptForHydroShareLogin(promptText)
+      showToast('custom',prompt)
+      return
+    }
+    setShowAddRegionMenuFromHydroShare(true);
+
     hideAllUserRegions();
   };
 
@@ -79,6 +101,34 @@ function App() {
     }
   }, [])
   
+  useEffect(()=>{
+    let promptText = `Please Login to HydroShare to addition of regions using a list of reaches or using a Geometry Polygon. 
+    Currently only available importing existing public regions from HydroShare.`;
+    let prompt = makePromptForHydroShareLogin(promptText)
+    showToast('custom',prompt)
+    
+    //send message to web socket to start again 
+  },[isHydroShareLogin])
+
+  const makePromptForHydroShareLogin = (prompt) => {
+    if(!isHydroShareLogin){
+      let custom_message=<CustomNotification>
+      <a href="/oauth2/login/hydroshare/">
+        <div className="container-hs-notification">
+          <div>
+            <img src={logo} className="App-logo" alt="logo" />
+            Log in with HydroShare
+          </div>
+          <div>
+            <p>{prompt}</p>
+          </div>
+        </div>
+
+      </a>
+    </CustomNotification>
+    return custom_message
+    }
+  };
 
 
 
@@ -117,6 +167,8 @@ function App() {
                       showAddRegionMenuFromHydroShare={showAddRegionMenuFromHydroShare}
                       handleShowAddRegionMenuFromHydroShare={handleShowAddRegionMenuFromHydroShare}
                       toggleShowAddRegionMenuFromHydroShare={toggleShowAddRegionMenuFromHydroShare}
+                      isHydroShareLogin={isHydroShareLogin}
+                      setIsHydroShareLogin={setIsHydroShareLogin}
                     />
 
                     </div>
@@ -133,3 +185,5 @@ function App() {
 }
 
 export default App;
+
+

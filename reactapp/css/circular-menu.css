@@ -3,8 +3,8 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    height: 6em;
-    width: 6em;
+    height: 3em;
+    width: 3em;
     margin: -3em;
     text-align: center;
     display: flex;
@@ -22,18 +22,18 @@
   }
   
   .menu-item:hover {
-    height: 7em;
-    width: 7em;
+    height: 3em;
+    width: 3em;
     margin: -3.5em;
   }
   
   .icon-class-name {
-    font-size: 2.5em;
+    font-size: 2em;
   }
   
   .item-show {
     opacity: 1;
-    transition: height 0.1s ease-out, width 0.1s ease-out, margin 0.1s ease-out, opacity 0.5s ease-out;
+    /* transition: height 0.1s ease-out, width 0.1s ease-out, margin 0.1s ease-out, opacity 0.5s ease-out; */
   }
   
   .item-hide {
@@ -43,10 +43,24 @@
   .menu-background {
     height: 100%;
     width: 100%;
+
     position: absolute;
     z-index: 100;
-    background-color: #f0e8d1;
+    /* background-color: #f0e8d1; */
   }
+
+  .menu-background {
+    height: fit-content;
+    width: fit-content;
+    position: absolute;
+    z-index: 100;
+    top: 90%;
+    margin-top: -3em;
+    left: 5%;
+    /* background-color: #f0e8d1; */
+    margin-left: -3em;
+}
+
   
   .button-bg {
     position: relative;
@@ -59,19 +73,47 @@
     margin-top: -9em;
   }
   
+  .button-bg {
+    position: relative;
+    height: 18em;
+    width: 18em;
+    border-radius: 50%;
+    margin: 1.75em auto 0;
+    z-index: 1000;
+    top: 90%;
+    /* margin-top: -9em; */
+    left: 5%;
+    margin-top: -6em;
+    margin-left: -6em;
+}
+
+
   .menu-toggle {
     position: absolute;
     z-index: 2000;
     margin-top: 2em;
     margin-left: 2em;
-    height: 6em;
-    width: 6em;
+    height: 3em;
+    width: 3em;
     border-radius: 50%;
     background-color: transparent;
     outline: none;
     cursor: pointer;
   }
   
+  .menu-toggle {
+    position: absolute;
+    z-index: 2000;
+    margin-top: 2em;
+    margin-left: 2em;
+    height: 3em;
+    width: 3em;
+    border-radius: 50%;
+    background-color: black;
+    outline: none;
+    cursor: pointer;
+}
+
   .menu-toggle i {
     font-size: 20px;
   }
@@ -85,6 +127,17 @@
     margin-left: -3em;
     animation: fadeIn 1s 1 ease-in;
   }
+
+  .toggle-open {
+    border: 3px solid #353535;
+    color: #353535;
+    top: 90%;
+    left: 5%;
+    margin-top: -3em;
+    margin-left: -3em;
+    animation: fadeIn 1s 1 ease-in;
+}
+
   
   .toggle-closed {
     border: 3px solid white;
@@ -94,7 +147,16 @@
     margin-left: -3em;
     color: white;
   }
-  
+  .toggle-closed {
+    border: 3px solid white;
+    top: 90%;
+    left: 5%;
+    margin-top: -3em;
+    margin-left: -3em;
+    color: black;
+}
+
+
   .menu-wrapper-open {
     opacity: 1;
     visibility: visible;

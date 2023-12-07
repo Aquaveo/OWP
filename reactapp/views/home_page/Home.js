@@ -65,13 +65,16 @@ function App(
     handleShowMainRegionMenu,
     showAddRegionMenuFromHydroShare,
     handleShowAddRegionMenuFromHydroShare,
-    toggleShowAddRegionMenuFromHydroShare
+    toggleShowAddRegionMenuFromHydroShare,
+    isHydroShareLogin,
+    setIsHydroShareLogin
+
   }
 ) 
   {
   
   const socketRef = useRef();
-
+  // const [isHydroShareLogin, setIsHydroShareLogin] = useState(false)
   const [hydroshareRegionsOptions, setHydroShareRegionsOptions] = useState([])
   // const [hydrosharePrivateRegionsOptions, setHydroSharePrivateRegionsOptions] = useState([])
   const [currentReachGeometryOnClick, setCurrentReachGeometryOnClick] = useState(null)
@@ -379,21 +382,25 @@ function App(
       if(command ==='show_hydroshare_regions_notifications'){
         console.log(data['data'])
         if (data['message'] ==='Not logged in through HydroShare'){
-          let custom_message=<CustomNotification>
-            <a href="/oauth2/login/hydroshare/">
-              <div className="container-hs-notification">
-                <div>
-                  <img src={logo} className="App-logo" alt="logo" />
-                  Log in with HydroShare
-                </div>
-                <div>
-                  <p>Please Login to see your private regions display in the dropdown menu</p>
-                </div>
-              </div>
+          setIsHydroShareLogin(false)
+          // let custom_message=<CustomNotification>
+          //   <a href="/oauth2/login/hydroshare/">
+          //     <div className="container-hs-notification">
+          //       <div>
+          //         <img src={logo} className="App-logo" alt="logo" />
+          //         Log in with HydroShare
+          //       </div>
+          //       <div>
+          //         <p>Please Login to see your private regions display in the dropdown menu</p>
+          //       </div>
+          //     </div>
 
-            </a>
-          </CustomNotification>
-          showToast('custom',custom_message)
+          //   </a>
+          // </CustomNotification>
+          // showToast('custom',custom_message)
+        }
+        else{
+          isHydroShareLogin(true);
         }
         setHydroShareRegionsOptions(data['data'])
         // setHydroSharePrivateRegionsOptions(data['private_data'])
@@ -401,21 +408,26 @@ function App(
       if(command ==='show_hs_login_status'){
         console.log(data)
         if (data['message'] ==='Not logged in through HydroShare'){
-          let custom_message=<CustomNotification>
-            <a href="/oauth2/login/hydroshare/">
-              <div className="container-hs-notification">
-                <div>
-                  <img src={logo} className="App-logo" alt="logo" />
-                  Log in with HydroShare
-                </div>
-                <div>
-                  <p>Please Login to see your private regions display in the dropdown menu</p>
-                </div>
-              </div>
+          setIsHydroShareLogin(false);
+          // let custom_message=<CustomNotification>
+          //   <a href="/oauth2/login/hydroshare/">
+          //     <div className="container-hs-notification">
+          //       <div>
+          //         <img src={logo} className="App-logo" alt="logo" />
+          //         Log in with HydroShare
+          //       </div>
+          //       <div>
+          //         <p>Please Login to see your private regions display in the dropdown menu</p>
+          //       </div>
+          //     </div>
 
-            </a>
-          </CustomNotification>
-          showToast('custom',custom_message)
+          //   </a>
+          // </CustomNotification>
+          // showToast('custom',custom_message)
+        }
+        else{
+          setIsHydroShareLogin(true);
+
         }
       }
 
@@ -432,9 +444,6 @@ function App(
                 : item
             )
           );
-
-
-
         } catch (error) {
           console.log(error)
         }
@@ -485,16 +494,6 @@ function App(
     console.log(availableReachesList)
     if(availableReachesList.length > 0){
       setPromptTextAvailableReachesList(`Page ${currentPage} of ${currentPageNumber}`);
-      // console.log(availableReachesList.map((reach) => reach.COMID))
-      // let dataRequest = {
-      //   // type: "update_nwm_data",
-      //   feature_ids: JSON.stringify(availableReachesList.map((reach) => reach.COMID)),
-      //   ensemble: 0,
-      //   start_date:'2023-04-04',
-      //   end_date:"2023-04-10",
-      //   reference_time: "2023-03-25T00:00:00"
-      // }
-      // appAPI.getNwmData(dataRequest);
     }
     else{
       setPromptTextAvailableReachesList(`No Reaches found`)
@@ -511,6 +510,7 @@ function App(
         <div><span className='loading-tex-span'>{loadingText}</span></div>
       </div>
     </LoaderContainer>
+
     <Notification/>
 
     <MainContainer >
@@ -534,7 +534,6 @@ function App(
           setCurrentReachGeometryOnClick={setCurrentReachGeometryOnClick}
           setCurrentReachGeometry={setCurrentReachGeometry}
         >
-          
           {/* <MenuWrapper /> */}
           <CircularMenuComponent 
             handleShowRegionMenu={handleShowRegionMenu}

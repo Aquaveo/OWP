@@ -54,7 +54,7 @@ const IconOption = props => (
         <IconContext.Provider value={{ size: '1.4em'  ,className: "global-class-name" }}>
             {props.data.public ? <LiaUsersSolid/> : <LiaUserSolid/> }
         </IconContext.Provider>
-        <div class="horizontalgap" styles="width:10px"></div>
+        <div className="horizontalgap" styles="width:10px"></div>
       {props.data.label}
     </Option>
   );
@@ -91,7 +91,7 @@ export const RegionFormFromHydroShare = (
 
   return (
     <SmallMenu isVisible={showAddRegionMenuFromHydroShare} position={"top"} >
-        <Notification/>
+        {/* <Notification/> */}
         <div className="wrapper_hs-region">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <p className="sudo_title">

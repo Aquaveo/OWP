@@ -3,6 +3,7 @@ import 'css/circular-menu.css'
 import { BiSolidSave,BiLockAlt,BiLockOpenAlt } from "react-icons/bi"
 import { IconContext } from "react-icons";
 
+
 const itemClick = (e) => {
   console.log("clicked");
 }
@@ -87,7 +88,7 @@ const MenuWrapper = () => {
   return (
     <div>
       <MenuToggle toggle={toggleMenu} open={menuOpen} animateButtons={animateButtons} />
-      <Menu size={18} items={menuItems} open={menuOpen} />
+      <Menu size={10} items={menuItems} open={menuOpen} />
     </div>
   );
 };
