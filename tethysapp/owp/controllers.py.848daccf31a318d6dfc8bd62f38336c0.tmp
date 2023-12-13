@@ -1082,7 +1082,7 @@ async def nwm_api_call(api_base_url, params):
     # channel_layer = get_channel_layer()
     headers = "xxxxxxx"
 
-    # headers = {"x-api-key": "AIzaSyDEEsdo0lm2aOmPX9NxGEncyVYGtwhsfMc"}
+    
     try:
         # breakpoint()
         async with limit:
