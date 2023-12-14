@@ -636,7 +636,7 @@ async def api_forecast_call(api_base_url, station_id, method_name):
         #     },
         #     timeout=None
         # )
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(verify=False) as client:
             response_await = await client.get(
                 url=f"{api_base_url}/{method_name}/streamflow",
                 params={"station_id": station_id},
@@ -790,40 +790,6 @@ async def getUserReachesPerRegionsMethod(
         list_api_data = await getNwmDataAsync(
             comid_values, ["assim", "long"], "2023-05-01T06:00:00"
         )
-        # breakpoint()
-        # print(type(list_api_data), len(list_api_data))
-
-        long_dict = {}
-        for item in list_api_data:
-            feature_id = item["feature_id"]
-            velocity = item["velocity"]
-
-            if feature_id not in long_dict:
-                long_dict[feature_id] = []
-
-            long_dict[feature_id].append(velocity)
-
-        assim_dict = {}
-        for item in list_api_data:
-            feature_id = item["feature_id"]
-            velocity = item["velocity"]
-
-            if feature_id not in assim_dict:
-                long_dict[feature_id] = []
-
-            assim_dict[feature_id].append(velocity)
-        # long_dict = {
-        #     item["feature_id"]: long_dict.setdefault(item["feature_id"], []).append(
-        #         item["velocity"]
-        #     )
-        #     for item in list_api_data["long"]
-        # }
-        # assim_dict = {
-        #     item["feature_id"]: assim_dict.setdefault(item["feature_id"], []).append(
-        #         item["velocity"]
-        #     )
-        #     for item in list_api_data["assim"]
-        # }
 
         for region in only_user_reaches_regions:
             region_obj = {
@@ -832,8 +798,8 @@ async def getUserReachesPerRegionsMethod(
                 "StreamOrde": region[2],
                 "StreamCalc": region[3],
                 "QA_MA": region[4],
-                "long_forecast": long_dict[region[1]],
-                "assim": assim_dict[region[1]],
+                "long_forecast": list_api_data["long"][f"{region[1]}"],
+                "assim": list_api_data["assim"][f"{region[1]}"],
             }
             regions_response["reaches"].append(region_obj)
 
@@ -1064,7 +1030,7 @@ async def make_nwm_api_calls(api_base_url, feature_ids, types, reference_time):
         params = {
             "comids": feature_ids,
             "type": single_type,
-            "reference_time": reference_time,
+            # "reference_time": reference_time,
             "format": "json",
         }
 
@@ -1079,9 +1045,8 @@ async def make_nwm_api_calls(api_base_url, feature_ids, types, reference_time):
 # @measure_async
 async def nwm_api_call(api_base_url, params):
     mssge_string = "Complete"
-    # channel_layer = get_channel_layer()
-    headers = "xxxxxxx"
 
+    headers = {"x-api-key": "xxxxxxxxxxxxxxxxxxx"}
     try:
         # breakpoint()
         async with limit:
@@ -1097,7 +1062,36 @@ async def nwm_api_call(api_base_url, params):
                 print(response_await.status_code)
                 # breakpoint()
                 # velocities = [d["velocity"] for d in response_await.json()]
-                return {f"{params['type']}": response_await.json()}
+
+                df = pd.DataFrame.from_dict(response_await.json())
+                dfs_dict = {
+                    comid: df.loc[df["feature_id"] == int(comid)]
+                    for comid in params["comids"].split(",")
+                }
+                list_daily_avg = []
+                for comid, split_df in dfs_dict.items():
+                    split_df["time"] = pd.to_datetime(split_df["time"])
+                    split_df = split_df.set_index("time")
+                    split_df = split_df.sort_index()
+                    split_df = split_df[["velocity"]]
+                    if "assim" in params["type"]:
+                        daily_avg = split_df.resample("1H").mean()
+                    else:
+                        daily_avg = split_df.resample("24H").mean()
+
+                    # breakpoint()
+
+                    daily_avg = daily_avg.rename(columns={"velocity": f"{comid}"})
+                    if len(list_daily_avg) > 0:
+                        merged_df = pd.concat([list_daily_avg[0], daily_avg], axis=1)
+                        list_daily_avg = [merged_df]
+                    else:
+                        list_daily_avg = [daily_avg]
+                    # print(split_df)
+                # breakpoint()
+                response_obj = list_daily_avg[0].to_dict("list")
+                # return {f"{params['type']}": response_await.json()}
+                return {f"{params['type']}": response_obj}
                 # return velocities
             if response_await.status_code == 429:
                 print(response_await.text)
@@ -1114,21 +1108,24 @@ async def nwm_api_call(api_base_url, params):
         print(e)
 
 
-async def getNwmDataAsync(feature_ids, types, reference_time):
+async def getNwmDataAsync(feature_ids, types_ts, reference_time):
     # Your existing code for make_nwm_api_calls and other related functions...
 
     # Assuming 'all_calls' is the result of await make_nwm_api_calls(...)
+    features_ids_string = ",".join(str(comid) for comid in feature_ids)
     all_calls = await make_nwm_api_calls(
-        BASE_NWM_API_URL, feature_ids, types, reference_time
+        BASE_NWM_API_URL, features_ids_string, types_ts, reference_time
     )
 
     # Creating a dictionary to store results with 'types' as keys
     results_dict = {}
-    for idx, single_type in enumerate(types):
+    # breakpoint()
+    for idx, single_type in enumerate(types_ts):
         if isinstance(all_calls[idx], dict):
             results_dict[single_type] = all_calls[idx].get(single_type, [])
         else:
             results_dict[single_type] = []
+    # breakpoint()
 
     return results_dict
 
@@ -1153,30 +1150,30 @@ async def getNwmDataAsync(feature_ids, types, reference_time):
 #     return all_calls
 
 
-@controller
-@measure_sync
-def getNwmData(request):
-    # breakpoint()
-    feature_ids = json.loads(request.POST.getlist("feature_ids")[0])
-    ensemble = request.POST.get("ensemble")
-    start_date = request.POST.get("start_date")
-    end_date = request.POST.get("end_date")
-    reference_time = request.POST.get("reference_time")
-    response = "updating"
-    try:
-        api_base_url = BASE_NWM_API_URL
-        asyncio.run(
-            make_nwm_api_calls(
-                api_base_url,
-                feature_ids,
-                ensemble,
-                start_date,
-                end_date,
-                reference_time,
-            )
-        )
+# @controller
+# @measure_sync
+# def getNwmData(request):
+#     # breakpoint()
+#     feature_ids = json.loads(request.POST.getlist("feature_ids")[0])
+#     ensemble = request.POST.get("ensemble")
+#     start_date = request.POST.get("start_date")
+#     end_date = request.POST.get("end_date")
+#     reference_time = request.POST.get("reference_time")
+#     response = "updating"
+#     try:
+#         api_base_url = BASE_NWM_API_URL
+#         asyncio.run(
+#             make_nwm_api_calls(
+#                 api_base_url,
+#                 feature_ids,
+#                 ensemble,
+#                 start_date,
+#                 end_date,
+#                 reference_time,
+#             )
+#         )
 
-    except Exception as e:
-        print("got NWM data error")
-        print(e)
-    return JsonResponse({"state": response})
+#     except Exception as e:
+#         print("got NWM data error")
+#         print(e)
+#     return JsonResponse({"state": response})

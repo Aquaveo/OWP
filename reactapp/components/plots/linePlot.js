@@ -124,6 +124,7 @@ export const LineChart = (props) => {
     series.strokes.template.setAll({
       strokeWidth: strokeWidth,
     });
+    console.log(props.data[product]['data'])
     series.data.setAll(props.data[product]['data']);
     series.appear(1000,500);
         // series.appear(1000);
@@ -536,6 +537,14 @@ export const LineChart = (props) => {
           }
           else{
             seriesAnalysisAssimRef.current.data.setAll(props.data[product]['data']);
+            let ts_complete = props.data[product]['data'];
+            let sorted_values = ts_complete.slice().sort((a, b) => a.value - b.value).map(obj => obj.value);
+            let minimun = sorted_values[0]
+            let maximun = sorted_values[sorted_values.length - 1]
+            console.log(minimun,maximun)
+
+            seriesAnalysisAssimRef.current.valueAxes[1].zoomToValues(minimun, maximun)
+
 
           }
 

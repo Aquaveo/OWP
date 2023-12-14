@@ -357,7 +357,42 @@ function App(
       }
       if(command ==='update_reaches_users'){
         console.log(data);
-        setAvailableReachesList(data['data']);
+        setAvailableReachesList(data['data'])
+        // setData(
+        //   data.map(item => 
+        //       item.id === index 
+        //       ? {...item, someProp : "changed", someOtherProp: 42}
+        //       : item 
+        // ))
+
+        // setAvailableReachesList(() => [
+        //   ...data['data']
+        // ]);
+        // setAvailableReachesList([...availableReachesList, data['data']]);
+
+        // setAvailableReachesList(
+        //   availableReachesList.length > 0 ?
+        //     availableReachesList.map((reach, index) => 
+        //     reach.COMID === data['data'][index]['COMID']
+        //       ? {
+        //         ...reach,
+        //         long_forecast: data['data'][index]['long_forecast'],
+        //         assim: data['data'][index]['assim'],
+        //       }
+        //       :{
+        //         COMID: data['data'][index]['COMID'],
+        //         GNIS_NAME: data['data'][index]['GNIS_NAME'],
+        //         QA_MA: data['data'][index]['QA_MA'],
+        //         StreamCalc: data['data'][index]['StreamCalc'],
+        //         StreamOrde: data['data'][index]['StreamOrde'],
+        //         long_forecast: data['data'][index]['long_forecast'],
+        //         assim: data['data'][index]['assim'],
+        //       }
+        //   )
+        //   : [...data['data'] ]
+
+        // );
+
         const numberOfPageItems = Math.ceil(data['total_reaches']/pagesLimit);
         console.log(numberOfPageItems)
         setCurrentPageNumber(numberOfPageItems)
@@ -434,6 +469,7 @@ function App(
 
       if(command ==='nwm_spark_Data_Retrieved'){
         try {
+          console.log('nwm_spark_Data_Retrieved');
           console.log(JSON.parse(data['data']));
           let sparkLineData = JSON.parse(data['data'])
           let plot_data = sparkLineData.map((reach) => reach.streamflow)

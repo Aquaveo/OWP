@@ -2,7 +2,8 @@
 
 import { Button,Col, Row } from 'react-bootstrap';
 import { GoGraph } from "react-icons/go";
-import { Sparklines, SparklinesLine } from '@jrwats/react-sparklines';
+import { Sparklines, SparklinesLine,SparklinesBars } from '@jrwats/react-sparklines';
+import chroma from 'chroma-js';
 
 
 
@@ -49,7 +50,8 @@ export const RegionsRows = ({
     
       }
 
-      const sampleData = [5, 10, 5, 20, 8, 15]; 
+      const sampleData = [4,5,6,1,2];
+      const color = chroma('#7ccabb'); 
     return (
 
             <Row className='mb-2'>
@@ -71,21 +73,23 @@ export const RegionsRows = ({
 
 
                     <Col sm={2} >
-                    <Sparklines data={availableReachesList['assim']} limit={5} >
-                        <SparklinesLine color="#F26419" />
+                    <Sparklines data={availableReach['assim'] } >
+                        <SparklinesBars style={{ fill: chroma('#F26419').brighten(1) , fillOpacity: "0.75" }} />
+                        <SparklinesLine style={{ stroke: chroma('#F26419').darken(1) , fill: "none" }} />
                     </Sparklines>
 
                     </Col>
+
                     <Col sm={2} >
-                    <Sparklines data={sampleData}>
-                        <SparklinesLine color="#F26419" />
-                    </Sparklines>
-
-
+                        <Sparklines data={sampleData}>
+                            <SparklinesLine color="#AF2BBF" />
+                        </Sparklines>
                     </Col>
+
                     <Col sm={2} >
-                    <Sparklines data={availableReachesList['long_forecast']} limit={5} >
-                        <SparklinesLine color="#DD1C1A" />
+                    <Sparklines data={availableReach['long_forecast'] } >
+                        <SparklinesBars style={{ fill: chroma('#AF2BBF').brighten(1) , fillOpacity: "0.75" }} />
+                        <SparklinesLine style={{ stroke: chroma('#AF2BBF').darken(1) , fill: "none" }} />
                     </Sparklines>
 
                     </Col>
