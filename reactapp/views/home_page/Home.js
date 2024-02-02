@@ -40,14 +40,26 @@ import { Notification } from "components/notifications/notification";
 import { CustomNotification } from 'components/styled-components/BsNotification.styled';
 
 import logo from "css/hs-icon-sm.png"
+
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
 const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer'
 
+// let ws = ''
+const webSocketHost = process.env.TETHYS_WEB_SOCKET_HOST
+const prefix_url = process.env.TETHYS_PREFIX_URL ? `/${process.env.TETHYS_PREFIX_URL.replace(/^\/|\/$/g, '')}/` : '';
+const app_root_relative_path = process.env.TETHYS_APP_ROOT_URL_RELATIVE ? `${process.env.TETHYS_APP_ROOT_URL_RELATIVE.replace(/^\/|\/$/g, '')}` : '';
 
-const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
 
+// const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
+const ws = 'ws://' + webSocketHost + prefix_url + app_root_relative_path + '/data-notification/notifications/ws/';
+
+
+
+// const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
+
+// const ws = 'ws://' + window.location.href.split('//')[1].split('owp')[0] + 'owp' +'/data-notification/notifications/ws/';
 
 function App(
   {

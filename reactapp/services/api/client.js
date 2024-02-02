@@ -26,7 +26,8 @@ function handleError(error) {
   let res = error.response;
   if (res.status === 401) {
     // Redirect to Tethys Portal login
-    window.location.assign(`${TETHYS_PORTAL_HOST}/accounts/login?next=${window.location.pathname}`);
+    // window.location.assign(`${TETHYS_PORTAL_HOST}/accounts/login?next=${window.location.pathname}`);
+    window.location.assign(`${TETHYS_PORTAL_HOST}accounts/login?next=${window.location.pathname}`);
   }
   return Promise.reject(error);
 }
