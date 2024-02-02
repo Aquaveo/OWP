@@ -1045,8 +1045,8 @@ async def make_nwm_api_calls(api_base_url, feature_ids, types, reference_time):
 # @measure_async
 async def nwm_api_call(api_base_url, params):
     mssge_string = "Complete"
-
-    headers = {"x-api-key": "xxxxxxxxxxxxxxxxxxx"}
+    x_api_key = await sync_to_async(app.get_custom_setting)("x_api_key")
+    headers = {"x-api-key": x_api_key}
     try:
         # breakpoint()
         async with limit:
