@@ -1071,12 +1071,12 @@ function App(
                     </Row>
                   </Container>
                 </Tab>
-                <Tab eventKey="historical-tab" title="Historical Data">
+                {/* <Tab eventKey="historical-tab" title="Historical Data">
                 
                 </Tab>
                 <Tab eventKey="averages-tab" title="Daily-Monthly Averages">
                   Tab content for Loooonger Tab
-                </Tab>
+                </Tab> */}
 
               </Tabs>
 
