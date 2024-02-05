@@ -19,6 +19,7 @@ module.exports = (env, argv) => {
 			// publicPath: '/static/owp/frontend/',
 			publicPath: `/${tethys_prefix_url}/static/owp/frontend/`,
 			// publicPath: '/test/prefix/static/owp/frontend/',
+
 		},
 		resolve: {
 			modules: [

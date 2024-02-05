@@ -2,8 +2,8 @@ import axios from 'axios';
 
 import { getTethysPortalHost } from 'services/utilities';
 
-const TETHYS_PORTAL_HOST = getTethysPortalHost();
 
+const TETHYS_PORTAL_HOST = getTethysPortalHost();
 const apiClient = axios.create({
   baseURL: `${TETHYS_PORTAL_HOST}`,
   withCredentials: true,
@@ -27,6 +27,7 @@ function handleError(error) {
   if (res.status === 401) {
     // Redirect to Tethys Portal login
     // window.location.assign(`${TETHYS_PORTAL_HOST}/accounts/login?next=${window.location.pathname}`);
+
     window.location.assign(`${TETHYS_PORTAL_HOST}accounts/login?next=${window.location.pathname}`);
   }
   return Promise.reject(error);

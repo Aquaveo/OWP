@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import App from 'App';
 
 const APP_ROOT_URL = process.env.TETHYS_APP_ROOT_URL;
+
 let container = null;
 
 document.addEventListener('DOMContentLoaded', () => {
