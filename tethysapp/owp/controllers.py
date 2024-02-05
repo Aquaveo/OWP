@@ -741,70 +741,75 @@ async def getUserReachesPerRegionsMethod(
     # breakpoint()
     # breakpoint()
     if is_authenticated:
-        print("authenticated getUserReachesPerRegionsMethod")
-        SessionMaker = await sync_to_async(app.get_persistent_store_database)(
-            "user_data", as_sessionmaker=True
-        )
-        session = SessionMaker()
-        page_number = page_number - 1
-        page_offset = page_number * page_limit
-        only_user_reaches_regions = (
-            session.query(
-                Reach.gnis_name,
-                Reach.comid,
-                Reach.streamorde,
-                Reach.streamcalc,
-                Reach.qa_ma,
+        try:
+            print("authenticated getUserReachesPerRegionsMethod")
+            SessionMaker = await sync_to_async(app.get_persistent_store_database)(
+                "user_data", as_sessionmaker=True
             )
-            .join(Region)
-            .filter(Region.name == region_name)
-            .filter(Region.user_name == user_name)
-            .order_by(Reach.gnis_name.desc())
-        )
-        json_response["total_reaches"] = len(only_user_reaches_regions.all())
-
-        if search_term:
-            # breakpoint()
-            only_user_reaches_regions = only_user_reaches_regions.filter(
-                or_(
-                    cast(Reach.comid, String).like(f"%{search_term}%"),
-                    cast(Reach.gnis_name, String).like(f"%{search_term}%"),
+            session = SessionMaker()
+            page_number = page_number - 1
+            page_offset = page_number * page_limit
+            only_user_reaches_regions = (
+                session.query(
+                    Reach.gnis_name,
+                    Reach.comid,
+                    Reach.streamorde,
+                    Reach.streamcalc,
+                    Reach.qa_ma,
                 )
+                .join(Region)
+                .filter(Region.name == region_name)
+                .filter(Region.user_name == user_name)
+                .order_by(Reach.gnis_name.desc())
             )
-        if page_number > 0:
-            only_user_reaches_regions = only_user_reaches_regions.offset(page_offset)
+            json_response["total_reaches"] = len(only_user_reaches_regions.all())
 
-        only_user_reaches_regions = only_user_reaches_regions.limit(page_limit)
+            if search_term:
+                # breakpoint()
+                only_user_reaches_regions = only_user_reaches_regions.filter(
+                    or_(
+                        cast(Reach.comid, String).like(f"%{search_term}%"),
+                        cast(Reach.gnis_name, String).like(f"%{search_term}%"),
+                    )
+                )
+            if page_number > 0:
+                only_user_reaches_regions = only_user_reaches_regions.offset(
+                    page_offset
+                )
 
-        print(
-            page_limit,
-            page_number,
-            page_offset,
-            search_term,
-            len(only_user_reaches_regions.all()),
-        )
-        regions_response["reaches"] = []
-        # breakpoint()
-        comid_values = [d[1] for d in only_user_reaches_regions.all()]
+            only_user_reaches_regions = only_user_reaches_regions.limit(page_limit)
 
-        list_api_data = await getNwmDataAsync(
-            comid_values, ["assim", "long"], "2023-05-01T06:00:00"
-        )
+            print(
+                page_limit,
+                page_number,
+                page_offset,
+                search_term,
+                len(only_user_reaches_regions.all()),
+            )
+            regions_response["reaches"] = []
+            # breakpoint()
+            comid_values = [d[1] for d in only_user_reaches_regions.all()]
 
-        for region in only_user_reaches_regions:
-            region_obj = {
-                "GNIS_NAME": region[0],
-                "COMID": region[1],
-                "StreamOrde": region[2],
-                "StreamCalc": region[3],
-                "QA_MA": region[4],
-                "long_forecast": list_api_data["long"][f"{region[1]}"],
-                "assim": list_api_data["assim"][f"{region[1]}"],
-            }
-            regions_response["reaches"].append(region_obj)
+            list_api_data = await getNwmDataAsync(
+                comid_values, ["assim", "long"], "2023-05-01T06:00:00"
+            )
 
-        json_response["mssg"] = "completed"
+            for region in only_user_reaches_regions:
+                region_obj = {
+                    "GNIS_NAME": region[0],
+                    "COMID": region[1],
+                    "StreamOrde": region[2],
+                    "StreamCalc": region[3],
+                    "QA_MA": region[4],
+                    "long_forecast": list_api_data["long"][f"{region[1]}"],
+                    "assim": list_api_data["assim"][f"{region[1]}"],
+                }
+                regions_response["reaches"].append(region_obj)
 
+            json_response["mssg"] = "completed"
+        except Exception:
+            regions_response["reaches"] = []
+            json_response["mssg"] = "error while retrieving the reach data"
     else:
         regions_response["reaches"] = []
         json_response["mssg"] = "not aunthenticated"
@@ -1045,6 +1050,7 @@ async def make_nwm_api_calls(api_base_url, feature_ids, types, reference_time):
 # @measure_async
 async def nwm_api_call(api_base_url, params):
     mssge_string = "Complete"
+    # x_api_key = "xasxasdaxasx"
     x_api_key = await sync_to_async(app.get_custom_setting)("x_api_key")
     headers = {"x-api-key": x_api_key}
     try:

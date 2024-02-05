@@ -25,10 +25,13 @@ class Owp(TethysAppBase):
         """
         Custom Settings
         """
-        custom_settings = SecretCustomSetting(
-            name="x_api_key",
-            description="API key for big query function",
-            required=False,
+
+        custom_settings = (
+            SecretCustomSetting(
+                name="x_api_key",
+                description="API key for big query function",
+                required=False,
+            ),
         )
         return custom_settings
 
