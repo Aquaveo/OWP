@@ -1,6 +1,6 @@
 from tethys_sdk.base import TethysAppBase
 from tethys_sdk.app_settings import PersistentStoreDatabaseSetting
-from tethys_sdk.app_settings import SecretCustomSetting
+from tethys_sdk.app_settings import SecretCustomSetting, CustomSetting
 
 
 class Owp(TethysAppBase):
@@ -27,6 +27,20 @@ class Owp(TethysAppBase):
         """
 
         custom_settings = (
+            CustomSetting(
+                name="nwmdata_api",
+                type=CustomSetting.TYPE_STRING,
+                description="TYPE_STRING",
+                default="https://nwmdata.nohrsc.noaa.gov/latest/forecasts",
+                required=False,
+            ),
+            CustomSetting(
+                name="base_nwp_api_url",
+                type=CustomSetting.TYPE_STRING,
+                description="Google API to retrieve forcast data from big query",
+                default="https://nwm-forecast-9f6idmxh.uc.gateway.dev/retroactive_forecast_records",
+                required=False,
+            ),
             SecretCustomSetting(
                 name="x_api_key",
                 description="API key for big query function",

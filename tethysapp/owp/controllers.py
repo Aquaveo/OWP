@@ -44,10 +44,21 @@ from tethys_services.backends.hs_restclient_helper import get_oauth_hs
 from .helpers import get_oauth_hs_channels, get_oauth_hs_sync, HSClientInitException
 import pickle
 
-BASE_API_URL = "https://nwmdata.nohrsc.noaa.gov/latest/forecasts"
-BASE_NWM_API_URL = (
-    "https://nwm-forecast-9f6idmxh.uc.gateway.dev/retroactive_forecast_records"
-)
+try:
+    BASE_API_URL = app.get_custom_setting("nwmdata_api")
+    # BASE_API_URL = "https://nwmdata.nohrsc.noaa.gov/latest/forecasts"
+except Exception:
+    BASE_API_URL = ""
+
+try:
+    BASE_NWM_API_URL = app.get_custom_setting("base_nwp_api_url")
+    # BASE_API_URL = "https://nwmdata.nohrsc.noaa.gov/latest/forecasts"
+except Exception:
+    BASE_NWM_API_URL = ""
+
+# BASE_NWM_API_URL = (
+#     "https://nwm-forecast-9f6idmxh.uc.gateway.dev/retroactive_forecast_records"
+# )
 
 async_client = httpx.AsyncClient()
 
