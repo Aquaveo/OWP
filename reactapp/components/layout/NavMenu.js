@@ -7,8 +7,8 @@ const NavMenu = ({children, navTitle, onNavChange, navVisible, ...props}) => {
 
   return (
     <>
-      <Offcanvas show={navVisible} onHide={handleClose} {...props}>
-        <Offcanvas.Header closeButton>
+      <Offcanvas show={navVisible} backdrop={false}  scroll={true} onHide={handleClose} {...props}>
+        <Offcanvas.Header closeButton >
           <Offcanvas.Title>{navTitle}</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>

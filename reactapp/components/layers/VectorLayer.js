@@ -4,18 +4,19 @@ import { getVectorSourceExtent } from 'ol/extent';
 
 import MapContext from "../map/MapContext";
 
-export const VectorLayer = ({ name,source, style, zIndex = 0}) => {
+export const VectorLayer = ({ name,source, style, zIndex=0 }) => {
   const { map } = useContext(MapContext);
   useEffect(() => {
-    console.log("here")
     if (!map) return;
     let vectorLayer = new OLVectorLayer({
       name,
       source,
-      style
+      style,
+      zIndex
     });
-    map.addLayer(vectorLayer);
-    vectorLayer.setZIndex(zIndex);
+    // map.addLayer(vectorLayer);
+    map.getLayers().insertAt(1, vectorLayer);
+
     return () => {
       if (map) {
         map.removeLayer(vectorLayer);
@@ -24,40 +25,41 @@ export const VectorLayer = ({ name,source, style, zIndex = 0}) => {
   }, [map]);
 
 
-  useEffect(() => {
-    if (!map) return;
-    map.getAllLayers().filter(function( layer ) {
-      if(layer.get('name') === name){
-        // map.removeLayer(layer);
+  // useEffect(() => {
+  //   if (!map) return;
 
-        console.log("jeu")
-        let sourceLayer = layer.getSource();
-        // sourceLayer.clear();
-        // layer.setSource(source);
-        // layer.getSource().refresh();
+  //   // map.getAllLayers().filter(function( layer ) {
+  //   //   if(layer.get('name') === name){
+  //   //     // map.removeLayer(layer);
 
-        // const extent = source.getExtent();
-        // map.getView().fit(extent, {
-        //   padding: [10, 10, 10, 10], // Optional padding around the extent
-        //   duration: 1000, // Optional animation duration in milliseconds
-        // });
+  //   //     console.log("jeu")
+  //   //     let sourceLayer = layer.getSource();
+  //   //     // sourceLayer.clear();
+  //   //     // layer.setSource(source);
+  //   //     // layer.getSource().refresh();
 
-        sourceLayer.clear();
-        sourceLayer.addFeatures(source.getFeatures());
-        console.log(sourceLayer);
+  //   //     // const extent = source.getExtent();
+  //   //     // map.getView().fit(extent, {
+  //   //     //   padding: [10, 10, 10, 10], // Optional padding around the extent
+  //   //     //   duration: 1000, // Optional animation duration in milliseconds
+  //   //     // });
 
-        // layer.getSource().addFeatures(features);
-        // layer.getSource().refresh();
-        // map.getView().fit(layer.getSource().getExtent());
+  //   //     sourceLayer.clear();
+  //   //     sourceLayer.addFeatures(source.getFeatures());
+  //   //     console.log(sourceLayer);
 
-      }
-    });
+  //   //     // layer.getSource().addFeatures(features);
+  //   //     // layer.getSource().refresh();
+  //   //     // map.getView().fit(layer.getSource().getExtent());
+
+  //   //   }
+  //   // });
 
 
-    return () => {
+  //   return () => {
 
-    };
-  },[source]);
+  //   };
+  // },[source]);
 
 
   return null;

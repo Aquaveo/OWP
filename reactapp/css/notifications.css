@@ -1,0 +1,20 @@
+.bi-hydroshare {
+    background-image:url("hs-icon-sm.png");
+    background-size: 75%;
+    background-position: 4px 5px;
+}
+
+.container-hs-notification{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  width: 400px;
+}
+
+.container-row-notification{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+}

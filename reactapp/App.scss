@@ -9,6 +9,7 @@ html, body, #root {
 }
 
 body {
+    /* no needed, in order to avoid the scroll*/
     /* offset for fixed header */
-    padding-top: var(--ts-header-height);
+    // padding-top: var(--ts-header-height);
 }

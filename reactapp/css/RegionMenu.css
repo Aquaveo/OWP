@@ -1,0 +1,32 @@
+
+.accordion-header-row{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.accordion-header-container{
+    display: flex;
+    /* justify-content: space-between; */
+    flex-direction: column;
+    width: 100%;
+    height: 110%;
+    gap: 1em;
+}
+
+.button-menu{
+    display: flex;
+}
+
+.button-middle{
+    display: flex;
+    justify-content: center;
+    align-items:center;
+}
+.button-end{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.accordion-button::after{
+    display: none;
+}

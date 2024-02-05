@@ -17,5 +17,6 @@ requirements:
       - httpx
 
   pip:
-
+    - hs_restclient
+    - pynhd
 post:

@@ -8,7 +8,6 @@ export const SpanBadge = styled.span`
     font-weight: 700;
     line-height: 1;
     
-
 `;
 
 

@@ -1,68 +1,104 @@
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+//Boostrap components
+import { Badge, Container,Row,Col,Modal,Button,Tab,Tabs,ButtonGroup,ToggleButton} from "react-bootstrap";
 
-import { SpanBadge } from 'components/styles/Badge.styled';
-import Layers from "../../components/layers/Layers";
-import Controls from "components/control/Controls";
-
-import { SwitchLayerControl } from "components/control/switchLayers";
-import { OlTileLayer } from "../../components/layers/OlTileLayer";
-import { OlImageTileLayer } from "../../components/layers/OlImageTileLayer";
-import { ReMap } from "../../components/map/ReMap";
-import { TileImageArcGISRest } from "../../components/source/TileImageArcGISRest";
+//Maps components
+import Layers from "components/layers/Layers";
+import { OlTileLayer } from "components/layers/OlTileLayer";
+import { OlImageTileLayer } from "components/layers/OlImageTileLayer";
+import { ReMap } from "components/map/ReMap";
+import { TileImageArcGISRest } from "components/source/TileImageArcGISRest";
 import { ArcGISRestTile } from "components/source/TileArcGISRest";
-import { WMSTile } from "../../components/source/TileWMS";
 import { VectorLayer } from "components/layers/VectorLayer";
-import { VectorSourceLayer } from "components/source/Vector"; 
+import { LineChart } from "components/plots/linePlot";
+
+//Menus Components
+import { SideMenuWrapper } from 'components/menus/SideMenuRegions';
+import { RegionMenuWrapper } from 'components/menus/RegionMenu';
+import { CircularMenuComponent } from 'components/customHamburger/customHamburger';
+import { ReachListMenu } from "components/menus/ReachListBasedMenu";
+import { RegionFormFromHydroShare } from "components/menus/AddRegionMenuFromHydroShare";
+import MenuWrapper from "components/menus/CircleMenu";
+//Hooks components
+import { useEffect, useState, useReducer, useRef } from 'react';
+
+//OL modules
+import { fromLonLat } from 'ol/proj';
 import VectorSource from 'ol/source/Vector'
 import {Stroke, Style} from 'ol/style.js';
-import Feature from 'ol/Feature.js';
+import GeoJSON from 'ol/format/GeoJSON';
+import appAPI from "services/api/app";
 
-import { useEffect, useState, useReducer, useRef } from 'react';
-import { fromLonLat } from 'ol/proj';
-import LayerGroup from 'ol/layer/Group';
-import LineString from 'ol/geom/LineString.js';
-import { Circle } from 'ol/geom';
-
+//Styles modules
+import { SpanBadge } from 'components/styles/Badge.styled';
 import { MainContainer } from "components/styles/ContainerMain.styled";
 import { ModalContainer } from "components/styles/Modal.styled";
-import { SwitchControllerContainer } from "components/styles/SwitchLayerControl.styled";
-import PlotView from "./Plot"; 
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-import Dropdown from 'react-bootstrap/Dropdown';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import  ButtonToolbar  from "react-bootstrap/ButtonToolbar";
-import { Badge } from "react-bootstrap";
-import ToggleButton from 'react-bootstrap/ToggleButton';
-import { LineChart } from "components/plots/linePlot";
-import appAPI from "services/api/app";
 import { LoaderContainer } from 'components/styles/Loader.styled';
 
-// const TETHYS_PREFIX_URL = process.env.TETHYS_PREFIX_URL;
+import { showToast } from "services/notifications/notificationService";
+import { Toaster } from 'react-hot-toast';
+import { Notification } from "components/notifications/notification";
+import { CustomNotification } from 'components/styled-components/BsNotification.styled';
+
+import logo from "css/hs-icon-sm.png"
+
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
-const ws = 'ws://' + window.location.href.split('//')[1].split('owp')[0] + 'owp' +'/data-notification/notifications/ws/';
-// const ws = 'ws://' + `localhost:8000${TETHYS_PREFIX_URL}apps/owp` + '/data-notification/notifications/ws/';
-function App() {
+
+const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer'
+
+// let ws = ''
+const webSocketHost = process.env.TETHYS_WEB_SOCKET_HOST
+const prefix_url = process.env.TETHYS_PREFIX_URL ? `/${process.env.TETHYS_PREFIX_URL.replace(/^\/|\/$/g, '')}/` : '';
+const app_root_relative_path = process.env.TETHYS_APP_ROOT_URL_RELATIVE ? `${process.env.TETHYS_APP_ROOT_URL_RELATIVE.replace(/^\/|\/$/g, '')}` : '';
+
+
+// const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
+const ws = 'ws://' + webSocketHost + prefix_url + app_root_relative_path + '/data-notification/notifications/ws/';
+
+
+
+// const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
+
+// const ws = 'ws://' + window.location.href.split('//')[1].split('owp')[0] + 'owp' +'/data-notification/notifications/ws/';
+
+function App(
+  {
+    showRegionsMenu,
+    showReachesListMenu,
+    handleShowRegionMenu,
+    handleShowReachesListRegionMenu,
+    toggleAddRegionMenu,
+    toggleReachesListRegionMenu,
+    showRegions, 
+    setShowRegionsVisible, 
+    setAvailableRegions, 
+    availableRegions,
+    showMainRegionsMenu,
+    handleShowMainRegionMenu,
+    showAddRegionMenuFromHydroShare,
+    handleShowAddRegionMenuFromHydroShare,
+    toggleShowAddRegionMenuFromHydroShare,
+    isHydroShareLogin,
+    setIsHydroShareLogin,
+    isCircularAddingMenuOpen
+
+  }
+) 
+  {
+  
   const socketRef = useRef();
-  // const [dataChartObject, setDataChartObject] = useState({})
+  // const [isHydroShareLogin, setIsHydroShareLogin] = useState(false)
+  const [hydroshareRegionsOptions, setHydroShareRegionsOptions] = useState([])
+  // const [hydrosharePrivateRegionsOptions, setHydroSharePrivateRegionsOptions] = useState([])
+  const [currentReachGeometryOnClick, setCurrentReachGeometryOnClick] = useState(null)
+  const [currentReachGeometry, setCurrentReachGeometry] = useState(null)
+  // const [curentRegion, setCurrentRegion] = useState({});
+  const [loadingText, setLoadingText] = useState("Loading Layers ...")
   const [isFullMap, setIsFullMap] = useState(true)
-  const [groupLayers, setGroupLayers] =  useState([
-    new LayerGroup({
-      title: "Basemaps",
-      layers: []
-    }),
-    new LayerGroup({
-      title: "NWM Stream Analysis",
-      layers: []
-    })
-  ]);
+  const [selectedHucs, setSelectedHucs] = useState("show:2,3,4,5,6,7,8");
+  const [previewFile, setPreviewFile] = useState(null);
   const [showModal, setshowModal] = useState(false);
   const [currentStation, setCurrentStation] = useState();
   const [currentStationID, setCurrentStationID] = useState(-99999);
@@ -191,7 +227,7 @@ function App() {
       'is_latest': true,
       'tooltip_text':'MR-7'
     }
-}
+  }
 
   const [currentProducts, setCurrentProducts] = useReducer(reducerProducts, currentProductsInitial);
   const [currentReachIdGeometry, setCurrentReachIdGeometry] = useState(new VectorSource());
@@ -253,23 +289,131 @@ function App() {
     }
   }
 
+	const currentSelectedRegions = []
+
+	const [selectedRegions, setSelectedRegions] = useReducer(reducerSelectedRegions, []);
+  const [currentPageNumber, setCurrentPageNumber] = useState(0);
+  const [selectedRegionDropdownItem, setSelectedRegionDropdownItem] =  useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+
+	function reducerSelectedRegions(state, action) {
+		switch (action.type) {
+		  case 'delete':
+			return state.filter(region => region.name !== action.region['name']);
+		  case 'add':
+			return [ ...state, action.region ];
+		  case 'update':
+			return removeDuplicatesRegions(state,'name');			
+		  case 'reset':
+			return currentSelectedRegions ;
+		}
+	}
+
+  const [availableReachesList, setAvailableReachesList] =  useState([]);
+  const [promptTextAvailableReachesList,setPromptTextAvailableReachesList ] = useState('No Reaches to display, Please select a Region');
+  const [isAccordionOpen, setAccordionOpen] = useState(false);
+  const pagesLimit = 50;
+
+  function handleShowAddRegionMenuFromHydroShareWithAsync(){
+    handleShowAddRegionMenuFromHydroShare();
+    //send mesage to get the different public resources
+    socketRef.current.send(
+      JSON.stringify({
+        type: "retrieve_hydroshare_regions",
+      })
+    );
+  }
+
   useEffect(() => {
+
+    /* 
+      Load the regions of the user
+    */
+    handleShowLoading();
+    setLoadingText("Loading User Regions ...");    
     socketRef.current = new WebSocket(ws);
-      socketRef.current.onopen = () => {
-        console.log("WebSocket is Open");
-      };
-    
-      socketRef.current.onclose = function () {
-        // Try to reconnect in 1 second
-        setTimeout(function () {
-          //implement more logic
-          // this.startWS(websocketServerLocation);
-        }, 1000);
-        console.log("WebSocket is Closed");
-      };
-      socketRef.current.onmessage = function (e) {
-        let data = JSON.parse(e.data);
-        
+    socketRef.current.onopen = () => {
+      console.log("WebSocket is Open");
+      // console.log(availableRegions)
+      if(availableRegions.length < 1){
+        socketRef.current.send(
+          JSON.stringify({
+            type: "update_user_regions",
+          })
+        );
+
+      }
+      socketRef.current.send(
+        JSON.stringify({
+          type: "get_hs_login_status_method",
+        })
+      );
+    };
+  
+    socketRef.current.onclose = function () {
+      // Try to reconnect in 1 second
+      setTimeout(function () {
+        //implement more logic
+        socketRef.current = new WebSocket(ws);
+      }, 1000);
+      console.log("WebSocket is Closed");
+    };
+    socketRef.current.onmessage = function (e) {
+      // console.log(e)
+      let data = JSON.parse(e.data);
+      let command = data['command']
+      console.log(command)
+      if(command ==='update_regions_users'){
+        console.log(data)
+        setAvailableRegions(data['data']);
+        handleHideLoading();
+        handleShowMainRegionMenu();
+      }
+      if(command ==='update_reaches_users'){
+        console.log(data);
+        setAvailableReachesList(data['data'])
+        // setData(
+        //   data.map(item => 
+        //       item.id === index 
+        //       ? {...item, someProp : "changed", someOtherProp: 42}
+        //       : item 
+        // ))
+
+        // setAvailableReachesList(() => [
+        //   ...data['data']
+        // ]);
+        // setAvailableReachesList([...availableReachesList, data['data']]);
+
+        // setAvailableReachesList(
+        //   availableReachesList.length > 0 ?
+        //     availableReachesList.map((reach, index) => 
+        //     reach.COMID === data['data'][index]['COMID']
+        //       ? {
+        //         ...reach,
+        //         long_forecast: data['data'][index]['long_forecast'],
+        //         assim: data['data'][index]['assim'],
+        //       }
+        //       :{
+        //         COMID: data['data'][index]['COMID'],
+        //         GNIS_NAME: data['data'][index]['GNIS_NAME'],
+        //         QA_MA: data['data'][index]['QA_MA'],
+        //         StreamCalc: data['data'][index]['StreamCalc'],
+        //         StreamOrde: data['data'][index]['StreamOrde'],
+        //         long_forecast: data['data'][index]['long_forecast'],
+        //         assim: data['data'][index]['assim'],
+        //       }
+        //   )
+        //   : [...data['data'] ]
+
+        // );
+
+        const numberOfPageItems = Math.ceil(data['total_reaches']/pagesLimit);
+        console.log(numberOfPageItems)
+        setCurrentPageNumber(numberOfPageItems)
+        setAccordionOpen(true);
+      }
+
+      if(command ==='Plot_Data_Retrieved'){
         let product_name = data['product'];
         console.log("receiving data socket")
         let ts = data['data'][0]['data'].map(obj => ({
@@ -278,8 +422,87 @@ function App() {
         }));
         setCurrentProducts({type: product_name,is_requested:true, data: ts});
         handlePlotUpdate();
-        // handleisPlotReady();
       }
+
+      if(command ==='zoom_to_specific_reach'){
+        console.log(data['data'])
+        let responseRegions_obj = JSON.parse(data['data']['geometry'])
+        setCurrentReachGeometry(responseRegions_obj)
+      }
+      if(command ==='show_hydroshare_regions_notifications'){
+        console.log(data['data'])
+        if (data['message'] ==='Not logged in through HydroShare'){
+          setIsHydroShareLogin(false)
+          // let custom_message=<CustomNotification>
+          //   <a href="/oauth2/login/hydroshare/">
+          //     <div className="container-hs-notification">
+          //       <div>
+          //         <img src={logo} className="App-logo" alt="logo" />
+          //         Log in with HydroShare
+          //       </div>
+          //       <div>
+          //         <p>Please Login to see your private regions display in the dropdown menu</p>
+          //       </div>
+          //     </div>
+
+          //   </a>
+          // </CustomNotification>
+          // showToast('custom',custom_message)
+        }
+        else{
+          setIsHydroShareLogin(true);
+        }
+        setHydroShareRegionsOptions(data['data'])
+        // setHydroSharePrivateRegionsOptions(data['private_data'])
+      }
+      if(command ==='show_hs_login_status'){
+        console.log(data)
+        if (data['message'] ==='Not logged in through HydroShare'){
+          setIsHydroShareLogin(false);
+          // let custom_message=<CustomNotification>
+          //   <a href="/oauth2/login/hydroshare/">
+          //     <div className="container-hs-notification">
+          //       <div>
+          //         <img src={logo} className="App-logo" alt="logo" />
+          //         Log in with HydroShare
+          //       </div>
+          //       <div>
+          //         <p>Please Login to see your private regions display in the dropdown menu</p>
+          //       </div>
+          //     </div>
+
+          //   </a>
+          // </CustomNotification>
+          // showToast('custom',custom_message)
+        }
+        else{
+          setIsHydroShareLogin(true);
+
+        }
+      }
+
+      if(command ==='nwm_spark_Data_Retrieved'){
+        try {
+          console.log('nwm_spark_Data_Retrieved');
+          console.log(JSON.parse(data['data']));
+          let sparkLineData = JSON.parse(data['data'])
+          let plot_data = sparkLineData.map((reach) => reach.streamflow)
+          let comidToUpdate = data['feature_id']
+          setAvailableReachesList(prevList =>
+            prevList.map(item =>
+              item.COMID === comidToUpdate
+                ? { ...item, long_forecast: plot_data }
+                : item
+            )
+          );
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      
+
+    }
+
 	}, []);
   useEffect(() => {
     // here we have changed the currrent products object, so we can send something to the web sockets
@@ -304,28 +527,49 @@ function App() {
 
   useEffect(()=>{
     console.log("useEffect currentStationID Home")
-    // setCurrentProducts({type: "reset"})
     //send message to web socket to start again 
     handlePlotUpdate();
   },[currentStationID])
 
+
+
+
+
+  useEffect(() => {
+    console.log(availableRegions)
+    return () => {
+    }
+  }, [availableRegions])
+
+  useEffect(() => {
+    console.log(availableReachesList)
+    if(availableReachesList.length > 0){
+      setPromptTextAvailableReachesList(`Page ${currentPage} of ${currentPageNumber}`);
+    }
+    else{
+      setPromptTextAvailableReachesList(`No Reaches found`)
+
+    }
+	}, [availableReachesList]);
+  
   return (
     
     <div>
-      { isPlotReady &&
-        <LoaderContainer>
-          <div className="loading-overlay">
-            <div className="loading-spinner"></div>
-          </div>
-        </LoaderContainer>        
-      }
+    <LoaderContainer isVisible={isPlotReady}>
+      <div className="loading-overlay">
+        <div className="loading-spinner"></div>
+        <div><span className='loading-tex-span'>{loadingText}</span></div>
+      </div>
+    </LoaderContainer>
 
-    
+    <Notification/>
 
-    <MainContainer>
-        <ReMap isFullMap={isFullMap} 
+    <MainContainer >
+
+        <ReMap 
+          isFullMap={isFullMap}
+          zoom={5}
           center={fromLonLat([-94.9065, 38.9884])} 
-          zoom={5} layerGroups={groupLayers} 
           handleShow={handleShow} 
           setCurrentStation={setCurrentStation} 
           currentProducts={currentProducts} 
@@ -334,8 +578,78 @@ function App() {
           setCurrentReachIdGeometry={setCurrentReachIdGeometry}
           handleShowLoading={handleShowLoading}
           setMetadata = {setMetadata}
+          selectedRegions={selectedRegions}
+          setSelectedRegions={setSelectedRegions}
+          handleHideLoading={handleHideLoading}
+          setLoadingText={setLoadingText}
+          setCurrentReachGeometryOnClick={setCurrentReachGeometryOnClick}
+          setCurrentReachGeometry={setCurrentReachGeometry}
         >
+          {/* <MenuWrapper /> */}
+          <CircularMenuComponent 
+            handleShowRegionMenu={handleShowRegionMenu}
+            handleShowReachesListRegionMenu={handleShowReachesListRegionMenu}
+            handleShowAddRegionMenuFromHydroShareWithAsync={handleShowAddRegionMenuFromHydroShareWithAsync}
+            isCircularAddingMenuOpen={isCircularAddingMenuOpen}
+          />
 
+          <RegionMenuWrapper 
+            isAccordionOpen={isAccordionOpen}
+            setAccordionOpen={setAccordionOpen}
+            showMainRegionsMenu={showMainRegionsMenu} 
+            availableRegions={availableRegions} 
+            setAvailableRegions={setAvailableRegions}
+            socketRef={socketRef}
+            availableReachesList={availableReachesList}
+            setCurrentStation={setCurrentStation}
+            setCurrentStationID={setCurrentStationID}
+            setCurrentProducts={setCurrentProducts}
+            handleShow={handleShow}
+            setMetadata={setMetadata}
+            currentPageNumber={currentPageNumber}
+            selectedRegionDropdownItem={selectedRegionDropdownItem}
+            setSelectedRegionDropdownItem={setSelectedRegionDropdownItem}
+            promptTextAvailableReachesList={promptTextAvailableReachesList}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            currentReachGeometry={currentReachGeometry}
+            setCurrentReachGeometry={setCurrentReachGeometry}
+            setCurrentReachGeometryOnClick={setCurrentReachGeometryOnClick}
+          />
+
+          <SideMenuWrapper 
+            showRegionsMenu={showRegionsMenu}
+            toggleAddRegionMenu={toggleAddRegionMenu}
+            setShowRegionsVisible={setShowRegionsVisible} 
+            selectedRegions={selectedRegions} 
+            setAvailableRegions={setAvailableRegions} 
+            setSelectedRegions={setSelectedRegions}
+            handleShowLoading={handleShowLoading}
+            handleHideLoading={handleHideLoading}
+            setLoadingText={setLoadingText}
+            setPreviewFile={setPreviewFile}
+          />
+          <ReachListMenu 
+            showReachesListMenu={showReachesListMenu}
+            toggleReachesListRegionMenu={toggleReachesListRegionMenu}
+            setShowRegionsVisible={setShowRegionsVisible} 
+            selectedRegions={selectedRegions} 
+            setAvailableRegions={setAvailableRegions} 
+            setSelectedRegions={setSelectedRegions}
+            handleShowLoading={handleShowLoading}
+            handleHideLoading={handleHideLoading}
+            setLoadingText={setLoadingText}
+            setPreviewFile={setPreviewFile}
+          />
+          <RegionFormFromHydroShare
+            showAddRegionMenuFromHydroShare={showAddRegionMenuFromHydroShare}
+            hydroshareRegionsOptions={hydroshareRegionsOptions}
+            // hydrosharePrivateRegionsOptions={hydrosharePrivateRegionsOptions}
+            setAvailableRegions={setAvailableRegions}
+            setSelectedRegions={setSelectedRegions}
+            handleHideLoading={handleHideLoading}
+            setLoadingText={setLoadingText}
+          />
           <Layers>
 
 
@@ -345,8 +659,6 @@ function App() {
                 Tiled: true,
               })}
               name={"basemap_1"}
-              groupLayerName={"Basemaps"}
-              groupLayers = {groupLayers}
             />                    
             <OlImageTileLayer
               source={TileImageArcGISRest(StreamLayerURL, {
@@ -355,30 +667,162 @@ function App() {
                 LAYERS:"show:1,2,3,4,5,6,21"
               })}
               name={"streams_layer"}
-              groupLayerName={"NWM Stream Analysis"}
-              groupLayers = {groupLayers}
+              zIndex={3}
             />
-            {/* <VectorLayer
-              name={"reach_vector"}
-              source={currentReachIdGeometry}
-              style={
-                new Style({                  
-                  stroke : new Stroke({ 
-                      color: '#e1ff00',
-                      width: 5
-                  })
-                })
+            { showRegions && 
+              <OlImageTileLayer
+                source={TileImageArcGISRest(WbdMapLayerURL, {
+                  LAYERS:{selectedHucs}
+                })}
+                name={"huc_levels"}
+                zIndex={2}
+              />            
+            }
+            {availableRegions.map((availableRegion, index) => (
+              availableRegion.is_visible ?
+              <VectorLayer
+                  key={index}
+                  name={`${availableRegion.name}_user_region`}
+                  source= {
+                    new VectorSource({
+                      format: new GeoJSON(),
+                      features: new GeoJSON(
+                        {
+                          dataProjection: 'EPSG:4326',
+                          featureProjection: 'EPSG:3857'
+                        }
+                      ).readFeatures((availableRegion['geom']))
+                  })}
+                  style={
+                    new Style({
+                      stroke: new Stroke({
+                      color: availableRegion['layer_color'],
+                      width: 3,
+                      })
+                    })
+                  }
+                  zIndex={1}
+              />:
+              <VectorLayer
+                key={`${index}_empty`}
+                name={"empty_vector_layer"}
+              />
+            ))}
+
+            {selectedRegions.map((selectedRegion, index) => (
+                <VectorLayer
+                    key={index}
+                    name={`${selectedRegion.name}_selected_region`}
+                    source= {
+                      new VectorSource({
+                        format: new GeoJSON(),
+                        url: selectedRegion['url']
+                        })
+                    }
+                    style={
+                      new Style({
+                        stroke: new Stroke({
+                          color: 'green',
+                          width: 3,
+                        })
+                      })
+                    }
+                    zIndex={1}
+                />
+              ))}
+              {
+                previewFile &&
+                <VectorLayer
+                  name={`preview_file_region`}
+                  source= {
+                    new VectorSource({
+                      format: new GeoJSON(),
+                      features: new GeoJSON().readFeatures(previewFile)
+                      })
+                  }
+                  style={
+                    new Style({
+                      stroke: new Stroke({
+                        color: 'green',
+                        width: 3,
+                      })
+                    })
+                  }
+                  zIndex={1}
+                />
               }
-              
-          /> */}
+              {
+                currentReachGeometry &&
+                <VectorLayer
+                  name={`reach_from_region`}
+                  source= {
+                    new VectorSource({
+                      format: new GeoJSON(),
+                      features: new GeoJSON(
+                        {
+                          dataProjection: 'EPSG:4326',
+                          featureProjection: 'EPSG:3857'
+                        }
+                      ).readFeatures(currentReachGeometry)
+                      })
+                  }
+                  style={
+                    new Style({
+                      stroke: new Stroke({
+                        color: '#f5e154',
+                        width: 3,
+                      })
+                    })
+                  }
+                  zIndex={4}
+                />
+              }
+              {
+                currentReachGeometryOnClick &&
+                <VectorLayer
+                name={`reach_on_click_from_region`}
+                source= {
+                  new VectorSource({
+                    format: new GeoJSON(),
+                    features: new GeoJSON(
+                      {
+                        dataProjection: 'EPSG:4326',
+                        featureProjection: 'EPSG:3857'
+                      }
+                    ).readFeatures(currentReachGeometryOnClick)
+                    })
+                }
+                style={
+                  new Style({
+                    stroke: new Stroke({
+                      color: '#f5e154',
+                      width: 3,
+                    })
+                  })
+                }
+                zIndex={4}
+              />
+                // <VectorLayer
+                //   name={`reach_on_click_from_region`}
+                //   source= {
+                //     new VectorSource({
+                //       features: [currentReachGeometryOnClick]
+                //   })
+                // }
+                //   style={
+                //     new Style({
+                //       stroke: new Stroke({
+                //         color: '#f5e154',
+                //         width: 3,
+                //       })
+                //     })
+                //   }
+                //   zIndex={4}
+                // />
+              }
 
           </Layers>
-          <Controls>
-              <SwitchControllerContainer>
-                <SwitchLayerControl/>
-              </SwitchControllerContainer>
 
-          </Controls>
         </ReMap>
       </MainContainer>
 
