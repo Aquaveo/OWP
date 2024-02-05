@@ -13,6 +13,9 @@ import logo from "css/hs-icon-sm.png"
 
 import 'App.scss';
 
+
+const TETHYS_PREFIX_URL = process.env.TETHYS_PREFIX_URL.replace(/^\/|\/$/g, '');
+const redirect_hydroshare = TETHYS_PREFIX_URL ? `/${TETHYS_PREFIX_URL}/oauth2/login/hydroshare/` : "/oauth2/login/hydroshare/"
 function App() {
   const [isCircularAddingMenuOpen, setIsCircularAddingMenuOpen] = useState(false)
   const [showRegions,setShowRegionsVisible] = useState(false);
@@ -118,7 +121,7 @@ function App() {
   const makePromptForHydroShareLogin = (prompt) => {
     if(!isHydroShareLogin){
       let custom_message=<CustomNotification>
-      <a href="/oauth2/login/hydroshare/">
+      <a href={redirect_hydroshare}>
         <div className="container-hs-notification">
 
         <div className='container-row-notification'>
