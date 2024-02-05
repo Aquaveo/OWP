@@ -7,14 +7,10 @@ import httpx
 import json
 import fiona
 from tethys_sdk.routing import controller
-from django.contrib.auth.models import User
 import io
 from fiona.io import ZipMemoryFile
-
-from requests import Request
 import geopandas as gpd
 from geoalchemy2 import Geometry, WKTElement
-import os
 from sqlalchemy.orm import sessionmaker
 from .model import Base, Region, Reach
 from .app import Owp as app
@@ -24,16 +20,11 @@ from .model import Region
 import shapely
 from asgiref.sync import sync_to_async, async_to_sync
 from .utilities import measure_sync, measure_async
-import pyogrio
-import pygeos as pg
 from .model import Region
 from pynhd import NLDI, WaterData, NHDPlusHR, NHD
 import pynhd as nhd
-import pyproj
-from pyproj import Transformer
 from sqlalchemy import Integer, String, or_
 from sqlalchemy.sql import cast, func
-from oauthlib.oauth2 import TokenExpiredError
 from hs_restclient import (
     HydroShare,
     HydroShareAuthOAuth2,
@@ -42,7 +33,6 @@ from hs_restclient import (
 )
 from tethys_services.backends.hs_restclient_helper import get_oauth_hs
 from .helpers import get_oauth_hs_channels, get_oauth_hs_sync, HSClientInitException
-import pickle
 
 try:
     BASE_API_URL = app.get_custom_setting("nwmdata_api")
