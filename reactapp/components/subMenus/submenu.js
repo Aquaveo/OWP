@@ -77,15 +77,15 @@ export const SubMenu = (
                             <Col className="text-white fw-bold" sm={2} >
                                 AA
                             </Col>
-                            <Col className="text-white fw-bold" sm={2} >
+                            {/* <Col className="text-white fw-bold" sm={2} >
                                 SF
-                            </Col>
+                            </Col> */}
                             <Col className="text-white fw-bold" sm={2} >
                                 LF Mean
                             </Col>
-                            <Col className="text-white fw-bold" sm={2} >
+                            {/* <Col className="text-white fw-bold" sm={2} >
                                 MF Mean
-                            </Col>
+                            </Col> */}
                             {/* <Col className="text-white fw-bold" sm={2} >
                                 Actions
                             </Col> */}

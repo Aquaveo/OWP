@@ -79,26 +79,27 @@ export const RegionsRows = ({
                     </Sparklines>
 
                     </Col>
-
+{/* 
                     <Col sm={2} >
                         <Sparklines data={sampleData}>
                             <SparklinesLine color="#AF2BBF" />
                         </Sparklines>
-                    </Col>
+                    </Col> */}
 
                     <Col sm={2} >
-                    <Sparklines data={availableReach['long_forecast'] } >
-                        <SparklinesBars style={{ fill: chroma('#AF2BBF').brighten(1) , fillOpacity: "0.75" }} />
-                        <SparklinesLine style={{ stroke: chroma('#AF2BBF').darken(1) , fill: "none" }} />
-                    </Sparklines>
+                        <Sparklines data={availableReach['long_forecast'] } >
+                            <SparklinesBars style={{ fill: chroma('#AF2BBF').brighten(1) , fillOpacity: "0.75" }} />
+                            <SparklinesLine style={{ stroke: chroma('#AF2BBF').darken(1) , fill: "none" }} />
+                        </Sparklines>
 
                     </Col>
-                    <Col sm={2} >
-                    <Sparklines data={sampleData}>
-                        <SparklinesLine color="#AF2BBF" />
-                    </Sparklines>
 
-                    </Col>
+                   {/* <Col sm={2} >
+                        <Sparklines data={sampleData}>
+                            <SparklinesLine color="#AF2BBF" />
+                        </Sparklines>
+
+                    </Col>  */}
                     {/* <Col sm={2} >
                         <Button 
                             variant="primary" 
