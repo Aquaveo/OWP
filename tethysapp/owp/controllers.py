@@ -792,7 +792,10 @@ async def getUserReachesPerRegionsMethod(
             comid_values = [d[1] for d in only_user_reaches_regions.all()]
 
             list_api_data = await getNwmDataAsync(
-                comid_values, ["assim", "long"], "2023-05-01T06:00:00"
+                comid_values,
+                ["analysis-assim", "forecast"],
+                "2023-05-01T06:00:00"
+                # comid_values, ["assim", "long"], "2023-05-01T06:00:00"
             )
 
             for region in only_user_reaches_regions:
@@ -1033,15 +1036,34 @@ async def make_nwm_api_calls(api_base_url, feature_ids, types, reference_time):
     list_async_task = []
 
     for single_type in types:
-        params = {
-            "comids": feature_ids,
-            "type": single_type,
-            # "reference_time": reference_time,
-            "format": "json",
-        }
+        type_api_base_url = f"{api_base_url}/{single_type}"
+        if single_type == "forecast":
+            forecast_types = ["long_range"]
+            for forecast_type in forecast_types:
+                params = {
+                    "comids": feature_ids,
+                    "forecast_type": forecast_type,
+                    # "type": single_type,
+                    # "reference_time": reference_time, ALREADY COMMENTED
+                    "format": "json",
+                }
 
-        task_get_nwm_data = asyncio.create_task(nwm_api_call(api_base_url, params))
-        list_async_task.append(task_get_nwm_data)
+                task_get_nwm_data = asyncio.create_task(
+                    nwm_api_call(type_api_base_url, params)
+                )
+                # task_get_nwm_data = asyncio.create_task(nwm_api_call(api_base_url, params))
+                list_async_task.append(task_get_nwm_data)
+        else:
+            params = {
+                "comids": feature_ids,
+                "format": "json",
+            }
+
+            task_get_nwm_data = asyncio.create_task(
+                nwm_api_call(type_api_base_url, params)
+            )
+            # task_get_nwm_data = asyncio.create_task(nwm_api_call(api_base_url, params))
+            list_async_task.append(task_get_nwm_data)
 
     results = await asyncio.gather(*list_async_task)
 
@@ -1050,6 +1072,7 @@ async def make_nwm_api_calls(api_base_url, feature_ids, types, reference_time):
 
 # @measure_async
 async def nwm_api_call(api_base_url, params):
+    breakpoint()
     mssge_string = "Complete"
     # x_api_key = "xasxasdaxasx"
     x_api_key = await sync_to_async(app.get_custom_setting)("x_api_key")
@@ -1081,7 +1104,8 @@ async def nwm_api_call(api_base_url, params):
                     split_df = split_df.set_index("time")
                     split_df = split_df.sort_index()
                     split_df = split_df[["velocity"]]
-                    if "assim" in params["type"]:
+                    # if "assim" in params["type"]:
+                    if "analysis-assim" in api_base_url:
                         daily_avg = split_df.resample("1H").mean()
                     else:
                         daily_avg = split_df.resample("24H").mean()

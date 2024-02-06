@@ -38,7 +38,7 @@ class Owp(TethysAppBase):
                 name="base_nwp_api_url",
                 type=CustomSetting.TYPE_STRING,
                 description="Google API to retrieve forcast data from big query",
-                default="https://nwm-forecast-9f6idmxh.uc.gateway.dev/retroactive_forecast_records",
+                # default="https://nwm-ciroh-gateway-9f6idmxh.uc.gateway.dev",
                 required=False,
             ),
             SecretCustomSetting(
