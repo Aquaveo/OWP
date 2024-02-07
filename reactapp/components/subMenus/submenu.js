@@ -74,9 +74,9 @@ export const SubMenu = (
                             <Col className="text-white fw-bold" sm={2}>
                                 Reach Name
                             </Col >
-                            <Col className="text-white fw-bold" sm={2} >
+                            {/* <Col className="text-white fw-bold" sm={2} >
                                 AA
-                            </Col>
+                            </Col> */}
                             {/* <Col className="text-white fw-bold" sm={2} >
                                 SF
                             </Col> */}

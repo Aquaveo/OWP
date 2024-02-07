@@ -52,7 +52,7 @@ except Exception:
 
 async_client = httpx.AsyncClient()
 
-limit = asyncio.Semaphore(3)
+limit = asyncio.Semaphore(1)
 
 
 @controller
@@ -793,10 +793,12 @@ async def getUserReachesPerRegionsMethod(
 
             list_api_data = await getNwmDataAsync(
                 comid_values,
-                ["analysis-assim", "forecast"],
+                ["forecast"],
+                # ["analysis-assim", "forecast"],
                 "2023-05-01T06:00:00"
                 # comid_values, ["assim", "long"], "2023-05-01T06:00:00"
             )
+            # breakpoint()
 
             for region in only_user_reaches_regions:
                 region_obj = {
@@ -805,13 +807,17 @@ async def getUserReachesPerRegionsMethod(
                     "StreamOrde": region[2],
                     "StreamCalc": region[3],
                     "QA_MA": region[4],
-                    "long_forecast": list_api_data["long"][f"{region[1]}"],
-                    "assim": list_api_data["assim"][f"{region[1]}"],
+                    "long_forecast": list_api_data["forecast"]["long_range"].get(
+                        f"{region[1]}", []
+                    ),
+                    # "long_forecast": list_api_data["long"][f"{region[1]}"],
+                    "assim": list_api_data["analysis-assim"],
                 }
                 regions_response["reaches"].append(region_obj)
-
+            # breakpoint()
             json_response["mssg"] = "completed"
-        except Exception:
+        except Exception as e:
+            print(e)
             regions_response["reaches"] = []
             json_response["mssg"] = "error while retrieving the reach data"
     else:
@@ -1034,7 +1040,7 @@ def saveUserRegionsFromHydroShareResource(request):
 
 async def make_nwm_api_calls(api_base_url, feature_ids, types, reference_time):
     list_async_task = []
-
+    # breakpoint()
     for single_type in types:
         type_api_base_url = f"{api_base_url}/{single_type}"
         if single_type == "forecast":
@@ -1047,23 +1053,38 @@ async def make_nwm_api_calls(api_base_url, feature_ids, types, reference_time):
                     # "reference_time": reference_time, ALREADY COMMENTED
                     "format": "json",
                 }
-
-                task_get_nwm_data = asyncio.create_task(
-                    nwm_api_call(type_api_base_url, params)
+                list_async_task.append(
+                    asyncio.create_task(nwm_api_call(type_api_base_url, params))
                 )
-                # task_get_nwm_data = asyncio.create_task(nwm_api_call(api_base_url, params))
-                list_async_task.append(task_get_nwm_data)
+                # task_get_nwm_data = asyncio.create_task(
+                #     nwm_api_call(type_api_base_url, params)
+                # )
+                # # task_get_nwm_data = asyncio.create_task(nwm_api_call(api_base_url, params))
+                # list_async_task.append(task_get_nwm_data)
         else:
-            params = {
-                "comids": feature_ids,
-                "format": "json",
-            }
-
-            task_get_nwm_data = asyncio.create_task(
-                nwm_api_call(type_api_base_url, params)
-            )
-            # task_get_nwm_data = asyncio.create_task(nwm_api_call(api_base_url, params))
-            list_async_task.append(task_get_nwm_data)
+            batch_feature_ids = feature_ids.split(",")
+            # Group the numbers into chunks of three
+            chunks = [
+                batch_feature_ids[i : i + 1]
+                for i in range(0, len(batch_feature_ids), 1)
+            ]
+            # Join each chunk into a comma-separated string
+            chunked_commids_list = [",".join(chunk) for chunk in chunks]
+            for chunked_list in chunked_commids_list:
+                params = {
+                    "comids": chunked_list,
+                    "format": "json",
+                    "run_offset": 1,
+                    "start-time": "2023-05-01",
+                }
+                list_async_task.append(
+                    asyncio.create_task(nwm_api_call(type_api_base_url, params))
+                )
+            # task_get_nwm_data = asyncio.create_task(
+            #     nwm_api_call(type_api_base_url, params)
+            # )
+            # # task_get_nwm_data = asyncio.create_task(nwm_api_call(api_base_url, params))
+            # list_async_task.append(task_get_nwm_data)
 
     results = await asyncio.gather(*list_async_task)
 
@@ -1072,7 +1093,7 @@ async def make_nwm_api_calls(api_base_url, feature_ids, types, reference_time):
 
 # @measure_async
 async def nwm_api_call(api_base_url, params):
-    breakpoint()
+    # breakpoint()
     mssge_string = "Complete"
     # x_api_key = "xasxasdaxasx"
     x_api_key = await sync_to_async(app.get_custom_setting)("x_api_key")
@@ -1081,15 +1102,20 @@ async def nwm_api_call(api_base_url, params):
         # breakpoint()
         async with limit:
             # await asyncio.sleep(0.3)
-            print(f"Making request {params['comids']}")
+            # print(f"Making request {params['comids']}")
+            # breakpoint()
+
             response_await = await async_client.get(
                 api_base_url, headers=headers, params=params, timeout=None
             )
+            print(api_base_url, response_await.status_code)
+            # breakpoint()
+
             if limit.locked():
                 print("Concurrency limit reached, waiting ...")
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.5)
             if response_await.status_code == httpx.codes.OK:
-                print(response_await.status_code)
+                # print(response_await.status_code)
                 # breakpoint()
                 # velocities = [d["velocity"] for d in response_await.json()]
 
@@ -1122,7 +1148,11 @@ async def nwm_api_call(api_base_url, params):
                 # breakpoint()
                 response_obj = list_daily_avg[0].to_dict("list")
                 # return {f"{params['type']}": response_await.json()}
-                return {f"{params['type']}": response_obj}
+                if params.get("forecast_type", "") != "":
+                    return {"forecast": {f"{params['forecast_type']}": response_obj}}
+                else:
+                    return {{f"{params['analysis-assim']}": response_obj}}
+                # return {f"{params['type']}": response_obj}
                 # return velocities
             if response_await.status_code == 429:
                 print(response_await.text)

@@ -71,14 +71,14 @@ export const RegionsRows = ({
                         {availableReach['GNIS_NAME'] !== " " ? availableReach['GNIS_NAME'] : "-" }
                     </Col>
 
-
+{/* 
                     <Col sm={2} >
                     <Sparklines data={availableReach['assim'] } >
                         <SparklinesBars style={{ fill: chroma('#F26419').brighten(1) , fillOpacity: "0.75" }} />
                         <SparklinesLine style={{ stroke: chroma('#F26419').darken(1) , fill: "none" }} />
                     </Sparklines>
 
-                    </Col>
+                    </Col> */}
 {/* 
                     <Col sm={2} >
                         <Sparklines data={sampleData}>
