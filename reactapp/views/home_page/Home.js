@@ -372,40 +372,7 @@ function App(
       if(command ==='update_reaches_users'){
         console.log(data);
         setAvailableReachesList(data['data'])
-        // setData(
-        //   data.map(item => 
-        //       item.id === index 
-        //       ? {...item, someProp : "changed", someOtherProp: 42}
-        //       : item 
-        // ))
 
-        // setAvailableReachesList(() => [
-        //   ...data['data']
-        // ]);
-        // setAvailableReachesList([...availableReachesList, data['data']]);
-
-        // setAvailableReachesList(
-        //   availableReachesList.length > 0 ?
-        //     availableReachesList.map((reach, index) => 
-        //     reach.COMID === data['data'][index]['COMID']
-        //       ? {
-        //         ...reach,
-        //         long_forecast: data['data'][index]['long_forecast'],
-        //         assim: data['data'][index]['assim'],
-        //       }
-        //       :{
-        //         COMID: data['data'][index]['COMID'],
-        //         GNIS_NAME: data['data'][index]['GNIS_NAME'],
-        //         QA_MA: data['data'][index]['QA_MA'],
-        //         StreamCalc: data['data'][index]['StreamCalc'],
-        //         StreamOrde: data['data'][index]['StreamOrde'],
-        //         long_forecast: data['data'][index]['long_forecast'],
-        //         assim: data['data'][index]['assim'],
-        //       }
-        //   )
-        //   : [...data['data'] ]
-
-        // );
 
         const numberOfPageItems = Math.ceil(data['total_reaches']/pagesLimit);
         console.log(numberOfPageItems)
@@ -433,21 +400,7 @@ function App(
         console.log(data['data'])
         if (data['message'] ==='Not logged in through HydroShare'){
           setIsHydroShareLogin(false)
-          // let custom_message=<CustomNotification>
-          //   <a href="/oauth2/login/hydroshare/">
-          //     <div className="container-hs-notification">
-          //       <div>
-          //         <img src={logo} className="App-logo" alt="logo" />
-          //         Log in with HydroShare
-          //       </div>
-          //       <div>
-          //         <p>Please Login to see your private regions display in the dropdown menu</p>
-          //       </div>
-          //     </div>
 
-          //   </a>
-          // </CustomNotification>
-          // showToast('custom',custom_message)
         }
         else{
           setIsHydroShareLogin(true);
@@ -459,21 +412,7 @@ function App(
         console.log(data)
         if (data['message'] ==='Not logged in through HydroShare'){
           setIsHydroShareLogin(false);
-          // let custom_message=<CustomNotification>
-          //   <a href="/oauth2/login/hydroshare/">
-          //     <div className="container-hs-notification">
-          //       <div>
-          //         <img src={logo} className="App-logo" alt="logo" />
-          //         Log in with HydroShare
-          //       </div>
-          //       <div>
-          //         <p>Please Login to see your private regions display in the dropdown menu</p>
-          //       </div>
-          //     </div>
 
-          //   </a>
-          // </CustomNotification>
-          // showToast('custom',custom_message)
         }
         else{
           setIsHydroShareLogin(true);
