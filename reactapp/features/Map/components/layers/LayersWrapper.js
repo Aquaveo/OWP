@@ -9,7 +9,7 @@ const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/M
 const Layers = () => {
   const {state} = useMapContext();
   // console.log(state, actions);
-  const baseMapLayer = useLayer({
+  useLayer({
     layerType: 'OlTileLayer',
     options: {
       sourceType: 'ArcGISRestTile',
@@ -18,6 +18,18 @@ const Layers = () => {
         LAYERS: 'topp:states',
         Tiled: true,
       }
+    }
+  });
+
+  useLayer({
+    layerType: 'OlImageTileLayer',
+    options: {
+      sourceType: 'TileImageArcGISRest',
+      url: StreamLayerURL,
+      params: {
+        LAYERS:"show:1,2,3,4,5,6,21"
+      },
+      zIndex: 3
     }
   });
 
