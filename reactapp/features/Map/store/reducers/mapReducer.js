@@ -40,7 +40,7 @@ const mapReducer = (state, action) => {
               ...state,
               state: {
                   ...state.state,
-                  layers: state.state.layers.filter(layer => layer.id !== action.payload.id) // Assume layers are identified by `id`
+                  layers: state.state.layers.filter(layer => layer.get('name') !== action.payload.name) // Assume layers are identified by `name`
               }
           };
       case MapActionsTypes.TOGGLE_FULL_MAP:

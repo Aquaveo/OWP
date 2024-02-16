@@ -3,7 +3,7 @@ import { Fragment } from 'react';
 import ErrorBoundary from 'components/error/ErrorBoundary';
 import Layout from 'components/layout/Layout';
 import Loader from 'components/loader/Loader';
-import MapView from 'features/Map/pages/mapView';
+import OWPView from 'views/OwpView';
 
 import LearnReact from 'views/learn/LearnReact';
 import 'App.scss';
@@ -31,7 +31,7 @@ function App() {
                     path={PATH_HOME} 
                     element={
                       <Fragment>
-                        <MapView />
+                        <OWPView />
                       </Fragment>
 
                     } 
