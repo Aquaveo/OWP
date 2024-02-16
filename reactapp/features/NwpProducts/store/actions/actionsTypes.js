@@ -14,5 +14,10 @@ const productTypes = {
     medium_range_ensemble_member_5: 'medium_range_ensemble_member_5',
     medium_range_ensemble_member_6: 'medium_range_ensemble_member_6',
     medium_range_ensemble_member_7: 'medium_range_ensemble_member_7',
-    reset: 'reset'
+    reset: 'reset',
+    set_current_geometry: 'set_current_geometry',
+    set_current_metadata: 'set_current_metadata'
+
 }
+
+export { productTypes }

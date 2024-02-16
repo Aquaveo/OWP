@@ -1,11 +1,26 @@
 import axios from 'axios';
 import {getDistanceByZoom,processStreamServiceQueryResult} from '../features/Map/lib/esriMapServerUtils'
+import Point from "@arcgis/core/geometry/Point.js";
 
 
-const onClickStreamFlowLayerHandler = (layer,event) => {
+
+// some info about the function here:https://gist.github.com/xemoka/cb4cf95018fdc2cebac4da8f0c308723
+// an issue in this: https://github.com/openlayers/openlayers/issues/9721
+const onClickStreamFlowLayerHandler = (
+    layer,
+    event,
+    currentProducts,
+    resetProducts,
+    updateCurrentGeometry, 
+    updateCurrentMetadata
+    ) => {
+    console.log(currentProducts)
     let mapServerInfo = []
     let mapObject = event.map;
     let clickCoordinate = event.coordinate;
+    // const pixel = mapObject.getEventPixel(event.originalEvent)
+    // const clickCoordinate = mapObject.getCoordinateFromPixel(pixel)
+    console.log(clickCoordinate)
     const urlService = layer.getSource().getUrl() // collect mapServer URL
     const id = layer
         .getSource()
@@ -50,10 +65,12 @@ const onClickStreamFlowLayerHandler = (layer,event) => {
                 latitude: clickCoordinate[1],
                 spatialReference: spatialReference,
             });
+            console.log(esriMapPoint)
+            let currentStreamFeature = processStreamServiceQueryResult(actual_zoom, esriMapPoint, response.data, mapObject)
+            updateCurrentGeometry(currentStreamFeature.geometry);
+            resetProducts();
 
-            processStreamServiceQueryResult(actual_zoom,esriMapPoint, response.data, mapObject)
             // this ones are commented needs to be uncommented
-            // setCurrentProducts({type: "reset"});
             // handleShow();
             // let dataRequest = {
             //     station_id: stationID,
@@ -82,13 +99,17 @@ const onClickStreamFlowLayerHandler = (layer,event) => {
                 var lon = response.data['location']['y'];
                 var regionName = response.data['address']['Region'];
                 var cityName = response.data['address']['City']
+                var stationName = currentStreamFeature.properties['name']
+                var stationID = currentStreamFeature.properties['id']
                 const metadataArray = [
                     `${stationName} - ${cityName}, ${regionName}`,
                     `streamflow for Reach ID: ${stationID} (lat: ${lat} , lon: ${lon})`
                 ]
+                
                 // this ones are commented needs to be uncommented  
                 // setMetadata(metadataArray);
 
+                updateCurrentMetadata(metadataArray);
             });
 
         }).catch((error) => {

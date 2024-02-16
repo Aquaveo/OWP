@@ -1,3 +1,10 @@
+import * as geometryEngine from "@arcgis/core/geometry/geometryEngine.js";
+
+
+
+const isBlank = (str) => {
+    return (!str || /^\s*$/.test(str) || str === null);
+}
 
 //get distance by zoom
 const getDistanceByZoom = (zoom) => {
@@ -18,6 +25,22 @@ const getDistanceByZoom = (zoom) => {
 
     return 10000;
 }
+
+const getCurrentReachOnClick = (esriPaths) => {
+    // Transform ESRI paths into coordinates array for LineString
+    const coordinates = esriPaths.map(path => path.map(point =>[point[0], point[1]]))[0];
+    const geojsonObject = 
+        {
+            'type': 'LineString',
+            'coordinates': coordinates
+        }
+
+    console.log(geojsonObject)
+    return geojsonObject
+    // setCurrentReachGeometry(null);
+    // setCurrentReachGeometryOnClick(geojsonObject);
+}
+
 
 //get corresponding stream service query result
 const processStreamServiceQueryResult = (zoom, point, response, mapObject) => {
@@ -78,7 +101,18 @@ const processStreamServiceQueryResult = (zoom, point, response, mapObject) => {
     console.log("STATION ID", stationID)
     // setCurrentStationID(stationID);
     // setCurrentStation(stationName);
-    drawCurrentReachOnClick(validFeatures[0].geometry.paths, mapObject)
+    let currentGeosjonReach = getCurrentReachOnClick(validFeatures[0].geometry.paths, mapObject)
+
+    let currentStreamFeature = {
+        'type': 'Feature',
+        'geometry': currentGeosjonReach,
+        'properties': {
+            'name': stationName,
+            'id': stationID,
+            'distance': validFeatures[0].distance
+        }
+    }
+    return currentStreamFeature
 }
 
 

@@ -1,4 +1,4 @@
-import {productTypes} from '../actions/nwpProductsActions'
+import {productTypes} from '../actions/actionsTypes'
 
 
 const initialCurrentNwpProducts =
@@ -127,54 +127,64 @@ const initialCurrentNwpProducts =
         'tooltip_text':'MR-7'
     }
     },
-    geometry: {},
-    metadata:{}
-  },
-  actions:{
-
+    currentGeometry: {},
+    currentMetadata:[]
   }
 }
 
 const reducerProducts = (state, action) => {
-
-    switch (action.type) {
-      case productTypes.analysis_assim:
-        return { ...state, analysis_assim : {... state['analysis_assim'], 'is_requested': action.is_requested,'data': action.data } };
-      case productTypes.short_range:
-        return { ...state, short_range: {... state['short_range'], 'is_requested': action.is_requested, 'data': action.data }};
-      case productTypes.long_range_ensemble_mean:
-          return { ...state, long_range_ensemble_mean: {... state['long_range_ensemble_mean'], 'is_requested': action.is_requested, 'data': action.data }};
-      case productTypes.long_range_ensemble_member_1:
-        return { ...state, long_range_ensemble_member_1: {... state['long_range_ensemble_member_1'], 'is_requested': action.is_requested, 'data': action.data }};
-      case productTypes.long_range_ensemble_member_2:
-        return { ...state, long_range_ensemble_member_2: {... state['long_range_ensemble_member_2'], 'is_requested': action.is_requested, 'data': action.data }};
-      case productTypes.long_range_ensemble_member_3:
-        return { ...state, long_range_ensemble_member_3: {... state['long_range_ensemble_member_3'], 'is_requested': action.is_requested, 'data': action.data }};   
-      case productTypes.long_range_ensemble_member_4:
-        return { ...state, long_range_ensemble_member_4: {... state['long_range_ensemble_member_4'], 'is_requested': action.is_requested, 'data': action.data }}; 
-      case productTypes.medium_range_ensemble_mean:
-        return { ...state, medium_range_ensemble_mean: {... state['medium_range_ensemble_mean'], 'is_requested': action.is_requested, 'data': action.data }};
-      case productTypes.medium_range_ensemble_member_1:
-        return { ...state, medium_range_ensemble_member_1: {... state['medium_range_ensemble_member_1'], 'is_requested': action.is_requested, 'data': action.data }};
-      case productTypes.medium_range_ensemble_member_2:
-        return { ...state, medium_range_ensemble_member_2: {... state['medium_range_ensemble_member_2'], 'is_requested': action.is_requested, 'data': action.data }};
-      case productTypes.medium_range_ensemble_member_3:
-        return { ...state, medium_range_ensemble_member_3: {... state['medium_range_ensemble_member_3'], 'is_requested': action.is_requested, 'data': action.data }};   
-      case productTypes.medium_range_ensemble_member_4:
-        return { ...state, medium_range_ensemble_member_4: {... state['medium_range_ensemble_member_4'], 'is_requested': action.is_requested, 'data': action.data }}; 
-      case productTypes.medium_range_ensemble_member_5:
-        return { ...state, medium_range_ensemble_member_5: {... state['medium_range_ensemble_member_5'], 'is_requested': action.is_requested, 'data': action.data }};
-      case productTypes.medium_range_ensemble_member_6:
-          return { ...state, medium_range_ensemble_member_6: {... state['medium_range_ensemble_member_6'], 'is_requested': action.is_requested, 'data': action.data }}; 
-      case productTypes.medium_range_ensemble_member_7:
-          return { ...state, medium_range_ensemble_member_7: {... state['medium_range_ensemble_member_7'], 'is_requested': action.is_requested, 'data': action.data }}; 
-      case productTypes.reset:
-        return initialCurrentNwpProducts
-      
-      default:
-        throw new Error();
-    }
+  switch (action.type) {
+    case productTypes.analysis_assim:
+    case productTypes.short_range:
+    case productTypes.long_range_ensemble_mean:
+    case productTypes.long_range_ensemble_member_1:
+    case productTypes.long_range_ensemble_member_2:
+    case productTypes.long_range_ensemble_member_3:
+    case productTypes.long_range_ensemble_member_4:
+    case productTypes.medium_range_ensemble_mean:
+    case productTypes.medium_range_ensemble_member_1:
+    case productTypes.medium_range_ensemble_member_2:
+    case productTypes.medium_range_ensemble_member_3:
+    case productTypes.medium_range_ensemble_member_4:
+    case productTypes.medium_range_ensemble_member_5:
+    case productTypes.medium_range_ensemble_member_6:
+    case productTypes.medium_range_ensemble_member_7:
+      // Correctly update the nested structure, maintaining other properties
+      return {
+        ...state,
+        state: {
+          ...state.state,
+          products: {
+            ...state.state.products,
+            [action.type]: {
+              ...state.state.products[action.type],
+              'is_requested': true,
+              'data': action.data
+            }
+          }
+        }
+      };
+    case productTypes.set_current_geometry:
+      return {
+        ...state,
+        state: {
+          ...state.state,
+          currentGeometry: action.geometry
+        }
+    };
+    case productTypes.set_current_metadata:
+      return {
+        ...state,
+        state: {
+          ...state.state,
+          currentMetadata: action.metadata
+        }
+    };
+    case productTypes.reset:
+      return initialCurrentNwpProducts;
+    default:
+      throw new Error();
   }
-
+};
 
 export {reducerProducts, initialCurrentNwpProducts}

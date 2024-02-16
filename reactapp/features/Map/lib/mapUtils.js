@@ -1,3 +1,7 @@
+
+//get the clickable layers: this works for image layers
+// more info here https://gist.github.com/xemoka/cb4cf95018fdc2cebac4da8f0c308723
+// an issue in this: https://github.com/openlayers/openlayers/issues/9721
 const getClickEventLayers = (event, mapObject) => {
     let layers = []
     mapObject.forEachLayerAtPixel(
@@ -20,7 +24,7 @@ const getClickEventLayers = (event, mapObject) => {
     return layers
 }
 
-function findKeyWithMaxValue(obj) {
+const findKeyWithMaxValue = (obj) => {
     let maxValue = -Infinity; // Initialize with a very low value
     let maxKey = null;
   
@@ -35,7 +39,12 @@ function findKeyWithMaxValue(obj) {
   
     return maxKey;
 }
-function findPriorityLayerForOnClickEvent(layers) {
+
+// according to the weight of the layer, we will find the priority layer
+// the priority layer is the one with the highest weight, and it is given by the priority attribute
+// the priority attribute is set in the layer object
+
+const findPriorityLayerForOnClickEvent = (layers) => {
     let layerWeight={}
     let priorityLayer = layers[0]
 
@@ -49,12 +58,13 @@ function findPriorityLayerForOnClickEvent(layers) {
 }
 
 
+// onClickHandler will call the click event handler for the layer with the highest priority
+// the click event handler is set in the layer object
 const onClickHandler = async (event) => {
     event.preventDefault();
     // console.log(event);
     const clickedCoordinate = event.map.getCoordinateFromPixel(event.pixel);
     let layers = getClickEventLayers(event,event.map)
-    console.log(event)
     if (layers.length > 0) {
         // let layer = layers[0]
         let layer = findPriorityLayerForOnClickEvent(layers)
@@ -277,67 +287,6 @@ const infoClickHandler = async (event) =>{
 }
 
 
-const processStreamServiceQueryResult = (zoom,point, name, response,mapObject) => {
-    console.log(response.features)
-    var minStreamOrder = 5;
-    var soAttrName = null;
-    var fidAttrName = null;
-    var nameAttrName = null;
-
-    if (response.features.length === 0) {
-        return;
-    }
-
-    if (zoom >= 5) minStreamOrder--;
-    if (zoom >= 6) minStreamOrder--;
-    if (zoom >= 8) minStreamOrder--;
-    if (zoom >= 10) minStreamOrder--;
-
-
-    response.fields.forEach(function (field) {
-        if (!fidAttrName && /^(reach_id|station_id|feature_id)$/i.test(field.alias)) {
-            fidAttrName = field.name;
-        }
-
-        if (!soAttrName && /^(stream_?order)$/i.test(field.alias)) {
-            soAttrName = field.name;
-        }
-
-        if (!nameAttrName && /^((reach|gnis)?_?name)$/i.test(field.alias)) {
-            nameAttrName = field.name;
-        }
-    });
-
-    var validFeatures = [];
-
-    response.features.forEach(function (feature) {
-        if (feature.attributes[soAttrName] < minStreamOrder) {
-            return;
-        }
-
-        validFeatures.push(feature);
-    });
-
-    validFeatures.map(function getDistanceFromPoint(feature) {
-        feature.distance = geometryEngine.distance(point, feature.geometry);
-        return feature;
-    })
-    validFeatures.sort(function sortByDistance(a, b) {
-        return a.distance - b.distance;
-    });
-
-    if (validFeatures.length === 0) {
-        return;
-    }
-    console.log(validFeatures)
-    let stationName = isBlank(validFeatures[0].attributes[nameAttrName]) ? 'N/A' : validFeatures[0].attributes[nameAttrName]
-    let stationID = validFeatures[0].attributes[fidAttrName]
-    console.log("STATION ID", stationID)
-    // setCurrentStationID(stationID);
-    // setCurrentStation(stationName);
-    drawCurrentReachOnClick(validFeatures[0].geometry.paths, mapObject)
-}
-
 const drawCurrentReachOnClick = (esriPaths) =>{
     // Transform ESRI paths into coordinates array for LineString
     const coordinates = esriPaths.map(path => path.map(point =>[point[0], point[1]]))[0];
@@ -351,23 +300,6 @@ const drawCurrentReachOnClick = (esriPaths) =>{
     // setCurrentReachGeometryOnClick(geojsonObject);
 }
 
-const getDistanceByZoom = (zoom) => {
-    switch (true) {
-        case (zoom > 20):
-            return 25;
-        case (zoom > 17):
-            return 125;
-        case (zoom > 14):
-            return 250;
-        case (zoom > 11):
-            return 500;
-        case (zoom > 8):
-            return 1000;
-        case (zoom > 5):
-            return 2000;
-    }
 
-    return 10000;
-}
 
 export {onClickHandler}
