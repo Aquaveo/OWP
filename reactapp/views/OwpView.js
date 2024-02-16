@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 
 import Map from '../features/Map/components/Map';
 
 import { onClickStreamFlowLayerHandler } from "lib/mapEvents"
 
-
+import { useNwpProducts } from 'features/NwpProducts/hooks/useNWPProducts';
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
@@ -12,6 +12,14 @@ const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Can
 const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer'
 
 const OWPView = () => {
+  const { currentProducts, 
+    updateProductsState, 
+    resetProducts, 
+    updateCurrentGeometry, 
+    updateCurrentMetadata 
+  } = useNwpProducts();
+  
+
   // add more layers here if needed
   const layersArray = [
     {
@@ -46,11 +54,24 @@ const OWPView = () => {
           name: "StreamFlowMapLayer"
         },
         extraProperties: {
-            events: [{'type': 'click', 'handler': onClickStreamFlowLayerHandler}],
+            events: [{'type': 'click', 'handler': (layer,event)=>{
+              onClickStreamFlowLayerHandler(
+                layer,
+                event,
+                currentProducts,
+                resetProducts,
+                updateCurrentGeometry,
+                updateCurrentMetadata
+              )
+            }}],
             priority: 1      
         }
     }
   ]
+
+  useEffect(() => {
+    console.log(currentProducts);
+  }, [currentProducts]);
 
   return (
     <Fragment>
