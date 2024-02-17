@@ -1,5 +1,5 @@
 import "./modal.scss";
-import Close from "../times-solid.svg";
+import Close from "./times-solid.svg";
 import { createPortal } from "react-dom";
 
 
