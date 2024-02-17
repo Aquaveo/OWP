@@ -1,4 +1,4 @@
-const productTypes = {
+const nwpmActionsTypes = {
     analysis_assim: 'analysis_assim',
     short_range: 'short_range',
     long_range_ensemble_mean: 'long_range_ensemble_mean',
@@ -16,8 +16,8 @@ const productTypes = {
     medium_range_ensemble_member_7: 'medium_range_ensemble_member_7',
     reset: 'reset',
     set_current_geometry: 'set_current_geometry',
-    set_current_metadata: 'set_current_metadata'
-
+    set_current_metadata: 'set_current_metadata',
+    set_modal_state: 'set_modal_state',
 }
 
-export { productTypes }
+export { nwpmActionsTypes }

@@ -12,7 +12,8 @@ const onClickStreamFlowLayerHandler = (
     currentProducts,
     resetProducts,
     updateCurrentGeometry, 
-    updateCurrentMetadata
+    updateCurrentMetadata,
+    handleModalState
     ) => {
     console.log(currentProducts)
     let mapServerInfo = []
@@ -69,7 +70,7 @@ const onClickStreamFlowLayerHandler = (
             let currentStreamFeature = processStreamServiceQueryResult(actual_zoom, esriMapPoint, response.data, mapObject)
             updateCurrentGeometry(currentStreamFeature.geometry);
             resetProducts();
-
+            handleModalState(true);
             // this ones are commented needs to be uncommented
             // handleShow();
             // let dataRequest = {
@@ -113,6 +114,7 @@ const onClickStreamFlowLayerHandler = (
             });
 
         }).catch((error) => {
+            handleModalState(false);
             //try to fix the error or
             //notify the users about somenthing went wrong
             // this ones are commented needs to be uncommented 

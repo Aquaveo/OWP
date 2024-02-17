@@ -1,4 +1,4 @@
-import {productTypes} from '../actions/actionsTypes'
+import { nwpmActionsTypes } from '../actions/actionsTypes'
 
 
 const initialCurrentNwpProducts =
@@ -7,7 +7,7 @@ const initialCurrentNwpProducts =
     products:{
       analysis_assim:{
         'is_requested': true,
-        'name_product': productTypes.analysis_assim,
+        'name_product': nwpmActionsTypes.analysis_assim,
         'color':'#ff8c66',
         'data':[],
         'is_latest': true,
@@ -15,7 +15,7 @@ const initialCurrentNwpProducts =
     },
     short_range: {
         'is_requested': false,
-        'name_product': productTypes.short_range,
+        'name_product': nwpmActionsTypes.short_range,
         'color':'#ff6699',
         'data':[],
         'is_latest': true,
@@ -24,7 +24,7 @@ const initialCurrentNwpProducts =
 
     long_range_ensemble_mean: {
         'is_requested': false,
-        'name_product': productTypes.long_range_ensemble_mean,
+        'name_product': nwpmActionsTypes.long_range_ensemble_mean,
         'color': '#8ca9ff',
         'data':[],
         'is_latest': true,
@@ -32,7 +32,7 @@ const initialCurrentNwpProducts =
     },
     long_range_ensemble_member_1:{
         'is_requested': false,
-        'name_product': productTypes.long_range_ensemble_member_1,
+        'name_product': nwpmActionsTypes.long_range_ensemble_member_1,
         'color': '#8ca9ff',
         'data':[],
         'is_latest': true,
@@ -40,7 +40,7 @@ const initialCurrentNwpProducts =
     },
     long_range_ensemble_member_2: {
         'is_requested': false,
-        'name_product': productTypes.long_range_ensemble_member_2,
+        'name_product': nwpmActionsTypes.long_range_ensemble_member_2,
         'color': '#8ca9ff',
         'data':[],
         'is_latest': true,
@@ -48,7 +48,7 @@ const initialCurrentNwpProducts =
     },
     long_range_ensemble_member_3: {
         'is_requested': false,
-        'name_product': productTypes.long_range_ensemble_member_3,
+        'name_product': nwpmActionsTypes.long_range_ensemble_member_3,
         'color': '#8ca9ff',
         'data':[],
         'is_latest': true,
@@ -56,7 +56,7 @@ const initialCurrentNwpProducts =
     },
     long_range_ensemble_member_4: {
         'is_requested': false,
-        'name_product': productTypes.long_range_ensemble_member_4,
+        'name_product': nwpmActionsTypes.long_range_ensemble_member_4,
         'color': '#8ca9ff',
         'data':[],
         'is_latest': true,
@@ -64,7 +64,7 @@ const initialCurrentNwpProducts =
     },
     medium_range_ensemble_mean:{
         'is_requested': false,
-        'name_product': productTypes.medium_range_ensemble_mean,
+        'name_product': nwpmActionsTypes.medium_range_ensemble_mean,
         'color': '#d966ff',
         'data':[],
         'is_latest': true,
@@ -72,7 +72,7 @@ const initialCurrentNwpProducts =
     },
     medium_range_ensemble_member_1:{
         'is_requested': false,
-        'name_product': productTypes.medium_range_ensemble_member_1,
+        'name_product': nwpmActionsTypes.medium_range_ensemble_member_1,
         'color': '#d966ff',
         'data':[],
         'is_latest': true,
@@ -80,7 +80,7 @@ const initialCurrentNwpProducts =
     },
     medium_range_ensemble_member_2:{
         'is_requested': false,
-        'name_product': productTypes.medium_range_ensemble_member_2,
+        'name_product': nwpmActionsTypes.medium_range_ensemble_member_2,
         'color': '#d966ff',
         'data':[],
         'is_latest': true,
@@ -88,7 +88,7 @@ const initialCurrentNwpProducts =
     },
     medium_range_ensemble_member_3:{
         'is_requested': false,
-        'name_product': productTypes.medium_range_ensemble_member_3,
+        'name_product': nwpmActionsTypes.medium_range_ensemble_member_3,
         'color': '#d966ff',
         'data':[],
         'is_latest': true,
@@ -96,7 +96,7 @@ const initialCurrentNwpProducts =
     },
     medium_range_ensemble_member_4:{
         'is_requested': false,
-        'name_product': productTypes.medium_range_ensemble_member_4,
+        'name_product': nwpmActionsTypes.medium_range_ensemble_member_4,
         'color': '#d966ff',
         'data':[],
         'is_latest': true,
@@ -104,7 +104,7 @@ const initialCurrentNwpProducts =
     },
     medium_range_ensemble_member_5:{
         'is_requested': false,
-        'name_product': productTypes.medium_range_ensemble_member_5,
+        'name_product': nwpmActionsTypes.medium_range_ensemble_member_5,
         'color': '#d966ff',
         'data':[],
         'is_latest': true,
@@ -112,7 +112,7 @@ const initialCurrentNwpProducts =
     },
     medium_range_ensemble_member_6:{
         'is_requested': false,
-        'name_product': productTypes.medium_range_ensemble_member_6,
+        'name_product': nwpmActionsTypes.medium_range_ensemble_member_6,
         'color': '#d966ff',
         'data':[],
         'is_latest': true,
@@ -120,7 +120,7 @@ const initialCurrentNwpProducts =
     },
     medium_range_ensemble_member_7:{
         'is_requested': false,
-        'name_product': productTypes.medium_range_ensemble_member_7,
+        'name_product': nwpmActionsTypes.medium_range_ensemble_member_7,
         'color': '#d966ff',
         'data': [],
         'is_latest': true,
@@ -128,27 +128,28 @@ const initialCurrentNwpProducts =
     }
     },
     currentGeometry: {},
-    currentMetadata:[]
+    currentMetadata:[],
+    isModalOpen: false
   }
 }
 
 const reducerProducts = (state, action) => {
   switch (action.type) {
-    case productTypes.analysis_assim:
-    case productTypes.short_range:
-    case productTypes.long_range_ensemble_mean:
-    case productTypes.long_range_ensemble_member_1:
-    case productTypes.long_range_ensemble_member_2:
-    case productTypes.long_range_ensemble_member_3:
-    case productTypes.long_range_ensemble_member_4:
-    case productTypes.medium_range_ensemble_mean:
-    case productTypes.medium_range_ensemble_member_1:
-    case productTypes.medium_range_ensemble_member_2:
-    case productTypes.medium_range_ensemble_member_3:
-    case productTypes.medium_range_ensemble_member_4:
-    case productTypes.medium_range_ensemble_member_5:
-    case productTypes.medium_range_ensemble_member_6:
-    case productTypes.medium_range_ensemble_member_7:
+    case nwpmActionsTypes.analysis_assim:
+    case nwpmActionsTypes.short_range:
+    case nwpmActionsTypes.long_range_ensemble_mean:
+    case nwpmActionsTypes.long_range_ensemble_member_1:
+    case nwpmActionsTypes.long_range_ensemble_member_2:
+    case nwpmActionsTypes.long_range_ensemble_member_3:
+    case nwpmActionsTypes.long_range_ensemble_member_4:
+    case nwpmActionsTypes.medium_range_ensemble_mean:
+    case nwpmActionsTypes.medium_range_ensemble_member_1:
+    case nwpmActionsTypes.medium_range_ensemble_member_2:
+    case nwpmActionsTypes.medium_range_ensemble_member_3:
+    case nwpmActionsTypes.medium_range_ensemble_member_4:
+    case nwpmActionsTypes.medium_range_ensemble_member_5:
+    case nwpmActionsTypes.medium_range_ensemble_member_6:
+    case nwpmActionsTypes.medium_range_ensemble_member_7:
       // Correctly update the nested structure, maintaining other properties
       return {
         ...state,
@@ -164,7 +165,7 @@ const reducerProducts = (state, action) => {
           }
         }
       };
-    case productTypes.set_current_geometry:
+    case nwpmActionsTypes.set_current_geometry:
       return {
         ...state,
         state: {
@@ -172,7 +173,7 @@ const reducerProducts = (state, action) => {
           currentGeometry: action.geometry
         }
     };
-    case productTypes.set_current_metadata:
+    case nwpmActionsTypes.set_current_metadata:
       return {
         ...state,
         state: {
@@ -180,8 +181,16 @@ const reducerProducts = (state, action) => {
           currentMetadata: action.metadata
         }
     };
-    case productTypes.reset:
+    case nwpmActionsTypes.reset:
       return initialCurrentNwpProducts;
+    case nwpmActionsTypes.set_modal_state:
+      return {
+        ...state,
+        state: {
+          ...state.state,
+          isModalOpen: action.isModalOpen
+        }
+      };
     default:
       throw new Error();
   }

@@ -1,11 +1,11 @@
 import { useReducer } from "react"
 import { reducerProducts, initialCurrentNwpProducts } from "../store/reducers/nwpProductsReducer"
-import { productTypes } from "../store/actions/actionsTypes"
+import { nwpmActionsTypes } from "../store/actions/actionsTypes"
 
 // Custom hook for managing the state of the NWP products
 export const useNwpProducts = ({reducer = reducerProducts} = {}, ts) => {
     const [currentProducts, updateProducts] = useReducer(reducer, initialCurrentNwpProducts )
-    const updateProductsState = (typeProduct) => updateProducts({type: productTypes.typeProduct, data: ts});
+    const updateProductsState = (typeProduct) => updateProducts({type: nwpmActionsTypes[typeProduct], data: ts});
     
     // const updateAA = () => updateProducts({type: productTypes.analysis_assim,is_requested:true, data: ts})
     // const updateSR = () => updateProducts({type: productTypes.short_range,is_requested:true, data: ts})
@@ -22,10 +22,11 @@ export const useNwpProducts = ({reducer = reducerProducts} = {}, ts) => {
     // const updateMREnsemble5 = () => updateProducts({type: productTypes.medium_range_ensemble_member_5,is_requested:true, data: ts})
     // const updateMREnsemble6 = () => updateProducts({type: productTypes.medium_range_ensemble_member_6,is_requested:true, data: ts})
     // const updateMREnsemble7 = () => updateProducts({type: productTypes.medium_range_ensemble_member_7,is_requested:true, data: ts})
-    const updateCurrentGeometry = (geometry) => updateProducts({type: productTypes.set_current_geometry, geometry: geometry})
-    const updateCurrentMetadata = (metadata) => updateProducts({type: productTypes.set_current_metadata, metadata: metadata})
-    const resetProducts = () => updateProducts({type:productTypes.reset})
-    
+    const updateCurrentGeometry = (geometry) => updateProducts({type: nwpmActionsTypes.set_current_geometry, geometry: geometry});
+    const updateCurrentMetadata = (metadata) => updateProducts({type: nwpmActionsTypes.set_current_metadata, metadata: metadata});
+    const resetProducts = () => updateProducts({type:nwpmActionsTypes.reset});
+    const handleModalState = () => updateProducts({type: nwpmActionsTypes.set_modal_open, isModalOpen: action.isModalOpen});
+
     return {
       currentProducts, 
       // updateAA,
@@ -46,6 +47,7 @@ export const useNwpProducts = ({reducer = reducerProducts} = {}, ts) => {
       updateProductsState,
       updateCurrentGeometry,
       updateCurrentMetadata,
-      resetProducts
+      resetProducts,
+      handleModalState
     }
 }

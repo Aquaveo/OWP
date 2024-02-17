@@ -1,10 +1,10 @@
 import React, { Fragment, useEffect } from 'react';
-
 import Map from '../features/Map/components/Map';
-
 import { onClickStreamFlowLayerHandler } from "lib/mapEvents"
-
 import { useNwpProducts } from 'features/NwpProducts/hooks/useNWPProducts';
+import ChartModal from 'features/NwpProducts/components/ChartModal';
+
+
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
@@ -12,11 +12,13 @@ const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Can
 const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer'
 
 const OWPView = () => {
-  const { currentProducts, 
+  const { 
+    currentProducts, 
     updateProductsState, 
     resetProducts, 
     updateCurrentGeometry, 
-    updateCurrentMetadata 
+    updateCurrentMetadata,
+    handleModalState,
   } = useNwpProducts();
   
 
@@ -61,7 +63,8 @@ const OWPView = () => {
                 currentProducts,
                 resetProducts,
                 updateCurrentGeometry,
-                updateCurrentMetadata
+                updateCurrentMetadata,
+                handleModalState
               )
             }}],
             priority: 1      
@@ -76,6 +79,7 @@ const OWPView = () => {
   return (
     <Fragment>
         <Map layers={layersArray} />
+        <ChartModal modal={currentProducts.isModalOpen} setModal={handleModalState} />
     </Fragment>
   );
 };
