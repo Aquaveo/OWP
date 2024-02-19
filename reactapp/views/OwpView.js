@@ -1,17 +1,33 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect,useState } from 'react';
 import Map from '../features/Map/components/Map';
 import { onClickStreamFlowLayerHandler } from "lib/mapEvents"
 import { useNwpProducts } from 'features/NwpProducts/hooks/useNWPProducts';
 import ChartModal from 'features/NwpProducts/components/ChartModal';
+import appAPI from 'services/api/app';
 
-
+import useMessages from 'components/webSocket/useMessages';
+import reconnectingSocket from 'components/webSocket/clientws'
+import {handleMessage} from 'lib/consumerMessages'
+import {useWebSocket} from 'components/webSocket/useWebSocket'
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
 const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer'
 
+
+const webSocketHost = process.env.TETHYS_WEB_SOCKET_HOST
+const prefix_url = process.env.TETHYS_PREFIX_URL ? `/${process.env.TETHYS_PREFIX_URL.replace(/^\/|\/$/g, '')}/` : '';
+const app_root_relative_path = process.env.TETHYS_APP_ROOT_URL_RELATIVE ? `${process.env.TETHYS_APP_ROOT_URL_RELATIVE.replace(/^\/|\/$/g, '')}` : '';
+
+
+// const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
+const ws = 'ws://' + webSocketHost + prefix_url + app_root_relative_path + '/data-notification/notifications/ws/';
+const client = reconnectingSocket(ws);
+
+
 const OWPView = () => {
+
   const { 
     currentProducts, 
     updateProductsState, 
@@ -20,7 +36,12 @@ const OWPView = () => {
     updateCurrentMetadata,
     handleModalState,
   } = useNwpProducts();
+
+  const clientWrapper = useWebSocket(client);
   
+  const messages = useMessages(client, (event)=>{
+    handleMessage(event,updateProductsState)
+  });
 
   // add more layers here if needed
   const layersArray = [
@@ -64,7 +85,8 @@ const OWPView = () => {
                 resetProducts,
                 updateCurrentGeometry,
                 updateCurrentMetadata,
-                handleModalState
+                handleModalState,
+                appAPI.getForecastData
               )
             }}],
             priority: 1      
@@ -72,14 +94,16 @@ const OWPView = () => {
     }
   ]
 
+
   useEffect(() => {
     console.log(currentProducts);
-  }, [currentProducts]);
+  }, [currentProducts.state.products]);
+
 
   return (
     <Fragment>
         <Map layers={layersArray} />
-        <ChartModal modal={currentProducts.state.isModalOpen} setModal={handleModalState} />
+        <ChartModal modal={currentProducts.state.isModalOpen} setModal={handleModalState} data={currentProducts.state.products}/>
     </Fragment>
   );
 };

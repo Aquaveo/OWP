@@ -11,7 +11,7 @@ export const useLayer = ({layerType, options, extraProperties={}}) => {
   const layer = useLayerFactory({layerType, options});
   
   const addLayer = (layer) => {    
-    console.log("Layer added");
+    // console.log("Layer added");
     // Define the object you want to attach as a property
     // Adding the customDataObject as a property to the ImageLayer
     let {events, priority} = extraProperties;
@@ -25,7 +25,7 @@ export const useLayer = ({layerType, options, extraProperties={}}) => {
   };
 
   const removeLayer = (layer) => {
-    console.log("Layer removed");
+    // console.log("Layer removed");
     map.removeLayer(layer);
     actions.removeLayer(layer);
   };  

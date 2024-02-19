@@ -13,15 +13,14 @@ const onClickStreamFlowLayerHandler = (
     resetProducts,
     updateCurrentGeometry, 
     updateCurrentMetadata,
-    handleModalState
+    handleModalState,
+    getForecastData
     ) => {
-    console.log(currentProducts)
     let mapServerInfo = []
     let mapObject = event.map;
     let clickCoordinate = event.coordinate;
     // const pixel = mapObject.getEventPixel(event.originalEvent)
     // const clickCoordinate = mapObject.getCoordinateFromPixel(pixel)
-    console.log(clickCoordinate)
     const urlService = layer.getSource().getUrl() // collect mapServer URL
     const id = layer
         .getSource()
@@ -53,31 +52,26 @@ const onClickStreamFlowLayerHandler = (
         url.search = new URLSearchParams(queryLayer5);
 
         axios.get(url).then((response) => {
-
-
-            console.log(response.data);
-
             const filteredArray = response.data['features'][0]
-            console.log(filteredArray)
-
             const actual_zoom = mapObject.getView().getZoom()
             var esriMapPoint = new Point({
                 longitude: clickCoordinate[0],
                 latitude: clickCoordinate[1],
                 spatialReference: spatialReference,
             });
-            console.log(esriMapPoint)
             let currentStreamFeature = processStreamServiceQueryResult(actual_zoom, esriMapPoint, response.data, mapObject)
+            var stationID = currentStreamFeature.properties['id']
             updateCurrentGeometry(currentStreamFeature.geometry);
             resetProducts();
-            handleModalState(true);
             // this ones are commented needs to be uncommented
             // handleShow();
-            // let dataRequest = {
-            //     station_id: stationID,
-            //     products: currentProducts
-            // }
+            let dataRequest = {
+                station_id: stationID,
+                products: currentProducts.state.products
+            }
             // appAPI.getForecastData(dataRequest);
+            getForecastData(dataRequest);
+            handleModalState(true);
 
             // GeoReverse API to get the name of the river
             const urlSGeoReverseService = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode'
@@ -95,13 +89,12 @@ const onClickStreamFlowLayerHandler = (
                 // this ones are commented needs to be uncommented  
                 // handleShow();
 
-                console.log(response.data);
                 var lat = response.data['location']['x'];
                 var lon = response.data['location']['y'];
                 var regionName = response.data['address']['Region'];
                 var cityName = response.data['address']['City']
                 var stationName = currentStreamFeature.properties['name']
-                var stationID = currentStreamFeature.properties['id']
+                
                 const metadataArray = [
                     `${stationName} - ${cityName}, ${regionName}`,
                     `streamflow for Reach ID: ${stationID} (lat: ${lat} , lon: ${lon})`

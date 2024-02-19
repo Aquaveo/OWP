@@ -1,6 +1,11 @@
+// for more information please:
+//https://github.com/codebucks27/React-reusable-components
+//live demo of that at  https://react-reusable-components.vercel.app/
+// article explaining: https://dev.to/codebucks/how-to-create-an-efficient-modal-component-in-react-using-hooks-and-portals-360p
 import "./modal.css";
 import Close from "./times-solid.svg";
 import { createPortal } from "react-dom";
+
 
 
 const Modal = ({ show, close, title, children }) => {

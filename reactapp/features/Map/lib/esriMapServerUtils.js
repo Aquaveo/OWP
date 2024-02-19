@@ -35,7 +35,6 @@ const getCurrentReachOnClick = (esriPaths) => {
             'coordinates': coordinates
         }
 
-    console.log(geojsonObject)
     return geojsonObject
     // setCurrentReachGeometry(null);
     // setCurrentReachGeometryOnClick(geojsonObject);
@@ -95,10 +94,9 @@ const processStreamServiceQueryResult = (zoom, point, response, mapObject) => {
     if (validFeatures.length === 0) {
         return;
     }
-    console.log(validFeatures)
+   
     let stationName = isBlank(validFeatures[0].attributes[nameAttrName]) ? 'N/A' : validFeatures[0].attributes[nameAttrName]
     let stationID = validFeatures[0].attributes[fidAttrName]
-    console.log("STATION ID", stationID)
     // setCurrentStationID(stationID);
     // setCurrentStation(stationName);
     let currentGeosjonReach = getCurrentReachOnClick(validFeatures[0].geometry.paths, mapObject)

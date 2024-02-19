@@ -24,8 +24,9 @@ const reconnectingSocket = (url) => {
   
     const start = () => {
       client = new WebSocket(url);
-  
+      
       client.onopen = () => {
+        console.log('ws connected');
         isConnected = true;
         stateChangeListeners.forEach((fn) => fn(true));
       };
@@ -69,5 +70,6 @@ const reconnectingSocket = (url) => {
       getClient: () => client,
       isConnected: () => isConnected,
     };
-  };
-  
+};
+
+export default reconnectingSocket;
