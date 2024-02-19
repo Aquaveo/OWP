@@ -79,7 +79,7 @@ const OWPView = () => {
   return (
     <Fragment>
         <Map layers={layersArray} />
-        <ChartModal modal={currentProducts.isModalOpen} setModal={handleModalState} />
+        <ChartModal modal={currentProducts.state.isModalOpen} setModal={handleModalState} />
     </Fragment>
   );
 };

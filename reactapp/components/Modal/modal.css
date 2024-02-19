@@ -1,0 +1,111 @@
+.modalContainer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+}
+
+.modalContainer .modalBody {
+  background-color: rgba(255, 255, 255, 0.35);
+  width: calc(15rem + 15vw);
+  height: auto;
+  padding: 2rem;
+  border-radius: 20px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2);
+  transform: translateY(-600px);
+  transition: all 0.4s ease;
+}
+
+.modalContainer .modalBody_header,
+.modalContainer .modalBody .modalBody_header {
+  position: relative;
+  border-bottom: 1px solid #dddddd;
+}
+
+.modalContainer .modalBody_header-title,
+.modalContainer .modalBody .modalBody_header-title {
+  text-align: center;
+}
+
+.modalContainer .modalBody .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: transparent;
+}
+
+.modalContainer .modalBody .close img {
+  width: 1rem;
+  height: auto;
+  transition: all 0.2s ease;
+}
+
+.modalContainer .modalBody .close:hover img {
+  transform: scale(1.1);
+}
+
+.modalContainer .modalBody_content,
+.modalContainer .modalBody .modalBody_content {
+  border-bottom: 1px solid #dddddd;
+  padding: 2rem 0;
+}
+
+.modalContainer .modalBody_footer,
+.modalContainer .modalBody .modalBody_footer {
+  padding: 2rem 0;
+  padding-bottom: 0;
+}
+
+.modalContainer .modalBody_footer button,
+.modalContainer .modalBody .modalBody_footer button {
+  float: right;
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+.modalContainer .modalBody_footer .submit,
+.modalContainer .modalBody .modalBody_footer .submit {
+  margin-right: 1rem;
+  background-color: #364348;
+  color: #fff;
+}
+
+.modalContainer .modalBody_footer .submit:hover,
+.modalContainer .modalBody .modalBody_footer .submit:hover {
+  background-color: rgba(54, 67, 72, 0.8);
+}
+
+.modalContainer .modalBody_footer .modal-close,
+.modalContainer .modalBody .modalBody_footer .modal-close {
+  background-color: transparent;
+  font-weight: 600;
+}
+
+.modalContainer .modalBody_footer .modal-close:hover,
+.modalContainer .modalBody .modalBody_footer .modal-close:hover {
+  color: rgba(54, 67, 72, 0.8);
+}
+
+.modalContainer.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modalContainer.show .modalBody {
+  transform: translateY(0);
+}
+
+button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
