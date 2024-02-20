@@ -63,7 +63,6 @@ const onClickStreamFlowLayerHandler = (
             let currentStreamFeature = processStreamServiceQueryResult(actual_zoom, esriMapPoint, response.data, mapObject)
             var stationID = currentStreamFeature.properties['id']
             console.log(stationID)
-            updateCurrentStationID(stationID)
             updateCurrentGeometry(currentStreamFeature.geometry);
             resetProducts();
 
@@ -76,6 +75,7 @@ const onClickStreamFlowLayerHandler = (
             // appAPI.getForecastData(dataRequest);
             getForecastData(dataRequest);
             handleModalState(true);
+            updateCurrentStationID(stationID);
 
             // GeoReverse API to get the name of the river
             const urlSGeoReverseService = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode'
