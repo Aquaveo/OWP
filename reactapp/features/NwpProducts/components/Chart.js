@@ -164,14 +164,18 @@ const Chart = ({data}) => {
       // Loop through the data object and add series where is_requested is true
       Object.keys(data).forEach(key => {
         const item = data[key];
+        const series = chartRef.current.series.values.find(s => s.get('name') === item.name_product);
         if (item.is_requested) {
-
-          const series = chartRef.current.series.values.find(s => s.get('name') === item.name_product);
           if (series) {
             series.data.setAll(item.data);
             series.strokes.template.setAll({
               strokeWidth: 2
             });
+          }
+        }
+        else{
+          if (series) {
+            series.data.setAll([]);
           }
         }
       });
