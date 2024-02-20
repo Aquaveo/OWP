@@ -18,6 +18,8 @@ const nwpmActionsTypes = {
     set_current_geometry: 'set_current_geometry',
     set_current_metadata: 'set_current_metadata',
     set_modal_state: 'set_modal_state',
+    toggle_product: 'toggle_product',
+    set_current_station_id: 'set_current_station_id'
 }
 
 export { nwpmActionsTypes }

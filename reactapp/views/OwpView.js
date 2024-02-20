@@ -2,7 +2,8 @@ import React, { Fragment, useEffect,useState } from 'react';
 import Map from '../features/Map/components/Map';
 import { onClickStreamFlowLayerHandler } from "lib/mapEvents"
 import { useNwpProducts } from 'features/NwpProducts/hooks/useNWPProducts';
-import ChartModal from 'features/NwpProducts/components/ChartModal';
+import ChartModalView from './modals/ChartModalView';
+
 import appAPI from 'services/api/app';
 
 import useMessages from 'components/webSocket/useMessages';
@@ -35,6 +36,8 @@ const OWPView = () => {
     updateCurrentGeometry, 
     updateCurrentMetadata,
     handleModalState,
+    toggleProduct,
+    updateCurrentStationID
   } = useNwpProducts();
 
   const clientWrapper = useWebSocket(client);
@@ -86,7 +89,8 @@ const OWPView = () => {
                 updateCurrentGeometry,
                 updateCurrentMetadata,
                 handleModalState,
-                appAPI.getForecastData
+                appAPI.getForecastData,
+                updateCurrentStationID
               )
             }}],
             priority: 1      
@@ -96,14 +100,38 @@ const OWPView = () => {
 
 
   useEffect(() => {
-    console.log(currentProducts);
-  }, [currentProducts.state.products]);
+    // send the api data here
+    console.log(currentProducts.state.products);
+    console.log(currentProducts.state.currentStationID);
+    const requestedProducts = {}
+    for (const key in currentProducts.state.products) {
+      const nestedObject = currentProducts.state.products[key];
+      if (nestedObject['is_requested'] === true && nestedObject['data'].length === 0) {
+        requestedProducts[key] = nestedObject;
+      }
+    }
+    if (Object.keys(requestedProducts).length > 0 && currentProducts.state.currentStationID) {
+      let dataRequest = {
+        station_id: currentProducts.state.currentStationID,
+        products: requestedProducts
+      }
+      appAPI.getForecastData(dataRequest);
+    }
+  }, [currentProducts.state.products,currentProducts.state.currentStationID]);
+
+
 
 
   return (
     <Fragment>
         <Map layers={layersArray} />
-        <ChartModal modal={currentProducts.state.isModalOpen} setModal={handleModalState} data={currentProducts.state.products}/>
+
+        <ChartModalView 
+          modal={currentProducts.state.isModalOpen} 
+          setModal={handleModalState} 
+          data={currentProducts.state.products}
+          onChange={toggleProduct}
+        />
     </Fragment>
   );
 };

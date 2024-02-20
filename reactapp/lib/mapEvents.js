@@ -14,7 +14,8 @@ const onClickStreamFlowLayerHandler = (
     updateCurrentGeometry, 
     updateCurrentMetadata,
     handleModalState,
-    getForecastData
+    getForecastData,
+    updateCurrentStationID
     ) => {
     let mapServerInfo = []
     let mapObject = event.map;
@@ -61,8 +62,11 @@ const onClickStreamFlowLayerHandler = (
             });
             let currentStreamFeature = processStreamServiceQueryResult(actual_zoom, esriMapPoint, response.data, mapObject)
             var stationID = currentStreamFeature.properties['id']
+            console.log(stationID)
+            updateCurrentStationID(stationID)
             updateCurrentGeometry(currentStreamFeature.geometry);
             resetProducts();
+
             // this ones are commented needs to be uncommented
             // handleShow();
             let dataRequest = {

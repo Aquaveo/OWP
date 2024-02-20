@@ -6,11 +6,6 @@ import * as am5plugins_exporting from "@amcharts/amcharts5/plugins/exporting";
 import { Fragment, useEffect ,useRef } from "react";
 
 
-const updateSeriesData = ( seriesName, newData) => {
-
-};
-
-
 const Chart = ({data}) => {
   const chartRef = useRef(null);
   
@@ -31,44 +26,126 @@ const Chart = ({data}) => {
         panY: true,
         wheelX: 'panX',
         wheelY: 'zoomX',
-        layout: root.verticalLayout
+        pinchZoomX:true
+        // layout: root.verticalLayout
       }));
 
       // Create axes
-      const xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
-        baseInterval: { timeUnit: 'day', count: 1 },
-        renderer: am5xy.AxisRendererX.new(root, {}),
-        tooltip: am5.Tooltip.new(root, {})
-      }));
-      const yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-        renderer: am5xy.AxisRendererY.new(root, {})
-      }));
+      let xAxis = chart.xAxes.push(
+        am5xy.DateAxis.new(root, {
+          baseInterval: { timeUnit: "hour", count: 1 },
+          renderer: am5xy.AxisRendererX.new(root, {}),
+          tooltip: am5.Tooltip.new(root, {}),
+          tooltipDateFormat: "MM/dd HH:mm"
+        })
+      );
+      let yAxis = chart.yAxes.push(
+        am5xy.ValueAxis.new(root, {
+          renderer: am5xy.AxisRendererY.new(root, {pan:"zoom"}),
+          tooltip: am5.Tooltip.new(root, {})
+        })
+      );
 
       // Loop through the data object and add series where is_requested is true
       Object.keys(data).forEach(key => {
         const item = data[key];
-        // if (item.is_requested) {
-          const series = chart.series.push(am5xy.LineSeries.new(root, {
-            name: item.name_product,
-            xAxis: xAxis,
-            yAxis: yAxis,
-            valueYField: 'value',
-            valueXField: 'date',
-            stroke: am5.color(item.color),
-            fill: am5.color(item.color)
-          }));
-          series.data.setAll(item.data);
-          
-          // Add a legend if needed
-          // chart.set("legend", am5.Legend.new(root, {}));
-          series.strokes.template.setAll({
-            strokeWidth: 2
-          });
-        // }
+
+        var tooltip = am5.Tooltip.new(root, {
+          labelText: `${item['tooltip_text']}: {valueY}`
+        })
+        const series = chart.series.push(am5xy.LineSeries.new(root, {
+          name: item.name_product,
+          xAxis: xAxis,
+          yAxis: yAxis,
+          valueYField: "value",
+          valueXField: "forecast-time",
+          stroke: am5.color(item.color),
+          fill: am5.color(item.color),
+          maxDeviation:1,
+          tooltip: tooltip,
+          legendLabelText: `[{stroke}]${item['tooltip_text']}[/]`,
+          legendRangeLabelText: `[{stroke}]${item['tooltip_text']}[/]`,
+
+        }));
+        series.data.setAll(item.data);
+        
+        // Add a legend if needed
+        // chart.set("legend", am5.Legend.new(root, {}));
+        series.strokes.template.setAll({
+          strokeWidth: 2
+        });
+        // Make stuff animate on load
+        // https://www.amcharts.com/docs/v5/concepts/animations/
+        series.appear(1000,500);
       });
 
+
+      //Today date line
+      var rangeDataItem = xAxis.makeDataItem({
+        value: new Date().setHours(20),
+        above: false
+      });
+      var range = xAxis.createAxisRange(rangeDataItem);
+      rangeDataItem.get("grid").set("visible", true);
+      range.get("grid").setAll({
+        stroke: '#88d318',
+        strokeOpacity: 1,
+        strokeWidth:2,
+        width: 40,
+        location: 1
+      });
+
+      // Add scrollbar
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
+      chart.set("scrollbarX", am5.Scrollbar.new(root, {
+        orientation: "horizontal",
+        
+      }));
+
       // Add cursor
-      chart.set('cursor', am5xy.XYCursor.new(root, {}));
+      var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+      cursor.lineX.set("forceHidden", true);
+      cursor.lineY.set("forceHidden", true);
+
+      var title = am5.Label.new(root, {
+        text: "Title",
+        fontSize: 16,
+        textAlign: "center",
+        x: am5.percent(50),
+        // y:am5.percent(-20),
+        centerX: am5.percent(50),
+        // height: "100"
+      })
+
+      var subtitle = am5.Label.new(root, {
+        text: `Subtitle`,
+        fontSize: 12,
+        fontWeight: "bold",
+        textAlign: "center",
+        x: am5.percent(50),
+        centerX: am5.percent(50),
+      })
+      let titleChart = chart.children.unshift(title);
+      let subtitleChart = chart.topAxesContainer.children.push(subtitle);
+  
+  
+      chart.events.on("datavalidated", function(ev) {
+  
+        // Get objects of interest
+        var chart = ev.target;
+        var categoryAxis = chart.yAxes.getIndex(0);
+      
+        // Calculate how we need to adjust chart height
+        var adjustHeight = chart.data.length * cellSize - categoryAxis.pixelHeight;
+      
+        // get current chart height
+        var targetHeight = chart.pixelHeight + adjustHeight;
+      
+        // Set it on chart's container
+        chart.svgContainer.htmlElement.style.height = targetHeight + "px";
+      });
+
+
 
       chartRef.current = chart;
     }

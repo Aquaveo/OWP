@@ -129,7 +129,8 @@ const initialCurrentNwpProducts =
     },
     currentGeometry: {},
     currentMetadata:[],
-    isModalOpen: false
+    isModalOpen: false,
+    currentStationID: null
   }
 }
 
@@ -189,6 +190,28 @@ const reducerProducts = (state, action) => {
         state: {
           ...state.state,
           isModalOpen: action.isModalOpen
+        }
+      };
+    case nwpmActionsTypes.toggle_product:
+      return {
+        ...state,
+        state: {
+          ...state.state,
+          products: {
+            ...state.state.products,
+            [action.product]: {
+              ...state.state.products[action.product],
+              'is_requested': !state.state.products[action.product]['is_requested']
+            }
+          }
+        }
+      };
+    case nwpmActionsTypes.set_current_station_id:
+      return {
+        ...state,
+        state: {
+          ...state.state,
+          currentStationID: action.stationID
         }
       };
     default:

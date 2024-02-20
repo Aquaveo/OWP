@@ -1,0 +1,39 @@
+.container {
+    width: 100%;
+    padding-right: var(--bs-gutter-x,.75rem);
+    padding-left: var(--bs-gutter-x,.75rem);
+    margin-right: auto;
+    margin-left: auto;
+  }
+  
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+  }
+  
+  .col-md-3 {
+    flex: 0 0 auto;
+    width: 25%;
+  }
+  
+  .button-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .toggle-button {
+    background-color: transparent;
+    border: 1px solid #ccc;
+    padding: .375rem .75rem;
+    cursor: pointer;
+  }
+  
+  .toggle-button-checked {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  /* Add additional styling as needed */
+  
