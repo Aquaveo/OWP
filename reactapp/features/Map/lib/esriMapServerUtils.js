@@ -43,7 +43,6 @@ const getCurrentReachOnClick = (esriPaths) => {
 
 //get corresponding stream service query result
 const processStreamServiceQueryResult = (zoom, point, response, mapObject) => {
-    console.log(response.features)
     var minStreamOrder = 5;
     var soAttrName = null;
     var fidAttrName = null;
