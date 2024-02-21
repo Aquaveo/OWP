@@ -5,7 +5,7 @@ import Layers from './LayersWrapper';
 const Map = ({ layers }) => {
 
   useEffect(() => {
-    console.log('MapView useEffect');
+    
   }, []);
 
   return (

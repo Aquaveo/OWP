@@ -7,6 +7,7 @@ import Close from "./times-solid.svg";
 import { createPortal } from "react-dom";
 
 
+//make footer optional
 
 const Modal = ({ show, close, title, children }) => {
   return createPortal(
@@ -23,12 +24,12 @@ const Modal = ({ show, close, title, children }) => {
             </button>
           </header>
           <main className="modal_content">{children}</main>
-          <footer className="modal_footer">
+          {/* <footer className="modal_footer">
             <button className="modal-close" onClick={() => close()}>
               Cancel
             </button>
             <button className="submit">Submit</button>
-          </footer>
+          </footer> */}
         </div>
       </div>
     </>,

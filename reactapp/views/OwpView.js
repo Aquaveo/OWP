@@ -6,10 +6,10 @@ import ChartModalView from './modals/ChartModalView';
 
 import appAPI from 'services/api/app';
 
-import useMessages from 'components/webSocket/useMessages';
-import reconnectingSocket from 'components/webSocket/clientws'
+import useMessages from 'hooks/useMessages';
+import reconnectingSocket from 'lib/clientws'
 import {handleMessage} from 'lib/consumerMessages'
-import {useWebSocket} from 'components/webSocket/useWebSocket'
+import {useWebSocket} from 'hooks/useWebSocket'
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
@@ -102,7 +102,7 @@ const OWPView = () => {
   useEffect(() => {
     // send the api data here
     console.log(currentProducts.state.products);
-    console.log(currentProducts.state.currentStationID);
+    // console.log(currentProducts.state.currentStationID);
     const requestedProducts = {}
     for (const key in currentProducts.state.products) {
       const nestedObject = currentProducts.state.products[key];
@@ -130,6 +130,7 @@ const OWPView = () => {
           modal={currentProducts.state.isModalOpen} 
           setModal={handleModalState} 
           data={currentProducts.state.products}
+          metadata={currentProducts.state.currentMetadata}
           onChange={toggleProduct}
         />
     </Fragment>
