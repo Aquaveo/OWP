@@ -1,7 +1,8 @@
 
 const handleMessage = (
     message,
-    updateProductsState
+    updateProductsState,
+    handleModalState
     ) =>{
     let data = JSON.parse(message);
     let command = data['command']
@@ -13,6 +14,7 @@ const handleMessage = (
         'forecast-time': new Date(obj['forecast-time']).getTime()
       }));
       updateProductsState(product_name, ts);
+      handleModalState(true);
     }
 }
 

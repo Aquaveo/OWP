@@ -1,7 +1,9 @@
+import React, { Fragment, useEffect,Suspense } from 'react';
 import Modal from "components/UI/Modal/Modal";
-import Chart from '../../features/NwpProducts/components/Chart';
+// import LineChart from '../../features/NwpProducts/components/LineChart';
 import { initializeChart, updateSeries, onPointerOver, onPointerOut} from "lib/chartFunctions";
 
+const LineChart = React.lazy(() => import('../../features/NwpProducts/components/LineChart'));
 
 const ChartModalView = ({
   modal, 
@@ -15,15 +17,17 @@ const ChartModalView = ({
 
   return (
     <Modal show={modal} close={Toggle} title="">
-        <Chart 
-            data={data}
-            metadata={metadata} 
-            initializeChart={initializeChart} 
-            updateSeries={updateSeries} 
-            onClickLegend={onChange} 
-            onPointerOverLegend={onPointerOver}
-            onPointerOutLegend={onPointerOut}
-            />
+        <Suspense fallback={<div>LOADING.....</div>}>
+          <LineChart 
+              data={data}
+              metadata={metadata} 
+              initializeChart={initializeChart} 
+              updateSeries={updateSeries} 
+              onClickLegend={onChange} 
+              onPointerOverLegend={onPointerOver}
+              onPointerOutLegend={onPointerOut}
+          />
+        </Suspense>
     </Modal>
 
   )

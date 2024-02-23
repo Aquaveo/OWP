@@ -3,10 +3,10 @@ import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import * as am5plugins_exporting from "@amcharts/amcharts5/plugins/exporting";
 
-import { Fragment, useEffect ,useRef } from "react";
+import { Fragment, useEffect ,useRef,Suspense, lazy } from "react";
 
 
-const Chart = (
+const LineChart = (
   {
     data,
     metadata, 
@@ -21,7 +21,6 @@ const Chart = (
   useEffect(() => {
     
     if (!chartRef.current) {
-
       chartRef.current = initializeChart('chartdiv', data,onClickLegend,onPointerOverLegend,onPointerOutLegend)
     }
 
@@ -32,6 +31,7 @@ const Chart = (
 
   useEffect(() => {
     if (chartRef.current) {
+      // chartRef.current.children.values.find(child => child.get("layer") === 1000).show()
       updateSeries(chartRef.current,data)
     }
 
@@ -64,9 +64,11 @@ const Chart = (
 
  return (
   <Fragment>
+    <Suspense fallback={<div>LOADING.....</div>}>
       <div id="chartdiv" style={{ width: "90vh", height: "700px" }}></div>
+    </Suspense>
   </Fragment>
  )
 
 }
-export default Chart;
+export default LineChart;

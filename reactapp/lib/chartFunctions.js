@@ -106,7 +106,7 @@ const initializeLegend = (root,chart,onClick,onPointerOver,onPointerOut) => {
 
 
 const initializeChart = (containerId, data, onClickLegend,onPointerOverLegend,onPointerOutLegend) => {
-  console.log(containerId,data, onClickLegend);
+  // console.log(containerId,data, onClickLegend);
   const root = am5.Root.new(containerId);
   
   root.setThemes([am5themes_Animated.new(root)]);
@@ -239,12 +239,57 @@ const initializeChart = (containerId, data, onClickLegend,onPointerOverLegend,on
   // Add legend
   initializeLegend(root,chart,onClickLegend,onPointerOverLegend,onPointerOutLegend);
 
+  // Add animation when loading plots:
   
+  
+  // let indicator = chart.children.push(am5.Container.new(root, {
+  //   width: am5.p100,
+  //   height: am5.p100,
+  //   layer: 1000,
+  //   x: am5.p50,
+  //   y: am5.p50,
+  //   centerX: am5.p50,
+  //   centerY: am5.p50
+  //   // background: am5.Rectangle.new(root, {
+  //   //   fill: am5.color(0xffffff),
+  //   //   fillOpacity: 0.7
+  //   // })
+  // }));
+
+  // console.log(indicator)
+  // indicator.children.push(am5.Label.new(root, {
+  //   text: "Loading...",
+  //   fontSize: 25,
+  //   x: am5.p50,
+  //   y: am5.p50,
+  //   centerX: am5.p50,
+  //   centerY: am5.p50
+  // }));
+  // let hourglass = indicator.children.push(am5.Graphics.new(root, {
+  //   width: 32,
+  //   height: 32,
+  //   fill: am5.color(0x000000),
+  //   x: am5.p50,
+  //   y: am5.p50,
+  //   centerX: am5.p50,
+  //   centerY: am5.p50,
+  //   dy: -45,
+  //   svgPath: "M12 5v10l9 9-9 9v10h24V33l-9-9 9-9V5H12zm20 29v5H16v-5l8-8 8 8zm-8-12-8-8V9h16v5l-8 8z"
+  // }));
+  // var hourglassanimation = hourglass.animate({
+  //   key: "rotation",
+  //   to: 180,
+  //   loops: Infinity,
+  //   duration: 1000,
+  //   easing: am5.ease.inOut(am5.ease.cubic)
+  // });
+  // hourglassanimation.play();
+  // indicator.show();
   return chart; // Return the chart,root, and legend for further manipulation if needed
 };
 
 const updateSeries = (chart,data) => {
-    console.log(chart,data);
+    // console.log(chart,data);
     Object.keys(data).forEach(key => {
         const item = data[key];
         const series = chart.series.values.find(s => s.get('name') === item.name_product);

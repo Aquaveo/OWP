@@ -43,7 +43,7 @@ const OWPView = () => {
   const clientWrapper = useWebSocket(client);
   
   const messages = useMessages(client, (event)=>{
-    handleMessage(event,updateProductsState)
+    handleMessage(event,updateProductsState,handleModalState)
   });
 
   // add more layers here if needed
@@ -102,22 +102,37 @@ const OWPView = () => {
   useEffect(() => {
     // send the api data here
     console.log(currentProducts.state.products);
-    // console.log(currentProducts.state.currentStationID);
     const requestedProducts = {}
-    for (const key in currentProducts.state.products) {
-      const nestedObject = currentProducts.state.products[key];
-      if (nestedObject['is_requested'] === true && nestedObject['data'].length === 0) {
-        requestedProducts[key] = nestedObject;
+    if(currentProducts.state.currentStationID){
+      for (const key in currentProducts.state.products) {
+        const nestedObject = currentProducts.state.products[key];
+        if (nestedObject['is_requested'] === true && nestedObject['data'].length === 0) {
+          requestedProducts[key] = nestedObject;
+        }
       }
-    }
-    if (Object.keys(requestedProducts).length > 0 && currentProducts.state.currentStationID) {
       let dataRequest = {
         station_id: currentProducts.state.currentStationID,
         products: requestedProducts
       }
+      console.log("requesting getForecastData")
       appAPI.getForecastData(dataRequest);
     }
-  }, [currentProducts.state.products,currentProducts.state.currentStationID]);
+  }, [currentProducts.state.products.analysis_assim.is_requested,
+      currentProducts.state.products.short_range.is_requested,
+      currentProducts.state.products.long_range_ensemble_mean.is_requested,
+      currentProducts.state.products.long_range_ensemble_member_1.is_requested,
+      currentProducts.state.products.long_range_ensemble_member_2.is_requested,
+      currentProducts.state.products.long_range_ensemble_member_3.is_requested,
+      currentProducts.state.products.long_range_ensemble_member_4.is_requested,
+      currentProducts.state.products.medium_range_ensemble_mean.is_requested,
+      currentProducts.state.products.medium_range_ensemble_member_1.is_requested,
+      currentProducts.state.products.medium_range_ensemble_member_2.is_requested,
+      currentProducts.state.products.medium_range_ensemble_member_3.is_requested,
+      currentProducts.state.products.medium_range_ensemble_member_4.is_requested,
+      currentProducts.state.products.medium_range_ensemble_member_5.is_requested,
+      currentProducts.state.products.medium_range_ensemble_member_6.is_requested,
+      currentProducts.state.products.medium_range_ensemble_member_7.is_requested    
+    ]);
 
 
 

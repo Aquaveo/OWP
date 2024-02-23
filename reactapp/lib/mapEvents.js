@@ -74,7 +74,6 @@ const onClickStreamFlowLayerHandler = (
             }
             // appAPI.getForecastData(dataRequest);
             getForecastData(dataRequest);
-            handleModalState(true);
             updateCurrentStationID(stationID);
 
             // GeoReverse API to get the name of the river
