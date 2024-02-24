@@ -40,6 +40,7 @@ const reconnectingSocket = (url) => {
       };
   
       client.onmessage = (event) => {
+        console.log(messageListeners)
         messageListeners.forEach((fn) => fn(event.data));
       };
   

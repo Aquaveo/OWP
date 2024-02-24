@@ -52,9 +52,7 @@ const OWPView = () => {
     // (event)=>{
     // handleMessage(event,updateProductsState,handleModalState)}
     );
-    addMessageHandler(
-      (event)=>{handleMessage(event,updateProductsState,handleModalState)}
-    )
+
   // add more layers here if needed
   const layersArray = [
     {
@@ -107,6 +105,12 @@ const OWPView = () => {
     }
   ]
 
+  useEffect(() => {
+    console.log("changing messages", messages);
+    addMessageHandler(
+      (event)=>{handleMessage(event,updateProductsState,handleModalState)}
+    )
+  }, [messages]);
 
   //useEffect to request data from the API based on the requested products
   useEffect(() => {

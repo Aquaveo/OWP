@@ -6,6 +6,7 @@ const handleMessage = (
     ) =>{
     let data = JSON.parse(message);
     let command = data['command']
+    console.log("command", data)
     if(command ==='Plot_Data_Retrieved'){
       let product_name = data['product'];
       console.log("receiving data socket")
