@@ -6,10 +6,11 @@ import ChartModalView from './modals/ChartModalView';
 
 import appAPI from 'services/api/app';
 
-import useMessages from 'hooks/useMessages';
+// import useMessages from 'hooks/useMessages';
 import reconnectingSocket from 'lib/clientws'
 import {handleMessage} from 'lib/consumerMessages'
-import {useWebSocket} from 'hooks/useWebSocket'
+import useWebSocket  from 'hooks/useWebSocket'
+import { AddRegionForm } from 'features/Regions/components/AddRegionForm';
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
@@ -40,12 +41,20 @@ const OWPView = () => {
     updateCurrentStationID
   } = useNwpProducts();
 
-  const clientWrapper = useWebSocket(client);
+  // const clientWrapper = useWebSocket(client);
   
-  const messages = useMessages(client, (event)=>{
-    handleMessage(event,updateProductsState,handleModalState)
-  });
-
+  const {
+    messages, 
+    sendMessage,
+    addMessageHandler
+  } = useWebSocket(
+    client, 
+    // (event)=>{
+    // handleMessage(event,updateProductsState,handleModalState)}
+    );
+    addMessageHandler(
+      (event)=>{handleMessage(event,updateProductsState,handleModalState)}
+    )
   // add more layers here if needed
   const layersArray = [
     {
@@ -99,6 +108,7 @@ const OWPView = () => {
   ]
 
 
+  //useEffect to request data from the API based on the requested products
   useEffect(() => {
     // send the api data here
     console.log(currentProducts.state.products);
@@ -135,12 +145,15 @@ const OWPView = () => {
     ]);
 
 
+  const handleFormSubmit = (formData) => {
+    console.log('Form Data:', formData);
+    // Here you can handle the submission, e.g., sending data to an API
+  };
 
 
   return (
     <Fragment>
         <Map layers={layersArray} />
-
         <ChartModalView 
           modal={currentProducts.state.isModalOpen} 
           setModal={handleModalState} 
@@ -148,6 +161,7 @@ const OWPView = () => {
           metadata={currentProducts.state.currentMetadata}
           onChange={toggleProduct}
         />
+        <AddRegionForm onSubmit={handleFormSubmit} sendMessage={sendMessage} />
     </Fragment>
   );
 };
