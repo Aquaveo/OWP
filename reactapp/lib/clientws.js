@@ -59,6 +59,10 @@ const reconnectingSocket = (url) => {
         setTimeout(start, 3000);
       };
     };
+    
+    const send = (msg) => {
+      client.send(msg);
+    };
   
     start();
   
@@ -69,6 +73,7 @@ const reconnectingSocket = (url) => {
       close: () => client.close(),
       getClient: () => client,
       isConnected: () => isConnected,
+      send: (msg) => send(msg)
     };
 };
 

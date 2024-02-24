@@ -795,7 +795,7 @@ async def getUserReachesPerRegionsMethod(
                 comid_values,
                 ["forecast"],
                 # ["analysis-assim", "forecast"],
-                "2023-05-01T06:00:00"
+                "2023-05-01T06:00:00",
                 # comid_values, ["assim", "long"], "2023-05-01T06:00:00"
             )
             # breakpoint()
@@ -896,23 +896,7 @@ async def getUserSpecificHydroShareRegions(is_authenticated, self_scope):
                 resource_data["public"] = resource["public"]
                 # resource_data["color"] = "#16A085" if resource["public"] else "#DB3A34"
                 resource_data["color"] = "#16A085" if resource["public"] else "#16A085"
-
                 json_response["data"].append(resource_data)
-            # breakpoint()
-
-            # hs = await sync_to_async(get_oauth_hs_channels)(self_scope)
-            # private_resources = hs.resources(
-            #     subject=keywords,
-            #     # metadata={"public": False},
-            # )
-            # json_response["private_data"] = []
-            # for private_resource in private_resources:
-            #     if not private_resource["public"]:
-            #         resource_data = {}
-            #         resource_data["value"] = private_resource["resource_id"]
-            #         resource_data["label"] = private_resource["resource_title"]
-            #         json_response["private_data"].append(private_resource)
-            # json_response["mssg"] = "completed"
 
         else:
             json_response["mssg"] = "Not logged in through HydroShare"

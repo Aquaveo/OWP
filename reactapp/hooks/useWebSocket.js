@@ -1,17 +1,38 @@
-import { useEffect,useState } from "react"
 
-const useWebSocket = (client) => {
-    const [isConnected, setIsConnected] = useState(client.isConnected());
+import { useState, useEffect } from "react";
 
-    useEffect(() => {
-        return client.onStateChange(setIsConnected);
-    }, [setIsConnected]);
+
+const useWebSocket = (client,handleMessage) => {
     
-    useEffect(() => {
+  const [isConnected, setIsConnected] = useState(client.isConnected());
+  const [messages, setMessages] = useState([]);
+  
+  const sendMessage = (msg) => client.send(msg);
+  const addMessageHandler = (fn) => client.on(fn);
+  
+  useEffect(() => {
+      return client.onStateChange(setIsConnected);
+  }, [setIsConnected]);
 
-    }, [isConnected]);
 
-    return client
+  useEffect(() => {
+
+  }, [isConnected]);
+
+  useEffect(() => {
+    console.log("changing messages", messages)
+    // client.on(handleMessage);
+    // return () => client.off(handleMessage);
+  }, [messages]);
+
+  return {
+    messages, 
+    sendMessage,
+    addMessageHandler
+  };
 }
 
-export {useWebSocket};
+export default useWebSocket;
+
+
+
