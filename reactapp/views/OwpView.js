@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect,useState } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import Map from '../features/Map/components/Map';
 import { onClickStreamFlowLayerHandler } from "lib/mapEvents"
 import { useNwpProducts } from 'features/NwpProducts/hooks/useNWPProducts';
@@ -7,10 +7,11 @@ import ChartModalView from './modals/ChartModalView';
 import appAPI from 'services/api/app';
 
 // import useMessages from 'hooks/useMessages';
-import reconnectingSocket from 'lib/clientws'
+// import reconnectingSocket from 'lib/clientws'
 import {handleMessage} from 'lib/consumerMessages'
-import useWebSocket  from 'hooks/useWebSocket'
+// import useWebSocket  from 'features/WebSocket/hooks/useWebSocket'
 import { AddRegionForm } from 'features/Regions/components/AddRegionForm';
+import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
@@ -18,14 +19,11 @@ const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Can
 const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer'
 
 
-const webSocketHost = process.env.TETHYS_WEB_SOCKET_HOST
-const prefix_url = process.env.TETHYS_PREFIX_URL ? `/${process.env.TETHYS_PREFIX_URL.replace(/^\/|\/$/g, '')}/` : '';
-const app_root_relative_path = process.env.TETHYS_APP_ROOT_URL_RELATIVE ? `${process.env.TETHYS_APP_ROOT_URL_RELATIVE.replace(/^\/|\/$/g, '')}` : '';
-
-
-// const ws = 'ws://' + 'localhost:8000/apps/owp' + '/data-notification/notifications/ws/';
-const ws = 'ws://' + webSocketHost + prefix_url + app_root_relative_path + '/data-notification/notifications/ws/';
-const client = reconnectingSocket(ws);
+// const webSocketHost = process.env.TETHYS_WEB_SOCKET_HOST
+// const prefix_url = process.env.TETHYS_PREFIX_URL ? `/${process.env.TETHYS_PREFIX_URL.replace(/^\/|\/$/g, '')}/` : '';
+// const app_root_relative_path = process.env.TETHYS_APP_ROOT_URL_RELATIVE ? `${process.env.TETHYS_APP_ROOT_URL_RELATIVE.replace(/^\/|\/$/g, '')}` : '';
+// const ws = 'ws://' + webSocketHost + prefix_url + app_root_relative_path + '/data-notification/notifications/ws/';
+// const client = reconnectingSocket(ws);
 
 
 const OWPView = () => {
@@ -41,17 +39,18 @@ const OWPView = () => {
     updateCurrentStationID
   } = useNwpProducts();
 
-  // const clientWrapper = useWebSocket(client);
+  const {state,actions} = useWebSocketContext();
+
   
-  const {
-    messages, 
-    sendMessage,
-    addMessageHandler
-  } = useWebSocket(
-    client, 
-    // (event)=>{
-    // handleMessage(event,updateProductsState,handleModalState)}
-    );
+  // const {
+  //   messages, 
+  //   sendMessage,
+  //   addMessageHandler
+  // } = useWebSocket(
+  //   client, 
+  //   // (event)=>{
+  //   // handleMessage(event,updateProductsState,handleModalState)}
+  //   );
 
   // add more layers here if needed
   const layersArray = [
@@ -106,11 +105,12 @@ const OWPView = () => {
   ]
 
   useEffect(() => {
-    console.log("changing messages", messages);
-    addMessageHandler(
+    console.log("changing messages");
+    console.log(state);
+    actions.addMessageHandler(
       (event)=>{handleMessage(event,updateProductsState,handleModalState)}
     )
-  }, [messages]);
+  }, []);
 
   //useEffect to request data from the API based on the requested products
   useEffect(() => {
@@ -165,7 +165,11 @@ const OWPView = () => {
           metadata={currentProducts.state.currentMetadata}
           onChange={toggleProduct}
         />
-        <AddRegionForm onSubmit={handleFormSubmit} sendMessage={sendMessage} />
+        <AddRegionForm 
+          onSubmit={handleFormSubmit} 
+          // sendMessage={sendMessage} 
+          // addMessageHandler={addMessageHandler}  
+        />
     </Fragment>
   );
 };

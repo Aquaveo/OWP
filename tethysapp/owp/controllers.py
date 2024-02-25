@@ -872,6 +872,7 @@ async def getUserSpecificReachMethod(is_authenticated, user_name, reach_comid):
 
 # @measure_async
 async def getUserSpecificHydroShareRegions(is_authenticated, self_scope):
+    
     json_response = {}
     json_response["type"] = "hydroshare_regions_notifications"
     json_response["command"] = "show_hydroshare_regions_notifications"

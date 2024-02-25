@@ -17,16 +17,6 @@ const handleMessage = (
       updateProductsState(product_name, ts);
       handleModalState(true);
     }
-    if(command ==='show_hydroshare_regions_notifications'){
-      console.log(data['data'])
-      // if (data['message'] ==='Not logged in through HydroShare'){
-      //   setIsHydroShareLogin(false)
-      // }
-      // else{
-      //   setIsHydroShareLogin(true);
-      // }
-      // setHydroShareRegionsOptions(data['data'])
-    }
 }
 
 export { handleMessage }

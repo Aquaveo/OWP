@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import Select from 'react-select';
 import { Form, FormGroup, Label, SubmitButton } from 'components/UI/StyleComponents/Form.styled';
 import { RegionFormFromHydroShare } from 'features/Regions/components/AddHydroShareRegionForm';
-
+import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 
 const regionOptions = [
   { value: 'geometry', label: 'Region from Geometry' },
@@ -14,11 +14,14 @@ const regionOptions = [
 
 
 
-const AddRegionForm = ({onSubmit, sendMessage}) => {
-  // console.log(sendMessage)
+const AddRegionForm = ({
+  onSubmit, 
+}) => {
+
   const { control, handleSubmit, reset } = useForm();
   const [isHydroShareRegionVisible, setIsHydroShareRegionVisible] = useState(false);
-
+  const [hydroShareRegionsOptions, setHydroShareRegionsOptions] = useState([]);
+  const {actions} = useWebSocketContext();
 
   const handleFormSubmit = data => {
     onSubmit(data); // Call the onSubmit prop with form data
@@ -27,18 +30,36 @@ const AddRegionForm = ({onSubmit, sendMessage}) => {
 
   // Handle change for the region type select
   const handleRegionTypeChange = selectedOption => {
+    console.log(selectedOption);
     // sendMessage(selectedOption); // Assuming sendMessage expects the selected option object
     if (selectedOption.value === 'hydroshare') {
       setIsHydroShareRegionVisible(true);
-      sendMessage(
-        JSON.stringify({
-        type: "retrieve_hydroshare_regions",
-      }));
+      console.log("sending retrieve_hydroshare_regions")
+      actions.sendMessage(
+        JSON.stringify(
+          {
+            type: "retrieve_hydroshare_regions",
+          }
+        )
+      );
     } else {
       setIsHydroShareRegionVisible(false);
     }
   };
 
+  useEffect(() => {
+    console.log("adding show_hydroshare_regions_notifications message listener")
+    actions.addMessageHandler((message)=>{
+      let data = JSON.parse(message);
+      let command = data['command']
+      console.log(data['data'])
+      if(command ==='show_hydroshare_regions_notifications'){
+        setHydroShareRegionsOptions(data['data'])
+      }
+    });
+    
+  }, [])
+  
 
   return (
     <Form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -75,7 +96,7 @@ const AddRegionForm = ({onSubmit, sendMessage}) => {
 
       <FormGroup isVisible={isHydroShareRegionVisible}>
         <Label htmlFor="regionType">Select Type of Region</Label>
-        {/* <RegionFormFromHydroShare/> */}
+        <RegionFormFromHydroShare hydroshareRegionsOptions={hydroShareRegionsOptions} />
       </FormGroup>
 
 
