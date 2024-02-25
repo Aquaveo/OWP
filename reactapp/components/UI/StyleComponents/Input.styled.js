@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-export const BsInput = styled.input`
+export const Input = styled.input`
   /* Common styles for all sizes */
   display: block;
   width: 100%;

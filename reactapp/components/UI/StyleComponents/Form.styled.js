@@ -30,7 +30,8 @@ const Form = styled.form`
 
 const FormGroup = styled.div`
   margin-bottom: 1rem;
-  display: ${({ isVisible }) => isVisible ? 'block' : 'none'};
+  // display: ${({ isVisible }) => isVisible ? 'block' : 'none'};
+  display: 'block';
 `;
 
 const Label = styled.label`
