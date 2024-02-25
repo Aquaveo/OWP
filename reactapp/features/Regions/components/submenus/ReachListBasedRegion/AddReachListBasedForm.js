@@ -1,9 +1,12 @@
-import React, { useState,useEffect  } from "react";
+import React, { useState, Fragment  } from "react";
 import { FormGroup, Label } from "components/UI/StyleComponents/Form.styled";
-import appAPI from "services/api/app";
+// import appAPI from "services/api/app";
 
 import { Controller } from 'react-hook-form';
 import { Input } from "components/UI/StyleComponents/Input.styled";
+import {previewCSVFileData} from 'features/Regions/lib/fileUtils'; 
+
+import { SelectColumnFile } from "./SelectColumnFile";
 
 
 const RegionFormFromReachList = (
@@ -11,18 +14,45 @@ const RegionFormFromReachList = (
         isVisible,
         control
     }) => {
-    const [formRegionData, setFormRegionData] = useState({
-        name:'',
-        column_name:'',
-        files:[],
-    })
-    const [showColumnNames, setShowColumnNames ] = useState(false)
-    const [columnName, setColumnName ] = useState('column1')
+    const [columnsFile, setColumnsFile] = useState(null);
+    
+    return(
+        isVisible ? 
+        <Fragment>
+          <FormGroup>
+              <Label htmlFor="formFileMultiple">Upload File (*.csv, *.xlsx)</Label>
+              <Controller
+                  name="formFileMultiple"
+                  control={control}
+                  defaultValue={[]}
+                  render={({ field: { onChange, value, ref } }) => (
+                      <Input
+                          size="sm"
+                          type="file"
+                          multiple
+                          onChange={async (e) => {
+                              // This step is necessary to properly trigger re-render                        
+                              let columns = await previewCSVFileData(e);
+                              setColumnsFile(columns.map(column => ({ value: column, label: column })));
+                              // IMPORTANT: Update the form state by calling onChange provided by React Hook Form
+                              onChange([...e.target.files]); // Pass the files array to update the form state
+                          }}
+                          ref={ref}
+                      />
+                      )}
+                  rules={{ required: 'Files are required' }}
+              />
+          </FormGroup>
+          <SelectColumnFile columnsFile={columnsFile} control={control} />
+        </Fragment>
+        : <></>
+    );
+  };
+  
+export { RegionFormFromReachList };
 
-    const initialColumnNames = ['column1','column2']; 
-    const [columnNames, setcolumnNames ] = useState(initialColumnNames)
 
-    // const onChangeColumnName = async (e) =>{
+   // const onChangeColumnName = async (e) =>{
     //     // console.log(e)
     //     setColumnName(e);
     //     setFormRegionData({...formRegionData, column_name: e})
@@ -52,44 +82,6 @@ const RegionFormFromReachList = (
     //   setFormRegionData({...formRegionData, files: e.target.files, column_name: e})
     // }
 
-  
-    useEffect(() => {
-    //   console.log(formRegionData)
-    
-      return () => {
-      }
-    }, [formRegionData])
-    
-
-    return(
-        isVisible ? 
-        <FormGroup>
-            <Label htmlFor="formFileMultiple">Upload File (*.csv, *.xlsx)</Label>
-            <Controller
-                name="formFileMultiple"
-                control={control}
-                defaultValue={[]}
-                render={({ field: { onChange, value, ref } }) => (
-                    <Input
-                        size="sm"
-                        type="file"
-                        multiple
-                        onChange={(e) => {
-                        // Create a new array with the current files
-                        // This step is necessary to properly trigger re-render
-                        onChange([...e.target.files]);
-                        }}
-                        ref={ref}
-                    />
-                    )}
-                rules={{ required: 'Files are required' }}
-            />
-        </FormGroup>
-        : <></>
-    );
-  };
-  
-export { RegionFormFromReachList };
 //   const saveRegionsUser = async (e) => {
 //     //validation for empty form
 //     setPreviewFile(null)

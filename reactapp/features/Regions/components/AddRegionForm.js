@@ -3,8 +3,8 @@ import { useForm, Controller } from 'react-hook-form';
 import Select from 'react-select';
 import { Form, FormGroup, Label, SubmitButton } from 'components/UI/StyleComponents/Form.styled';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
-import {RegionFormFromReachList} from 'features/Regions/components/submenus/AddReachListBasedForm';
-import {RegionFormFromHydroShare} from 'features/Regions/components/submenus/AddHydroShareRegionForm';
+import { RegionFormFromReachList } from 'features/Regions/components/submenus/ReachListBasedRegion/AddReachListBasedForm';
+import { RegionFormFromHydroShare } from 'features/Regions/components/submenus/HydroShareRegion/AddHydroShareRegionForm';
 
 const regionOptions = [
   { value: 'geometry', label: 'Region from Geometry' },

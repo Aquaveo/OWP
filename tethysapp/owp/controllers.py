@@ -33,6 +33,7 @@ from hs_restclient import (
 )
 from tethys_services.backends.hs_restclient_helper import get_oauth_hs
 from .helpers import get_oauth_hs_channels, get_oauth_hs_sync, HSClientInitException
+import time
 
 try:
     BASE_API_URL = app.get_custom_setting("nwmdata_api")
@@ -555,6 +556,7 @@ def previewUserRegionFromFile(request):
 @controller
 @measure_sync
 def previewUserColumnsFromFile(request):
+    time.sleep(5)
     response = {}
     # check for different files or single file
     file_data = request.FILES.getlist("files")[0]

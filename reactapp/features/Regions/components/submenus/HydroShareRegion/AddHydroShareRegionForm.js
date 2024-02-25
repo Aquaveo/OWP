@@ -1,14 +1,13 @@
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import Select from "react-select";
-import {colourStyles} from '../../lib/colorUtils';
+import {colourStyles} from '../../../lib/colorUtils';
 import { FormGroup, Label } from "components/UI/StyleComponents/Form.styled";
 
-import { IconOption } from '../IconOption';
+import { IconOption } from './IconOption';
 
 
 export const RegionFormFromHydroShare = ({ isVisible,hydroshareRegionsOptions,control }) => {
-
 
   return (
     
