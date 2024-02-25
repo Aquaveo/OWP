@@ -4,7 +4,7 @@ import { webSocketActionsTypes } from "../actions/actionsTypes";
 const initialWebSocKetState = {
     state:{
         client: null,
-        messages: [],
+        message: null,
         messageListeners : [],
         stateChangeListeners : [],
     },
@@ -22,16 +22,16 @@ const webSocketReducer = (state, action) => {
                   client: action.client
                 }
             };
-        case webSocketActionsTypes.reset_messages:
+        case webSocketActionsTypes.reset:
             return {
                 ...state,
                 state: {
                   ...state.state,
-                  messages: [],
+                  message: null,
                   messageListeners: [],
                   stateChangeListeners: []
                 }
-            };
+        };     
         case webSocketActionsTypes.add_message_listener:
             return {
                 ...state,
@@ -56,7 +56,7 @@ const webSocketReducer = (state, action) => {
                 ...state,
                 state: {
                   ...state.state,
-                  messages: [...state.state.messages, action.message]
+                  message: action.message
                 }
             };
         default:

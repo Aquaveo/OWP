@@ -46,24 +46,20 @@ const WebSocketProvider = ({ children, url }) => {
   useEffect(() => {
     console.log("adding state change listener")
     if (!webSocketState.state.client) return;
-  
+
     const { client, stateChangeListeners } = webSocketState.state;
     stateChangeListeners.forEach(listener => client.onStateChange(listener));
   }, [webSocketState.state.stateChangeListeners])
 
 
   useEffect(() => {
-    console.log("adding messages")
+    console.log("adding message")
 
     if (!webSocketState.state.client) return;
-    const { client, messages } = webSocketState.state;
-    messages.forEach(msg => client.send(msg));
+    const { client, message } = webSocketState.state;
+    client.send(message);
 
-    return () => {
-        messages = []
-    }
-
-  }, [webSocketState.state.messages])
+  }, [webSocketState.state.message])
 
 
   return (
