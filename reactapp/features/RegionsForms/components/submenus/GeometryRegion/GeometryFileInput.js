@@ -3,7 +3,7 @@ import { FormGroup, Label } from "components/UI/StyleComponents/Form.styled";
 
 import { Controller } from 'react-hook-form';
 import { Input } from "components/UI/StyleComponents/Input.styled";
-import {previewCSVFileData} from 'features/RegionsForms/lib/fileUtils'; 
+import {previewGeometryFileData} from 'features/RegionsForms/lib/fileUtils'; 
 
 
 const GeometryFileInput = (
@@ -11,7 +11,7 @@ const GeometryFileInput = (
         isVisible,
         control
     }) => {
-    const [columnsFile, setColumnsFile] = useState([]);    
+    const [geometryJSON, setGeometryJSON] = useState([]);    
     return(
         isVisible 
             ? 
@@ -29,8 +29,8 @@ const GeometryFileInput = (
                                 multiple
                                 onChange={async (e) => {
                                     // This step is necessary to properly trigger re-render
-                                    let columns = await previewCSVFileData(e);
-                                    setColumnsFile(columns.map(column => ({ value: column, label: column })));
+                                    let geometry = await previewGeometryFileData(e);
+                                    setGeometryJSON(geometry);
                                     // IMPORTANT: Update the form state by calling onChange provided by React Hook Form
                                     onChange([...e.target.files]); // Pass the files array to update the form state
                                 }}
