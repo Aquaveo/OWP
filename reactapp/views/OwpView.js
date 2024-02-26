@@ -16,9 +16,8 @@ import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContex
 
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
-const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
-const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer'
+
 
 
 // const webSocketHost = process.env.TETHYS_WEB_SOCKET_HOST
@@ -175,19 +174,20 @@ const OWPView = () => {
 
   return (
     <Fragment>
-        <Map layers={layersArray} />
-        <ChartModalView 
-          modal={currentProducts.state.isModalOpen} 
-          setModal={handleModalState} 
-          data={currentProducts.state.products}
-          metadata={currentProducts.state.currentMetadata}
-          onChange={toggleProduct}
-        />
-        <AddRegionForm 
-          onSubmit={handleFormSubmit} 
-          // sendMessage={sendMessage} 
-          // addMessageHandler={addMessageHandler}  
-        />
+        <Map layers={layersArray}>
+          <ChartModalView 
+            modal={currentProducts.state.isModalOpen} 
+            setModal={handleModalState} 
+            data={currentProducts.state.products}
+            metadata={currentProducts.state.currentMetadata}
+            onChange={toggleProduct}
+          />
+          <AddRegionForm 
+            onSubmit={handleFormSubmit} 
+            // sendMessage={sendMessage} 
+            // addMessageHandler={addMessageHandler}  
+          />
+        </Map>
     </Fragment>
   );
 };

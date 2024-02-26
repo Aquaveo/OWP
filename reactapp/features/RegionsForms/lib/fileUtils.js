@@ -1,5 +1,6 @@
 import appAPI from "services/api/app";
 import reset from "react-hook-form";
+import { onClickHucRegion } from "lib/mapEvents";
 const previewCSVFileData = async (e) =>{
     // console.log(e)
     
@@ -87,6 +88,53 @@ const previewGeometryFileData = async (e) =>{
 }
 
 
+const handleFileTypeOnChangeEvent = (e) =>{
+  console.log(e)
+  const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer'
+  const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
+  switch (e.value) {
+      case "huc":
+        const layerHUC =
+
+          {
+              layerType: 'OlImageTileLayer',
+              options: {
+                sourceType: 'TileImageArcGISRest',
+                url: WbdMapLayerURL,
+                // all the params for the source goes here
+                params: {
+                  LAYERS:"show:1,2,3,4,5,6,7,8"
+                },
+                // the rest of the attributes are for the definition of the layer
+                zIndex: 2,
+                name: "huc_levels"
+              },
+              extraProperties: {
+                  events: [{'type': 'click', 'handler': (layer,event)=>{
+                    onClickHucRegion(
+                      layer,
+                      event,
+                    )
+                  }}],
+                  priority: 1      
+              }
+          }
+        return layerHUC
+      case 'file':
+        console.log(e)
+  }
+  
+
+
+  // if(e == 'file'){
+
+  // }
+  // else{
+ 
+  // }
+}
+
+
 
 
 // const handleAllFormSubmit = (data,onSubmit) => {
@@ -151,4 +199,11 @@ const previewGeometryFileData = async (e) =>{
 //   handleHideLoading();
 // };
 
-export { previewCSVFileData,previewFileDataOnChangeGeopackageLayer,previewGeometryFileData,makeGeoJSONFromArray,concatGeoJSON}
+export { 
+  previewCSVFileData,
+  previewFileDataOnChangeGeopackageLayer,
+  previewGeometryFileData,
+  makeGeoJSONFromArray,
+  concatGeoJSON,
+  handleFileTypeOnChangeEvent
+}

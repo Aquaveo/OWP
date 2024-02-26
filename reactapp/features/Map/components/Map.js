@@ -1,21 +1,13 @@
-import React, { Fragment, useEffect,Suspense } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { MapProvider } from './MapProvider';
-// import Layers from './LayersWrapper';
 
-const Layers = React.lazy(() => import('./LayersWrapper'));
 
-const Map = ({ layers }) => {
-
-  useEffect(() => {
-    
-  }, []);
+const Map = ({ children, layers }) => {
 
   return (
     <Fragment>
-      <MapProvider>
-        <Suspense fallback={<div>LOADING.....</div>}>
-          <Layers layers={layers} />
-        </Suspense>
+      <MapProvider layers={layers}>
+          {children}
       </MapProvider>
     </Fragment>
   );

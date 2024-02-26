@@ -6,7 +6,7 @@ import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContex
 import { RegionFormFromReachList } from 'features/RegionsForms/components/submenus/ReachListBasedRegion/AddReachListBasedForm';
 import { RegionFormFromHydroShare } from 'features/RegionsForms/components/submenus/HydroShareRegion/AddHydroShareRegionForm';
 import { useAddRegionForm } from '../hooks/useAddRegionForms';
-
+import {RegionFormFromGeometry} from 'features/RegionsForms/components/submenus/GeometryRegion/AddGeometryRegionForm';
 
 const AddRegionForm = ({
   onSubmit, 
@@ -98,6 +98,10 @@ const AddRegionForm = ({
         />
       </FormGroup>
 
+      <RegionFormFromGeometry 
+        isVisible={addForms.visibleForms['geometryRegionForm']}
+        control={control}
+      />
       <RegionFormFromHydroShare 
         isVisible={addForms.visibleForms['hydroShareRegionForm']} 
         hydroshareRegionsOptions={hydroShareRegionsOptions}
@@ -108,8 +112,7 @@ const AddRegionForm = ({
         isVisible={addForms.visibleForms['reachListRegionForm']}
         control={control} 
       />
-
-
+      
       <SubmitButton type="submit">Add Region</SubmitButton>
     </Form>
   );

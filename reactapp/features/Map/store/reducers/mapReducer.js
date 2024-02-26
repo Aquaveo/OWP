@@ -27,7 +27,8 @@ const mapInitialStore = {
 
 const mapReducer = (state, action) => {
   switch (action.type) {
-      case MapActionsTypes.ADD_LAYER: // Ensure action types are in all caps to follow conventions
+      case MapActionsTypes.add_layer: // Ensure action types are in all caps to follow conventions
+
           return {
               ...state,
               state: { // Correctly target the nested `state` object for modification
@@ -35,7 +36,7 @@ const mapReducer = (state, action) => {
                   layers: [...state.state.layers, action.payload] // Use `payload` for action data
               }
           };
-      case MapActionsTypes.DELETE_LAYER:
+      case MapActionsTypes.delete_layer:
           return {
               ...state,
               state: {
@@ -43,7 +44,7 @@ const mapReducer = (state, action) => {
                   layers: state.state.layers.filter(layer => layer.get('name') !== action.payload.name) // Assume layers are identified by `name`
               }
           };
-      case MapActionsTypes.TOGGLE_FULL_MAP:
+      case MapActionsTypes.toggle_full_map:
           return {
               ...state,
               state: {

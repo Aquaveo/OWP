@@ -1,3 +1,5 @@
+import { OlImageTileLayer, OlTileLayer, VectorLayer } from './layers/layers';
+import { ArcGISRestTile, OSMWMSTile, TileImageArcGISRest, WMSTile, VectorSourceLayer } from './source/sources';
 
 //get the clickable layers: this works for image layers
 // more info here https://gist.github.com/xemoka/cb4cf95018fdc2cebac4da8f0c308723
@@ -301,5 +303,80 @@ const drawCurrentReachOnClick = (esriPaths) =>{
 }
 
 
+const useLayerFactory = (layerType, options) => {
+    
+    const layer = () => {
+      let source = null;
+      // Determine the source based on options.type and create it
+      switch (options.sourceType) {
+          case 'ArcGISRestTile':
+              source = ArcGISRestTile(options.url, options.params);
+              break;
+          case 'OSMWMSTile':
+              source = OSMWMSTile();
+              break;
+          case 'TileImageArcGISRest':
+              source = TileImageArcGISRest(options.url, options.params);
+              break;
+          case 'WMSTile':
+              source = WMSTile(options.url, options.params);
+              break;
+          case 'VectorSourceLayer':
+              source = VectorSourceLayer(options.features);
+              break;
+          default:
+              console.error('Unsupported source type');
+              return;
+      }
 
-export {onClickHandler}
+      // Based on layerType, create the corresponding layer
+      switch (layerType) {
+          case 'OlImageTileLayer':
+              return OlImageTileLayer({ ...options, source });
+              break;
+          case 'OlTileLayer':
+              return OlTileLayer({ ...options, source });
+              break;
+          case 'VectorLayer':
+              return VectorLayer({ ...options, source });
+              break;
+          default:
+              console.error('Unsupported layer type');
+              return null;
+      }
+    }
+    return layer();
+};
+
+
+const getAllLayerNames = (map) => {
+    return map.getLayers().getArray()
+      .filter(layer => layer.get('name')) // Ensure the layer has a 'name' property
+      .map(layer => layer.get('name')); // Extract the 'name' property
+  }
+const filterLayersNotInMap = (map, layersArray) => {
+    const existingLayerNames = getAllLayerNames(map);
+
+    return layersArray.filter(layer => {
+        // Check if the layer's name is not in the existingLayerNames array
+        return !existingLayerNames.includes(layer.options.name);
+    });
+}
+
+const addLayer = (map, layerInfo) => {
+    const layer = useLayerFactory(layerInfo.layerType, layerInfo.options);
+    let {events, priority} = layerInfo.extraProperties;
+    layer.set('events', events);
+    layer.set('priority', priority);
+    map.addLayer(layer);
+  };
+
+  const removeLayer = (map,layer) => {
+    // console.log("Layer removed");
+    map.removeLayer(layer);
+  };  
+
+
+
+
+export {onClickHandler, filterLayersNotInMap,addLayer,removeLayer}
