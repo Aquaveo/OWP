@@ -129,4 +129,8 @@ const onClickHucRegion = (layer, event) =>{
     console.log("HUC region clicked")
 }
 
-export {onClickStreamFlowLayerHandler,onClickHucRegion}
+const onClickPreviewFile = (layer, event) =>{
+    console.log("HUC region clicked")
+}
+
+export {onClickStreamFlowLayerHandler,onClickHucRegion,onClickPreviewFile}

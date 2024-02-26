@@ -1,6 +1,9 @@
 import appAPI from "services/api/app";
 import reset from "react-hook-form";
-import { onClickHucRegion } from "lib/mapEvents";
+import { onClickHucRegion, onClickPreviewFile } from "lib/mapEvents";
+import {Stroke, Style} from 'ol/style.js';
+import GeoJSON from 'ol/format/GeoJSON';
+
 const previewCSVFileData = async (e) =>{
     // console.log(e)
     
@@ -70,6 +73,7 @@ const checkFileTypeForPreview = (fileName) =>{
 const previewGeometryFileData = async (e) =>{
   console.log(e)
 
+  const dataRequest = new FormData();
   
   let fileType = 'shapefile'
   Array.from(e.target.files).forEach(file=>{
@@ -84,9 +88,41 @@ const previewGeometryFileData = async (e) =>{
 
   let responseRegions = await appAPI.previewUserRegionFromFile(dataRequest).catch((error) => {console.log(error)});
   let responseRegions_obj = JSON.parse(responseRegions['geom'])
-  return responseRegions_obj
-}
+  const layerFile = {
+    layerType: 'VectorLayer',
+    options: {
+      sourceType: 'VectorSourceLayer',
+      // all the params for the source goes here
+      params: {
+        format: new GeoJSON(),
+        features: new GeoJSON().readFeatures(responseRegions_obj)
+      },
+      // the rest of the attributes are for the definition of the layer
+      zIndex: 2,
+      name: "preview_file_region",
+      style:
+        new Style({
+          stroke: new Stroke({
+            color: 'green',
+            width: 3,
+          })
+        })
+      
+    },
+    extraProperties: {
+        events: [{'type': 'click', 'handler': (layer,event)=>{
+          onClickPreviewFile(
+            layer,
+            event,
+          )
+        }}],
+        priority: 2
+    }
 
+  }
+
+  return layerFile
+}
 
 const handleFileTypeOnChangeEvent = (e) =>{
   const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer'

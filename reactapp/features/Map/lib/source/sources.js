@@ -13,7 +13,7 @@ const ArcGISRestTile = (url, params) => {
 };
 
 
-const OSMWMSTile = (url, params) => {
+const OSMWMSTile = () => {
   return new OSM();
 };
 
@@ -33,11 +33,11 @@ const WMSTile = (url, params) => {
 };
 
 
-const VectorSourceLayer = (features) => {
+const VectorSourceLayer = (options) => {
+  // Destructure format and features from options.params
   return new VectorSource({
-    features  
+    ...options.params
   });
 };
-
 
 export { ArcGISRestTile, OSMWMSTile, TileImageArcGISRest, WMSTile, VectorSourceLayer }

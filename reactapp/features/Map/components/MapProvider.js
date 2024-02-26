@@ -15,6 +15,7 @@ export const MapProvider = ({ children,layers }) => {
     // Define the click handler of the layer
     state.state.mapObject.on('click',onClickHandler)
 
+    // Define the loading handler of the map object
     state.state.mapObject.on('loadstart', function () {
       actions.toggle_loading_layers();
     });
