@@ -3,24 +3,21 @@ import { useForm, Controller } from 'react-hook-form';
 import Select from 'react-select';
 import { Form, FormGroup, Label, SubmitButton } from 'components/UI/StyleComponents/Form.styled';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
-import { RegionFormFromReachList } from 'features/Regions/components/submenus/ReachListBasedRegion/AddReachListBasedForm';
-import { RegionFormFromHydroShare } from 'features/Regions/components/submenus/HydroShareRegion/AddHydroShareRegionForm';
+import { RegionFormFromReachList } from 'features/RegionsForms/components/submenus/ReachListBasedRegion/AddReachListBasedForm';
+import { RegionFormFromHydroShare } from 'features/RegionsForms/components/submenus/HydroShareRegion/AddHydroShareRegionForm';
+import { useAddRegionForm } from '../hooks/useAddRegionForms';
 
-const regionOptions = [
-  { value: 'geometry', label: 'Region from Geometry' },
-  { value: 'hydroshare', label: 'Region from Hydroshare' },
-  { value: 'reachesList', label: 'Region from Reaches List' },
-];
 
 const AddRegionForm = ({
   onSubmit, 
 }) => {
 
-  const { control, handleSubmit, reset } = useForm();
-  const [isHydroShareRegionVisible, setIsHydroShareRegionVisible] = useState(false);
-  const [isReachListRegionVisible, setIsReachListRegionVisible] = useState(false);
+  const { control, handleSubmit, reset, getValues, setValue } = useForm();
+  const { addForms, setOnlyFormVisible } = useAddRegionForm();
 
   const [hydroShareRegionsOptions, setHydroShareRegionsOptions] = useState([]);
+
+
   const {actions} = useWebSocketContext();
 
   const handleFormSubmit = data => {
@@ -33,9 +30,7 @@ const AddRegionForm = ({
     console.log(selectedOption);
     // sendMessage(selectedOption); // Assuming sendMessage expects the selected option object
     if (selectedOption.value === 'hydroshare') {
-      setIsHydroShareRegionVisible(true);
-      setIsReachListRegionVisible(false);
-
+      setOnlyFormVisible('hydroShareRegionForm');
       console.log("sending retrieve_hydroshare_regions")
       actions.sendMessage(
         JSON.stringify(
@@ -44,10 +39,14 @@ const AddRegionForm = ({
           }
         )
       );
-    } 
+    }
+
     if (selectedOption.value === 'reachesList') {
-      setIsReachListRegionVisible(true);
-      setIsHydroShareRegionVisible(false);
+      setOnlyFormVisible('reachListRegionForm');
+    }
+
+    if(selectedOption.value === 'geometry'){
+      setOnlyFormVisible('geometryRegionForm');
     }
 
   };
@@ -68,18 +67,18 @@ const AddRegionForm = ({
 
   return (
     <Form onSubmit={handleSubmit(handleFormSubmit)}>
-      <FormGroup isVisible={true}>
-        <Label htmlFor="regionName">Region Name</Label>
+      <FormGroup>
+        <Label>Region Name</Label>
         <Controller
-          name="regionName"
+          name="name"
           control={control}
           defaultValue=""
           render={({ field }) => <input {...field} id="regionName" className="form-control" />}
           rules={{ required: 'Region name is required' }}
         />
       </FormGroup>
-      <FormGroup isVisible={true}>
-        <Label htmlFor="regionType">Select Type of Region</Label>
+      <FormGroup>
+        <Label>Select Type of Region</Label>
         <Controller
           name="regionType"
           control={control}
@@ -87,7 +86,7 @@ const AddRegionForm = ({
           render={({ field }) => (
             <Select
               {...field}
-              options={regionOptions}
+              options={addForms.regionFormTypes}
               onChange={(selectedOption) => {
                 field.onChange(selectedOption); // Notify react-hook-form of the change
                 handleRegionTypeChange(selectedOption); // Additional logic for onChange
@@ -100,13 +99,13 @@ const AddRegionForm = ({
       </FormGroup>
 
       <RegionFormFromHydroShare 
-        isVisible={isHydroShareRegionVisible} 
+        isVisible={addForms.visibleForms['hydroShareRegionForm']} 
         hydroshareRegionsOptions={hydroShareRegionsOptions}
         control={control} 
       />
 
       <RegionFormFromReachList 
-        isVisible={isReachListRegionVisible}
+        isVisible={addForms.visibleForms['reachListRegionForm']}
         control={control} 
       />
 

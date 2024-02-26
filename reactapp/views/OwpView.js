@@ -10,8 +10,10 @@ import appAPI from 'services/api/app';
 // import reconnectingSocket from 'lib/clientws'
 import {handleMessage} from 'lib/consumerMessages'
 // import useWebSocket  from 'features/WebSocket/hooks/useWebSocket'
-import { AddRegionForm } from 'features/Regions/components/AddRegionForm';
+import { AddRegionForm } from 'features/RegionsForms/components/AddRegionForm';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
+
+
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
@@ -149,9 +151,25 @@ const OWPView = () => {
     ]);
 
 
-  const handleFormSubmit = (formData) => {
+  const handleFormSubmit = async (formData) => {
     console.log('Form Data:', formData);
-    // Here you can handle the submission, e.g., sending data to an API
+    let responseRegions;
+
+    
+    switch (formData.regionType.value) {
+      case "hydroshare":
+          responseRegions = await appAPI.saveUserRegionsFromHydroShareResource(formData);
+          break;
+      case "reachesList":
+          responseRegions = await appAPI.saveUserRegionsFromReaches(formData);
+          break;
+      case "geometry":
+          break;          
+      // You can add more cases here as needed
+      default:
+          // Optional: handle any case that doesn't match the above
+          console.log("Unrecognized region type");
+    }
   };
 
 

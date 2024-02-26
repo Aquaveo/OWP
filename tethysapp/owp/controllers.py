@@ -176,7 +176,8 @@ def saveUserRegionsFromReaches(request):
             session = SessionMaker()
             user_name = request.user.username
             region_name = request.POST.get("name")
-            file_data = request.FILES.getlist("files")[0]
+            file_data = request.FILES.getlist("files.0")[0]
+            breakpoint()
             column_id = request.POST.get("column_name")
 
             # check for file extension
@@ -874,7 +875,7 @@ async def getUserSpecificReachMethod(is_authenticated, user_name, reach_comid):
 
 # @measure_async
 async def getUserSpecificHydroShareRegions(is_authenticated, self_scope):
-    
+
     json_response = {}
     json_response["type"] = "hydroshare_regions_notifications"
     json_response["command"] = "show_hydroshare_regions_notifications"
@@ -939,7 +940,7 @@ def saveUserRegionsFromHydroShareResource(request):
             )
             session = SessionMaker()
             user_name = request.user.username
-            region_name = request.POST.get("regionName")
+            region_name = request.POST.get("name")
             resource_id = request.POST.get("hydrosharePublicRegions")
 
             # please create own function to auth and return hs object
