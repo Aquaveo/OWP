@@ -6,10 +6,7 @@ import ChartModalView from './modals/ChartModalView';
 
 import appAPI from 'services/api/app';
 
-// import useMessages from 'hooks/useMessages';
-// import reconnectingSocket from 'lib/clientws'
 import {handleMessage} from 'lib/consumerMessages'
-// import useWebSocket  from 'features/WebSocket/hooks/useWebSocket'
 import { AddRegionForm } from 'features/RegionsForms/components/AddRegionForm';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 
@@ -17,14 +14,6 @@ import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContex
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
-
-
-
-// const webSocketHost = process.env.TETHYS_WEB_SOCKET_HOST
-// const prefix_url = process.env.TETHYS_PREFIX_URL ? `/${process.env.TETHYS_PREFIX_URL.replace(/^\/|\/$/g, '')}/` : '';
-// const app_root_relative_path = process.env.TETHYS_APP_ROOT_URL_RELATIVE ? `${process.env.TETHYS_APP_ROOT_URL_RELATIVE.replace(/^\/|\/$/g, '')}` : '';
-// const ws = 'ws://' + webSocketHost + prefix_url + app_root_relative_path + '/data-notification/notifications/ws/';
-// const client = reconnectingSocket(ws);
 
 
 const OWPView = () => {
@@ -41,17 +30,6 @@ const OWPView = () => {
   } = useNwpProducts();
 
   const {state,actions} = useWebSocketContext();
-
-  
-  // const {
-  //   messages, 
-  //   sendMessage,
-  //   addMessageHandler
-  // } = useWebSocket(
-  //   client, 
-  //   // (event)=>{
-  //   // handleMessage(event,updateProductsState,handleModalState)}
-  //   );
 
   // add more layers here if needed
   const layersArray = [

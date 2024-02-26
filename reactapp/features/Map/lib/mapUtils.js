@@ -353,7 +353,25 @@ const getAllLayerNames = (map) => {
     return map.getLayers().getArray()
       .filter(layer => layer.get('name')) // Ensure the layer has a 'name' property
       .map(layer => layer.get('name')); // Extract the 'name' property
-  }
+}
+
+
+const getLayerToRemove = (map, layersArray) => {
+    // Get all layers from the map
+    const allLayers = map.getLayers().getArray();
+    
+    // Extract the names from layersArray for comparison
+    const predefinedLayerNames = layersArray.map(layer => layer.options.name);
+
+    // Filter out layers that are present in allLayers but not in predefinedLayerNames
+    const layersToRemove = allLayers.filter(layer => {
+        const layerName = layer.get('name'); // Assuming each layer has a 'name' property
+        return !predefinedLayerNames.includes(layerName);
+    });
+
+    return layersToRemove;
+}
+
 const filterLayersNotInMap = (map, layersArray) => {
     const existingLayerNames = getAllLayerNames(map);
 
@@ -363,6 +381,7 @@ const filterLayersNotInMap = (map, layersArray) => {
     });
 }
 
+
 const addLayer = (map, layerInfo) => {
     const layer = useLayerFactory(layerInfo.layerType, layerInfo.options);
     let {events, priority} = layerInfo.extraProperties;
@@ -371,12 +390,12 @@ const addLayer = (map, layerInfo) => {
     map.addLayer(layer);
   };
 
-  const removeLayer = (map,layer) => {
-    // console.log("Layer removed");
+const removeLayer = (map,layer) => {
+    console.log("Layer removed");
     map.removeLayer(layer);
-  };  
+};  
 
 
 
 
-export {onClickHandler, filterLayersNotInMap,addLayer,removeLayer}
+export {onClickHandler, filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove}

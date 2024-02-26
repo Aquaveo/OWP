@@ -18,7 +18,7 @@ const RegionFormFromGeometry = (
         isVisible,control
     }) => {
     const [geometryLayerRegion, setGeometryLayerRegion] = useState(null);
-    const {state, actions} = useMapContext();
+    const {actions} = useMapContext();
  
     useEffect(() => {
         if (!geometryLayerRegion) return;
@@ -40,8 +40,17 @@ const RegionFormFromGeometry = (
                         {...field}
                         options={geometryRegionFormTypes}
                         onChange={(selectedOption) => {
+                          console.log(selectedOption);
+                          //Delete current layer
+                          if (geometryLayerRegion){
+                            actions.removeLayer(geometryLayerRegion);
+                          };
+                          //Generate new layer
                           const newLayer = handleFileTypeOnChangeEvent(selectedOption);
-                          setGeometryLayerRegion(newLayer)
+                          //check if it is empty or not, if it is file it will be empty
+                          if (Object.keys(newLayer).length > 0){
+                            setGeometryLayerRegion(newLayer)
+                          }
                           field.onChange(selectedOption); // Notify react-hook-form of the change
                         }}
                       />

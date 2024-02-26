@@ -37,11 +37,12 @@ const mapReducer = (state, action) => {
               }
           };
       case MapActionsTypes.delete_layer:
+        console.log("remove layer")
           return {
               ...state,
               state: {
                   ...state.state,
-                  layers: state.state.layers.filter(layer => layer.get('name') !== action.payload.name) // Assume layers are identified by `name`
+                  layers: state.state.layers.filter(layer => layer.options['name'] !== action.payload.options.name) // Assume layers are identified by `name`
               }
           };
       case MapActionsTypes.toggle_full_map:

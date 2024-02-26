@@ -89,7 +89,6 @@ const previewGeometryFileData = async (e) =>{
 
 
 const handleFileTypeOnChangeEvent = (e) =>{
-  console.log(e)
   const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer'
   const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
   switch (e.value) {
@@ -116,12 +115,13 @@ const handleFileTypeOnChangeEvent = (e) =>{
                       event,
                     )
                   }}],
-                  priority: 1      
+                  priority: 2     
               }
           }
         return layerHUC
       case 'file':
-        console.log(e)
+        const layerFile = {}
+        return layerFile
   }
   
 
