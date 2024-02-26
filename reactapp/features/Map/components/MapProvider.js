@@ -1,9 +1,9 @@
 import React, { useEffect , useRef } from 'react';
 import MapContext from 'components/map/MapContext';
-import "./Map.css";
 import { MapContainer } from './styles/Map.styled';
 import { onClickHandler,filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove } from '../lib/mapUtils';
 import { useMap } from '../hooks/useMap';
+import {LoadingText} from 'components/UI/StyleComponents/Loader.styled';
 export const MapProvider = ({ children,layers }) => {
   const {state,actions} = useMap();
 
@@ -14,6 +14,14 @@ export const MapProvider = ({ children,layers }) => {
     state.state.mapObject.setTarget(mapRef.current);
     // Define the click handler of the layer
     state.state.mapObject.on('click',onClickHandler)
+
+    state.state.mapObject.on('loadstart', function () {
+      actions.toggle_loading_layers();
+    });
+    state.state.mapObject.on('loadend', function () {
+      actions.toggle_loading_layers();
+    });
+
 
     // adding layers 
     layers.forEach(layer => {
@@ -51,9 +59,18 @@ export const MapProvider = ({ children,layers }) => {
   return (
   <MapContainer>
     <MapContext.Provider value={{ ...state, actions }}>
-      <div ref={mapRef} className="ol-map" >
-        {children}
-      </div>
+        <div ref={mapRef} className="ol-map" >
+          {children}
+        </div>
+        {
+          state.state.toggle_loading_layers 
+          ?
+            <LoadingText id="progress">
+              Loading ...
+            </LoadingText>
+          : <> </>
+        }
+
     </MapContext.Provider>
   </MapContainer>
 

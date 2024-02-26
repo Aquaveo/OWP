@@ -15,4 +15,16 @@ export const MapContainer = styled.div`
     
     height: ${props => (props.isFullMap ? '100%' : '60%')};
 
+    #progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 0;
+        box-shadow: 0px 0px 1px 2px rgb(255,204,0);
+        width: 0;
+        transition: width 250ms;
+    }
+    .wrapper {
+        position: relative;
+    }
 `;

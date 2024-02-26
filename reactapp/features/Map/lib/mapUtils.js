@@ -302,7 +302,6 @@ const drawCurrentReachOnClick = (esriPaths) =>{
     // setCurrentReachGeometryOnClick(geojsonObject);
 }
 
-
 const useLayerFactory = (layerType, options) => {
     
     const layer = () => {
@@ -317,6 +316,9 @@ const useLayerFactory = (layerType, options) => {
               break;
           case 'TileImageArcGISRest':
               source = TileImageArcGISRest(options.url, options.params);
+              source.on('imageloaderror', function(event) {
+                console.log('tileloaderror', event);
+              });
               break;
           case 'WMSTile':
               source = WMSTile(options.url, options.params);
@@ -387,15 +389,16 @@ const addLayer = (map, layerInfo) => {
     let {events, priority} = layerInfo.extraProperties;
     layer.set('events', events);
     layer.set('priority', priority);
+    console.log("Layer added");
     map.addLayer(layer);
+
+
   };
 
 const removeLayer = (map,layer) => {
     console.log("Layer removed");
     map.removeLayer(layer);
 };  
-
-
 
 
 export {onClickHandler, filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove}

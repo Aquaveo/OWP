@@ -65,19 +65,23 @@ const OWPView = () => {
           name: "StreamFlowMapLayer"
         },
         extraProperties: {
-            events: [{'type': 'click', 'handler': (layer,event)=>{
-              onClickStreamFlowLayerHandler(
-                layer,
-                event,
-                currentProducts,
-                resetProducts,
-                updateCurrentGeometry,
-                updateCurrentMetadata,
-                handleModalState,
-                appAPI.getForecastData,
-                updateCurrentStationID
-              )
-            }}],
+            events: [
+              {
+                'type': 'click', 
+                'handler': (layer,event)=>{
+                  onClickStreamFlowLayerHandler(
+                    layer,
+                    event,
+                    currentProducts,
+                    resetProducts,
+                    updateCurrentGeometry,
+                    updateCurrentMetadata,
+                    handleModalState,
+                    appAPI.getForecastData,
+                    updateCurrentStationID
+                  )}
+              }
+            ],
             priority: 1      
         }
     }

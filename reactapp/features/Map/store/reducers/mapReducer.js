@@ -19,7 +19,8 @@ const mapInitialStore = {
     state:{
         mapObject: new Map(options),
         isFullMap: true,  
-        layers:[]
+        layers:[],
+        toggle_loading_layers: false
     },
     actions:{}
 };
@@ -45,6 +46,14 @@ const mapReducer = (state, action) => {
                   layers: state.state.layers.filter(layer => layer.options['name'] !== action.payload.options.name) // Assume layers are identified by `name`
               }
           };
+        case MapActionsTypes.toggle_loading_layers:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    toggle_loading_layers: !state.state.toggle_loading_layers
+                }
+            };
       case MapActionsTypes.toggle_full_map:
           return {
               ...state,
@@ -52,7 +61,7 @@ const mapReducer = (state, action) => {
                   ...state.state,
                   isFullMap: !state.state.isFullMap
               }
-          };
+        };
       default:
           return state;
   }
