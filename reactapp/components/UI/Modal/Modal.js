@@ -5,7 +5,7 @@
 import "./modal.css";
 import Close from "./times-solid.svg";
 import { createPortal } from "react-dom";
-
+import { ModalBody, ModalContainer } from "../StyleComponents/Modal.styled";
 
 //make footer optional
 
