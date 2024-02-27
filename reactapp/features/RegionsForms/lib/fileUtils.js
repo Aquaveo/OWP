@@ -5,7 +5,7 @@ import {Stroke, Style} from 'ol/style.js';
 import GeoJSON from 'ol/format/GeoJSON';
 
 const previewCSVFileData = async (e) =>{
-    // console.log(e)
+    console.log(e)
     
     const dataRequest = new FormData();
     Array.from(e.target.files).forEach(file=>{

@@ -55,10 +55,9 @@ const WebSocketProvider = ({ children, url }) => {
   useEffect(() => {
     console.log("adding message")
 
-    if (!webSocketState.state.client) return;
+    if (!webSocketState.state.client || !webSocketState.state.message) return;
     const { client, message } = webSocketState.state;
     client.send(message);
-
   }, [webSocketState.state.message])
 
 

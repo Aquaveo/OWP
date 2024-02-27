@@ -1,4 +1,4 @@
-import { regionsFormsActionsTypes } from "../actions/HydroShareRegionsActionsTypes";
+import { regionsFormsActionsTypes } from "../actions/RegionsFormsActionsTypes";
 
 
 
@@ -10,11 +10,7 @@ const regionsFormInitialState={
                 { value: 'hydroshare', label: 'Region from Hydroshare' },
                 { value: 'reachesList', label: 'Region from Reaches List' },
             ],
-            visibleForms:{
-                hydroShareRegionForm: false,
-                reachListRegionForm: false,
-                geometryRegionForm: false,
-            }
+            subForms:[]
         }
     },
     actions:{
@@ -40,42 +36,58 @@ const regionsFormReducer = (state, action) => {
                     },
                 },
             };
-        
-        case regionsFormsActionsTypes.toggle_form_visibility:
-            // Corrected to use action.payload for toggling form visibility
-            const { formName } = action.payload; // Destructure formName from action.payload
+        case regionsFormsActionsTypes.delete_region_form_types:
             return {
                 ...state,
                 state: {
                     ...state.state,
                     addForms: {
                         ...state.state.addForms,
-                        visibleForms: {
-                            ...state.state.addForms.visibleForms,
-                            [formName]: !state.state.addForms.visibleForms[formName], // Corrected toggle syntax
-                        },
+                        regionFormTypes: state.state.addForms.regionFormTypes.filter(
+                            (formType) => formType.value !== action.formType
+                        ),
                     },
                 },
             };
-
-        case regionsFormsActionsTypes.set_single_form_visible:
-            const formToBeVisible = action.payload; // Assuming payload is the form name to be visible
-            const updatedVisibleForms = Object.keys(state.state.addForms.visibleForms).reduce((acc, formName) => {
-                acc[formName] = (formName === formToBeVisible);
-                return acc;
-            }, {});
+        case regionsFormsActionsTypes.add_sub_form:
             return {
                 ...state,
                 state: {
                     ...state.state,
                     addForms: {
                         ...state.state.addForms,
-                        visibleForms: updatedVisibleForms,
+                        subForms: [
+                            ...state.state.addForms.subForms,
+                            action.subForm,
+                        ],
+                    },
+                },
+            };
+        case regionsFormsActionsTypes.delete_sub_form:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    addForms: {
+                        ...state.state.addForms,
+                        subForms: state.state.addForms.subForms.filter(
+                            (subForm) => subForm.id !== action.subFormId
+                        ),
                     },
                 },
             };
 
-
+        case regionsFormsActionsTypes.delete_all_sub_forms:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    addForms: {
+                        ...state.state.addForms,
+                        subForms: [],
+                    },
+                },
+            };
         default:
             return state; // In case of an unrecognized action, return the current state
     }

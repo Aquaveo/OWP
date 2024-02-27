@@ -4,7 +4,6 @@ import { webSocketActionsTypes } from "../actions/actionsTypes";
 const initialWebSocKetState = {
     state:{
         client: null,
-        message: null,
         messageListeners : [],
         stateChangeListeners : [],
     },
@@ -48,17 +47,7 @@ const webSocketReducer = (state, action) => {
                   stateChangeListeners: [...state.state.stateChangeListeners, action.stateChangeListener]
                 }
             };
-        case webSocketActionsTypes.send_message:
-            // Assuming send_message means to send a message through the WebSocket
-            // The actual sending mechanism would depend on your WebSocket client setup
-            // This action just updates the state to include the new message
-            return {
-                ...state,
-                state: {
-                  ...state.state,
-                  message: action.message
-                }
-            };
+
         default:
             throw new Error(`Unhandled action type: ${action.type}`);
     }

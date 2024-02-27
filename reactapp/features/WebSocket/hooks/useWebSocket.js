@@ -45,7 +45,6 @@ const useWebSocket = ({reducer = webSocketReducer} = {}) => {
     const addClient = (client) => manageWebSocket({type: webSocketActionsTypes.get_client, client: client});
     const addMessageHandler = (fn) => manageWebSocket({type: webSocketActionsTypes.add_message_listener, messageListener: fn});
     const addStateChangeHandler = (fn) => manageWebSocket({type: webSocketActionsTypes.add_state_change_listener, stateChangeListener: fn});
-    const sendMessage = (msg) => manageWebSocket({type: webSocketActionsTypes.send_message, message: msg});
     const resetMessages = () => manageWebSocket({type: webSocketActionsTypes.reset_messages});
     
 
@@ -54,7 +53,6 @@ const useWebSocket = ({reducer = webSocketReducer} = {}) => {
       addClient,
       addMessageHandler,
       addStateChangeHandler,
-      sendMessage,
       resetMessages
     }
 }

@@ -1,17 +1,24 @@
 import React, { useReducer } from 'react';
 import { regionsFormReducer, regionsFormInitialState } from '../store/reducers/regionsFormReducer';
-import { regionsFormsActionsTypes } from '../store/actions/HydroShareRegionsActionsTypes';
+import { regionsFormsActionsTypes } from '../store/actions/RegionsFormsActionsTypes';
 
 
 const useAddRegionForm = () => {
     const [{ state: { addForms } }, dispatch] = useReducer(regionsFormReducer, regionsFormInitialState);
 
-    const toggleFormVisibility = (formName) => {
+    const addSubForm = (formType) => {
         dispatch({
-            type: regionsFormsActionsTypes.toggle_form_visibility,
-            payload: { formName },
+            type: regionsFormsActionsTypes.add_sub_form,
+            subForm: formType,
         });
-    };
+    }
+
+    const deleteSubForm = (subFormId) => {
+        dispatch({
+            type: regionsFormsActionsTypes.delete_sub_form,
+            subFormId: subFormId,
+        });
+    }
 
     const addRegionFormType = (formType) => {
         dispatch({
@@ -19,18 +26,19 @@ const useAddRegionForm = () => {
             payload: [formType],
         });
     };
-    const setOnlyFormVisible = (formName) => {
+    const deleteAllSubForms = () => {
         dispatch({
-            type: regionsFormsActionsTypes.set_single_form_visible,
-            payload: formName // The form you want to be visible
+            type: regionsFormsActionsTypes.delete_all_sub_forms,
         });
     }
 
+
     return {
         addForms,
-        toggleFormVisibility,
+        addSubForm,
+        deleteAllSubForms,
+        deleteSubForm,
         addRegionFormType,
-        setOnlyFormVisible
     };
     
 }
