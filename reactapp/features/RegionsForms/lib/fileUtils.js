@@ -17,19 +17,52 @@ const previewCSVFileData = async (e) =>{
     return reponse_obj.columns
 }
 
-const previewFileDataOnChangeGeopackageLayer = async (e) =>{
-  console.log(e)
+const previewFileDataOnChangeGeopackageLayer = async (e,files) =>{
+  console.log(e,files)
 
   const dataRequest = new FormData();
-  dataRequest.append('layers_geopackage', e);
+  dataRequest.append('layers_geopackage', e.value);
 
-  Array.from(formRegionData.files).forEach(file=>{
+  Array.from(files).forEach(file=>{
     dataRequest.append('files', file);
   });
 
   let responseRegions = await appAPI.previewUserRegionFromFile(dataRequest).catch((error) => {console.log(error)});
   let responseRegions_obj = JSON.parse(responseRegions['geom'])
-  return responseRegions_obj
+  const layerFile = {
+    layerType: 'VectorLayer',
+    options: {
+      sourceType: 'VectorSourceLayer',
+      // all the params for the source goes here
+      params: {
+        format: new GeoJSON(),
+        features: new GeoJSON().readFeatures(responseRegions_obj)
+      },
+      // the rest of the attributes are for the definition of the layer
+      zIndex: 2,
+      name: "preview_file_region",
+      style:
+        new Style({
+          stroke: new Stroke({
+            color: 'green',
+            width: 3,
+          })
+        })
+      
+    },
+    extraProperties: {
+        events: [{'type': 'click', 'handler': (layer,event)=>{
+          onClickPreviewFile(
+            layer,
+            event,
+          )
+        }}],
+        priority: 2
+    }
+
+  }
+
+  return layerFile
 }
 
 
@@ -70,7 +103,7 @@ const checkFileTypeForPreview = (fileName) =>{
 }
 
 
-const previewGeometryFileData = async (e) =>{
+const previewGeometryFileData = async (e, setGeopackageLayers) =>{
   console.log(e)
 
   const dataRequest = new FormData();
@@ -82,8 +115,10 @@ const previewGeometryFileData = async (e) =>{
   });
 
   if(fileType === 'geopackage' ){
-    let responseGeopackageLayers = await appAPI.getGeopackageLayersFromFile(dataRequest).catch((error) => {console.log(error)});
+    let responseGeopackageLayers = await appAPI.getGeopackageLayersFromFile(dataRequest).catch((error) => { setGeopackageLayers(null)});
     dataRequest.append('layers_geopackage', responseGeopackageLayers['layers'][0]);
+    console.log(responseGeopackageLayers['layers'])
+    setGeopackageLayers(responseGeopackageLayers['layers'].map(column => ({ value: column, label: column })));
   }
 
   let responseRegions = await appAPI.previewUserRegionFromFile(dataRequest).catch((error) => {console.log(error)});

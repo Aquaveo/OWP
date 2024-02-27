@@ -17,7 +17,7 @@ const geometryRegionFormTypes = [
 
 const RegionFormFromGeometry = (
     { 
-        isVisible,control
+        isVisible,control,getValues
     }) => {
     const [geometryLayerRegion, setGeometryLayerRegion] = useState(null);
     const [isFileInputVisible, setIsFileInputVisible] = useState(false);
@@ -69,7 +69,7 @@ const RegionFormFromGeometry = (
                     />
                   </Fragment>
               </FormGroup>
-              <GeometryFileInput isVisible={isFileInputVisible} control={control} />              
+              <GeometryFileInput isVisible={isFileInputVisible} control={control} getValues={getValues} />              
             </Fragment>
         : <></>
      

@@ -12,7 +12,7 @@ const AddRegionForm = ({
   onSubmit, 
 }) => {
 
-  const { control, handleSubmit, reset, getValues, setValue } = useForm();
+  const { control, handleSubmit, reset, getValues, setValue, trigger } = useForm();
   const { addForms, setOnlyFormVisible } = useAddRegionForm();
 
   const [hydroShareRegionsOptions, setHydroShareRegionsOptions] = useState([]);
@@ -101,6 +101,7 @@ const AddRegionForm = ({
       <RegionFormFromGeometry 
         isVisible={addForms.visibleForms['geometryRegionForm']}
         control={control}
+        getValues = {getValues}
       />
       <RegionFormFromHydroShare 
         isVisible={addForms.visibleForms['hydroShareRegionForm']} 

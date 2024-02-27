@@ -2,12 +2,10 @@ import Select from "react-select";
 import { Controller } from "react-hook-form";
 import { FormGroup, Label } from "components/UI/StyleComponents/Form.styled";
 
-import {previewFileDataOnChangeGeopackageLayer} from '../../../lib/fileUtils';
-
-const SelectGeopackageLayerNames = ({ layers, control }) => {
+const SelectGeopackageLayerNames = ({ geopackageLayers, control,setCurrentGeopackageLayer }) => {
 
     return (
-        layers.length > 0
+        geopackageLayers
             ?
                 <FormGroup>
                     <Label>Select Geopackage Layer </Label>
@@ -18,12 +16,12 @@ const SelectGeopackageLayerNames = ({ layers, control }) => {
                         render={({ field }) => (
                         <Select
                             {...field}
-                            options={layers}
+                            options={geopackageLayers}
                             onChange={async (selectedOption) => {
                                 console.log(selectedOption)
-                                await previewFileDataOnChangeGeopackageLayer(e)
+                                setCurrentGeopackageLayer(selectedOption)
                                 field.onChange(selectedOption); // Notify react-hook-form of the change
-                                // handleRegionTypeChange(selectedOption); // Additional logic for onChange
+
                             }}
                         />
                         )}
