@@ -4,46 +4,37 @@ import { FormGroup, Label } from "components/UI/StyleComponents/Form.styled";
 import { Input } from "components/UI/StyleComponents/Input.styled";
 import Select from 'react-select';
 
-const FormInputFile = ({ control, name, label,onChange }) => {
-    return (
-        <FormGroup>
-            {label ? <Label htmlFor={name}> {label}</Label>: null}
-            <Controller
-                name={name}
-                control={control}
-                defaultValue={[]}
-                render={({ field: { ref, ...rest } }) => (
-                    <Input
-                        type="file"
-                        size="sm"
-                        multiple
-                        onChange={async (e) => {
-                            console.log(e)
-                            rest.onChange([...e.target.files]);
-                            if (onChange) {
-                                console.log(e)
-                                onChange(e)
-                                
-                            };
-                        }}
-                        ref={ref}
-                    />
-                )}
-                rules={{ required: 'Files are required' }}
+// Reusable Label Component
+const FormLabel = ({ htmlFor, children }) => children ? <Label htmlFor={htmlFor}>{children}</Label> : null;
 
-            />
-        </FormGroup>
-
-    );
-};
-
-
-const FormSelect = ({ control, name, options,label,components,styles, onChange }) => {
-
-
-    return (
+const FormInputFile = ({ control, name, label, onChange }) => (
     <FormGroup>
-        {label ? <Label htmlFor={name}> {label}</Label>: null}
+        <FormLabel htmlFor={name}>{label}</FormLabel>
+        <Controller
+            name={name}
+            control={control}
+            defaultValue={[]}
+            render={({ field: { ref, ...rest } }) => (
+                <Input
+                    {...rest}
+                    type="file"
+                    size="sm"
+                    multiple
+                    onChange={(e) => {
+                        const files = [...e.target.files];
+                        rest.onChange(files);
+                        onChange?.(files);
+                    }}
+                    ref={ref}
+                />
+            )}
+        />
+    </FormGroup>
+);
+
+const FormSelect = ({ control, name, options, label, components, styles, onChange }) => (
+    <FormGroup>
+        <FormLabel htmlFor={name}>{label}</FormLabel>
         <Controller
             name={name}
             control={control}
@@ -51,32 +42,27 @@ const FormSelect = ({ control, name, options,label,components,styles, onChange }
                 <Select
                     {...field}
                     options={options}
-                    onChange={val => {
-                        field.onChange(val);
-                        if (onChange) onChange(val);
-                    }}
                     components={components}
                     styles={styles}
+                    onChange={val => {
+                        field.onChange(val);
+                        onChange?.(val);
+                    }}
                 />
             )}
-            rules={{ required: 'Please select a column' }}
         />
     </FormGroup>
+);
 
-    );
-};
-
-
-// Dynamic Form Field component
-const DynamicFormField = ({ fieldType, control, name, options, label,components,styles, onChange }) => {
+const DynamicFormField = ({ fieldType, control, name, options, label, components, styles, onChange, ...props }) => {
     switch (fieldType) {
         case 'select':
-            return <FormSelect control={control} name={name} options={options} label={label} components={components} styles={styles} onChange={onChange} />;
+            return <FormSelect {...{ control, name, options, label, components, styles, onChange }} {...props} />;
         case 'inputFile':
-            return <FormInputFile control={control} name={name} label={label} onChange={onChange} />;
+            return <FormInputFile {...{ control, name, label, onChange }} {...props} />;
         default:
-            return null; // Or any fallback UI
+            return null;
     }
 };
 
-export { DynamicFormField, FormInputFile, FormSelect};
+export { DynamicFormField, FormInputFile, FormSelect };

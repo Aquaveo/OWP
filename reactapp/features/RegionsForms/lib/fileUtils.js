@@ -1,5 +1,4 @@
 import appAPI from "services/api/app";
-import reset from "react-hook-form";
 import { onClickHucRegion, onClickPreviewFile } from "lib/mapEvents";
 import {Stroke, Style} from 'ol/style.js';
 import GeoJSON from 'ol/format/GeoJSON';
@@ -103,11 +102,11 @@ const checkFileTypeForPreview = (fileName) =>{
 }
 
 
-const previewGeometryFileData = async (e, setGeopackageLayers) =>{
+const previewGeometryFileData = async (e) =>{
   console.log(e)
+  const responseObject={};
 
   const dataRequest = new FormData();
-  
   let fileType = 'shapefile'
   Array.from(e.target.files).forEach(file=>{
     fileType = checkFileTypeForPreview(file.name)
@@ -115,10 +114,13 @@ const previewGeometryFileData = async (e, setGeopackageLayers) =>{
   });
 
   if(fileType === 'geopackage' ){
-    let responseGeopackageLayers = await appAPI.getGeopackageLayersFromFile(dataRequest).catch((error) => { setGeopackageLayers(null)});
+    let responseGeopackageLayers = await appAPI.getGeopackageLayersFromFile(dataRequest).catch((error) => { 
+      console.log(error) 
+      responseObject['geopackage_layers'] = null;
+    });
     dataRequest.append('layers_geopackage', responseGeopackageLayers['layers'][0]);
     console.log(responseGeopackageLayers['layers'])
-    setGeopackageLayers(responseGeopackageLayers['layers'].map(column => ({ value: column, label: column })));
+    responseObject['geopackage_layers'] = responseGeopackageLayers['layers'].map(column => ({ value: column, label: column }));
   }
 
   let responseRegions = await appAPI.previewUserRegionFromFile(dataRequest).catch((error) => {console.log(error)});
@@ -155,8 +157,9 @@ const previewGeometryFileData = async (e, setGeopackageLayers) =>{
     }
 
   }
+  responseObject['layer'] = layerFile;
 
-  return layerFile
+  return responseObject
 }
 
 const handleFileTypeOnChangeEvent = (e) =>{
@@ -204,6 +207,72 @@ const handleFileTypeOnChangeEvent = (e) =>{
  
   // }
 }
+
+const handleHydroshareSubForm = (websocketActions,setIsLoading) => {
+  setIsLoading(true);
+  websocketActions.client.send(JSON.stringify({ type: "retrieve_hydroshare_regions" }));
+};
+
+const handleReachesListSubForm = async (addSubForm,setIsLoading) => {
+  addSubForm({
+    id: "input-file-reaches-regions",
+    type: 'inputFile',
+    name: 'input-file-reaches-regions',
+    label: "Upload File (*.csv, *.xlsx)",
+    onChange: async (e) => {
+      console.log(e);
+      setIsLoading(true);
+      let columns = await previewCSVFileData(e);
+      addSubForm({
+        id: "select-reach-columns",
+        type: 'select',
+        name: "select-reach-columns",
+        label: "Select Reach ID Column",
+        options: columns.map(column => ({ value: column, label: column })),
+      });
+      setIsLoading(false);
+    }
+  });
+};
+
+const handleGeometrySubForm = async (addSubForm,mapActions,setIsLoading) => {
+  addSubForm({
+    id: "input-file-geometry-regions",
+    type: 'inputFile',
+    name: 'input-file-geometry-regions',
+    label: "Upload File (*.shp, *.json, geopackage)",
+    onChange: async (e) => {
+      console.log(e);
+      setIsLoading(true);
+      let {geopackage_layers, layer} = await previewGeometryFileData(e);
+      mapActions.addLayer(layer);
+      if (geopackage_layers){
+        addSubForm({
+          id: "select-geopackage_layers",
+          type: 'select',
+          name: "select-geopackage_layers",
+          label:"Select Geopackage Layer",
+          options: geopackage_layers,
+          onChange: async (selectedLayer) => {
+            console.log(selectedLayer);
+            mapActions.removeLayer(layer); //remove the previous layer
+            setIsLoading(true);                
+            let selectLayer = await previewFileDataOnChangeGeopackageLayer(selectedLayer, e.target.files);
+            mapActions.addLayer(selectLayer); //add the new layer
+            layer = selectLayer;
+            setIsLoading(false);
+          }
+        });
+      }
+      setIsLoading(false);
+    }
+  });
+};
+
+
+
+
+
 
 
 
@@ -276,5 +345,8 @@ export {
   previewGeometryFileData,
   makeGeoJSONFromArray,
   concatGeoJSON,
-  handleFileTypeOnChangeEvent
+  handleFileTypeOnChangeEvent,
+  handleHydroshareSubForm,
+  handleReachesListSubForm,
+  handleGeometrySubForm
 }

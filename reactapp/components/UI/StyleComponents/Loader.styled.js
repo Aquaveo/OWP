@@ -15,6 +15,7 @@ const blinkAnimation = keyframes`
 export const LoadingText = styled.div`
   font-size: 16px;
   color: #333;
+  padding: 20px 10px; // 20px top and bottom, 10px left and right
   animation: ${blinkAnimation} 1.5s infinite;
 `;
 

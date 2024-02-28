@@ -1,17 +1,14 @@
 import React, { useState,useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import Select from 'react-select';
 import { Form, FormGroup, Label, SubmitButton } from 'components/UI/StyleComponents/Form.styled';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
-import { RegionFormFromReachList } from 'features/RegionsForms/components/submenus/ReachListBasedRegion/AddReachListBasedForm';
-import { RegionFormFromHydroShare } from 'features/RegionsForms/components/submenus/HydroShareRegion/AddHydroShareRegionForm';
 import { useAddRegionForm } from '../hooks/useAddRegionForms';
-import {RegionFormFromGeometry} from 'features/RegionsForms/components/submenus/GeometryRegion/AddGeometryRegionForm';
-import { DynamicFormField, FormInputFile, FormSelect } from './Forms';
+import { DynamicFormField, FormSelect } from './Forms';
 import {IconOption} from './IconOption';
 import {colourStyles} from '../lib/colorUtils';
 import { LoadingText } from 'components/UI/StyleComponents/Loader.styled';
-import {previewCSVFileData} from 'features/RegionsForms/lib/fileUtils'; 
+import { handleGeometrySubForm,handleHydroshareSubForm, handleReachesListSubForm } from 'features/RegionsForms/lib/fileUtils'; 
+import { useMapContext } from 'features/Map/hooks/useMapContext';
 
 const AddRegionForm = ({
   onSubmit, 
@@ -19,7 +16,8 @@ const AddRegionForm = ({
 
   const { control, handleSubmit, reset } = useForm();
   const { addForms, addSubForm,deleteAllSubForms } = useAddRegionForm();
-  const {state,actions} = useWebSocketContext();
+  const {state:webSocketState ,actions: websocketActions} = useWebSocketContext();
+  const { state:mapState, actions: mapActions } = useMapContext(); // Rename actions to mapActions
   const [isLoading, setIsLoading] = useState(false);
 
 
@@ -27,67 +25,40 @@ const AddRegionForm = ({
   const handleFormSubmit = data => {
     onSubmit(data); // Call the onSubmit prop with form data
     reset(); // Reset form after submission
+    deleteAllSubForms(); //Let's delete all the subforms
+    mapActions.removeLayer(mapState.layers[mapState.layers.length - 1]); //remove any layer that was added to preview files
   };
 
-  // Handle change for the region type select
-  const handleRegionTypeChange = selectedOption => {
-    
-    //delete all the created subforms
+
+
+  const handleRegionTypeChange = async (selectedOption) => {
+    // Delete all the created subforms
     deleteAllSubForms();
-
-    // actions.sendMessage(null); //sending a null message to trigger the change
-
-    // sendMessage(selectedOption); // Assuming sendMessage expects the selected option object
-    if (selectedOption.value === 'hydroshare') {
-      setIsLoading(true);
-      state.client.send(
-        JSON.stringify(
-          {
-            type: "retrieve_hydroshare_regions",
-          }
-        )
-      )
-
+    
+    switch (selectedOption.value) {
+      case 'hydroshare':
+        handleHydroshareSubForm(webSocketState,setIsLoading);
+        break;
+      case 'reachesList':
+        await handleReachesListSubForm(addSubForm,setIsLoading);
+        break;
+      case 'geometry':
+        await handleGeometrySubForm(addSubForm,mapActions,setIsLoading);
+        break;
+      default:
+        console.log("Unhandled region type:", selectedOption.value);
     }
-
-    if (selectedOption.value === 'reachesList') {
-      const inputFileReachFormField = {
-        id: "input-file-reaches-regions",
-        type: 'inputFile',
-        name: 'input-file-reaches-regions',
-        label:"Upload File (*.csv, *.xlsx)",
-        onChange: async (e) => {
-          console.log(e);
-          setIsLoading(true);
-          let columns = await previewCSVFileData(e);
-          const selectReachColumnsFormField = {
-            id: "select-reach-columns",
-            type: 'select',
-            name: "select-reach-columns",
-            label:"Select Reach ID Column",
-            options: columns.map(column => ({ value: column, label: column })),
-          };
-          addSubForm(selectReachColumnsFormField)
-          setIsLoading(false);
-        }
-      };
-      addSubForm(inputFileReachFormField)
-    }
-
-    if(selectedOption.value === 'geometry'){
-    }
-
   };
 
   useEffect(() => {
-    actions.addMessageHandler((event)=>{
+    websocketActions.addMessageHandler((event)=>{
       let data = JSON.parse(event);
       let command = data['command']
       console.log(data)
       if(command ==='show_hydroshare_regions_notifications'){
         console.log(data['data'])
         // here create form select for hydroshare        
-        const selectHydroShareRegionsField = {
+        addSubForm ({
           id: "select-hydroshare-regions",
           type: 'select',
           name: `select-hydroshare-regions`,
@@ -95,8 +66,7 @@ const AddRegionForm = ({
           options: data['data'],
           components: {Option: IconOption},
           styles: colourStyles,
-        };
-        addSubForm(selectHydroShareRegionsField)
+        });
         setIsLoading(false);
       }
     });
@@ -141,7 +111,7 @@ const AddRegionForm = ({
         }
         {isLoading ? 
           <LoadingText>
-              Loading Regions ...
+              Loading Preview ...
           </LoadingText> 
           : 
           null
@@ -152,14 +122,3 @@ const AddRegionForm = ({
 };
 
 export {AddRegionForm};
-
-
-{/* <RegionFormFromGeometry 
-isVisible={addForms.visibleForms['geometryRegionForm']}
-control={control}
-getValues = {getValues}
-/>
-<RegionFormFromReachList 
-isVisible={addForms.visibleForms['reachListRegionForm']}
-control={control} 
-/> */}
