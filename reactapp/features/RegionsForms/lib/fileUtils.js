@@ -251,6 +251,7 @@ const handleGeometrySubForm = async (addSubForm,deleteSubForm,mapActions,setIsLo
     ],
     onChange: async (selectedSourceType) => {
       // remove if there is a previous layer
+      // mapActions.delete_layer_by_name("preview_file_region")
       if (WMSLayer) {
         mapActions.removeLayer(WMSLayer);
       }

@@ -22,11 +22,3 @@ export const StyledCustomCircleButton = styled.button`
     background: #000000;
   }
 `;
-
-// export const StyledCustomButton = StyledCustomCircleButton("button");
-// export const StyledCustomLink = StyledCustomCircleButton("a");
-
-//   ${({ $size }) => `
-//     width: ${$size}rem;
-//     height: ${$size}rem;
-//   `}

@@ -1,7 +1,7 @@
 import React, { useEffect , useRef } from 'react';
 import MapContext from 'components/map/MapContext';
 import { MapContainer } from './styles/Map.styled';
-import { onClickHandler,filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove } from '../lib/mapUtils';
+import { onClickHandler,filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove,getClickEventLayers } from '../lib/mapUtils';
 import { useMap } from '../hooks/useMap';
 import {LoadingText} from 'components/UI/StyleComponents/Loader.styled';
 export const MapProvider = ({ children,layers }) => {
@@ -22,7 +22,22 @@ export const MapProvider = ({ children,layers }) => {
     state.state.mapObject.on('loadend', function () {
       actions.toggle_loading_layers();
     });
-
+    // state.state.mapObject.on('pointermove', (e) => {
+    //   console.log("pointer move");
+    //   // const pixel = state.state.mapObject.getEventPixel(e.originalEvent);
+    //   let layers = []
+    //   state.state.mapObject.forEachLayerAtPixel(
+    //     e.pixel,
+    //     layer => {
+    //       if(layer.get('events').length > 0 && layer.get('events').findIndex(event => event.type === 'click') > -1){
+    //         state.state.mapObject.getTargetElement().style.cursor = 'pointer'
+    //         layers.push(layer);
+            
+    //       }
+    //     }
+    //   )
+    //   console.log("layers",layers.length);
+    // });
 
     // adding layers 
     layers.forEach(layer => {

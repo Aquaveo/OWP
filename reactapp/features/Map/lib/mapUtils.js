@@ -401,4 +401,4 @@ const removeLayer = (map,layer) => {
 };  
 
 
-export {onClickHandler, filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove}
+export {onClickHandler, filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove,getClickEventLayers}

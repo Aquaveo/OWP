@@ -1,9 +1,9 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, Fragment } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Form, FormGroup, Label, SubmitButton } from 'components/UI/StyleComponents/Form.styled';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 import { useAddRegionForm } from '../hooks/useAddRegionForms';
-import { DynamicFormField, FormSelect } from './Forms';
+import { DynamicFormField, FormSelect,FormContainer } from './Forms';
 import {IconOption} from './IconOption';
 import {colourStyles} from '../lib/colorUtils';
 import { LoadingText } from 'components/UI/StyleComponents/Loader.styled';
@@ -25,8 +25,8 @@ const AddRegionForm = ({
     getDataForm(data,mapState) // Get the form data
     onSubmit(data); // Call the onSubmit prop with form data
     reset(); // Reset form after submission
-    deleteAllSubForms(mapState, mapActions); //Let's delete all the subforms
-    deleteAllAddFormLayers() //Let's delete all the layers
+    deleteAllSubForms(); //Let's delete all the subforms
+    deleteAllAddFormLayers(mapState, mapActions) //Let's delete all the layers
   };
 
 
@@ -74,6 +74,7 @@ const AddRegionForm = ({
   
 
   return (
+    <FormContainer>
     <Form onSubmit={handleSubmit(handleFormSubmit)}>
       <FormGroup>
         <Label>Region Name</Label>
@@ -117,6 +118,9 @@ const AddRegionForm = ({
         }
       <SubmitButton type="submit">Add Region</SubmitButton>
     </Form>
+
+    </FormContainer>
+
   );
 };
 

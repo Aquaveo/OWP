@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect,useState } from 'react';
 import Map from '../features/Map/components/Map';
 import { onClickStreamFlowLayerHandler } from "lib/mapEvents"
 import { useNwpProducts } from 'features/NwpProducts/hooks/useNWPProducts';
@@ -10,8 +10,7 @@ import {handleMessage} from 'lib/consumerMessages'
 import { AddRegionForm } from 'features/RegionsForms/components/AddRegionForm';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 
-
-
+import { CircularMenuComponent } from 'components/customHamburger/customHamburger';
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
 
@@ -30,7 +29,7 @@ const OWPView = () => {
   } = useNwpProducts();
 
   const {state,actions} = useWebSocketContext();
-
+  const [isAddFormVisible, setIsAddFormVisible] = useState(false);
   // add more layers here if needed
   const layersArray = [
     {
@@ -88,7 +87,7 @@ const OWPView = () => {
   ]
 
   useEffect(() => {
-    console.log("changing messages");
+    // console.log("changing messages");
     console.log(state);
     actions.addMessageHandler(
       (event)=>{handleMessage(event,updateProductsState,handleModalState)}
@@ -98,7 +97,7 @@ const OWPView = () => {
   //useEffect to request data from the API based on the requested products
   useEffect(() => {
     // send the api data here
-    console.log(currentProducts.state.products);
+    // console.log(currentProducts.state.products);
     const requestedProducts = {}
     if(currentProducts.state.currentStationID){
       for (const key in currentProducts.state.products) {
@@ -111,7 +110,7 @@ const OWPView = () => {
         station_id: currentProducts.state.currentStationID,
         products: requestedProducts
       }
-      console.log("requesting getForecastData")
+      // console.log("requesting getForecastData")
       appAPI.getForecastData(dataRequest);
     }
   }, [currentProducts.state.products.analysis_assim.is_requested,
@@ -133,10 +132,8 @@ const OWPView = () => {
 
 
   const handleFormSubmit = async (formData) => {
-    console.log('Form Data:', formData);
+    // console.log('Form Data:', formData);
     let responseRegions;
-
-    
     switch (formData.regionType.value) {
       case "hydroshare":
           responseRegions = await appAPI.saveUserRegionsFromHydroShareResource(formData);
@@ -153,9 +150,14 @@ const OWPView = () => {
     }
   };
 
-
+  const toggleAddRegionFormVisibility = (value) => {
+    setIsAddFormVisible(value);
+  }
+  
   return (
     <Fragment>
+        <CircularMenuComponent toggleAddRegionFormVisibility={toggleAddRegionFormVisibility} />
+
         <Map layers={layersArray}>
           <ChartModalView 
             modal={currentProducts.state.isModalOpen} 
@@ -164,11 +166,7 @@ const OWPView = () => {
             metadata={currentProducts.state.currentMetadata}
             onChange={toggleProduct}
           />
-          <AddRegionForm 
-            onSubmit={handleFormSubmit} 
-            // sendMessage={sendMessage} 
-            // addMessageHandler={addMessageHandler}  
-          />
+          {isAddFormVisible ? <AddRegionForm onSubmit={handleFormSubmit} /> : null}
         </Map>
     </Fragment>
   );
