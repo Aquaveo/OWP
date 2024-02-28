@@ -16,18 +16,17 @@ const FormInputFile = ({ control, name, label, onChange }) => (
             defaultValue={[]}
             render={({ field: { ref, ...rest } }) => (
                 <Input
-                    {...rest}
                     type="file"
                     size="sm"
                     multiple
                     onChange={(e) => {
-                        const files = [...e.target.files];
-                        rest.onChange(files);
-                        onChange?.(files);
+                        rest.onChange([...e.target.files]);
+                        if (onChange) onChange(e);
                     }}
                     ref={ref}
                 />
             )}
+            rules={{ required: 'Files are required' }}
         />
     </FormGroup>
 );
@@ -46,10 +45,11 @@ const FormSelect = ({ control, name, options, label, components, styles, onChang
                     styles={styles}
                     onChange={val => {
                         field.onChange(val);
-                        onChange?.(val);
+                        if (onChange) onChange(val);
                     }}
                 />
             )}
+            rules={{ required: 'Please select an option' }}
         />
     </FormGroup>
 );

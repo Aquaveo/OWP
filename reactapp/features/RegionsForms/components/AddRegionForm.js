@@ -15,7 +15,7 @@ const AddRegionForm = ({
 }) => {
 
   const { control, handleSubmit, reset } = useForm();
-  const { addForms, addSubForm,deleteAllSubForms } = useAddRegionForm();
+  const { addForms, addSubForm,deleteAllSubForms,deleteSubForm } = useAddRegionForm();
   const {state:webSocketState ,actions: websocketActions} = useWebSocketContext();
   const { state:mapState, actions: mapActions } = useMapContext(); // Rename actions to mapActions
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +43,7 @@ const AddRegionForm = ({
         await handleReachesListSubForm(addSubForm,setIsLoading);
         break;
       case 'geometry':
-        await handleGeometrySubForm(addSubForm,mapActions,setIsLoading);
+        await handleGeometrySubForm(addSubForm,deleteSubForm,mapActions,setIsLoading);
         break;
       default:
         console.log("Unhandled region type:", selectedOption.value);

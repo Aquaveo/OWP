@@ -194,7 +194,7 @@ const handleFileTypeOnChangeEvent = (e) =>{
           }
         return layerHUC
       case 'file':
-        const layerFile = {}
+        const layerFile = null
         return layerFile
   }
   
@@ -235,36 +235,66 @@ const handleReachesListSubForm = async (addSubForm,setIsLoading) => {
   });
 };
 
-const handleGeometrySubForm = async (addSubForm,mapActions,setIsLoading) => {
+const handleGeometrySubForm = async (addSubForm,deleteSubForm,mapActions,setIsLoading) => {
+  let WMSLayer = null
   addSubForm({
-    id: "input-file-geometry-regions",
-    type: 'inputFile',
-    name: 'input-file-geometry-regions',
-    label: "Upload File (*.shp, *.json, geopackage)",
-    onChange: async (e) => {
-      console.log(e);
-      setIsLoading(true);
-      let {geopackage_layers, layer} = await previewGeometryFileData(e);
-      mapActions.addLayer(layer);
-      if (geopackage_layers){
+    id: "select-file-geometry-type",
+    type: 'select',
+    name: "select-file-geometry-type",
+    label:"Select the Geometry source",
+    options: [
+      { value: 'file', label: 'File' },
+      { value: 'huc', label: 'WMS Huc Layer' },
+    ],
+    onChange: async (selectedSourceType) => {
+     
+      // remove if there is a previous layer
+      if (WMSLayer) {
+        mapActions.removeLayer(WMSLayer);
+      }
+     
+      // get the new layer
+      WMSLayer = await  handleFileTypeOnChangeEvent(selectedSourceType);
+
+      // added if it is no null, which means the selected option is not file
+      if(WMSLayer){
+        deleteSubForm("input-file-geometry-regions");
+        deleteSubForm("select-geopackage_layers");
+        mapActions.addLayer(WMSLayer);
+      }
+      else{
         addSubForm({
-          id: "select-geopackage_layers",
-          type: 'select',
-          name: "select-geopackage_layers",
-          label:"Select Geopackage Layer",
-          options: geopackage_layers,
-          onChange: async (selectedLayer) => {
-            console.log(selectedLayer);
-            mapActions.removeLayer(layer); //remove the previous layer
-            setIsLoading(true);                
-            let selectLayer = await previewFileDataOnChangeGeopackageLayer(selectedLayer, e.target.files);
-            mapActions.addLayer(selectLayer); //add the new layer
-            layer = selectLayer;
+          id: "input-file-geometry-regions",
+          type: 'inputFile',
+          name: 'input-file-geometry-regions',
+          label: "Upload File (*.shp, *.json, geopackage)",
+          onChange: async (e) => {
+            console.log(e);
+            setIsLoading(true);
+            let {geopackage_layers, layer} = await previewGeometryFileData(e);
+            mapActions.addLayer(layer);
+            if (geopackage_layers){
+              addSubForm({
+                id: "select-geopackage_layers",
+                type: 'select',
+                name: "select-geopackage_layers",
+                label:"Select Geopackage Layer",
+                options: geopackage_layers,
+                onChange: async (selectedLayer) => {
+                  console.log(selectedLayer);
+                  mapActions.removeLayer(layer); //remove the previous layer
+                  setIsLoading(true);                
+                  let selectLayer = await previewFileDataOnChangeGeopackageLayer(selectedLayer, e.target.files);
+                  mapActions.addLayer(selectLayer); //add the new layer
+                  layer = selectLayer;
+                  setIsLoading(false);
+                }
+              });
+            }
             setIsLoading(false);
           }
         });
       }
-      setIsLoading(false);
     }
   });
 };
