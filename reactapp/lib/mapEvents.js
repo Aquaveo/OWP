@@ -126,8 +126,9 @@ const onClickStreamFlowLayerHandler = (
 }
 
 
-const onClickHucRegion = (layer, event, mapActions) =>{
+const onClickHucRegion = (layer, event, mapActions,setIsLoading) =>{
     console.log("HUC region clicked")
+    setIsLoading(true);
     let mapServerInfo = []
     let clickCoordinate = event.coordinate;
     let mapObject = event.map;
@@ -185,11 +186,16 @@ const onClickHucRegion = (layer, event, mapActions) =>{
                 const layer_name = `${responseQuery.data['features'][0]['id']}_huc_vector_selection}`;
                 const vector_layer = createHUCVectorLayer(layer_name,urlQuery.href,mapActions,responseQuery.data);
                 mapActions.addLayer(vector_layer);
+                setIsLoading(false);
+
                 // setCurrentRegion({name:layer_name, data:responseQuery.data, url: urlQuery.href, mapExtent: queryIdentify['mapExtent'], imageDisplay:queryIdentify['imageDisplay'] });
             }).catch((error) => {
+                setIsLoading(false);
+
                 console.log(error);
             })
         }).catch((error) => {
+            setIsLoading(false);
             console.log(error);
         })
 
