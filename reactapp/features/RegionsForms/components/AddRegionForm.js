@@ -25,7 +25,7 @@ const AddRegionForm = ({
     getDataForm(data,mapState) // Get the form data
     onSubmit(data); // Call the onSubmit prop with form data
     reset(); // Reset form after submission
-    deleteAllSubForms(); //Let's delete all the subforms
+    deleteAllSubForms(mapState, mapActions); //Let's delete all the subforms
     deleteAllAddFormLayers() //Let's delete all the layers
   };
 
