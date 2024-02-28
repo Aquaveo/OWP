@@ -73,14 +73,15 @@ const concatGeoJSON = (g1, g2) => {
 }
 
 const makeGeoJSONFromArray = (selectedRegions) =>{
+  console.log(selectedRegions)
   let finalGeoJSON = {}
   if(selectedRegions.length < 1){
     return finalGeoJSON
   }
   else{
-      finalGeoJSON = selectedRegions[0]['data'];
+      finalGeoJSON = selectedRegions[0];
     for (let i = 1; i < selectedRegions.length; i++) {
-      finalGeoJSON = concatGeoJSON(finalGeoJSON, selectedRegions[i]['data']);
+      finalGeoJSON = concatGeoJSON(finalGeoJSON, selectedRegions[i]);
     }
   }
     return finalGeoJSON;
@@ -301,6 +302,34 @@ const handleGeometrySubForm = async (addSubForm,deleteSubForm,mapActions,setIsLo
 };
 
 
+const deleteAllAddFormLayers = (mapState, mapActions)=>{
+  //delete all the layers
+  const selectedHucsLayers = mapState.layers.filter(layer => layer.options.name.includes('_huc_vector_selection'));
+  const selectedHucsLayersNames = selectedHucsLayers.map(layer => layer.options.name);
+  selectedHucsLayersNames.forEach(layerName => mapActions.delete_layer_by_name(layerName));
+  mapActions.delete_layer_by_name("huc_levels")
+  mapActions.delete_layer_by_name("preview_file_region")
+}
+
+const getDataForm = (formData, mapState) => {
+  switch (formData.regionType) {
+    case 'hydroshare':
+      return formData;
+    case 'reachesList':
+      return formData;
+    case 'geometry':
+      const selectedHucsLayers = mapState.layers.filter(layer => layer.options.name.includes('_huc_vector_selection'));
+      let finalGeoJSON = makeGeoJSONFromArray(selectedHucsLayers);
+      formData ={
+        ...formData,
+        'region_data': JSON.stringify(finalGeoJSON)
+      }
+      return formData;
+    default:
+      console.log("Unhandled region type:", formData.regionType);
+  }
+}
+
 
 
 
@@ -379,5 +408,7 @@ export {
   handleFileTypeOnChangeEvent,
   handleHydroshareSubForm,
   handleReachesListSubForm,
-  handleGeometrySubForm
+  handleGeometrySubForm,
+  deleteAllAddFormLayers,
+  getDataForm
 }

@@ -7,7 +7,7 @@ import { DynamicFormField, FormSelect } from './Forms';
 import {IconOption} from './IconOption';
 import {colourStyles} from '../lib/colorUtils';
 import { LoadingText } from 'components/UI/StyleComponents/Loader.styled';
-import { handleGeometrySubForm,handleHydroshareSubForm, handleReachesListSubForm } from 'features/RegionsForms/lib/fileUtils'; 
+import { handleGeometrySubForm,handleHydroshareSubForm, handleReachesListSubForm,getDataForm,deleteAllAddFormLayers } from 'features/RegionsForms/lib/fileUtils'; 
 import { useMapContext } from 'features/Map/hooks/useMapContext';
 
 const AddRegionForm = ({
@@ -21,20 +21,19 @@ const AddRegionForm = ({
   const [isLoading, setIsLoading] = useState(false);
 
 
-
-  const handleFormSubmit = data => {
+  const handleFormSubmit = (data) => {    
+    getDataForm(data,mapState) // Get the form data
     onSubmit(data); // Call the onSubmit prop with form data
     reset(); // Reset form after submission
     deleteAllSubForms(); //Let's delete all the subforms
-    mapActions.removeLayer(mapState.layers[mapState.layers.length - 1]); //remove any layer that was added to preview files
+    deleteAllAddFormLayers() //Let's delete all the layers
   };
 
 
 
   const handleRegionTypeChange = async (selectedOption) => {
     // Delete all the created subforms
-    deleteAllSubForms();
-    
+    deleteAllSubForms(); //Let's delete all the subforms
     switch (selectedOption.value) {
       case 'hydroshare':
         handleHydroshareSubForm(webSocketState,setIsLoading);

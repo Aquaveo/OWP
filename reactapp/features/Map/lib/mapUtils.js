@@ -316,9 +316,9 @@ const useLayerFactory = (layerType, options) => {
               break;
           case 'TileImageArcGISRest':
               source = TileImageArcGISRest(options.url, options.params);
-            //   source.on('imageloaderror', function(event) {
-            //     console.log('tileloaderror', event);
-            //   });
+              source.on('imageloaderror', function(event) {
+                console.log('imageloaderror', event);
+              });
               break;
           case 'WMSTile':
               source = WMSTile(options.url, options.params);

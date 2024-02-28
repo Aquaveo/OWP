@@ -183,7 +183,7 @@ const onClickHucRegion = (layer, event, mapActions) =>{
             axios.get(urlQuery).then((responseQuery) => {
                 console.log(responseQuery.data);
                 const layer_name = `${responseQuery.data['features'][0]['id']}_huc_vector_selection}`;
-                const vector_layer = createHUCVectorLayer(layer_name,urlQuery.href,mapActions);
+                const vector_layer = createHUCVectorLayer(layer_name,urlQuery.href,mapActions,responseQuery.data);
                 mapActions.addLayer(vector_layer);
                 // setCurrentRegion({name:layer_name, data:responseQuery.data, url: urlQuery.href, mapExtent: queryIdentify['mapExtent'], imageDisplay:queryIdentify['imageDisplay'] });
             }).catch((error) => {
@@ -203,7 +203,7 @@ const onClickHucRegion = (layer, event, mapActions) =>{
 
 }
 
-const createHUCVectorLayer = (name,url,mapActions) =>{
+const createHUCVectorLayer = (name,url,mapActions,data) =>{
 
     const layerFile = {
         layerType: 'VectorLayer',
@@ -230,7 +230,8 @@ const createHUCVectorLayer = (name,url,mapActions) =>{
             events: [{'type': 'click', 'handler': ()=>{
                 mapActions.delete_layer_by_name(name)
             }}],
-            priority: 3
+            priority: 3,
+            data: data
         }
     
       }
