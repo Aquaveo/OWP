@@ -162,7 +162,7 @@ const previewGeometryFileData = async (e) =>{
   return responseObject
 }
 
-const handleFileTypeOnChangeEvent = (e) =>{
+const handleFileTypeOnChangeEvent = (e,mapActions) =>{
   const WbdMapLayerURL = 'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer'
   const stationsLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/references_layers/USGS_Stream_Gauges/MapServer';
   switch (e.value) {
@@ -187,6 +187,7 @@ const handleFileTypeOnChangeEvent = (e) =>{
                     onClickHucRegion(
                       layer,
                       event,
+                      mapActions
                     )
                   }}],
                   priority: 2     
@@ -254,7 +255,7 @@ const handleGeometrySubForm = async (addSubForm,deleteSubForm,mapActions,setIsLo
       }
      
       // get the new layer
-      WMSLayer = await  handleFileTypeOnChangeEvent(selectedSourceType);
+      WMSLayer = await  handleFileTypeOnChangeEvent(selectedSourceType,mapActions);
 
       // added if it is no null, which means the selected option is not file
       if(WMSLayer){

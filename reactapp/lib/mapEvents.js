@@ -1,7 +1,8 @@
 import axios from 'axios';
 import {getDistanceByZoom,processStreamServiceQueryResult} from '../features/Map/lib/esriMapServerUtils'
 import Point from "@arcgis/core/geometry/Point.js";
-
+import {Stroke, Style} from 'ol/style.js';
+import GeoJSON from 'ol/format/GeoJSON';
 
 
 // some info about the function here:https://gist.github.com/xemoka/cb4cf95018fdc2cebac4da8f0c308723
@@ -125,12 +126,123 @@ const onClickStreamFlowLayerHandler = (
 }
 
 
-const onClickHucRegion = (layer, event) =>{
+const onClickHucRegion = (layer, event, mapActions) =>{
     console.log("HUC region clicked")
+    let mapServerInfo = []
+    let clickCoordinate = event.coordinate;
+    let mapObject = event.map;
+    const urlService = layer.getSource().getUrl() // collect mapServer URL
+    console.log(urlService)
+    const id = layer
+        .getSource()
+        .getParams()
+        .LAYERS.replace('show:', '') // remove the visible component to just get the raw url
+    const server = mapServerInfo.find(server => server.url === urlService) // see if server already exists in mapServerInfo
+    /* Here need to do MapExport request in order to get the data of the layer */
+    if (!server) {
+        // Query Layer 5 
+        const spatialReference= {"latestWkid":3857,"wkid":102100}
+        const geometry = {"spatialReference":spatialReference ,"x":clickCoordinate[0],"y":clickCoordinate[1]}
+
+        const queryIdentify = {
+            f: 'json',
+            geometryType: 'esriGeometryPoint',
+            layers:'visible',
+            tolerance: 1,
+            geometry: clickCoordinate,
+            mapExtent: mapObject.getView().calculateExtent(), // get map extent
+            imageDisplay: `${mapObject.getSize()},96`,  // get map size/resolution
+            sr: mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop() // this is because our OL map is in this SR
+
+        }
+        console.log(queryIdentify)
+        const url = new URL(`${urlService}/identify`);
+        url.search = new URLSearchParams(queryIdentify);
+        // here we can grab the last layer and then run the query for that layer at that point for the geometry :)
+
+        axios.get(url).then((response) => {
+            console.log(response.data);
+            let layerId = response.data['results'][response.data['results'].length -1]['layerId']
+
+            const queryLayer = {
+                geometry: JSON.stringify(geometry),
+                outFields:'*',
+                geometryType: 'esriGeometryPoint',
+                spatialRel: "esriSpatialRelIntersects",
+                units:'esriSRUnit_Meter',
+                distance: 100,
+                sr: `${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`,
+                returnGeometry: true, // I don't want geometry, but you might want to display it on a 'selection layer'
+                f: 'geojson',
+                inSR:102100,
+                outSR:102100
+            }
+            const urlQuery = new URL(`${urlService}/${layerId}/query`);
+            urlQuery.search = new URLSearchParams(queryLayer);
+            console.log(`${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`)
+            axios.get(urlQuery).then((responseQuery) => {
+                console.log(responseQuery.data);
+                const layer_name = `${responseQuery.data['features'][0]['id']}_huc_vector_selection}`;
+                const vector_layer = createHUCVectorLayer(layer_name,urlQuery.href,mapActions);
+                mapActions.addLayer(vector_layer);
+                // setCurrentRegion({name:layer_name, data:responseQuery.data, url: urlQuery.href, mapExtent: queryIdentify['mapExtent'], imageDisplay:queryIdentify['imageDisplay'] });
+            }).catch((error) => {
+                console.log(error);
+            })
+        }).catch((error) => {
+            console.log(error);
+        })
+
+            
+
+        }
+    
+
+
+
+
 }
 
-const onClickPreviewFile = (layer, event) =>{
-    console.log("HUC region clicked")
+const createHUCVectorLayer = (name,url,mapActions) =>{
+
+    const layerFile = {
+        layerType: 'VectorLayer',
+        options: {
+          sourceType: 'VectorSourceLayer',
+          // all the params for the source goes here
+          params: {
+            format: new GeoJSON(),
+            url: url
+          },
+          // the rest of the attributes are for the definition of the layer
+          zIndex: 2,
+          name: name,
+          style:
+            new Style({
+              stroke: new Stroke({
+                color: 'green',
+                width: 3,
+              })
+            })
+          
+        },
+        extraProperties: {
+            events: [{'type': 'click', 'handler': ()=>{
+                mapActions.delete_layer_by_name(name)
+            }}],
+            priority: 3
+        }
+    
+      }
+      return layerFile
 }
+
+
+const onClickPreviewFile = (layer, event) =>{
+    console.log("Preview Regions clicked")
+}
+
+
+
 
 export {onClickStreamFlowLayerHandler,onClickHucRegion,onClickPreviewFile}

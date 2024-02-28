@@ -46,7 +46,16 @@ const mapReducer = (state, action) => {
                   layers: state.state.layers.filter(layer => layer.options['name'] !== action.payload.options.name) // Assume layers are identified by `name`
               }
           };
-        case MapActionsTypes.toggle_loading_layers:
+      case MapActionsTypes.delete_layer_by_name:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    layers: state.state.layers.filter(layer => layer.options['name'] !== action.payload) // Assume layers are identified by `name`
+                }
+            };
+
+      case MapActionsTypes.toggle_loading_layers:
             return {
                 ...state,
                 state: {
