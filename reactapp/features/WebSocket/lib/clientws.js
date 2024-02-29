@@ -28,7 +28,7 @@ const reconnectingSocket = (url) => {
       client.onopen = () => {
         console.log('ws connected');
         isConnected = true;
-        stateChangeListeners.forEach((fn) => fn(true));
+        stateChangeListeners.forEach((fn) => fn(client));
       };
   
       const close = client.close;

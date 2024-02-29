@@ -1,5 +1,30 @@
 import styled from "styled-components";
 
+
+const FormContainer = styled.div`
+    top: 60px;
+    position: absolute;
+    height: fit-content;
+    z-index: 300;
+    right: 10px;
+    background-color: #f0f0f0;
+    padding: 10px;
+    /* Media query for devices with width up to 768px */
+    @media (max-width: 768px) {
+      width: 100%; /* Take the full width */
+      right: 0; /* Align to the right edge */
+      border-radius: 0; /* Optional: removes border radius for full-width */
+      flex: none; /* Override the flex property */
+      margin-top: 60px; /* Adjust the top margin */
+      position: fixed; /* Make position fixed to stay in view */
+      top: 0; /* Align to the top */
+      height: fit-content; /* Make it full height */
+      overflow-y: auto; /* Add scroll for overflow content */
+    }
+`
+
+
+
 const Form = styled.form`
   height: fit-content;
   width: 100%;
@@ -36,4 +61,4 @@ const SubmitButton = styled.button`
   }
 `;
 
-export {Form, FormGroup,Label, SubmitButton }
+export {Form, FormGroup,Label, SubmitButton, FormContainer }

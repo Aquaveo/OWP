@@ -11,6 +11,8 @@ import { AddRegionForm } from 'features/RegionsForms/components/AddRegionForm';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 
 import { CircularMenuComponent } from 'components/customHamburger/customHamburger';
+import { Regions } from 'features/Regions/components/Regions';
+
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
 
@@ -167,6 +169,8 @@ const OWPView = () => {
             onChange={toggleProduct}
           />
           {isAddFormVisible ? <AddRegionForm onSubmit={handleFormSubmit} /> : null}
+          <Regions />
+
         </Map>
     </Fragment>
   );

@@ -2,7 +2,7 @@ import { SiHiveBlockchain } from "react-icons/si";
 import { CustomHamburgerStyle } from "components/styles/CustomHamburger.styled";
 import { CircleCustomButton } from "components/menus/CircleCustomMenuButton" 
 import { FaPlus } from "react-icons/fa";
-
+import { useState } from "react";
 // Import the circular menu
 import {
   CircleMenu,
@@ -13,7 +13,7 @@ import {
 export const CircularMenuComponent = ({
   toggleAddRegionFormVisibility,
 }) => {
-
+    const  [isMenuOpen, setIsMenuOpen] = useState(false);
 
     function handleClick(event) {
       // event.preventDefault();
@@ -30,7 +30,8 @@ export const CircularMenuComponent = ({
           radius={5}
           rotationAngleInclusive={true}
           className="custom-circle-menu"
-          open={false}
+          open={isMenuOpen}
+          menuActive={isMenuOpen}
           menuToggleElement={
             <CircleCustomButton size={2} onClick={handleClick}>
               <FaPlus/>
@@ -41,6 +42,7 @@ export const CircularMenuComponent = ({
               tooltip="Create Region"
               className="custom-circle-menu-item"
               onClick={(e) => {
+                setIsMenuOpen(false);
                 toggleAddRegionFormVisibility(true)
               }}
               tooltipPlacement= 'left'
