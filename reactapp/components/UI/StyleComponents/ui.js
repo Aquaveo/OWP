@@ -6,13 +6,13 @@ const CircularButton = styled.button`
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  width: 50px; // Diameter of the circular button
-  height: 50px; // Diameter of the circular button
+  width: 30px; // Diameter of the circular button
+  height: 30px; // Diameter of the circular button
   border-radius: 50%; // Makes the button circular
   border: none;
   background-color: #007bff; // Example background color
   color: white; // Text color
-  font-size: 16px;
+  font-size: 12px;
   cursor: pointer;
   outline: none;
   transition: background-color 0.3s;
@@ -27,9 +27,9 @@ const CircularButton = styled.button`
 `;
 const FlexContainer = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap 20px
+  gap 20px;
+  justify-content: space-between;
 `;
 
 

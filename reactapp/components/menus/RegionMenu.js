@@ -3,7 +3,7 @@
 
 // components
 import { SubMenu } from "components/subMenus/submenu";
-import MapContext from "components/map/MapContext";
+import MapContext from "features/Map/contexts/MapContext";
 
 //bootstrap components
 import {Accordion,Dropdown,DropdownButton,Form,Col,Row,Button} from 'react-bootstrap';

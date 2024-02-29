@@ -2,7 +2,7 @@ import {  useContext, useEffect } from "react";
 import TileLayer from "ol/layer/Tile";
 import LayerGroup from 'ol/layer/Group';
 
-import MapContext from "../map/MapContext";
+import MapContext from "../../features/Map/contexts/MapContext";
 
 export const OlTileLayer = ({ source, name,zIndex=0, groupLayerName,groupLayers}) => {
   const { map } = useContext(MapContext);

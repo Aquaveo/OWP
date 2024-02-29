@@ -1,6 +1,6 @@
 import {  useContext, useEffect } from "react";
 import {Image as ImageLayer } from 'ol/layer.js';
-import MapContext from "../map/MapContext";
+import MapContext from "../../features/Map/contexts/MapContext";
 export const OlImageTileLayer = ({ source, name,zIndex=0}) => {
     const { map } = useContext(MapContext);
     useEffect(() => {

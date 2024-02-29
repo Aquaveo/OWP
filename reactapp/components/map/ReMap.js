@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect} from "react"
 import axios from 'axios';
 
 //context
-import MapContext from "./MapContext";
+import MapContext from "../../features/Map/contexts/MapContext";
 
 //service modules
 import appAPI from "services/api/app";

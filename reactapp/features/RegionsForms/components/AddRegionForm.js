@@ -1,4 +1,4 @@
-import React, { useState,useEffect, Fragment } from 'react';
+import React, { useState,useEffect, Fragment,useContext } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Form, FormGroup, Label, SubmitButton } from 'components/UI/StyleComponents/Form.styled';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
@@ -7,23 +7,24 @@ import { DynamicFormField, FormSelect,FormContainer } from './Forms';
 import {IconOption} from './IconOption';
 import {colourStyles} from '../lib/colorUtils';
 import { LoadingText } from 'components/UI/StyleComponents/Loader.styled';
-import { handleGeometrySubForm,handleHydroshareSubForm, handleReachesListSubForm,getDataForm,deleteAllAddFormLayers } from 'features/RegionsForms/lib/fileUtils'; 
-import { useMapContext } from 'features/Map/hooks/useMapContext';
+import { handleGeometrySubForm,handleHydroshareSubForm, handleReachesListSubForm,getDataForm,deleteAllAddFormLayers,handleAddFormSubmit } from 'features/RegionsForms/lib/fileUtils'; 
+import { useMapContext } from 'features/Map/hooks/useMapContext'; //be careful with the import
 
-const AddRegionForm = ({
-  onSubmit, 
-}) => {
 
+
+const AddRegionForm = () => {
+  // console.log(useContext(MapContext))
   const { control, handleSubmit, reset } = useForm();
   const { addForms, addSubForm,deleteAllSubForms,deleteSubForm } = useAddRegionForm();
   const {state:webSocketState ,actions: websocketActions} = useWebSocketContext();
+  // const { state:mapState, actions: mapActions } = useContext(MapContext); // Rename actions to mapActions
   const { state:mapState, actions: mapActions } = useMapContext(); // Rename actions to mapActions
   const [isLoading, setIsLoading] = useState(false);
 
 
   const handleFormSubmit = (data) => {    
     getDataForm(data,mapState) // Get the form data
-    onSubmit(data); // Call the onSubmit prop with form data
+    handleAddFormSubmit(data); // Call the onSubmit prop with form data
     reset(); // Reset form after submission
     deleteAllSubForms(); //Let's delete all the subforms
     deleteAllAddFormLayers(mapState, mapActions) //Let's delete all the layers
@@ -74,7 +75,7 @@ const AddRegionForm = ({
   
 
   return (
-    <FormContainer>
+    // <FormContainer>
     <Form onSubmit={handleSubmit(handleFormSubmit)}>
       <FormGroup>
         <Label>Region Name</Label>
@@ -119,7 +120,7 @@ const AddRegionForm = ({
       <SubmitButton type="submit">Add Region</SubmitButton>
     </Form>
 
-    </FormContainer>
+    // </FormContainer>
 
   );
 };

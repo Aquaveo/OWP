@@ -1,5 +1,5 @@
 import React, { useEffect , useRef } from 'react';
-import MapContext from 'components/map/MapContext';
+import MapContext from 'features/Map/contexts/MapContext';
 import { MapContainer } from './styles/Map.styled';
 import { onClickHandler,filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove,getClickEventLayers } from '../lib/mapUtils';
 import { useMap } from '../hooks/useMap';

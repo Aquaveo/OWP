@@ -7,10 +7,10 @@ import ChartModalView from './modals/ChartModalView';
 import appAPI from 'services/api/app';
 
 import {handleMessage} from 'lib/consumerMessages'
-import { AddRegionForm } from 'features/RegionsForms/components/AddRegionForm';
+// import { AddRegionForm } from 'features/RegionsForms/components/AddRegionForm';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 
-import { CircularMenuComponent } from 'components/customHamburger/customHamburger';
+// import { CircularMenuComponent } from 'components/customHamburger/customHamburger';
 import { Regions } from 'features/Regions/components/Regions';
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
@@ -132,33 +132,9 @@ const OWPView = () => {
       currentProducts.state.products.medium_range_ensemble_member_7.is_requested    
     ]);
 
-
-  const handleFormSubmit = async (formData) => {
-    // console.log('Form Data:', formData);
-    let responseRegions;
-    switch (formData.regionType.value) {
-      case "hydroshare":
-          responseRegions = await appAPI.saveUserRegionsFromHydroShareResource(formData);
-          break;
-      case "reachesList":
-          responseRegions = await appAPI.saveUserRegionsFromReaches(formData);
-          break;
-      case "geometry":
-          break;          
-      // You can add more cases here as needed
-      default:
-          // Optional: handle any case that doesn't match the above
-          console.log("Unrecognized region type");
-    }
-  };
-
-  const toggleAddRegionFormVisibility = (value) => {
-    setIsAddFormVisible(value);
-  }
   
   return (
     <Fragment>
-        <CircularMenuComponent toggleAddRegionFormVisibility={toggleAddRegionFormVisibility} />
 
         <Map layers={layersArray}>
           <ChartModalView 
@@ -168,7 +144,7 @@ const OWPView = () => {
             metadata={currentProducts.state.currentMetadata}
             onChange={toggleProduct}
           />
-          {isAddFormVisible ? <AddRegionForm onSubmit={handleFormSubmit} /> : null}
+        
           <Regions />
 
         </Map>

@@ -332,6 +332,25 @@ const getDataForm = (formData, mapState) => {
 }
 
 
+const handleAddFormSubmit = async (formData) => {
+  // console.log('Form Data:', formData);
+  let responseRegions;
+  switch (formData.regionType.value) {
+    case "hydroshare":
+        responseRegions = await appAPI.saveUserRegionsFromHydroShareResource(formData);
+        break;
+    case "reachesList":
+        responseRegions = await appAPI.saveUserRegionsFromReaches(formData);
+        break;
+    case "geometry":
+        break;          
+    // You can add more cases here as needed
+    default:
+        // Optional: handle any case that doesn't match the above
+        console.log("Unrecognized region type");
+  }
+};
+
 
 
 
@@ -411,5 +430,6 @@ export {
   handleReachesListSubForm,
   handleGeometrySubForm,
   deleteAllAddFormLayers,
-  getDataForm
+  getDataForm,
+  handleAddFormSubmit
 }

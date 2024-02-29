@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { FullScreen } from "ol/control";
-import MapContext from "../map/MapContext";
+import MapContext from "../../features/Map/contexts/MapContext";
 import {Control, defaults as defaultControls} from 'ol/control.js';
 
 import 'ol-layerswitcher/dist/ol-layerswitcher.css';

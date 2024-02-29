@@ -4,23 +4,26 @@ import { useRegions } from '../hooks/useRegions';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 
 export const RegionsProvider = ({ children }) => {
- const {state ,actions:regionsActions} = useRegions();
- const {state:webSocketState ,actions: websocketActions} = useWebSocketContext();
-
+ const {state:regionsState ,actions:regionsActions} = useRegions();
+ console.log(regionsState,regionsActions);
+ const {actions: websocketActions} = useWebSocketContext();
 
   useEffect(() => {
 
     // add the message handler to receive the regions
 
     websocketActions.addStateChangeHandler((client)=>{
+      if (client.readyState === WebSocket.OPEN) {
+        if (regionsState.state.regions.length === 0){
+          client.send(
+            JSON.stringify({
+              type: "update_user_regions"
+            })
+          );
+        }
 
-      client.send(
-        JSON.stringify({
-          type: "update_user_regions"
-        })
-      );
-      // console.log(event)
-    
+     }
+
     })
 
     websocketActions.addMessageHandler((event)=>{
@@ -30,7 +33,7 @@ export const RegionsProvider = ({ children }) => {
         if(command ==='update_regions_users'){
             console.log(data)
             regionsActions.loadRegions(data['data'])
-            console.log(state)
+            // console.log(state)
           }
       });
 
@@ -38,9 +41,9 @@ export const RegionsProvider = ({ children }) => {
 
 
   return (
-        <RegionsContext.Provider value={{ ...state, regionsActions }}>
-                {children}
-        </RegionsContext.Provider>
+      <RegionsContext.Provider value={{ ...regionsState, regionsActions }}>
+          {children}
+      </RegionsContext.Provider>
 
   );
 };

@@ -3,11 +3,15 @@ import styled from "styled-components";
 
 const FormContainer = styled.div`
     top: 60px;
+    width: 500px;
     position: absolute;
     height: fit-content;
     z-index: 300;
     right: 10px;
     background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     padding: 10px;
     /* Media query for devices with width up to 768px */
     @media (max-width: 768px) {
@@ -32,9 +36,9 @@ const Form = styled.form`
   order: 1;
   padding: 10px;
   background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  // border: 1px solid #ccc;
+  // border-radius: 8px;
+  // box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 
 `;
 

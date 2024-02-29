@@ -48,7 +48,7 @@ const reconnectingSocket = (url) => {
   
       client.onclose = () => {
         isConnected = false;
-        stateChangeListeners.forEach((fn) => fn(false));
+        stateChangeListeners.forEach((fn) => fn(client));
   
         if (!reconnectOnClose) {
           console.log('ws closed by app');

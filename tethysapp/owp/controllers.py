@@ -793,7 +793,7 @@ async def getUserReachesPerRegionsMethod(
             regions_response["reaches"] = []
             # breakpoint()
             comid_values = [d[1] for d in only_user_reaches_regions.all()]
-
+            print(comid_values)
             list_api_data = await getNwmDataAsync(
                 comid_values,
                 ["forecast"],
@@ -814,7 +814,7 @@ async def getUserReachesPerRegionsMethod(
                         f"{region[1]}", []
                     ),
                     # "long_forecast": list_api_data["long"][f"{region[1]}"],
-                    "assim": list_api_data["analysis-assim"],
+                    # "assim": list_api_data["analysis-assim"],
                 }
                 regions_response["reaches"].append(region_obj)
             # breakpoint()
