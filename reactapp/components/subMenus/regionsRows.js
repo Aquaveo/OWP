@@ -1,7 +1,6 @@
 
 
 import { Button,Col, Row } from 'react-bootstrap';
-import { GoGraph } from "react-icons/go";
 import { Sparklines, SparklinesLine,SparklinesBars } from '@jrwats/react-sparklines';
 import chroma from 'chroma-js';
 

@@ -45,5 +45,5 @@ export const Input = styled.input`
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
   }
 
-  /* Additional states or styles as needed */
+
 `;

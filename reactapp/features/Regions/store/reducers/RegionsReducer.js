@@ -2,7 +2,13 @@ import {RegionsActionsTypes} from "../actions/RegionsActionsTypes"
 
 const initalRegionsStoreState = {
     state:{
-        regions: []
+        regions: [],
+        pagination:{
+            currentPageNumber: 1,
+            totalPageNumber: 0,
+            searchReachInput: ""
+        },
+        currentRegionReaches:[]
     },
     actions:{}
 }
@@ -25,6 +31,47 @@ const regionsReducer = (state, action) => {
                 state: {
                     ...state.state,
                     regions: [...state.state.regions, action.payload]
+                }
+            }
+        case RegionsActionsTypes.set_total_page_number:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    pagination: {
+                        ...state.state.pagination,
+                        totalPageNumber: action.payload
+                    }
+                }
+            }
+        case RegionsActionsTypes.update_current_page:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    pagination: {
+                        ...state.state.pagination,
+                        currentPageNumber: action.payload
+                    }
+                }
+            }
+        case RegionsActionsTypes.update_current_region_reaches:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    currentRegionReaches: action.payload
+                }
+            }
+        case RegionsActionsTypes.set_search_input:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    pagination: {
+                        ...state.state.pagination,
+                        searchReachInput: action.payload
+                    }
                 }
             }
         default:

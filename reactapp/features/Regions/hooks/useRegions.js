@@ -9,7 +9,11 @@ export const useRegions = ({reducer = regionsReducer} = {}) => {
 
     const actions = {
         loadRegions: (regions)=> updateRegions({type: RegionsActionsTypes.load_regions, payload: regions}),
-        addRegion: (region)=> updateRegions({type: RegionsActionsTypes.add_region, payload: region})
+        addRegion: (region)=> updateRegions({type: RegionsActionsTypes.add_region, payload: region}),
+        setTotalPageNumber: (totalPageNumber)=> updateRegions({type: RegionsActionsTypes.set_total_page_number, payload: totalPageNumber}),
+        updateCurrentPage: (currentPageNumber)=> updateRegions({type: RegionsActionsTypes.update_current_page, payload: currentPageNumber}),
+        updateCurrentRegionReaches: (reaches)=> updateRegions({type: RegionsActionsTypes.update_current_region_reaches, payload: reaches}),
+        setSearchInput: (searchInput)=> updateRegions({type: RegionsActionsTypes.set_search_input, payload: searchInput})
     };
 
     return {

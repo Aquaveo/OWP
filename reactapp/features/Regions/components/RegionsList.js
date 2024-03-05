@@ -1,15 +1,18 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import {LoadingText} from 'components/UI/StyleComponents/Loader.styled';
 import { useRegionsContext } from '../hooks/useRegionsContext';
 import { FormSelect } from 'features/RegionsForms/components/Forms';
 import { CircularButton,FlexContainer } from 'components/UI/StyleComponents/ui';
 import { FaPlus } from 'react-icons/fa'; // Example using react-icons for the button content
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
+import { RegionToolBar } from './RegionsToolBar';
+import { RegionsTable } from './RegionsTable';
+
 const RegionsList = ({control, setIsAddFormVisible}) => {
  
-  const {state,actions} = useRegionsContext();
+  const {state:regionsState, actions:regionsActions} = useRegionsContext();
   const {state:webSocketState ,actions: websocketActions} = useWebSocketContext();
-
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     // add the message handler to receive the regions' reaches
     websocketActions.addMessageHandler((event)=>{
@@ -18,10 +21,13 @@ const RegionsList = ({control, setIsAddFormVisible}) => {
         console.log(data)
         if(command ==='update_reaches_users'){
           console.log(data);
-          // setAvailableReachesList(data['data'])
           const numberOfPageItems = Math.ceil(data['total_reaches']/50);
           console.log(numberOfPageItems)
-          // setCurrentPageNumber(numberOfPageItems)
+          setIsLoading(false);
+          console.log(regionsActions)
+          regionsActions.updateCurrentRegionReaches(data['data'])
+          regionsActions.setTotalPageNumber(numberOfPageItems)
+
         }
       });
 
@@ -29,7 +35,8 @@ const RegionsList = ({control, setIsAddFormVisible}) => {
 
   const handleRegionTypeChange = (region)=>{
     console.log("region_name",region);
-    setIsAddFormVisible(false)
+    setIsAddFormVisible(false);
+    setIsLoading(true);
     webSocketState.client.send(
       JSON.stringify({
         type: "update_user_reaches",
@@ -53,11 +60,25 @@ const RegionsList = ({control, setIsAddFormVisible}) => {
           <FormSelect 
             control={control} 
             name={"regionType"} 
-            options={state.regions.map(region => ({value:region.name,label:region.name}))}
+            options={regionsState.regions.map(region => ({value:region.name,label:region.name}))}
             label={""} 
             onChange={handleRegionTypeChange} 
           />
+          {regionsState.currentRegionReaches.length > 0 
+            ?
+            <Fragment>
+              <RegionToolBar 
+                currentPageNumber={regionsState.currentPageNumber} 
+                totalPageNumber={regionsState.totalPageNumber} 
+                updateCurrentPage={regionsActions.updateCurrentPage} 
+              />
+              <RegionsTable availableReachesList={regionsState.currentRegionReaches} />
+            </Fragment>
 
+            
+            : 
+            isLoading ?<LoadingText>Loading Reaches...</LoadingText>:null
+          }
     </Fragment>
 
     
