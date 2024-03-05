@@ -4,14 +4,15 @@ import styled from 'styled-components';
 const StyledRow = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 2rem; // Adjust as needed
+  margin-bottom: 1rem; // Adjust as needed
 `;
 
 const StyledCol = styled.div`
   flex: 0 0 auto;
   width: ${(props) => (props.sm ? `${props.sm / 12 * 100}%` : '100%')};
-  padding: 0.5rem; // Adjust padding as needed
+  padding: 0.25rem; // Adjust padding as needed
   font-size: 12px;
+  text-align: center;
 `;
 
 const StyledButton = styled.button`
@@ -27,5 +28,24 @@ const StyledButton = styled.button`
     text-decoration: underline;
   }
 `;
+const StickyHeader = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 1000; // Ensure the header is above other content
+  padding: 2px 0; // Optional: Adjust based on your design
+  background-color: #f0f0f0;
+`;
+const TableContainer = styled.div`
+    top: 60px;
+    height: 300px;
+    overflow-y: scroll;
+    /* Media query for devices with width up to 768px */
+    @media (max-width: 768px) {
+      width: 100%; /* Take the full width */
+      right: 0; /* Align to the right edge */
+      flex: none; /* Override the flex property */
+      overflow-y: auto; /* Add scroll for overflow content */
+    }
+`
 
-export { StyledRow, StyledCol, StyledButton }
+export { StyledRow, StyledCol, StyledButton,StickyHeader,TableContainer }
