@@ -33,18 +33,4 @@ const FlexContainer = styled.div`
 `;
 
 
-const Container = styled.div`
-    top: 60px;
-    width: 500px;
-    height: 300px;
-    overflow-y: scroll;
-    /* Media query for devices with width up to 768px */
-    @media (max-width: 768px) {
-      width: 100%; /* Take the full width */
-      right: 0; /* Align to the right edge */
-      flex: none; /* Override the flex property */
-      overflow-y: auto; /* Add scroll for overflow content */
-    }
-`
-
-export{CircularButton, FlexContainer, Container}
+export{CircularButton, FlexContainer}

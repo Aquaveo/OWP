@@ -8,7 +8,7 @@ import {AddRegionForm} from 'features/RegionsForms/components/AddRegionForm';
 // const AddRegionForm = lazy(() => import('features/RegionsForms/components/AddRegionForm'));
 
 const Regions = () => {
-  const { control, handleSubmit, reset } = useForm();
+  const { control, handleSubmit, reset,getValues } = useForm();
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
   const handleFormSubmit = (data) => {    
     // onSubmit(data); // Call the onSubmit prop with form data
@@ -20,7 +20,7 @@ const Regions = () => {
       <RegionsProvider>
           <FormContainer>
               <Form onSubmit={handleSubmit(handleFormSubmit)}>                
-                  <RegionsList control={control} setIsAddFormVisible={setIsAddFormVisible} />
+                  <RegionsList control={control} getValues={getValues} setIsAddFormVisible={setIsAddFormVisible} />
               </Form>
               {isAddFormVisible? <AddRegionForm/>: null }
 

@@ -8,11 +8,11 @@ import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContex
 import { RegionToolBar } from './RegionsToolBar';
 import { RegionsTable } from './RegionsTable';
 
-const RegionsList = ({control, setIsAddFormVisible}) => {
- 
+const RegionsList = ({control, setIsAddFormVisible, getValues}) => { 
   const {state:regionsState, actions:regionsActions} = useRegionsContext();
   const {state:webSocketState ,actions: websocketActions} = useWebSocketContext();
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     // add the message handler to receive the regions' reaches
     websocketActions.addMessageHandler((event)=>{
@@ -48,6 +48,24 @@ const RegionsList = ({control, setIsAddFormVisible}) => {
     )
 
   }
+  useEffect(() => {
+    // console.log(getValues());
+    if (!webSocketState.client) return; // prenvent the app from crashing if the websocket is not connected
+    // consolegetValues();
+    setIsLoading(true);
+      webSocketState.client.send(
+        JSON.stringify({
+          type: "update_user_reaches",
+          region_name: getValues()['regionType'].value,
+          page_number: regionsState.pagination.currentPageNumber,
+          page_limit: 50,
+          search_term: ""
+        })
+      );
+    // }
+
+  },[regionsState.pagination.currentPageNumber]);
+
 
   return (
     <Fragment>
@@ -68,17 +86,18 @@ const RegionsList = ({control, setIsAddFormVisible}) => {
             ?
             <Fragment>
               <RegionToolBar 
-                currentPageNumber={regionsState.currentPageNumber} 
-                totalPageNumber={regionsState.totalPageNumber} 
+                currentPageNumber={regionsState.pagination.currentPageNumber} 
+                totalPageNumber={regionsState.pagination.totalPageNumber} 
                 updateCurrentPage={regionsActions.updateCurrentPage} 
               />
               <RegionsTable availableReachesList={regionsState.currentRegionReaches} />
-            </Fragment>
-
-            
+            </Fragment>            
             : 
-            isLoading ?<LoadingText>Loading Reaches...</LoadingText>:null
+            null
           }
+          {isLoading ?<LoadingText>Loading Reaches...</LoadingText>:null}
+
+          
     </Fragment>
 
     

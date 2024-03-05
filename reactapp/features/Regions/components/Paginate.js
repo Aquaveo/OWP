@@ -8,35 +8,38 @@ export const Paginate = ({
   currentPageNumber
 }) => {
     let items = [];
-    let leftSide = currentPageNumber - 4;
+    let leftSide = currentPageNumber - 1;
     if(leftSide <= 0 ) leftSide=1;
-    let rightSide = currentPageNumber + 4;
+    let rightSide = currentPageNumber + 1;
     if(rightSide>totalPageNumber) rightSide = totalPageNumber;
     for (let number = leftSide ; number <= rightSide; number++) {
       items.push(
-        <div key={number} className={(number === currentPageNumber ? 'round-effect-pagination active-pagination' : 'round-effect-pagination')} onClick={()=>{ setCurrentPage(number)}}>
+        <div key={number} className={(number === currentPageNumber ? 'round-effect-pagination active-pagination' : 'round-effect-pagination')} onClick={()=>{ updateCurrentPage(number)}}>
           {number}
         </div>,
       );
     }
   const nextPage = () => {
     if(currentPageNumber<totalPageNumber){
+      console.log("nextPage")
       updateCurrentPage(currentPageNumber+1)
     }
   }
   
   const prevPage = () => {
     if(currentPageNumber>1){
+      console.log("prevPage")
       updateCurrentPage(currentPageNumber-1)
     }
   }
   const firstPage = () => {
     if(currentPageNumber>1){
+      console.log("firstPage")
       updateCurrentPage(1);
     }
   }
   const lastPage = () => {
-    console.log("s")
+    console.log("lastPage")
 
     if(currentPageNumber> 0 ){
       updateCurrentPage(totalPageNumber);
