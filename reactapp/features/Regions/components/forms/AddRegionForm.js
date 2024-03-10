@@ -2,12 +2,12 @@ import React, { useState,useEffect, Fragment,useContext } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Form, FormGroup, Label, SubmitButton } from 'components/UI/StyleComponents/Form.styled';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
-import { useAddRegionForm } from '../hooks/useAddRegionForms';
+import { useAddRegionForm } from '../../hooks/forms/useAddRegionForms';
 import { DynamicFormField, FormSelect,FormContainer } from './Forms';
 import {IconOption} from './IconOption';
-import {colourStyles} from '../lib/colorUtils';
+import {colourStyles} from '../../lib/colorUtils';
 import { LoadingText } from 'components/UI/StyleComponents/Loader.styled';
-import { handleGeometrySubForm,handleHydroshareSubForm, handleReachesListSubForm,getDataForm,deleteAllAddFormLayers,handleAddFormSubmit } from 'features/RegionsForms/lib/fileUtils'; 
+import { handleGeometrySubForm,handleHydroshareSubForm, handleReachesListSubForm,getDataForm,deleteAllAddFormLayers,handleAddFormSubmit } from 'features/Regions/lib/fileUtils'; 
 import { useMapContext } from 'features/Map/hooks/useMapContext'; //be careful with the import
 
 

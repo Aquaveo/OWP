@@ -1,10 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import {LoadingText} from 'components/UI/StyleComponents/Loader.styled';
 import { useRegionsContext } from '../hooks/useRegionsContext';
-import { FormSelect } from 'features/RegionsForms/components/Forms';
+import { FormSelect } from 'features/Regions/components/forms/Forms';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 import { RegionToolBar } from './RegionsToolBar';
 import { RegionsTable } from './RegionsTable';
+import { FlexContainer, Image } from 'components/UI/StyleComponents/ui';
+import Close from 'assets/times-solid.svg';
+
 
 const RegionsList = ({
   control, 
@@ -69,7 +72,13 @@ const RegionsList = ({
 
   return (
     <Fragment>
-          <p>Regions</p>
+          <FlexContainer>
+            <p>Select a Region</p>
+            <button className="close" onClick={() => close()}>
+              <Image src={Close} alt="close" />
+            </button>
+          </FlexContainer>
+
           <FormSelect 
             control={control} 
             name={"regionType"} 

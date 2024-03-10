@@ -10,12 +10,8 @@ import {handleMessage} from 'lib/consumerMessages'
 // import { AddRegionForm } from 'features/RegionsForms/components/AddRegionForm';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 import { Regions } from 'features/Regions/components/Regions';
-import { CircularMenu } from 'components/UI/CircularMenu/components/CircularMenu';
 
 
-import { Add } from "@styled-icons/fluentui-system-filled";
-import { Minus } from "@styled-icons/boxicons-regular";
-import { DataBarHorizontal } from "@styled-icons/fluentui-system-filled";
 
 
 
@@ -37,7 +33,7 @@ const OWPView = () => {
     updateCurrentStationID
   } = useNwpProducts();
 
-
+  
   const {state,actions} = useWebSocketContext();
   // add more layers here if needed
   const layersArray = [
@@ -95,12 +91,7 @@ const OWPView = () => {
     }
   ]
 
-  // Add Region circular menu items
-  const addRegionsItems = [
-    { icon: Add, value: "Add region", label: "Add Region", clickEvent:()=>{console.log('Add Region Clicked')}},
-    { icon: Minus, value: "Delete Region", label: "Delete Region", clickEvent:()=>{console.log('Delete Region Clicked')} },
-    { icon: DataBarHorizontal, value: "List Regions", label: "List Regions", clickEvent:()=>{console.log('List Regions Clicked')}},
-  ];
+
 
 
   useEffect(() => {
@@ -150,7 +141,6 @@ const OWPView = () => {
   
   return (
     <Fragment>
-        <CircularMenu items={addRegionsItems}/>
 
         <Map layers={layersArray}>
           <ChartModalView 

@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
-import { regionsFormReducer, regionsFormInitialState } from '../store/reducers/regionsFormReducer';
-import { regionsFormsActionsTypes } from '../store/actions/RegionsFormsActionsTypes';
+import { regionsFormReducer, regionsFormInitialState } from '../../store/reducers/RegionsFormReducer';
+import { regionsFormsActionsTypes } from '../../store/actions/RegionsFormsActionsTypes';
 
 
 const useAddRegionForm = () => {

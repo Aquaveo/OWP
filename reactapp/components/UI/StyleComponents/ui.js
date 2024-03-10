@@ -31,6 +31,11 @@ const FlexContainer = styled.div`
   gap 20px;
   justify-content: space-between;
 `;
+const Image = styled.img`
+  width: 1rem;
+  height: auto;
+  transition: all 0.2s ease;
+`;
 
 
-export{CircularButton, FlexContainer}
+export{CircularButton, FlexContainer, Image}
