@@ -31,6 +31,12 @@ const useAddRegionForm = () => {
             type: regionsFormsActionsTypes.delete_all_sub_forms,
         });
     }
+    const set_is_visible = (isVisible) => {
+        dispatch({
+            type: regionsFormsActionsTypes.set_is_visible,
+            is_visible: isVisible,
+        });
+    }
 
 
     return {
@@ -39,6 +45,7 @@ const useAddRegionForm = () => {
         deleteAllSubForms,
         deleteSubForm,
         addRegionFormType,
+        set_is_visible
     };
     
 }

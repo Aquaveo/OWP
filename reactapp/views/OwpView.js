@@ -9,9 +9,16 @@ import appAPI from 'services/api/app';
 import {handleMessage} from 'lib/consumerMessages'
 // import { AddRegionForm } from 'features/RegionsForms/components/AddRegionForm';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
-
-// import { CircularMenuComponent } from 'components/customHamburger/customHamburger';
 import { Regions } from 'features/Regions/components/Regions';
+import { CircularMenu } from 'components/UI/CircularMenu/components/CircularMenu';
+
+
+import { Add } from "@styled-icons/fluentui-system-filled";
+import { Minus } from "@styled-icons/boxicons-regular";
+import { DataBarHorizontal } from "@styled-icons/fluentui-system-filled";
+
+
+
 
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
@@ -30,8 +37,8 @@ const OWPView = () => {
     updateCurrentStationID
   } = useNwpProducts();
 
+
   const {state,actions} = useWebSocketContext();
-  const [isAddFormVisible, setIsAddFormVisible] = useState(false);
   // add more layers here if needed
   const layersArray = [
     {
@@ -88,6 +95,14 @@ const OWPView = () => {
     }
   ]
 
+  // Add Region circular menu items
+  const addRegionsItems = [
+    { icon: Add, value: "Add region", label: "Add Region", clickEvent:()=>{console.log('Add Region Clicked')}},
+    { icon: Minus, value: "Delete Region", label: "Delete Region", clickEvent:()=>{console.log('Delete Region Clicked')} },
+    { icon: DataBarHorizontal, value: "List Regions", label: "List Regions", clickEvent:()=>{console.log('List Regions Clicked')}},
+  ];
+
+
   useEffect(() => {
     // console.log("changing messages");
     console.log(state);
@@ -135,6 +150,7 @@ const OWPView = () => {
   
   return (
     <Fragment>
+        <CircularMenu items={addRegionsItems}/>
 
         <Map layers={layersArray}>
           <ChartModalView 
@@ -146,7 +162,6 @@ const OWPView = () => {
           />
         
           <Regions />
-
         </Map>
     </Fragment>
   );

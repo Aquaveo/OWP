@@ -2,13 +2,14 @@ import React, { Fragment, useEffect, useState } from 'react';
 import {LoadingText} from 'components/UI/StyleComponents/Loader.styled';
 import { useRegionsContext } from '../hooks/useRegionsContext';
 import { FormSelect } from 'features/RegionsForms/components/Forms';
-import { CircularButton,FlexContainer } from 'components/UI/StyleComponents/ui';
-import { FaPlus } from 'react-icons/fa'; // Example using react-icons for the button content
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 import { RegionToolBar } from './RegionsToolBar';
 import { RegionsTable } from './RegionsTable';
 
-const RegionsList = ({control, setIsAddFormVisible, getValues}) => { 
+const RegionsList = ({
+  control, 
+  getValues
+}) => { 
   const {state:regionsState, actions:regionsActions} = useRegionsContext();
   const {state:webSocketState ,actions: websocketActions} = useWebSocketContext();
   const [isLoading, setIsLoading] = useState(false);
@@ -35,7 +36,6 @@ const RegionsList = ({control, setIsAddFormVisible, getValues}) => {
 
   const handleRegionTypeChange = (region)=>{
     console.log("region_name",region);
-    setIsAddFormVisible(false);
     setIsLoading(true);
     webSocketState.client.send(
       JSON.stringify({
@@ -69,12 +69,7 @@ const RegionsList = ({control, setIsAddFormVisible, getValues}) => {
 
   return (
     <Fragment>
-        <FlexContainer>
-            <p>Regions</p>
-            <CircularButton onClick={() => setIsAddFormVisible(true)}>
-              <FaPlus /> 
-            </CircularButton>
-        </FlexContainer>
+          <p>Regions</p>
           <FormSelect 
             control={control} 
             name={"regionType"} 

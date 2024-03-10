@@ -10,7 +10,8 @@ const regionsFormInitialState={
                 { value: 'hydroshare', label: 'Region from Hydroshare' },
                 { value: 'reachesList', label: 'Region from Reaches List' },
             ],
-            subForms:[]
+            subForms:[],
+            isVisible: false
         }
     },
     actions:{
@@ -85,6 +86,17 @@ const regionsFormReducer = (state, action) => {
                     addForms: {
                         ...state.state.addForms,
                         subForms: [],
+                    },
+                },
+            };
+        case regionsFormsActionsTypes.set_is_visible:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    addForms: {
+                        ...state.state.addForms,
+                        isVisible: action.is_visible,
                     },
                 },
             };
