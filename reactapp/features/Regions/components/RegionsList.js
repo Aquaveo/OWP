@@ -6,10 +6,10 @@ import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContex
 import { RegionToolBar } from './RegionsToolBar';
 import { RegionsTable } from './RegionsTable';
 import { FlexContainer, Image } from 'components/UI/StyleComponents/ui';
-import Close from 'assets/times-solid.svg';
 import { useForm, Controller } from 'react-hook-form';
 import { FormContainer, Form, SubmitButton } from 'components/UI/StyleComponents/Form.styled';
-
+import {Minimize} from '@styled-icons/material-outlined'
+import { CircularButton } from 'components/UI/StyleComponents/ui';
 
 const RegionsList = ({}) => {
   const { control, handleSubmit, reset,getValues } = useForm();
@@ -82,12 +82,14 @@ const RegionsList = ({}) => {
     <FormContainer>
       <Form onSubmit={handleSubmit(handleFormSubmit)}>
         <Fragment>
+
+
               <FlexContainer>
-                <p>Select a Region</p>
-                <button className="close" onClick={() => regionsActions.setIsVisible(false)}>
-                  <Image src={Close} alt="close" />
-                </button>
-              </FlexContainer>
+                <div>
+                  <span>Select a Region</span>
+                </div>
+                <CircularButton onClick={()=>regionsActions.setIsVisible(false)}><Minimize size={20} /></CircularButton>
+             </FlexContainer>
 
               <FormSelect 
                 control={control} 

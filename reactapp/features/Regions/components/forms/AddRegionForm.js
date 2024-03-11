@@ -10,9 +10,7 @@ import {colourStyles} from '../../lib/colorUtils';
 import { LoadingText } from 'components/UI/StyleComponents/Loader.styled';
 import { handleGeometrySubForm,handleHydroshareSubForm, handleReachesListSubForm,getDataForm,deleteAllAddFormLayers,handleAddFormSubmit } from 'features/Regions/lib/fileUtils'; 
 import { useMapContext } from 'features/Map/hooks/useMapContext'; //be careful with the import
-import { Image } from 'components/UI/StyleComponents/ui';
 import {Minimize} from '@styled-icons/material-outlined'
-import Close from 'assets/times-solid.svg';
 
 const AddRegionForm = ({setVisibleOff}) => {
   // console.log(useContext(MapContext))
@@ -87,8 +85,7 @@ const AddRegionForm = ({setVisibleOff}) => {
       <Form onSubmit={handleSubmit(handleFormSubmit)}>
         <FlexContainer>
           <div>
-            <p>Add Region</p>
-
+            <span>Add Region</span>
           </div>
           <CircularButton onClick={()=>setVisibleOff()}><Minimize size={20} /></CircularButton>
         </FlexContainer>
