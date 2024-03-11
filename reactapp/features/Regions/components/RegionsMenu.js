@@ -23,6 +23,9 @@ const RegionsMenu = () => {
     regionsActions.setIsVisible(false);
     set_is_visible(!addForms.isVisible);
   }
+  const setVisibleOffAddRegionMenu = () => {
+    set_is_visible(false);
+  }
 
   // Add Region circular menu items
   const addRegionsItems = [
@@ -35,7 +38,7 @@ const RegionsMenu = () => {
   return (
     <Fragment>
           {regionsState.isVisible ? <RegionsList/> : null}
-          {addForms.isVisible ? <AddRegionForm/> : null}
+          {addForms.isVisible && <AddRegionForm setVisibleOff={setVisibleOffAddRegionMenu}/> }
           <CircularMenu items={addRegionsItems}/>
     </Fragment>
 

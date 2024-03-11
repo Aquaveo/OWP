@@ -14,7 +14,7 @@ import { Image } from 'components/UI/StyleComponents/ui';
 import {Minimize} from '@styled-icons/material-outlined'
 import Close from 'assets/times-solid.svg';
 
-const AddRegionForm = () => {
+const AddRegionForm = ({setVisibleOff}) => {
   // console.log(useContext(MapContext))
   const { control, handleSubmit, reset } = useForm();
   const { addForms, addSubForm,deleteAllSubForms,deleteSubForm,set_is_visible } = useAddRegionForm();
@@ -31,11 +31,6 @@ const AddRegionForm = () => {
     deleteAllSubForms(); //Let's delete all the subforms
     deleteAllAddFormLayers(mapState, mapActions) //Let's delete all the layers
   };
-
-  const toggleVisibilityAddRegionMenu = () => {
-    console.log(addForms.isVisible)
-    set_is_visible(false);
-  }
 
 
 
@@ -58,7 +53,7 @@ const AddRegionForm = () => {
   };
 
   useEffect(() => {
-    websocketActions.addMessageHandler((event)=>{
+    const show_hydroshare_regions_notifications = (event)=>{
       let data = JSON.parse(event);
       let command = data['command']
       console.log(data)
@@ -76,11 +71,17 @@ const AddRegionForm = () => {
         });
         setIsLoading(false);
       }
-    });
-    
+    }
+    websocketActions.addMessageHandler(show_hydroshare_regions_notifications);
+      return () => {
+        console.log("unmounting show_hydroshare_regions_notifications")
+        webSocketState.client.off(show_hydroshare_regions_notifications)
+      }
+
   }, [])
 
   return (
+    
     <FormContainer>
 
       <Form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -89,7 +90,7 @@ const AddRegionForm = () => {
             <p>Add Region</p>
 
           </div>
-          <CircularButton onClick={()=>toggleVisibilityAddRegionMenu()}><Minimize size={20} /></CircularButton>
+          <CircularButton onClick={()=>setVisibleOff()}><Minimize size={20} /></CircularButton>
         </FlexContainer>
         <FormGroup>
           <Label>Region Name</Label>

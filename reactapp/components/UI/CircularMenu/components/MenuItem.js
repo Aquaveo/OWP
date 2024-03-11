@@ -5,7 +5,7 @@ import {
   BORDER,
   TEXT,
   PRIMARY,
-  RADIUS,
+  // RADIUS,
   MARGIN_RIGHT
 } from "./constants";
 import {
@@ -48,46 +48,46 @@ const Circle = styled(motion.div)`
   }
 `;
 
-function splitAnimation({ partA, partB }) {
-  return function split(value) {
-    const splitAt = 0.2;
-    if (value < splitAt) {
-      return partA(value / splitAt);
-    }
+// function splitAnimation({ partA, partB }) {
+//   return function split(value) {
+//     const splitAt = 0.2;
+//     if (value < splitAt) {
+//       return partA(value / splitAt);
+//     }
 
-    return partB((value - splitAt) / (1 - splitAt));
-  };
-}
+//     return partB((value - splitAt) / (1 - splitAt));
+//   };
+// }
 
-function useCircleMotionStyles(value, index, nrOfItems) {
-  const offset = 0.25;
-  const percentage = index / nrOfItems;
+// function useCircleMotionStyles(value, index, nrOfItems) {
+//   const offset = 0.25;
+//   const percentage = index / nrOfItems;
 
-  const transformX = splitAnimation({
-    partA: () => 0,
-    partB: progress => {
-      const value = percentage * progress - offset;
-      return RADIUS * Math.cos(Math.PI * value * 2);
-    }
-  });
-  const transformY = splitAnimation({
-    partA: progress => progress * -RADIUS,
-    partB: progress => {
-      const value = percentage * progress - offset;
-      return RADIUS * Math.sin(Math.PI * value * 2);
-    }
-  });
+//   const transformX = splitAnimation({
+//     partA: () => 0,
+//     partB: progress => {
+//       const value = percentage * progress - offset;
+//       return RADIUS * Math.cos(Math.PI * value * 2);
+//     }
+//   });
+//   const transformY = splitAnimation({
+//     partA: progress => progress * -RADIUS,
+//     partB: progress => {
+//       const value = percentage * progress - offset;
+//       return RADIUS * Math.sin(Math.PI * value * 2);
+//     }
+//   });
 
-  const x = useTransform(value, transformX);
-  const y = useTransform(value, transformY);
-  const scale = useTransform(value, value => value / 2 + 0.5);
+//   const x = useTransform(value, transformX);
+//   const y = useTransform(value, transformY);
+//   const scale = useTransform(value, value => value / 2 + 0.5);
 
-  return {
-    x,
-    y,
-    scale
-  };
-}
+//   return {
+//     x,
+//     y,
+//     scale
+//   };
+// }
 
 function useBarMotionStyles(value, index, nrOfItems, layerSide) {
   const x = useTransform(value, value => {
@@ -133,7 +133,7 @@ export const MenuItem = React.forwardRef(function MenuItem(
 ) {
   const didMount = useDidMount();
   const value = useMotionValue(0);
-  const circleStyle = useCircleMotionStyles(value, index, nrOfItems);
+  // const circleStyle = useCircleMotionStyles(value, index, nrOfItems);
   const barStyle = useBarMotionStyles(value, index, nrOfItems, layerSide);
   const isPresent = usePresenceAnimation(value, {
     type: "spring",
@@ -146,7 +146,9 @@ export const MenuItem = React.forwardRef(function MenuItem(
       <Circle
         ref={ref}
         {...rest}
-        style={layerSide === "center" ? circleStyle : barStyle}
+        style= {barStyle}
+        // style={layerSide === "center" ? circleStyle : barStyle}
+        
         layout={isPresent && didMount}
         onClick={clickEvent}
       >

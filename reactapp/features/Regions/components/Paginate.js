@@ -1,6 +1,5 @@
 import React, { useState } from "react"
-import 'css/paginate.css'
-
+import '../styles/paginate.css'
 
 export const Paginate = ({
   totalPageNumber, 

@@ -42,7 +42,7 @@ const RegionsList = ({}) => {
 
     websocketActions.addMessageHandler(updateReachesMessageListener);
       return () => {
-        console.log("unmounting")
+        console.log("unmounting update_reaches_users")
         webSocketState.client.off(updateReachesMessageListener)
       }
   }, []);

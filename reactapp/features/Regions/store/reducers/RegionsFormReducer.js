@@ -90,6 +90,7 @@ const regionsFormReducer = (state, action) => {
                 },
             };
         case regionsFormsActionsTypes.set_is_visible:
+            console.log("set_is_visible", action.is_visible);
             return {
                 ...state,
                 state: {

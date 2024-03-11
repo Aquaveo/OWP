@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import 'css/paginate.css'
+// import 'css/paginate.css'
 
 
 export const Paginate = ({
