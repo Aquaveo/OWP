@@ -30,6 +30,7 @@ const FlexContainer = styled.div`
   align-items: center;
   gap 20px;
   justify-content: space-between;
+  padding-bottom: 10px
 `;
 const Image = styled.img`
   width: 1rem;

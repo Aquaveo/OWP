@@ -51,7 +51,7 @@ const Label = styled.label`
 `;
 
 const SubmitButton = styled.button`
-  background-color: #007bff;
+  background-color: #268e89;
   color: white;
   border: none;
   padding: 0.375rem 0.75rem;
