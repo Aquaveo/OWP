@@ -7,34 +7,44 @@ import { RegionToolBar } from './RegionsToolBar';
 import { RegionsTable } from './RegionsTable';
 import { FlexContainer, Image } from 'components/UI/StyleComponents/ui';
 import Close from 'assets/times-solid.svg';
+import { useForm, Controller } from 'react-hook-form';
+import { FormContainer, Form, SubmitButton } from 'components/UI/StyleComponents/Form.styled';
 
 
-const RegionsList = ({
-  control, 
-  getValues
-}) => { 
+const RegionsList = ({}) => {
+  const { control, handleSubmit, reset,getValues } = useForm();
   const {state:regionsState, actions:regionsActions} = useRegionsContext();
   const {state:webSocketState ,actions: websocketActions} = useWebSocketContext();
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleFormSubmit = (data) => {    
+    // onSubmit(data); // Call the onSubmit prop with form data
+    reset(); // Reset form after submission
+  };
+
   useEffect(() => {
     // add the message handler to receive the regions' reaches
-    websocketActions.addMessageHandler((event)=>{
-        let data = JSON.parse(event);
-        let command = data['command']
-        console.log(data)
-        if(command ==='update_reaches_users'){
-          console.log(data);
-          const numberOfPageItems = Math.ceil(data['total_reaches']/50);
-          console.log(numberOfPageItems)
-          setIsLoading(false);
-          console.log(regionsActions)
-          regionsActions.updateCurrentRegionReaches(data['data'])
-          regionsActions.setTotalPageNumber(numberOfPageItems)
+    const updateReachesMessageListener = (event)=>{
+      let data = JSON.parse(event);
+      let command = data['command']
+      console.log(data)
+      if(command ==='update_reaches_users'){
+        console.log(data);
+        const numberOfPageItems = Math.ceil(data['total_reaches']/50);
+        console.log(numberOfPageItems)
+        setIsLoading(false);
+        console.log(regionsActions)
+        regionsActions.updateCurrentRegionReaches(data['data'])
+        regionsActions.setTotalPageNumber(numberOfPageItems)
 
-        }
-      });
+      }
+    }
 
+    websocketActions.addMessageHandler(updateReachesMessageListener);
+      return () => {
+        console.log("unmounting")
+        webSocketState.client.off(updateReachesMessageListener)
+      }
   }, []);
 
   const handleRegionTypeChange = (region)=>{
@@ -52,9 +62,7 @@ const RegionsList = ({
 
   }
   useEffect(() => {
-    // console.log(getValues());
-    if (!webSocketState.client) return; // prenvent the app from crashing if the websocket is not connected
-    // consolegetValues();
+    if (!getValues()['regionType']) return; // don't do anything if the regionType is not set
     setIsLoading(true);
       webSocketState.client.send(
         JSON.stringify({
@@ -65,44 +73,51 @@ const RegionsList = ({
           search_term: ""
         })
       );
-    // }
 
   },[regionsState.pagination.currentPageNumber]);
 
 
   return (
-    <Fragment>
-          <FlexContainer>
-            <p>Select a Region</p>
-            <button className="close" onClick={() => close()}>
-              <Image src={Close} alt="close" />
-            </button>
-          </FlexContainer>
 
-          <FormSelect 
-            control={control} 
-            name={"regionType"} 
-            options={regionsState.regions.map(region => ({value:region.name,label:region.name}))}
-            label={""} 
-            onChange={handleRegionTypeChange} 
-          />
-          {regionsState.currentRegionReaches.length > 0 
-            ?
-            <Fragment>
-              <RegionToolBar 
-                currentPageNumber={regionsState.pagination.currentPageNumber} 
-                totalPageNumber={regionsState.pagination.totalPageNumber} 
-                updateCurrentPage={regionsActions.updateCurrentPage} 
+    <FormContainer>
+      <Form onSubmit={handleSubmit(handleFormSubmit)}>
+        <Fragment>
+              <FlexContainer>
+                <p>Select a Region</p>
+                <button className="close" onClick={() => regionsActions.setIsVisible(false)}>
+                  <Image src={Close} alt="close" />
+                </button>
+              </FlexContainer>
+
+              <FormSelect 
+                control={control} 
+                name={"regionType"} 
+                options={regionsState.regions.map(region => ({value:region.name,label:region.name}))}
+                label={""} 
+                onChange={handleRegionTypeChange} 
               />
-              <RegionsTable availableReachesList={regionsState.currentRegionReaches} />
-            </Fragment>            
-            : 
-            null
-          }
-          {isLoading ?<LoadingText>Loading Reaches...</LoadingText>:null}
+              {regionsState.currentRegionReaches.length > 0 
+                ?
+                <Fragment>
+                  <RegionToolBar 
+                    currentPageNumber={regionsState.pagination.currentPageNumber} 
+                    totalPageNumber={regionsState.pagination.totalPageNumber} 
+                    updateCurrentPage={regionsActions.updateCurrentPage} 
+                  />
+                  <RegionsTable availableReachesList={regionsState.currentRegionReaches} />
+                </Fragment>            
+                : 
+                null
+              }
+              {isLoading ?<LoadingText>Loading Reaches...</LoadingText>:null}
 
-          
-    </Fragment>
+              
+        </Fragment>
+
+      </Form>
+    </FormContainer>
+
+
 
     
 

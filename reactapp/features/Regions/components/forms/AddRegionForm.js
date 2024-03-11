@@ -1,21 +1,23 @@
-import React, { useState,useEffect, Fragment,useContext } from 'react';
+import React, { useState,useEffect} from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Form, FormGroup, Label, SubmitButton } from 'components/UI/StyleComponents/Form.styled';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 import { useAddRegionForm } from '../../hooks/forms/useAddRegionForms';
 import { DynamicFormField, FormSelect,FormContainer } from './Forms';
+import { FlexContainer,CircularButton } from 'components/UI/StyleComponents/ui';
 import {IconOption} from './IconOption';
 import {colourStyles} from '../../lib/colorUtils';
 import { LoadingText } from 'components/UI/StyleComponents/Loader.styled';
 import { handleGeometrySubForm,handleHydroshareSubForm, handleReachesListSubForm,getDataForm,deleteAllAddFormLayers,handleAddFormSubmit } from 'features/Regions/lib/fileUtils'; 
 import { useMapContext } from 'features/Map/hooks/useMapContext'; //be careful with the import
-
-
+import { Image } from 'components/UI/StyleComponents/ui';
+import {Minimize} from '@styled-icons/material-outlined'
+import Close from 'assets/times-solid.svg';
 
 const AddRegionForm = () => {
   // console.log(useContext(MapContext))
   const { control, handleSubmit, reset } = useForm();
-  const { addForms, addSubForm,deleteAllSubForms,deleteSubForm } = useAddRegionForm();
+  const { addForms, addSubForm,deleteAllSubForms,deleteSubForm,set_is_visible } = useAddRegionForm();
   const {state:webSocketState ,actions: websocketActions} = useWebSocketContext();
   // const { state:mapState, actions: mapActions } = useContext(MapContext); // Rename actions to mapActions
   const { state:mapState, actions: mapActions } = useMapContext(); // Rename actions to mapActions
@@ -29,6 +31,11 @@ const AddRegionForm = () => {
     deleteAllSubForms(); //Let's delete all the subforms
     deleteAllAddFormLayers(mapState, mapActions) //Let's delete all the layers
   };
+
+  const toggleVisibilityAddRegionMenu = () => {
+    console.log(addForms.isVisible)
+    set_is_visible(false);
+  }
 
 
 
@@ -72,55 +79,62 @@ const AddRegionForm = () => {
     });
     
   }, [])
-  
 
   return (
-    // <FormContainer>
-    <Form onSubmit={handleSubmit(handleFormSubmit)}>
-      <FormGroup>
-        <Label>Region Name</Label>
-        <Controller
-          name="name"
-          control={control}
-          defaultValue=""
-          render={({ field }) => <input {...field} id="regionName" className="form-control" />}
-          rules={{ required: 'Region name is required' }}
+    <FormContainer>
+
+      <Form onSubmit={handleSubmit(handleFormSubmit)}>
+        <FlexContainer>
+          <div>
+            <p>Add Region</p>
+
+          </div>
+          <CircularButton onClick={()=>toggleVisibilityAddRegionMenu()}><Minimize size={20} /></CircularButton>
+        </FlexContainer>
+        <FormGroup>
+          <Label>Region Name</Label>
+          <Controller
+            name="name"
+            control={control}
+            defaultValue=""
+            render={({ field }) => <input {...field} id="regionName" className="form-control" />}
+            rules={{ required: 'Region name is required' }}
+          />
+        </FormGroup>
+
+        <FormSelect 
+          control={control} 
+          name={"regionType"} 
+          options={addForms.regionFormTypes} 
+          label={"Select Type of Region"} 
+          onChange={handleRegionTypeChange} 
         />
-      </FormGroup>
+        
+          {addForms.subForms.map(field => (
+                  <DynamicFormField
+                    key={field.id}
+                    fieldType={field.type}
+                    label={field.label}
+                    options={field.options ? field.options : []}
+                    components={field.components}
+                    styles={field.styles}
+                    control={control}
+                    name={field.name}
+                    onChange={field.onChange}
+                  />
+            ))
+          }
+          {isLoading ? 
+            <LoadingText>
+                Loading Preview ...
+            </LoadingText> 
+            : 
+            null
+          }
+        <SubmitButton type="submit">Add Region</SubmitButton>
+      </Form>
 
-      <FormSelect 
-        control={control} 
-        name={"regionType"} 
-        options={addForms.regionFormTypes} 
-        label={"Select Type of Region"} 
-        onChange={handleRegionTypeChange} 
-      />
-      
-        {addForms.subForms.map(field => (
-                <DynamicFormField
-                  key={field.id}
-                  fieldType={field.type}
-                  label={field.label}
-                  options={field.options ? field.options : []}
-                  components={field.components}
-                  styles={field.styles}
-                  control={control}
-                  name={field.name}
-                  onChange={field.onChange}
-                />
-          ))
-        }
-        {isLoading ? 
-          <LoadingText>
-              Loading Preview ...
-          </LoadingText> 
-          : 
-          null
-        }
-      <SubmitButton type="submit">Add Region</SubmitButton>
-    </Form>
-
-    // </FormContainer>
+    </FormContainer>
 
   );
 };

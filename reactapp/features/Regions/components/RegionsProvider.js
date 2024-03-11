@@ -5,7 +5,6 @@ import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContex
 
 export const RegionsProvider = ({ children }) => {
  const {state:regionsState ,actions} = useRegions();
- console.log(regionsState,actions);
  const {actions: websocketActions} = useWebSocketContext();
 
   useEffect(() => {

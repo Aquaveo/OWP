@@ -8,7 +8,8 @@ const initalRegionsStoreState = {
             totalPageNumber: 0,
             searchReachInput: ""
         },
-        currentRegionReaches:[]
+        currentRegionReaches:[],
+        isVisible: false
     },
     actions:{}
 }
@@ -72,6 +73,14 @@ const regionsReducer = (state, action) => {
                         ...state.state.pagination,
                         searchReachInput: action.payload
                     }
+                }
+            }
+        case RegionsActionsTypes.set_is_visible:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    isVisible: action.payload
                 }
             }
         default:

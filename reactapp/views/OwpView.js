@@ -150,8 +150,7 @@ const OWPView = () => {
             metadata={currentProducts.state.currentMetadata}
             onChange={toggleProduct}
           />
-        
-          <Regions />
+          <Regions/>
         </Map>
     </Fragment>
   );
