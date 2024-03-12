@@ -62,6 +62,7 @@ export const MapProvider = ({ children,layers }) => {
       layersToAdd.forEach(layerInfo => {
         console.log("adding layer", layerInfo);
         addLayer(state.state.mapObject,layerInfo);
+
       });
     }
 
@@ -71,14 +72,6 @@ export const MapProvider = ({ children,layers }) => {
     };
   // Ensures the hook re-runs only if the map or layer reference changes
   }, [state.state.layers]);
-
-  useEffect(() => {
-    if (state.state.layers.length === 0 ) return;
-    console.log("state.state changed", state.state.layers);
-
-
-  // Ensures the hook re-runs only if the map or layer reference changes
-  }, [state.state]);
 
 
   return (

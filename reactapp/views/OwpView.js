@@ -148,8 +148,6 @@ const OWPView = () => {
   
   return (
     <Fragment>
-
-        {/* <Map layers={layersArray}> */}
           <ChartModalView 
             modal={currentProducts.state.isModalOpen} 
             setModal={handleModalState} 
@@ -158,7 +156,6 @@ const OWPView = () => {
             onChange={toggleProduct}
           />
           <Regions/>
-        {/* </Map> */}
     </Fragment>
   );
 };

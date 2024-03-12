@@ -19,8 +19,9 @@ const onClickStreamFlowLayerHandler = (
     updateCurrentStationID,
     mapActions
     ) => {
+    // remove the reach layer if it exists
     mapActions.delete_layer_by_name(`reach_on_click_from_region`);
-
+    
     let mapServerInfo = []
     let mapObject = event.map;
     let clickCoordinate = event.coordinate;
@@ -55,7 +56,7 @@ const onClickStreamFlowLayerHandler = (
         }
         const url = new URL(`${urlService}/5/query`);
         url.search = new URLSearchParams(queryLayer5);
-
+        mapActions.toggle_loading_layers();
         axios.get(url).then((response) => {
             const filteredArray = response.data['features'][0]
             const actual_zoom = mapObject.getView().getZoom()
@@ -117,13 +118,16 @@ const onClickStreamFlowLayerHandler = (
                 
                 // this ones are commented needs to be uncommented  
                 // setMetadata(metadataArray);
-
+                setTimeout(() => {
+                    mapActions.toggle_loading_layers();
+                }, 1000);
                 updateCurrentMetadata(metadataArray);
             });
 
         }).catch((error) => {
             console.log(error);
             handleModalState(false);
+            mapActions.toggle_loading_layers();
             //try to fix the error or
             //notify the users about somenthing went wrong
             // this ones are commented needs to be uncommented 
