@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from 'react';
 import { MapProvider } from './MapProvider';
 
 
-const Map = ({ children, layers }) => {
+const Map = ({ children, layers=[] }) => {
 
   return (
     <Fragment>

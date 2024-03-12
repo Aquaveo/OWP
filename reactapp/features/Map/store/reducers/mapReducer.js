@@ -47,11 +47,14 @@ const mapReducer = (state, action) => {
               }
           };
       case MapActionsTypes.delete_layer_by_name:
+            console.log("remove layer by name", action.payload)
+            const filtered_array = state.state.layers.filter(layer => layer.options['name'] !== action.payload)
+            console.log(filtered_array)
             return {
                 ...state,
                 state: {
                     ...state.state,
-                    layers: state.state.layers.filter(layer => layer.options['name'] !== action.payload) // Assume layers are identified by `name`
+                    layers:filtered_array // Assume layers are identified by `name`
                 }
             };
 

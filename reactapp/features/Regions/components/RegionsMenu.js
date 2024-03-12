@@ -1,7 +1,7 @@
 import React,{Fragment, useState} from 'react';
 import { RegionsList } from './RegionsList';
 import { useRegionsContext } from '../hooks/useRegionsContext';
-import { CircularMenu } from 'components/UI/CircularMenu/components/CircularMenu';
+import { CircularMenu } from 'components/UI/CircularMenu/CircularMenu';
 import { useAddRegionForm } from '../hooks/forms/useAddRegionForms';
 // icons for the circular menu
 import { Add } from "@styled-icons/fluentui-system-filled";

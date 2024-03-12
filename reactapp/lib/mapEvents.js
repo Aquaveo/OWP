@@ -16,8 +16,11 @@ const onClickStreamFlowLayerHandler = (
     updateCurrentMetadata,
     handleModalState,
     getForecastData,
-    updateCurrentStationID
+    updateCurrentStationID,
+    mapActions
     ) => {
+    mapActions.delete_layer_by_name(`reach_on_click_from_region`);
+
     let mapServerInfo = []
     let mapObject = event.map;
     let clickCoordinate = event.coordinate;
@@ -64,7 +67,15 @@ const onClickStreamFlowLayerHandler = (
             let currentStreamFeature = processStreamServiceQueryResult(actual_zoom, esriMapPoint, response.data, mapObject)
             var stationID = currentStreamFeature.properties['id']
             console.log(stationID)
+          
+            //updated current geometry
             updateCurrentGeometry(currentStreamFeature.geometry);
+            //create the reach layer
+            const reach_layer = createClickedReachLayer(`reach_on_click_from_region`,currentStreamFeature.geometry);
+            mapActions.addLayer(reach_layer);
+
+
+            //reset the products
             resetProducts();
 
             // this ones are commented needs to be uncommented
@@ -111,6 +122,7 @@ const onClickStreamFlowLayerHandler = (
             });
 
         }).catch((error) => {
+            console.log(error);
             handleModalState(false);
             //try to fix the error or
             //notify the users about somenthing went wrong
@@ -243,6 +255,46 @@ const createHUCVectorLayer = (name,url,mapActions,data) =>{
       }
       return layerFile
 }
+
+
+const createClickedReachLayer = (name, features) =>{
+    const layerReach = {
+        layerType: 'VectorLayer',
+        options: {
+          sourceType: 'VectorSourceLayer',
+          // all the params for the source goes here
+          params: {
+            format: new GeoJSON(),
+            features: new GeoJSON(
+                {
+                  dataProjection: 'EPSG:4326',
+                  featureProjection: 'EPSG:3857'
+                }
+              ).readFeatures(features)
+          },
+          // the rest of the attributes are for the definition of the layer
+          zIndex: 3,
+          name: name,
+          style:
+            new Style({
+              stroke: new Stroke({
+                color: '#f5e154',
+                width: 3,
+              })
+            })
+          
+        },
+        extraProperties: {
+            events: [{'type': 'click', 'handler': ()=>{
+                console.log("clicked on reach")
+            }}],
+            priority: 0,
+        }
+    
+      }
+      return layerReach
+}
+
 
 
 const onClickPreviewFile = (layer, event) =>{

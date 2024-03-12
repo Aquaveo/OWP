@@ -11,7 +11,7 @@ const useMap = () => {
         toggle_loading_layers: () => dispatch({ type: MapActionsTypes.toggle_loading_layers }),
         delete_layer_by_name: (name) => dispatch({ type: MapActionsTypes.delete_layer_by_name,payload: name }),
     };
-    console.log(state, actions)
+    // console.log(state, actions)
     return { state, actions };
 }
 

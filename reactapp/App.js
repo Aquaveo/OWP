@@ -5,6 +5,7 @@ import Layout from 'components/layout/Layout';
 import Loader from 'components/loader/Loader';
 import OWPView from 'views/OwpView';
 import { WebSocketProvider } from 'features/WebSocket/providers/WebSocketProvider';
+import Map from 'features/Map/components/Map';
 import { getWsURL } from 'lib/utils';
 import LearnReact from 'views/learn/LearnReact';
 import 'App.scss';
@@ -24,6 +25,7 @@ const ws = getWsURL();
 function App() {
   const PATH_HOME = '/',
         PATH_INFO = '/Information/';
+  // const layers = [];
   return (
     <>
       <ErrorBoundary>
@@ -39,7 +41,10 @@ function App() {
                     element={
                       <Fragment>
                         <WebSocketProvider url={ws} >
-                          <OWPView />
+                          <Map>
+                            <OWPView />
+
+                          </Map>
                         </WebSocketProvider>
                       </Fragment>
                     } 

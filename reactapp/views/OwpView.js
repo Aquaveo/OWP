@@ -10,6 +10,7 @@ import {handleMessage} from 'lib/consumerMessages'
 // import { AddRegionForm } from 'features/RegionsForms/components/AddRegionForm';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 import { Regions } from 'features/Regions/components/Regions';
+import { useMapContext } from 'features/Map/hooks/useMapContext'; //be careful with the import
 
 
 
@@ -35,6 +36,8 @@ const OWPView = () => {
 
   
   const {state,actions} = useWebSocketContext();
+  const { state:mapState, actions: mapActions } = useMapContext();
+
   // add more layers here if needed
   const layersArray = [
     {
@@ -82,7 +85,8 @@ const OWPView = () => {
                     updateCurrentMetadata,
                     handleModalState,
                     appAPI.getForecastData,
-                    updateCurrentStationID
+                    updateCurrentStationID,
+                    mapActions
                   )}
               }
             ],
@@ -100,6 +104,9 @@ const OWPView = () => {
     actions.addMessageHandler(
       (event)=>{handleMessage(event,updateProductsState,handleModalState)}
     )
+    layersArray.forEach(layer => {
+      mapActions.addLayer(layer);
+    })
   }, []);
 
   //useEffect to request data from the API based on the requested products
@@ -142,7 +149,7 @@ const OWPView = () => {
   return (
     <Fragment>
 
-        <Map layers={layersArray}>
+        {/* <Map layers={layersArray}> */}
           <ChartModalView 
             modal={currentProducts.state.isModalOpen} 
             setModal={handleModalState} 
@@ -151,7 +158,7 @@ const OWPView = () => {
             onChange={toggleProduct}
           />
           <Regions/>
-        </Map>
+        {/* </Map> */}
     </Fragment>
   );
 };
