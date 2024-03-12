@@ -796,8 +796,8 @@ async def getUserReachesPerRegionsMethod(
             print(comid_values)
             list_api_data = await getNwmDataAsync(
                 comid_values,
-                ["forecast"],
-                # ["analysis-assim", "forecast"],
+                # ["forecast"],
+                ["analysis-assim", "forecast"],
                 "2023-05-01T06:00:00",
                 # comid_values, ["assim", "long"], "2023-05-01T06:00:00"
             )
@@ -814,7 +814,7 @@ async def getUserReachesPerRegionsMethod(
                         f"{region[1]}", []
                     ),
                     # "long_forecast": list_api_data["long"][f"{region[1]}"],
-                    # "assim": list_api_data["analysis-assim"],
+                    "assim": list_api_data["analysis-assim"].get(f"{region[1]}", []),
                 }
                 regions_response["reaches"].append(region_obj)
             # breakpoint()
@@ -1050,24 +1050,27 @@ async def make_nwm_api_calls(api_base_url, feature_ids, types, reference_time):
                 # # task_get_nwm_data = asyncio.create_task(nwm_api_call(api_base_url, params))
                 # list_async_task.append(task_get_nwm_data)
         else:
-            batch_feature_ids = feature_ids.split(",")
+            # batch_feature_ids = feature_ids.split(",")
             # Group the numbers into chunks of three
-            chunks = [
-                batch_feature_ids[i : i + 1]
-                for i in range(0, len(batch_feature_ids), 1)
-            ]
-            # Join each chunk into a comma-separated string
-            chunked_commids_list = [",".join(chunk) for chunk in chunks]
-            for chunked_list in chunked_commids_list:
-                params = {
-                    "comids": chunked_list,
-                    "format": "json",
-                    "run_offset": 1,
-                    "start-time": "2023-05-01",
-                }
-                list_async_task.append(
-                    asyncio.create_task(nwm_api_call(type_api_base_url, params))
-                )
+            # chunks = [
+            #     batch_feature_ids[i : i + 1]
+            #     for i in range(0, len(batch_feature_ids), 25)
+            # ]
+            # # Join each chunk into a comma-separated string
+            # chunked_commids_list = [",".join(chunk) for chunk in chunks]
+            # for chunked_list in chunked_commids_list:
+            params = {
+                # "comids": chunked_list,
+                "comids": feature_ids,
+                "format": "json",
+                "run_offset": 1,
+                "start_time": "2018-09-17",
+                "end_time": "2018-12-17",
+            }
+
+            list_async_task.append(
+                asyncio.create_task(nwm_api_call(type_api_base_url, params))
+            )
             # task_get_nwm_data = asyncio.create_task(
             #     nwm_api_call(type_api_base_url, params)
             # )
@@ -1120,7 +1123,7 @@ async def nwm_api_call(api_base_url, params):
                     split_df = split_df[["velocity"]]
                     # if "assim" in params["type"]:
                     if "analysis-assim" in api_base_url:
-                        daily_avg = split_df.resample("1H").mean()
+                        daily_avg = split_df.resample("1H").mean().ffill()
                     else:
                         daily_avg = split_df.resample("24H").mean()
 
@@ -1139,7 +1142,7 @@ async def nwm_api_call(api_base_url, params):
                 if params.get("forecast_type", "") != "":
                     return {"forecast": {f"{params['forecast_type']}": response_obj}}
                 else:
-                    return {{f"{params['analysis-assim']}": response_obj}}
+                    return {"analysis-assim": response_obj}
                 # return {f"{params['type']}": response_obj}
                 # return velocities
             if response_await.status_code == 429:

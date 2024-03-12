@@ -35,17 +35,29 @@ const RegionsTable = ({availableReachesList}) => {
             {availableReachesList &&
             availableReachesList.map((availableReach, index) => (
               <StyledRow key={index}>
-                <StyledCol sm={2}>
+                <StyledCol sm={3}>
                   <StyledButton onClick={(e) => zoomToReach(availableReach)}>
                     {availableReach['COMID']}
                   </StyledButton>
                 </StyledCol>
-                <StyledCol sm={2}>
+                <StyledCol sm={3}>
                     <p>
                         {availableReach['GNIS_NAME'] !== ' ' ? availableReach['GNIS_NAME'] : '-'}
                     </p>
                 </StyledCol>
-                <StyledCol sm={2}>
+                <StyledCol sm={3}>
+                  <Sparklines data={availableReach['assim']}>
+                    <SparklinesBars style={{ fill: chroma('#268e89').brighten(1), fillOpacity: '0.75' }} />
+                    <SparklinesLine style={{ stroke: chroma('#268e89').darken(1), fill: 'none' }} />
+                  </Sparklines>
+                </StyledCol>
+                <StyledCol sm={3}>
+                  <Sparklines data={availableReach['long_forecast']}>
+                    <SparklinesBars style={{ fill: chroma('#AF2BBF').brighten(1), fillOpacity: '0.75' }} />
+                    <SparklinesLine style={{ stroke: chroma('#AF2BBF').darken(1), fill: 'none' }} />
+                  </Sparklines>
+                </StyledCol>
+                {/* <StyledCol sm={2}>
                   <Sparklines data={availableReach['long_forecast']}>
                     <SparklinesBars style={{ fill: chroma('#AF2BBF').brighten(1), fillOpacity: '0.75' }} />
                     <SparklinesLine style={{ stroke: chroma('#AF2BBF').darken(1), fill: 'none' }} />
@@ -56,19 +68,7 @@ const RegionsTable = ({availableReachesList}) => {
                     <SparklinesBars style={{ fill: chroma('#AF2BBF').brighten(1), fillOpacity: '0.75' }} />
                     <SparklinesLine style={{ stroke: chroma('#AF2BBF').darken(1), fill: 'none' }} />
                   </Sparklines>
-                </StyledCol>
-                <StyledCol sm={2}>
-                  <Sparklines data={availableReach['long_forecast']}>
-                    <SparklinesBars style={{ fill: chroma('#AF2BBF').brighten(1), fillOpacity: '0.75' }} />
-                    <SparklinesLine style={{ stroke: chroma('#AF2BBF').darken(1), fill: 'none' }} />
-                  </Sparklines>
-                </StyledCol>
-                <StyledCol sm={2}>
-                  <Sparklines data={availableReach['long_forecast']}>
-                    <SparklinesBars style={{ fill: chroma('#AF2BBF').brighten(1), fillOpacity: '0.75' }} />
-                    <SparklinesLine style={{ stroke: chroma('#AF2BBF').darken(1), fill: 'none' }} />
-                  </Sparklines>
-                </StyledCol>                
+                </StyledCol>                 */}
               </StyledRow>
             ))}
         </TableContainer>
