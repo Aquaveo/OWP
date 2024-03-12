@@ -6,7 +6,8 @@ const RegionToolBar = (
     {
         currentPageNumber,
         totalPageNumber,
-        updateCurrentPage
+        updateCurrentPage,
+        setInputSearchTerm
     }
 )=>{
 
@@ -20,17 +21,19 @@ const RegionToolBar = (
                 size="sm"
                 multiple
                 onChange={(e) => {
+                    setInputSearchTerm(e.target.value);
                     // rest.onChange([...e.target.files]);
                     // if (onChange) onChange(e);
                 }}
                     // ref={ref}
                 />
-            <Paginate 
-                currentPageNumber={currentPageNumber} 
-                totalPageNumber={totalPageNumber} 
-                updateCurrentPage={updateCurrentPage}>
-                
-            </Paginate>
+            {totalPageNumber > 1 && 
+                <Paginate 
+                    currentPageNumber={currentPageNumber} 
+                    totalPageNumber={totalPageNumber} 
+                    updateCurrentPage={updateCurrentPage}>
+                </Paginate>
+            }   
         </FormGroup>
     )
 

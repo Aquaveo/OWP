@@ -6,7 +6,8 @@ const initalRegionsStoreState = {
         pagination:{
             currentPageNumber: 1,
             totalPageNumber: 0,
-            searchReachInput: ""
+            searchReachInput: "",
+            limitPageNumber: 10
         },
         currentRegionReaches:[],
         isVisible: false

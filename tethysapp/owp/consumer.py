@@ -50,6 +50,7 @@ class DataConsumer(AsyncWebsocketConsumer):
             )
         if "type" in text_data_json and text_data_json["type"] == "update_user_reaches":
             # asyncio.run(retrieve_data_from_file(text_data_json['reach_id']))
+            # breakpoint()
             json_obj = await getUserReachesPerRegionsMethod(
                 self.scope["user"].is_authenticated,
                 self.scope["user"].username,

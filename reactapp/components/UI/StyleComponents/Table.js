@@ -37,14 +37,17 @@ const StickyHeader = styled.div`
 `;
 const TableContainer = styled.div`
     top: 60px;
-    height: 300px;
-    overflow-y: scroll;
+    // height: 300px;
+    // overflow-y: scroll;
+    overflow-y: auto;
+    height: fit-content;
     /* Media query for devices with width up to 768px */
     @media (max-width: 768px) {
       width: 100%; /* Take the full width */
       right: 0; /* Align to the right edge */
       flex: none; /* Override the flex property */
       overflow-y: auto; /* Add scroll for overflow content */
+      height: 300px;
     }
 `
 

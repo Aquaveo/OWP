@@ -53,7 +53,7 @@ except Exception:
 
 async_client = httpx.AsyncClient()
 
-limit = asyncio.Semaphore(1)
+limit = asyncio.Semaphore(3)
 
 
 @controller
@@ -742,8 +742,6 @@ async def getUserReachesPerRegionsMethod(
     json_response["type"] = "reach_notifications"
     json_response["command"] = "update_reaches_users"
     json_response["total_reaches"] = 0
-    # breakpoint()
-    # breakpoint()
     if is_authenticated:
         try:
             print("authenticated getUserReachesPerRegionsMethod")
@@ -766,8 +764,8 @@ async def getUserReachesPerRegionsMethod(
                 .filter(Region.user_name == user_name)
                 .order_by(Reach.gnis_name.desc())
             )
+            # total_reaches = len(only_user_reaches_regions.all())
             json_response["total_reaches"] = len(only_user_reaches_regions.all())
-
             if search_term:
                 # breakpoint()
                 only_user_reaches_regions = only_user_reaches_regions.filter(
@@ -776,12 +774,15 @@ async def getUserReachesPerRegionsMethod(
                         cast(Reach.gnis_name, String).like(f"%{search_term}%"),
                     )
                 )
-            if page_number > 0:
-                only_user_reaches_regions = only_user_reaches_regions.offset(
-                    page_offset
-                )
+                json_response["total_reaches"] = len(only_user_reaches_regions.all())
 
-            only_user_reaches_regions = only_user_reaches_regions.limit(page_limit)
+            if page_number > 0:
+                if len(only_user_reaches_regions.all()) > page_offset:
+                    only_user_reaches_regions = only_user_reaches_regions.offset(
+                        page_offset
+                    )
+            if len(only_user_reaches_regions.all()) > page_limit:
+                only_user_reaches_regions = only_user_reaches_regions.limit(page_limit)
 
             print(
                 page_limit,

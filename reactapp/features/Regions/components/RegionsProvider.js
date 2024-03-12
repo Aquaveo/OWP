@@ -9,7 +9,7 @@ export const RegionsProvider = ({ children }) => {
 
   useEffect(() => {
 
-    // add the message handler to receive the regions
+    // add the state handler to receive the regions
     websocketActions.addStateChangeHandler((client)=>{
       if (client.readyState === WebSocket.OPEN) {
         if (regionsState.state.regions.length === 0){
@@ -23,18 +23,21 @@ export const RegionsProvider = ({ children }) => {
      }
 
     })
-
-    websocketActions.addMessageHandler((event)=>{
-        let data = JSON.parse(event);
-        let command = data['command']
+    // add the message handler to receive the regions list
+    const updateRegionsMessageListener = (event)=>{
+      let data = JSON.parse(event);
+      let command = data['command']
+      // console.log(data)
+      if(command ==='update_regions_users'){
         console.log(data)
-        if(command ==='update_regions_users'){
-            console.log(data)
-            actions.loadRegions(data['data'])
-            // console.log(state)
-          }
-      });
-
+        actions.loadRegions(data['data'])
+      }
+    }
+    websocketActions.addMessageHandler(updateRegionsMessageListener);
+    return () => {
+      console.log("unmounting update_regions_users")
+      webSocketState.client.off(updateRegionsMessageListener)
+    }
   }, []);
 
 

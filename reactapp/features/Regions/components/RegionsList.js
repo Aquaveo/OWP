@@ -27,7 +27,7 @@ const RegionsList = ({}) => {
     const updateReachesMessageListener = (event)=>{
       let data = JSON.parse(event);
       let command = data['command']
-      console.log(data)
+      // console.log(data)
       if(command ==='update_reaches_users'){
         console.log(data);
         const numberOfPageItems = Math.ceil(data['total_reaches']/50);
@@ -55,8 +55,8 @@ const RegionsList = ({}) => {
         type: "update_user_reaches",
         region_name: region.value,
         page_number: 1,
-        page_limit: 50,
-        search_term: ""
+        page_limit: regionsState.pagination.limitPageNumber,
+        search_term: regionsState.pagination.searchReachInput
       })
     )
 
@@ -69,13 +69,27 @@ const RegionsList = ({}) => {
           type: "update_user_reaches",
           region_name: getValues()['regionType'].value,
           page_number: regionsState.pagination.currentPageNumber,
-          page_limit: 50,
-          search_term: ""
+          page_limit: regionsState.pagination.limitPageNumber,
+          search_term: regionsState.pagination.searchReachInput
         })
       );
 
   },[regionsState.pagination.currentPageNumber]);
 
+  useEffect(() => {
+    if (!getValues()['regionType']) return; // don't do anything if the regionType is not set
+    setIsLoading(true);
+      webSocketState.client.send(
+        JSON.stringify({
+          type: "update_user_reaches",
+          region_name: getValues()['regionType'].value,
+          page_number: 1,
+          page_limit: regionsState.pagination.limitPageNumber,
+          search_term: regionsState.pagination.searchReachInput
+        })
+      );
+
+  },[regionsState.pagination.searchReachInput]);
 
   return (
 
@@ -104,7 +118,8 @@ const RegionsList = ({}) => {
                   <RegionToolBar 
                     currentPageNumber={regionsState.pagination.currentPageNumber} 
                     totalPageNumber={regionsState.pagination.totalPageNumber} 
-                    updateCurrentPage={regionsActions.updateCurrentPage} 
+                    updateCurrentPage={regionsActions.updateCurrentPage}
+                    setInputSearchTerm={regionsActions.setSearchInput} 
                   />
                   <RegionsTable availableReachesList={regionsState.currentRegionReaches} />
                 </Fragment>            

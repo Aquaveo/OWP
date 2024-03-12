@@ -12,24 +12,24 @@ const RegionsTable = ({availableReachesList}) => {
         <TableContainer>
             <StickyHeader>
                 <StyledRow>
-                    <StyledCol sm={2}>
+                    <StyledCol sm={3}>
                         <p>Reach ID</p>
                     </StyledCol>
-                    <StyledCol sm={2}>
+                    <StyledCol sm={3}>
                         <p>Reach Name</p>
                     </StyledCol>
-                    <StyledCol sm={2}>
+                    <StyledCol sm={3}>
                         <p>A.A.</p>
                     </StyledCol>                
-                    <StyledCol sm={2}>
+                    <StyledCol sm={3}>
                         <p>L.F.</p>
                     </StyledCol>
-                    <StyledCol sm={2}>
+                    {/* <StyledCol sm={2}>
                         <p>M.F.</p>
                     </StyledCol>
                     <StyledCol sm={2}>
                         <p>S.F.</p>
-                    </StyledCol>
+                    </StyledCol> */}
                 </StyledRow>
             </StickyHeader>
             {availableReachesList &&
