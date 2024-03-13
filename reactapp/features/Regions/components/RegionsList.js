@@ -62,16 +62,7 @@ const RegionsList = ({}) => {
     console.log("region_name",region);
     setCurrentRegion(region.value);
     handleMessageSending(region.value,1,regionsState.pagination.limitPageNumber,regionsState.pagination.searchReachInput);
-    // setIsLoading(true);
-    // webSocketState.client.send(
-    //   JSON.stringify({
-    //     type: "update_user_reaches",
-    //     region_name: region.value,
-    //     page_number: 1,
-    //     page_limit: regionsState.pagination.limitPageNumber,
-    //     search_term: regionsState.pagination.searchReachInput
-    //   })
-    // )
+
 
   }
   useEffect(() => {
@@ -83,7 +74,7 @@ const RegionsList = ({}) => {
       regionsState.pagination.limitPageNumber,
       regionsState.pagination.searchReachInput
     );
-    setIsLoading(true);
+    // setIsLoading(true);
       // webSocketState.client.send(
       //   JSON.stringify({
       //     type: "update_user_reaches",

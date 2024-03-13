@@ -308,4 +308,4 @@ const onClickPreviewFile = (layer, event) =>{
 
 
 
-export {onClickStreamFlowLayerHandler,onClickHucRegion,onClickPreviewFile}
+export {onClickStreamFlowLayerHandler,onClickHucRegion,onClickPreviewFile,createClickedReachLayer}

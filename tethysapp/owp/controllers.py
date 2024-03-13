@@ -176,9 +176,8 @@ def saveUserRegionsFromReaches(request):
             session = SessionMaker()
             user_name = request.user.username
             region_name = request.POST.get("name")
-            file_data = request.FILES.getlist("files.0")[0]
-            breakpoint()
-            column_id = request.POST.get("column_name")
+            file_data = request.FILES.getlist("input-file-reaches-regions.0")[0]
+            column_id = request.POST.get("select-reach-columns.value")
 
             # check for file extension
             file_extension = file_data.name.split(".")[-1]
@@ -316,12 +315,14 @@ def saveUserRegions(request):
             user_name = request.user.username
             # breakpoint()
 
-            region_type = request.POST.get("regionType")
+            region_type = request.POST.get("select-file-geometry-type.value")
             region_name = request.POST.get("name")
-            region_layer_color = request.POST.get("layer_color")
+            region_layer_color = "#07f2e7"
 
             if region_type == "huc":
                 region_data = json.loads(request.POST.get("region_data"))
+                breakpoint()
+
                 df = gpd.GeoDataFrame.from_features(region_data)
                 df = df.set_crs(3857)
                 # df.crs = "EPSG:4326"
@@ -766,6 +767,8 @@ async def getUserReachesPerRegionsMethod(
             )
             # total_reaches = len(only_user_reaches_regions.all())
             json_response["total_reaches"] = len(only_user_reaches_regions.all())
+            # breakpoint()
+
             if search_term:
                 # breakpoint()
                 only_user_reaches_regions = only_user_reaches_regions.filter(
@@ -1113,6 +1116,7 @@ async def nwm_api_call(api_base_url, params):
                 # velocities = [d["velocity"] for d in response_await.json()]
 
                 df = pd.DataFrame.from_dict(response_await.json())
+                # breakpoint()
                 dfs_dict = {
                     comid: df.loc[df["feature_id"] == int(comid)]
                     for comid in params["comids"].split(",")
@@ -1160,6 +1164,11 @@ async def nwm_api_call(api_base_url, params):
     except Exception as e:
         print("api_call error 2")
         print(e)
+        response_obj = {}
+        if params.get("forecast_type", "") != "":
+            return {"forecast": {f"{params['forecast_type']}": response_obj}}
+        else:
+            return {"analysis-assim": response_obj}
 
 
 async def getNwmDataAsync(feature_ids, types_ts, reference_time):

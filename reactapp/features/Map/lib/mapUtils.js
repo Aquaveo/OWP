@@ -148,6 +148,20 @@ const getLayerToRemove = (map, layersArray) => {
     return layersToRemove;
 }
 
+const getLayerbyName = (map, layerName) => {
+    const allLayers = map.getLayers().getArray();
+    const onlyFirstLayer = allLayers.find(layer => layer.get('name') === layerName);
+    return onlyFirstLayer
+}
+const zoomToLayerbyName = (map, layerName) => {
+    const source = getLayerbyName(map, layerName).getSource();
+    const layerExtent = source.getExtent();    
+    map.getView().fit(layerExtent, {
+        padding: [100,100,100,100],
+        duration: 3000, // Optional animation duration in milliseconds.
+    });
+}   
+
 const filterLayersNotInMap = (map, layersArray) => {
     const existingLayerNames = getAllLayerNames(map);
 
@@ -173,4 +187,4 @@ const removeLayer = (map,layer) => {
 };  
 
 
-export {onClickHandler, filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove,getClickEventLayers}
+export {onClickHandler, filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove,getClickEventLayers,zoomToLayerbyName}

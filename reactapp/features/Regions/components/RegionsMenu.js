@@ -1,6 +1,7 @@
 import React,{Fragment, useState} from 'react';
 import { RegionsList } from './RegionsList';
 import { useRegionsContext } from '../hooks/useRegionsContext';
+import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 import { CircularMenu } from 'components/UI/CircularMenu/CircularMenu';
 import { useAddRegionForm } from '../hooks/forms/useAddRegionForms';
 // icons for the circular menu
@@ -11,12 +12,18 @@ import {AddRegionForm} from './forms/AddRegionForm';
 
 const RegionsMenu = () => {
   const {state:regionsState, actions:regionsActions} = useRegionsContext();
+  const {state:webSocketState ,actions: websocketActions} = useWebSocketContext();
   const { addForms, set_is_visible } = useAddRegionForm();
 
   const toggleVisibilityRegionListMenu = () => {
     console.log('toggleVisibilityRegionListMenu');
     regionsActions.setIsVisible(!regionsState.isVisible);
     set_is_visible(false);
+    webSocketState.client.send(
+      JSON.stringify({
+        type: "update_user_regions"
+      })
+    );
   }
 
   const toggleVisibilityAddRegionMenu = () => {

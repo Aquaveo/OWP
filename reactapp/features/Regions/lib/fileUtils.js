@@ -72,21 +72,24 @@ const concatGeoJSON = (g1, g2) => {
   }
 }
 
-const makeGeoJSONFromArray = (selectedRegions) =>{
-  console.log(selectedRegions)
-  let finalGeoJSON = {}
-  if(selectedRegions.length < 1){
-    return finalGeoJSON
-  }
-  else{
-      finalGeoJSON = selectedRegions[0];
-    for (let i = 1; i < selectedRegions.length; i++) {
-      finalGeoJSON = concatGeoJSON(finalGeoJSON, selectedRegions[i]);
+const makeGeoJSONFromArray = (selectedRegions) => {
+  console.log(selectedRegions);
+
+  if (!selectedRegions.length) return {};
+
+  // Initialize finalGeoJSON with the first region's data, if available
+  let finalGeoJSON = selectedRegions[0]?.extraProperties?.data || {};
+
+  // Start loop from the second element, if it exists
+  for (let i = 1; i < selectedRegions.length; i++) {
+    const regionData = selectedRegions[i]?.extraProperties?.data;
+    if (regionData) {
+      finalGeoJSON = concatGeoJSON(finalGeoJSON, regionData);
     }
   }
-    return finalGeoJSON;
-}
 
+  return finalGeoJSON;
+};
 
 const checkFileTypeForPreview = (fileName) =>{
   let file_type = "shapefile"
@@ -313,13 +316,17 @@ const deleteAllAddFormLayers = (mapState, mapActions)=>{
 }
 
 const getDataForm = (formData, mapState) => {
-  switch (formData.regionType) {
+  console.log('Form Data:', formData);
+
+  switch (formData.regionType.value) {
     case 'hydroshare':
       return formData;
     case 'reachesList':
       return formData;
     case 'geometry':
-      const selectedHucsLayers = mapState.layers.filter(layer => layer.options.name.includes('_huc_vector_selection'));
+      const selectedHucsLayers = mapState.layers.filter((layer) => layer.options.name.includes('_huc_vector_selection'));
+      // const selectedHucsLayers = mapState.mapObject.getAllLayers().filter(layer => layer.get('name').includes('_huc_vector_selection'));
+
       let finalGeoJSON = makeGeoJSONFromArray(selectedHucsLayers);
       formData ={
         ...formData,
@@ -332,30 +339,25 @@ const getDataForm = (formData, mapState) => {
 }
 
 
-const handleAddFormSubmit = async (formData,ws) => {
-  // console.log('Form Data:', formData);
-  let responseRegions;
+const handleAddFormSubmit = async (formData) => {
+  console.log('Form Data:', formData);
+  
   switch (formData.regionType.value) {
     case "hydroshare":
-        responseRegions = await appAPI.saveUserRegionsFromHydroShareResource(formData);
-        ws.client.send(
-          JSON.stringify({
-            type: "update_user_regions"
-          })
-        );
-        return responseRegions
+        return  await appAPI.saveUserRegionsFromHydroShareResource(formData);
         break;
     case "reachesList":
-        responseRegions = await appAPI.saveUserRegionsFromReaches(formData);
-        return responseRegions
+        return await appAPI.saveUserRegionsFromReaches(formData);
         break;
     case "geometry":
-        break;          
+        return await appAPI.saveUserRegions(formData);
+        break;     
     // You can add more cases here as needed
     default:
         // Optional: handle any case that doesn't match the above
         console.log("Unrecognized region type");
   }
+
 };
 
 
