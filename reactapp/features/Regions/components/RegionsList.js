@@ -16,7 +16,21 @@ const RegionsList = ({}) => {
   const {state:regionsState, actions:regionsActions} = useRegionsContext();
   const {state:webSocketState ,actions: websocketActions} = useWebSocketContext();
   const [isLoading, setIsLoading] = useState(false);
+  const [currentRegion, setCurrentRegion] = useState("");
 
+  const handleMessageSending = (region_name,page_number,page_limit,search_term) =>{
+    setIsLoading(true);
+    webSocketState.client.send(
+      JSON.stringify({
+        type: "update_user_reaches",
+        region_name: region_name,
+        page_number: page_number,
+        page_limit: page_limit,
+        search_term: search_term
+      })
+    )
+  }
+  
   const handleFormSubmit = (data) => {    
     // onSubmit(data); // Call the onSubmit prop with form data
     reset(); // Reset form after submission
@@ -29,11 +43,8 @@ const RegionsList = ({}) => {
       let command = data['command']
       // console.log(data)
       if(command ==='update_reaches_users'){
-        console.log(data);
         const numberOfPageItems = Math.ceil(data['total_reaches']/50);
-        console.log(numberOfPageItems)
         setIsLoading(false);
-        console.log(regionsActions)
         regionsActions.updateCurrentRegionReaches(data['data'])
         regionsActions.setTotalPageNumber(numberOfPageItems)
 
@@ -49,45 +60,65 @@ const RegionsList = ({}) => {
 
   const handleRegionTypeChange = (region)=>{
     console.log("region_name",region);
-    setIsLoading(true);
-    webSocketState.client.send(
-      JSON.stringify({
-        type: "update_user_reaches",
-        region_name: region.value,
-        page_number: 1,
-        page_limit: regionsState.pagination.limitPageNumber,
-        search_term: regionsState.pagination.searchReachInput
-      })
-    )
+    setCurrentRegion(region.value);
+    handleMessageSending(region.value,1,regionsState.pagination.limitPageNumber,regionsState.pagination.searchReachInput);
+    // setIsLoading(true);
+    // webSocketState.client.send(
+    //   JSON.stringify({
+    //     type: "update_user_reaches",
+    //     region_name: region.value,
+    //     page_number: 1,
+    //     page_limit: regionsState.pagination.limitPageNumber,
+    //     search_term: regionsState.pagination.searchReachInput
+    //   })
+    // )
 
   }
   useEffect(() => {
-    if (!getValues()['regionType']) return; // don't do anything if the regionType is not set
+    // if (!getValues()['regionType']) return; // don't do anything if the regionType is not set
+    if (!currentRegion) return; // don't do anything if the regionType is not set
+    handleMessageSending(
+      currentRegion,
+      regionsState.pagination.currentPageNumber,
+      regionsState.pagination.limitPageNumber,
+      regionsState.pagination.searchReachInput
+    );
     setIsLoading(true);
-      webSocketState.client.send(
-        JSON.stringify({
-          type: "update_user_reaches",
-          region_name: getValues()['regionType'].value,
-          page_number: regionsState.pagination.currentPageNumber,
-          page_limit: regionsState.pagination.limitPageNumber,
-          search_term: regionsState.pagination.searchReachInput
-        })
-      );
+      // webSocketState.client.send(
+      //   JSON.stringify({
+      //     type: "update_user_reaches",
+      //     // region_name: getValues()['regionType'].value,
+      //     region_name: currentRegion,
+      //     page_number: regionsState.pagination.currentPageNumber,
+      //     page_limit: regionsState.pagination.limitPageNumber,
+      //     search_term: regionsState.pagination.searchReachInput
+      //   })
+      // );
 
   },[regionsState.pagination.currentPageNumber]);
 
   useEffect(() => {
-    if (!getValues()['regionType']) return; // don't do anything if the regionType is not set
-    setIsLoading(true);
-      webSocketState.client.send(
-        JSON.stringify({
-          type: "update_user_reaches",
-          region_name: getValues()['regionType'].value,
-          page_number: 1,
-          page_limit: regionsState.pagination.limitPageNumber,
-          search_term: regionsState.pagination.searchReachInput
-        })
-      );
+    console.log("searching for reaches", regionsState.pagination.searchReachInput)
+    // if (!getValues()['regionType']) return; // don't do anything if the regionType is not set
+    if (!currentRegion) return; // don't do anything if the regionType is not set
+    handleMessageSending(
+      currentRegion,
+      1,
+      regionsState.pagination.limitPageNumber,
+      regionsState.pagination.searchReachInput
+    );
+    
+    // setIsLoading(true);
+    //   webSocketState.client.send(
+    //     JSON.stringify({
+    //       type: "update_user_reaches",
+    //       region_name: currentRegion,
+    //       // region_name: getValues()['regionType'].value,
+    //       page_number: 1,
+    //       page_limit: regionsState.pagination.limitPageNumber,
+    //       search_term: regionsState.pagination.searchReachInput
+    //     })
+    //   );
 
   },[regionsState.pagination.searchReachInput]);
 

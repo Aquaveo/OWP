@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect } from 'react';
-import { FormGroup,Label,Input } from 'components/UI/StyleComponents/Form.styled';
-
+import React from 'react';
+import { FormGroup,Input,SubmitButton } from 'components/UI/StyleComponents/Form.styled';
+import {FlexContainer} from 'components/UI/StyleComponents/ui';
 import { Paginate } from './Paginate';
 const RegionToolBar = (
     {
@@ -10,24 +10,38 @@ const RegionToolBar = (
         setInputSearchTerm
     }
 )=>{
+    const handleSearchInputChange = () => {
+        const valueSearch = document.getElementById('search_reach').value;
+        console.log(valueSearch);
+        setInputSearchTerm(valueSearch)
+    };
+    // setInputSearchTerm(e.target.value);
 
     return(
         <FormGroup>
-            
-            <Label>Search Reach</Label>
+            <FlexContainer>
             <Input
+                id="search_reach"
                 placeholder='Type a Reach ID or Name'
                 type="text"
                 size="sm"
                 multiple
                 onChange={(e) => {
-                    setInputSearchTerm(e.target.value);
+                    console.log(e.target.value);
+                    if(!e.target.value){
+                        setInputSearchTerm(e.target.value);
+                    }
                     // rest.onChange([...e.target.files]);
                     // if (onChange) onChange(e);
                 }}
-                    // ref={ref}
-                />
-            {totalPageNumber > 1 && 
+
+            />
+            <SubmitButton onClick={()=>{handleSearchInputChange()}}  >Search</SubmitButton>
+
+            </FlexContainer>
+
+
+            {totalPageNumber > 1 &&  //  make sure we have more than one page to show the pagination
                 <Paginate 
                     currentPageNumber={currentPageNumber} 
                     totalPageNumber={totalPageNumber} 
@@ -35,6 +49,7 @@ const RegionToolBar = (
                 </Paginate>
             }   
         </FormGroup>
+
     )
 
 }

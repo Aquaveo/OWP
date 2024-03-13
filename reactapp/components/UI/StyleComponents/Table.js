@@ -40,7 +40,7 @@ const TableContainer = styled.div`
     // height: 300px;
     // overflow-y: scroll;
     overflow-y: auto;
-    height: fit-content;
+    height: 50vh;
     /* Media query for devices with width up to 768px */
     @media (max-width: 768px) {
       width: 100%; /* Take the full width */

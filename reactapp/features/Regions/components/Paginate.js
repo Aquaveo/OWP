@@ -50,7 +50,7 @@ export const Paginate = ({
         <div className="paginate-ctn">
           <div className="round-effect-pagination" onClick={firstPage}> &lsaquo;&lsaquo; </div>
           <div className="round-effect-pagination" onClick={prevPage}> &lsaquo; </div>
-          {items}
+          {/* {items} */}
           <div className="round-effect-pagination" onClick={nextPage}> &rsaquo; </div>
           <div className="round-effect-pagination" onClick={lastPage}> &rsaquo;&rsaquo; </div>
         </div>

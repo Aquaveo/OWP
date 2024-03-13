@@ -24,12 +24,6 @@ const RegionsTable = ({availableReachesList}) => {
                     <StyledCol sm={3}>
                         <p>L.F.</p>
                     </StyledCol>
-                    {/* <StyledCol sm={2}>
-                        <p>M.F.</p>
-                    </StyledCol>
-                    <StyledCol sm={2}>
-                        <p>S.F.</p>
-                    </StyledCol> */}
                 </StyledRow>
             </StickyHeader>
             {availableReachesList &&
@@ -57,18 +51,6 @@ const RegionsTable = ({availableReachesList}) => {
                     <SparklinesLine style={{ stroke: chroma('#AF2BBF').darken(1), fill: 'none' }} />
                   </Sparklines>
                 </StyledCol>
-                {/* <StyledCol sm={2}>
-                  <Sparklines data={availableReach['long_forecast']}>
-                    <SparklinesBars style={{ fill: chroma('#AF2BBF').brighten(1), fillOpacity: '0.75' }} />
-                    <SparklinesLine style={{ stroke: chroma('#AF2BBF').darken(1), fill: 'none' }} />
-                  </Sparklines>
-                </StyledCol>
-                <StyledCol sm={2}>
-                  <Sparklines data={availableReach['long_forecast']}>
-                    <SparklinesBars style={{ fill: chroma('#AF2BBF').brighten(1), fillOpacity: '0.75' }} />
-                    <SparklinesLine style={{ stroke: chroma('#AF2BBF').darken(1), fill: 'none' }} />
-                  </Sparklines>
-                </StyledCol>                 */}
               </StyledRow>
             ))}
         </TableContainer>
