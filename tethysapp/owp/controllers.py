@@ -931,7 +931,6 @@ def get_url_by_filename(file_info, file_name):
 def saveUserRegionsFromHydroShareResource(request):
     response_obj = {}
     response_obj["msge"] = "success"
-
     try:
         if request.user.is_authenticated:
             # Create a session object in preparation for interacting with the database
@@ -942,10 +941,12 @@ def saveUserRegionsFromHydroShareResource(request):
             session = SessionMaker()
             user_name = request.user.username
             region_name = request.POST.get("name")
-            resource_id = request.POST.get("hydrosharePublicRegions")
+            resource_id = request.POST.get("select-hydroshare-regions.value")
 
             # please create own function to auth and return hs object
             hs = get_oauth_hs_sync(request)
+            breakpoint()
+
             list_files = hs.resource(resource_id).files.all().json()["results"]
             url_file = get_url_by_filename(list_files, "reaches_nhd_data.csv")
             df = pd.read_csv(url_file, index_col=False)

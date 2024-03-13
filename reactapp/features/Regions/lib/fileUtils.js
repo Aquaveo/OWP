@@ -332,15 +332,22 @@ const getDataForm = (formData, mapState) => {
 }
 
 
-const handleAddFormSubmit = async (formData) => {
+const handleAddFormSubmit = async (formData,ws) => {
   // console.log('Form Data:', formData);
   let responseRegions;
   switch (formData.regionType.value) {
     case "hydroshare":
         responseRegions = await appAPI.saveUserRegionsFromHydroShareResource(formData);
+        ws.client.send(
+          JSON.stringify({
+            type: "update_user_regions"
+          })
+        );
+        return responseRegions
         break;
     case "reachesList":
         responseRegions = await appAPI.saveUserRegionsFromReaches(formData);
+        return responseRegions
         break;
     case "geometry":
         break;          

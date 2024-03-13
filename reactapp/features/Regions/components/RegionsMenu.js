@@ -21,6 +21,7 @@ const RegionsMenu = () => {
 
   const toggleVisibilityAddRegionMenu = () => {
     regionsActions.setIsVisible(false);
+    regionsActions.reset(); //reset the regions reaches list
     set_is_visible(!addForms.isVisible);
   }
   const setVisibleOffAddRegionMenu = () => {
@@ -30,14 +31,13 @@ const RegionsMenu = () => {
   // Add Region circular menu items
   const addRegionsItems = [
     { icon: Add, value: "Add region", label: "Add Region", clickEvent:()=>{toggleVisibilityAddRegionMenu()}},
-    // { icon: Minus, value: "Delete Region", label: "Delete Region", clickEvent:()=>{console.log('Delete Region Clicked')} },
     { icon: DataBarHorizontal, value: "List Regions", label: "List Regions", clickEvent:()=>{toggleVisibilityRegionListMenu()}},
   ];
 
  
   return (
     <Fragment>
-          {regionsState.isVisible ? <RegionsList/> : null}
+          {regionsState.isVisible && <RegionsList/> }
           {addForms.isVisible && <AddRegionForm setVisibleOff={setVisibleOffAddRegionMenu}/> }
           <CircularMenu items={addRegionsItems}/>
     </Fragment>

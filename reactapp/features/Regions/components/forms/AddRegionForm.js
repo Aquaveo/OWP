@@ -24,7 +24,15 @@ const AddRegionForm = ({setVisibleOff}) => {
 
   const handleFormSubmit = (data) => {    
     getDataForm(data,mapState) // Get the form data
-    handleAddFormSubmit(data); // Call the onSubmit prop with form data
+    const responseRegion = handleAddFormSubmit(data,webSocketState); // Call the onSubmit prop with form data
+    console.log(responseRegion)
+    // if (regionsState.state.regions.length === 0){
+    //   client.send(
+    //     JSON.stringify({
+    //       type: "update_user_regions"
+    //     })
+    //   );
+    // }
     reset(); // Reset form after submission
     deleteAllSubForms(); //Let's delete all the subforms
     deleteAllAddFormLayers(mapState, mapActions) //Let's delete all the layers

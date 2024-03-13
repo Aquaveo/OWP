@@ -15,7 +15,8 @@ export const useRegions = ({reducer = regionsReducer} = {}) => {
         updateCurrentRegionReaches: (reaches)=> updateRegions({type: RegionsActionsTypes.update_current_region_reaches, payload: reaches}),
         setSearchInput: (searchInput)=> updateRegions({type: RegionsActionsTypes.set_search_input, payload: searchInput}),
         setIsVisible: (isVisible)=> updateRegions({type: RegionsActionsTypes.set_is_visible, payload: isVisible}),
-        appendRegionReaches: (reaches)=> updateRegions({type: RegionsActionsTypes.append_region_reaches, payload: reaches})
+        appendRegionReaches: (reaches)=> updateRegions({type: RegionsActionsTypes.append_region_reaches, payload: reaches}),
+        reset: ()=> updateRegions({type: RegionsActionsTypes.reset})
     };
 
     return {

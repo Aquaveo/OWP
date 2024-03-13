@@ -7,7 +7,7 @@ const initalRegionsStoreState = {
             currentPageNumber: 1,
             totalPageNumber: 0,
             searchReachInput: "",
-            limitPageNumber: 10
+            limitPageNumber: 20
         },
         currentRegionReaches:[],
         isVisible: false
@@ -84,6 +84,16 @@ const regionsReducer = (state, action) => {
                     isVisible: action.payload
                 }
             }
+        case RegionsActionsTypes.append_region_reaches:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    currentRegionReaches: [...state.state.currentRegionReaches, ...action.payload]
+                }
+            }
+        case RegionsActionsTypes.reset:
+            return initalRegionsStoreState;
         default:
             return state;
     }

@@ -7,6 +7,7 @@ const RegionsActionsTypes = {
     append_region_reaches: 'append_region_reaches',
     set_search_input: 'set_search_input',
     set_is_visible: 'set_is_visible',
+    reset: 'reset'
 }
 
 export {RegionsActionsTypes};
