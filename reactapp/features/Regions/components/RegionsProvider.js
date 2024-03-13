@@ -29,7 +29,7 @@ export const RegionsProvider = ({ children }) => {
         setTimeout(() => {
           console.log("zooming to layer")
           zoomToLayerbyName(mapState.mapObject, "reach_on_click_from_region");
-        }, 2000);
+        }, 1000);
 
       }
   

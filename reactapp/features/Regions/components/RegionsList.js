@@ -9,12 +9,17 @@ import { FlexContainer, Image } from 'components/UI/StyleComponents/ui';
 import { useForm, Controller } from 'react-hook-form';
 import { FormContainer, Form, SubmitButton } from 'components/UI/StyleComponents/Form.styled';
 import {Minimize} from '@styled-icons/material-outlined'
+import { useMapContext } from 'features/Map/hooks/useMapContext';
 import { CircularButton } from 'components/UI/StyleComponents/ui';
+import {zoomToLayerbyName} from 'features/Map/lib/mapUtils';
+
+import {createClickedReachLayer} from 'lib/mapEvents';
 
 const RegionsList = ({}) => {
   const { control, handleSubmit, reset,getValues } = useForm();
   const {state:regionsState, actions:regionsActions} = useRegionsContext();
   const {state:webSocketState ,actions: websocketActions} = useWebSocketContext();
+  const { state:mapState, actions: mapActions } = useMapContext(); // Rename actions to mapActions
   const [isLoading, setIsLoading] = useState(false);
   const [currentRegion, setCurrentRegion] = useState("");
 
@@ -61,6 +66,17 @@ const RegionsList = ({}) => {
   const handleRegionTypeChange = (region)=>{
     console.log("region_name",region);
     setCurrentRegion(region.value);
+    
+    mapActions.delete_layer_by_name("region_border") // delete any previous layer
+    //create the layer
+    const regionObject = regionsState.regions.find(r => r.name === region.value) // get the regions from the regions
+    const layer = createClickedReachLayer("region_border",regionObject.geom)
+    mapActions.addLayer(layer);
+    setTimeout(() => {
+      console.log("zooming to layer")
+      zoomToLayerbyName(mapState.mapObject, "region_border");
+    }, 1000);
+
     handleMessageSending(region.value,1,regionsState.pagination.limitPageNumber,regionsState.pagination.searchReachInput);
 
 
@@ -74,17 +90,6 @@ const RegionsList = ({}) => {
       regionsState.pagination.limitPageNumber,
       regionsState.pagination.searchReachInput
     );
-    // setIsLoading(true);
-      // webSocketState.client.send(
-      //   JSON.stringify({
-      //     type: "update_user_reaches",
-      //     // region_name: getValues()['regionType'].value,
-      //     region_name: currentRegion,
-      //     page_number: regionsState.pagination.currentPageNumber,
-      //     page_limit: regionsState.pagination.limitPageNumber,
-      //     search_term: regionsState.pagination.searchReachInput
-      //   })
-      // );
 
   },[regionsState.pagination.currentPageNumber]);
 
@@ -99,18 +104,6 @@ const RegionsList = ({}) => {
       regionsState.pagination.searchReachInput
     );
     
-    // setIsLoading(true);
-    //   webSocketState.client.send(
-    //     JSON.stringify({
-    //       type: "update_user_reaches",
-    //       region_name: currentRegion,
-    //       // region_name: getValues()['regionType'].value,
-    //       page_number: 1,
-    //       page_limit: regionsState.pagination.limitPageNumber,
-    //       search_term: regionsState.pagination.searchReachInput
-    //     })
-    //   );
-
   },[regionsState.pagination.searchReachInput]);
 
   return (

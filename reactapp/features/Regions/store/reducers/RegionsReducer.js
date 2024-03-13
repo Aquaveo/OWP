@@ -10,7 +10,14 @@ const initalRegionsStoreState = {
             limitPageNumber: 20
         },
         currentRegionReaches:[],
-        isVisible: false
+        isVisible: false,
+        currentRegion:{
+            name: "",
+            geom: "",
+            reqion_type:"",
+            layer_color:"",
+            number_reaches: 0,
+        }
     },
     actions:{}
 }
