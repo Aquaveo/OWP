@@ -40,6 +40,8 @@ export const RegionsProvider = ({ children }) => {
     return () => {
       console.log("unmounting update_regions_users")
       webSocketState.client.off(updateRegionsMessageListener)
+      console.log("reseting regions")
+      actions.reset()
     }
   }, []);
 

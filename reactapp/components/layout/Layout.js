@@ -10,17 +10,15 @@ import NotFound from 'components/error/NotFound';
 import Container from 'react-bootstrap/Container';
 import { AppContext } from 'components/context';
 import { Button } from 'react-bootstrap';
-import { SubMenu } from 'components/subMenus/submenu';
-function Layout({navLinks, routes,handleShowRegionMenu,availableRegions,navVisible, setNavVisible, children}) {
+function Layout({navLinks, routes, children}) {
   const {tethysApp} = useContext(AppContext);
-  // const [navVisible, setNavVisible] = useState(false);
+  const [navVisible, setNavVisible] = useState(false);
 
   return (
     <div className="h-100">
         <Header onNavChange={setNavVisible} />
         <NavMenu navTitle="Menu"  navVisible={navVisible} onNavChange={setNavVisible}>
           
-        {/* <SubMenu name="Regions" handleShowRegionMenu={handleShowRegionMenu} availableRegions={availableRegions} /> */}
         </NavMenu>
         <Routes>
           {routes}
