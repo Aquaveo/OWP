@@ -37,6 +37,8 @@ const WebSocketProvider = ({ children, url }) => {
     messageListeners.forEach(listener => client.on(listener));
     
     return () => {
+      console.log("unmounting ws message listener")
+
       messageListeners.forEach(listener => client.off(listener));
     }
   }, [webSocketState.state.messageListeners])
@@ -49,6 +51,9 @@ const WebSocketProvider = ({ children, url }) => {
 
     const { client, stateChangeListeners } = webSocketState.state;
     stateChangeListeners.forEach(listener => client.onStateChange(listener));
+    return () => {
+      console.log("unmounting ws state change listener")
+    }
   }, [webSocketState.state.stateChangeListeners])
 
 
@@ -58,6 +63,9 @@ const WebSocketProvider = ({ children, url }) => {
     if (!webSocketState.state.client || !webSocketState.state.message) return;
     const { client, message } = webSocketState.state;
     client.send(message);
+    return () => {
+      console.log("unmounting ws message")
+    }
   }, [webSocketState.state.message])
 
 

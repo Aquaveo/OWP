@@ -5,6 +5,7 @@ import Layout from 'components/layout/Layout';
 import Loader from 'components/loader/Loader';
 import OWPView from 'views/OwpView';
 import { WebSocketProvider } from 'features/WebSocket/providers/WebSocketProvider';
+import NwpProductsProvider from 'features/NwpProducts/providers/NwpProductsProvider';
 import Map from 'features/Map/components/Map';
 import { getWsURL } from 'lib/utils';
 import LearnReact from 'views/learn/LearnReact';
@@ -42,8 +43,9 @@ function App() {
                       <Fragment>
                         <WebSocketProvider url={ws} >
                           <Map>
-                            <OWPView />
-
+                            <NwpProductsProvider>
+                              <OWPView />
+                            </NwpProductsProvider>
                           </Map>
                         </WebSocketProvider>
                       </Fragment>

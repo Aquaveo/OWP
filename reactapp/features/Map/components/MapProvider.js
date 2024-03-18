@@ -22,28 +22,16 @@ export const MapProvider = ({ children,layers }) => {
     state.state.mapObject.on('loadend', function () {
       actions.toggle_loading_layers();
     });
-    // state.state.mapObject.on('pointermove', (e) => {
-    //   console.log("pointer move");
-    //   // const pixel = state.state.mapObject.getEventPixel(e.originalEvent);
-    //   let layers = []
-    //   state.state.mapObject.forEachLayerAtPixel(
-    //     e.pixel,
-    //     layer => {
-    //       if(layer.get('events').length > 0 && layer.get('events').findIndex(event => event.type === 'click') > -1){
-    //         state.state.mapObject.getTargetElement().style.cursor = 'pointer'
-    //         layers.push(layer);
-            
-    //       }
-    //     }
-    //   )
-    //   console.log("layers",layers.length);
-    // });
-
+    // add the event for cursor in map
     // adding layers 
     layers.forEach(layer => {
       console.log("adding layer to store", layer);
       actions.addLayer(layer);
     });
+    return  () => {
+      console.log("unmounting map");
+      actions.reset_map();
+    }
 
   }, []);
 
@@ -51,6 +39,7 @@ export const MapProvider = ({ children,layers }) => {
     if (state.state.layers.length === 0 ) return;
     console.log("layers changed", state.state.layers);
     const layersToRemove = getLayerToRemove(state.state.mapObject, state.state.layers);
+    const layersToAdd = filterLayersNotInMap(state.state.mapObject, state.state.layers);
     if (layersToRemove.length > 0){
       layersToRemove.forEach(layer => {
         console.log("removing layer", layer);
@@ -58,16 +47,21 @@ export const MapProvider = ({ children,layers }) => {
       });
     }
     else{
-      const layersToAdd = filterLayersNotInMap(state.state.mapObject, state.state.layers);
       layersToAdd.forEach(layerInfo => {
         console.log("adding layer", layerInfo);
-        addLayer(state.state.mapObject,layerInfo);
+        addLayer(state.state.mapObject,layerInfo,actions);
 
       });
     }
 
 
     return () => {
+      if (state.state.mapObject) return
+      // remove all layers if map was unmounted
+      actions.delete_all_layers();
+      state.state.mapObject.getAllLayers().forEach(layer => {
+        state.state.mapObject.removeLayer(layer);
+      })
 
     };
   // Ensures the hook re-runs only if the map or layer reference changes

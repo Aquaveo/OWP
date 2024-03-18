@@ -6,6 +6,9 @@ const MapActionsTypes = {
     change_zoom: 'CHANGE_ZOOM',
     change_center: 'CHANGE_CENTER',
     toggle_full_map: 'TOGGLE_FULL_MAP',
+    delete_all_layers: 'REMOVE_ALL_LAYERS',
+    reset_map: 'RESET_MAP'
+    
 }
   
 export { MapActionsTypes }

@@ -2,8 +2,10 @@
 const handleMessage = (
     message,
     updateProductsState,
-    handleModalState
+    handleModalState,
+    setProductsLoading
     ) =>{
+    console.log("handleMessage")
     let data = JSON.parse(message);
     let command = data['command']
     // console.log("command", data)
@@ -16,6 +18,7 @@ const handleMessage = (
       }));
       updateProductsState(product_name, ts);
       handleModalState(true);
+      setProductsLoading(false);
     }
 }
 

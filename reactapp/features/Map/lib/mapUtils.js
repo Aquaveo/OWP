@@ -75,7 +75,7 @@ const onClickHandler = async (event) => {
     }
 }
 
-const useLayerFactory = (layerType, options) => {
+const useLayerFactory = (layerType, options,mapAction) => {
     
     const layer = () => {
       let source = null;
@@ -90,6 +90,7 @@ const useLayerFactory = (layerType, options) => {
           case 'TileImageArcGISRest':
               source = TileImageArcGISRest(options.url, options.params);
               source.on('imageloaderror', function(event) {
+                mapAction.delete_layer_by_name(options.name);
                 alert('There is an error loading the nwm stream layer: https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/');
               });
               break;
@@ -172,8 +173,8 @@ const filterLayersNotInMap = (map, layersArray) => {
 }
 
 
-const addLayer = (map, layerInfo) => {
-    const layer = useLayerFactory(layerInfo.layerType, layerInfo.options);
+const addLayer = (map, layerInfo,mapAction) => {
+    const layer = useLayerFactory(layerInfo.layerType, layerInfo.options,mapAction);
     let {events, priority} = layerInfo.extraProperties;
     layer.set('events', events);
     layer.set('priority', priority);
@@ -187,4 +188,4 @@ const removeLayer = (map,layer) => {
 };  
 
 
-export {onClickHandler, filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove,getClickEventLayers,zoomToLayerbyName}
+export {onClickHandler, filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove,getClickEventLayers,zoomToLayerbyName, getLayerbyName}

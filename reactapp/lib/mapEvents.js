@@ -3,7 +3,7 @@ import {getDistanceByZoom,processStreamServiceQueryResult} from '../features/Map
 import Point from "@arcgis/core/geometry/Point.js";
 import {Stroke, Style} from 'ol/style.js';
 import GeoJSON from 'ol/format/GeoJSON';
-
+import { getLayerbyName } from '../features/Map/lib/mapUtils';
 
 // some info about the function here:https://gist.github.com/xemoka/cb4cf95018fdc2cebac4da8f0c308723
 // an issue in this: https://github.com/openlayers/openlayers/issues/9721
@@ -17,13 +17,18 @@ const onClickStreamFlowLayerHandler = (
     handleModalState,
     getForecastData,
     updateCurrentStationID,
+    setProductsLoading,
     mapActions
     ) => {
-    // remove the reach layer if it exists
-    mapActions.delete_layer_by_name(`reach_on_click_from_region`);
-    
+    // make function to get the layer, and if there is then execute.
     let mapServerInfo = []
     let mapObject = event.map;
+    // remove the reach layer if it exists
+    if (getLayerbyName(mapObject,`reach_on_click_from_region`)){
+        //only if there is a layer already
+        mapActions.delete_layer_by_name(`reach_on_click_from_region`);
+    }
+
     let clickCoordinate = event.coordinate;
     // const pixel = mapObject.getEventPixel(event.originalEvent)
     // const clickCoordinate = mapObject.getCoordinateFromPixel(pixel)
@@ -57,7 +62,10 @@ const onClickStreamFlowLayerHandler = (
         const url = new URL(`${urlService}/5/query`);
         url.search = new URLSearchParams(queryLayer5);
         mapActions.toggle_loading_layers();
+        setProductsLoading(true);
         axios.get(url).then((response) => {
+            // handleModalState(true);
+
             const filteredArray = response.data['features'][0]
             const actual_zoom = mapObject.getView().getZoom()
             var esriMapPoint = new Point({
@@ -83,7 +91,7 @@ const onClickStreamFlowLayerHandler = (
             // handleShow();
             let dataRequest = {
                 station_id: stationID,
-                products: currentProducts.state.products
+                products: currentProducts.products
             }
             // appAPI.getForecastData(dataRequest);
             getForecastData(dataRequest);
@@ -126,6 +134,8 @@ const onClickStreamFlowLayerHandler = (
 
         }).catch((error) => {
             console.log(error);
+            setProductsLoading(false);
+
             handleModalState(false);
             mapActions.toggle_loading_layers();
             //try to fix the error or

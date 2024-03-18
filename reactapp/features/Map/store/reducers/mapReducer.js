@@ -71,6 +71,22 @@ const mapReducer = (state, action) => {
                   isFullMap: !state.state.isFullMap
               }
         };
+      case MapActionsTypes.delete_all_layers:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    layers: []
+                }
+            };
+      case MapActionsTypes.reset_map:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    mapObject: null
+                }
+            };
       default:
           return state;
   }

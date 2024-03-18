@@ -157,9 +157,18 @@ const initializeChart = (containerId, data, onClickLegend,onPointerOverLegend,on
       legendLabelText: `[{stroke}]${item['tooltip_text']}[/]`,
       legendRangeLabelText: `[{stroke}]${item['tooltip_text']}[/]`,
     }));
-    series.data.setAll(item.data);
+    // console.log(item.name_product, item.data,item.is_requested)
+    setTimeout(() => {
+      series.data.setAll(item.data);
+    }, 100);
+
     if (!item.is_requested){
+      // console.log('hiding',item.name_product)
       series.hide();
+    }
+    else{
+      series.appear(1000,500);
+
     }
 
     // Add a legend if needed
@@ -167,9 +176,7 @@ const initializeChart = (containerId, data, onClickLegend,onPointerOverLegend,on
     series.strokes.template.setAll({
       strokeWidth: 2
     });
-    // Make stuff animate on load
-    // https://www.amcharts.com/docs/v5/concepts/animations/
-    series.appear(1000,500);
+
   });
 
 
@@ -199,25 +206,6 @@ const initializeChart = (containerId, data, onClickLegend,onPointerOverLegend,on
   var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
   cursor.lineX.set("forceHidden", true);
   cursor.lineY.set("forceHidden", true);
-
-  // var title = am5.Label.new(root, {
-  //   text:  titleProp,
-  //   fontSize: 16,
-  //   textAlign: "center",
-  //   x: am5.percent(50),
-  //   centerX: am5.percent(50),
-  // })
-
-  // var subtitle = am5.Label.new(root, {
-  //   text: subtitleProp,
-  //   fontSize: 12,
-  //   fontWeight: "bold",
-  //   textAlign: "center",
-  //   x: am5.percent(50),
-  //   centerX: am5.percent(50),
-  // })
-  //   chart.children.unshift(title);
-  //   chart.topAxesContainer.children.push(subtitle);
 
 
   chart.events.on("datavalidated", function(ev) {
@@ -294,8 +282,10 @@ const updateSeries = (chart,data) => {
         const item = data[key];
         const series = chart.series.values.find(s => s.get('name') === item.name_product);
         if (item.is_requested) {
+          // console.log('showing',item.name_product)
           if (series) {
             series.data.setAll(item.data);
+            series.appear(1000,500);
             series.show();
             series.strokes.template.setAll({
               strokeWidth: 2

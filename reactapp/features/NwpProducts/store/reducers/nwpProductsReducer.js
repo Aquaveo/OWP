@@ -129,6 +129,7 @@ const initialCurrentNwpProducts =
     },
     currentGeometry: {},
     currentMetadata:[],
+    areProductsLoading: false,
     isModalOpen: false,
     currentStationID: null
   }
@@ -212,6 +213,14 @@ const reducerProducts = (state, action) => {
         state: {
           ...state.state,
           currentStationID: action.stationID
+        }
+      };
+    case nwpmActionsTypes.are_products_loading:
+      return {
+        ...state,
+        state: {
+          ...state.state,
+          areProductsLoading: action.areProductsLoading
         }
       };
     default:
