@@ -2,6 +2,7 @@ import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
+import {createIndividualLegend} from './legendAuxiliary'
 
 const productKeys = [
     'analysis_assimilation',
@@ -22,10 +23,9 @@ const productKeys = [
   ];
   
 // Define handleUpdate outside of the useEffect
-const handleUpdate = (key, chartRef, currentProducts, updateSeries) => {
+const handleUpdate = (key, chartRef, currentProducts, updateSeries, legendContainer, toggleProduct) => {
     if (chartRef.current && currentProducts.products[key]) {
-        // console.log("updating series for", key);
-        updateSeries(chartRef.current, currentProducts.products[key]);
+        updateSeries(chartRef.current, currentProducts.products[key],legendContainer,toggleProduct);
     }
 };
 
@@ -134,7 +134,7 @@ const initializeChart = (containerId, title, subtitle) => {
   
 
 
-const updateSeries = (chart,item) => {
+const updateSeries = (chart,item,legendContainer,toggleProduct) => {
   const series = chart.series.values.find(s => s.get('name') === item.name_product);
 
   var tooltip = am5.Tooltip.new(chart.root, {
@@ -159,12 +159,44 @@ const updateSeries = (chart,item) => {
       }));
   
       defineSeries(item,series)
-      chart.children.values[chart.children.values.length-1].data.push(series)
+      // chart.children.values[chart.children.values.length-1].data.push(series)
+      createOrAddLegend(legendContainer,chart.root,chart,item, toggleProduct,series)
+      // createIndividualLegend(legendContainer,chart.root,chart,item.name_product, toggleProduct)
+      
+      // legendContainer.children.values.forEach(element => {
+      //   if(element.get('name') === item.name_product){
+      //     element.data.push(series)
+      //   }
+      // });
+
     }
     // if the product data is already in the chart, then update the data and show or hide the serie.
     else{
       defineSeries(item,series)
     }
+  }
+
+}
+
+const createOrAddLegend = (legendContainer,root,chart,item,toggleProduct,series ) =>{
+  console.log(legendContainer.children.values)
+
+  // Determine the legend name based on the product name.
+  let nameLegend;
+  if (['analysis_assimilation', 'short_range', 'medium_range_blend'].includes(item.name_product)) {
+    nameLegend = 'National Water Model';
+  } else {
+    nameLegend = `${item.name_product.split('_')[0]} Range Ensembles`;
+  }
+
+  const legend = legendContainer.children.values.find(s => s.get('name','').includes(nameLegend) || s.get('name','') === nameLegend);
+
+  if(legend){
+    legend.data.push(series)
+  }
+  else{
+    let new_legend = createIndividualLegend(legendContainer, root, chart,nameLegend,toggleProduct)
+    new_legend.data.push(series)
   }
 
 }

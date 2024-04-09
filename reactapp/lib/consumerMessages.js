@@ -110,11 +110,6 @@ const handleMessage = (
         updateProductsState('medium_range_blend', series);
       }
 
-      // let ts = data['data'][0]['data'].map(obj => ({
-      //   value: obj.value,
-      //   'forecast-time': new Date(obj['forecast-time']).getTime()
-      // }));
-      // updateProductsState(product_name, ts);
       handleModalState(true);
       setProductsLoading(false);
     }
