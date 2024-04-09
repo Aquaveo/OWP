@@ -9,7 +9,9 @@ const LineChart = ({}) => {
   const {state:currentProducts, actions:nwpActions} = useNwpProductsContext();
 
   useEffect(() => {
-    chartRef.current = initializeChart('chartdiv', currentProducts.products) // initialize the chart
+    const title = currentProducts.currentMetadata[0]
+    const subtitle = currentProducts.currentMetadata[1]
+    chartRef.current = initializeChart('chartdiv',title, subtitle) // initialize the chart
     initializeLegend(chartRef.current.root,chartRef.current,nwpActions.toggleProduct) // add a legend
     return () => {
       if (chartRef.current && !currentProducts.isModalOpen){

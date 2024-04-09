@@ -30,7 +30,7 @@ const handleUpdate = (key, chartRef, currentProducts, updateSeries) => {
 };
 
 
-const initializeChart = (containerId, data, onClickLegend,onPointerOverLegend,onPointerOutLegend) => {
+const initializeChart = (containerId, title, subtitle) => {
     // console.log(containerId,data, onClickLegend);
     const root = am5.Root.new(containerId);
     
@@ -109,14 +109,32 @@ const initializeChart = (containerId, data, onClickLegend,onPointerOverLegend,on
       chart.svgContainer.htmlElement.style.height = targetHeight + "px";
     });
       
+    // add title and subtitle
+    chart.children.unshift(am5.Label.new(root, {
+      text: subtitle,
+      fontSize: 14,
+      textAlign: "center",
+      x: am5.percent(50),
+      centerX: am5.percent(50)
+    }));
+
+    chart.children.unshift(am5.Label.new(root, {
+      text: title,
+      fontSize: 25,
+      fontWeight: "500",
+      textAlign: "center",
+      x: am5.percent(50),
+      centerX: am5.percent(50),
+      paddingTop: 0,
+      paddingBottom: 0
+    }));
+
     return chart; // Return the chart,root, and legend for further manipulation if needed
   };
   
 
 
 const updateSeries = (chart,item) => {
-  // console.log(item);
-
   const series = chart.series.values.find(s => s.get('name') === item.name_product);
 
   var tooltip = am5.Tooltip.new(chart.root, {
@@ -141,7 +159,7 @@ const updateSeries = (chart,item) => {
       }));
   
       defineSeries(item,series)
-      chart.children.values[1].data.push(series)
+      chart.children.values[chart.children.values.length-1].data.push(series)
     }
     // if the product data is already in the chart, then update the data and show or hide the serie.
     else{
