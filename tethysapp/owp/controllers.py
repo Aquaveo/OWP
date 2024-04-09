@@ -574,9 +574,15 @@ def previewUserColumnsFromFile(request):
 @controller
 def getForecastData(request):
     station_id = request.GET.get("station_id")
-    products = json.loads(request.GET.get("products"))
+    products = [
+        "analysis_assimilation",
+        "short_range",
+        "medium_range",
+        "long_range",
+        "medium_range_blend",
+    ]
+    # products = json.loads(request.GET.get("products"))
     print(station_id)
-    # breakpoint()
     response = "executing"
     try:
         api_base_url = BASE_API_URL
@@ -612,12 +618,17 @@ def updateForecastData(station_id, products):
 async def make_api_calls(api_base_url, station_id, products):
     list_async_task = []
     for product in products:
-        if products[product].get("is_requested") == True:
-            method_name = products[product].get("name_product")
-            task_get_forecast_data = asyncio.create_task(
-                api_forecast_call(api_base_url, station_id, method_name)
-            )
-            list_async_task.append(task_get_forecast_data)
+        task_get_forecast_data = asyncio.create_task(
+            api_forecast_call(api_base_url, station_id, product)
+        )
+        list_async_task.append(task_get_forecast_data)
+
+        # if products[product].get("is_requested") == True:
+        #     method_name = products[product].get("name_product")
+        #     task_get_forecast_data = asyncio.create_task(
+        #         api_forecast_call(api_base_url, station_id, method_name)
+        #     )
+        #     list_async_task.append(task_get_forecast_data)
 
     results = await asyncio.gather(*list_async_task)
 
@@ -631,9 +642,6 @@ async def api_forecast_call(api_base_url, station_id, method_name):
     # breakpoint()
 
     try:
-        print(f"{api_base_url}/{method_name}/streamflow/")
-        print(station_id)
-        print(method_name)
         # response_await = await async_client.get(
         #     url = f"{api_base_url}/{method_name}/streamflow",
         #     params = {
@@ -642,11 +650,17 @@ async def api_forecast_call(api_base_url, station_id, method_name):
         #     timeout=None
         # )
         async with httpx.AsyncClient(verify=False) as client:
+            # response_await = await client.get(
+            #     url=f"{api_base_url}/{method_name}/streamflow",
+            #     params={"station_id": station_id},
+            #     timeout=None,
+            # )
             response_await = await client.get(
-                url=f"{api_base_url}/{method_name}/streamflow",
-                params={"station_id": station_id},
+                url=f"{api_base_url}/reaches/{station_id}/streamflow",
+                params={"series": method_name},
                 timeout=None,
             )
+        # breakpoint()
         # print(response_await)
         await channel_layer.group_send(
             "notifications_owp",

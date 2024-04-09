@@ -28,7 +28,7 @@ const onPointerOut = (event,chart) => {
   // As series list is data of a legend, dataContext is series
   chart.series.each(function(chartSeries) {
     let strokeWidth = 1
-    if(chartSeries.get('name').includes("mean") || chartSeries.get('name') === "analysis_assim" || chartSeries.get('name') === "short_range"){
+    if(chartSeries.get('name').includes("mean") || chartSeries.get('name') === "analysis_assimilation" || chartSeries.get('name') === "short_range"){
       strokeWidth = 2
     }
     chartSeries.strokes.template.setAll({
@@ -138,46 +138,42 @@ const initializeChart = (containerId, data, onClickLegend,onPointerOverLegend,on
   );
 
   // Loop through the data object and add series where is_requested is true
-  Object.keys(data).forEach(key => {
-    const item = data[key];
+  // Object.keys(data).forEach(key => {
+  //   const item = data[key];
+  //   var tooltip = am5.Tooltip.new(root, {
+  //     labelText: `${item['tooltip_text']}: {valueY}`
+  //   })
 
-    var tooltip = am5.Tooltip.new(root, {
-      labelText: `${item['tooltip_text']}: {valueY}`
-    })
-    const series = chart.series.push(am5xy.LineSeries.new(root, {
-      name: item.name_product,
-      xAxis: xAxis,
-      yAxis: yAxis,
-      valueYField: "value",
-      valueXField: "forecast-time",
-      stroke: am5.color(item.color),
-      fill: am5.color(item.color),
-      maxDeviation:1,
-      tooltip: tooltip,
-      legendLabelText: `[{stroke}]${item['tooltip_text']}[/]`,
-      legendRangeLabelText: `[{stroke}]${item['tooltip_text']}[/]`,
-    }));
-    // console.log(item.name_product, item.data,item.is_requested)
-    setTimeout(() => {
-      series.data.setAll(item.data);
-    }, 100);
+  //   const series = chart.series.push(am5xy.LineSeries.new(root, {
+  //     name: item.name_product,
+  //     xAxis: xAxis,
+  //     yAxis: yAxis,
+  //     valueYField: "value",
+  //     valueXField: "forecast-time",
+  //     stroke: am5.color(item.color),
+  //     fill: am5.color(item.color),
+  //     maxDeviation:1,
+  //     tooltip: tooltip,
+  //     legendLabelText: `[{stroke}]${item['tooltip_text']}[/]`,
+  //     legendRangeLabelText: `[{stroke}]${item['tooltip_text']}[/]`,
+  //   }));
+  //   setTimeout(() => {
+  //     series.data.setAll(item.data);
+  //   }, 100);
 
-    if (!item.is_requested){
-      // console.log('hiding',item.name_product)
-      series.hide();
-    }
-    else{
-      series.appear(1000,500);
+  //   if (!item.is_visible){
+  //     series.hide();
+  //   }
+  //   else{
+  //     series.appear(1000,500);
+  //   }
+  //   // Add a legend if needed
+  //   // chart.set("legend", am5.Legend.new(root, {}));
+  //   series.strokes.template.setAll({
+  //     strokeWidth: 2
+  //   });
 
-    }
-
-    // Add a legend if needed
-    // chart.set("legend", am5.Legend.new(root, {}));
-    series.strokes.template.setAll({
-      strokeWidth: 2
-    });
-
-  });
+  // });
 
 
   //Today date line
@@ -227,79 +223,97 @@ const initializeChart = (containerId, data, onClickLegend,onPointerOverLegend,on
   // Add legend
   initializeLegend(root,chart,onClickLegend,onPointerOverLegend,onPointerOutLegend);
 
-  // Add animation when loading plots:
   
-  
-  // let indicator = chart.children.push(am5.Container.new(root, {
-  //   width: am5.p100,
-  //   height: am5.p100,
-  //   layer: 1000,
-  //   x: am5.p50,
-  //   y: am5.p50,
-  //   centerX: am5.p50,
-  //   centerY: am5.p50
-  //   // background: am5.Rectangle.new(root, {
-  //   //   fill: am5.color(0xffffff),
-  //   //   fillOpacity: 0.7
-  //   // })
-  // }));
-
-  // console.log(indicator)
-  // indicator.children.push(am5.Label.new(root, {
-  //   text: "Loading...",
-  //   fontSize: 25,
-  //   x: am5.p50,
-  //   y: am5.p50,
-  //   centerX: am5.p50,
-  //   centerY: am5.p50
-  // }));
-  // let hourglass = indicator.children.push(am5.Graphics.new(root, {
-  //   width: 32,
-  //   height: 32,
-  //   fill: am5.color(0x000000),
-  //   x: am5.p50,
-  //   y: am5.p50,
-  //   centerX: am5.p50,
-  //   centerY: am5.p50,
-  //   dy: -45,
-  //   svgPath: "M12 5v10l9 9-9 9v10h24V33l-9-9 9-9V5H12zm20 29v5H16v-5l8-8 8 8zm-8-12-8-8V9h16v5l-8 8z"
-  // }));
-  // var hourglassanimation = hourglass.animate({
-  //   key: "rotation",
-  //   to: 180,
-  //   loops: Infinity,
-  //   duration: 1000,
-  //   easing: am5.ease.inOut(am5.ease.cubic)
-  // });
-  // hourglassanimation.play();
-  // indicator.show();
   return chart; // Return the chart,root, and legend for further manipulation if needed
 };
 
-const updateSeries = (chart,data) => {
-    // console.log(chart,data);
-    Object.keys(data).forEach(key => {
-        const item = data[key];
-        const series = chart.series.values.find(s => s.get('name') === item.name_product);
-        if (item.is_requested) {
-          // console.log('showing',item.name_product)
-          if (series) {
-            series.data.setAll(item.data);
-            series.appear(1000,500);
-            series.show();
-            series.strokes.template.setAll({
-              strokeWidth: 2
-            });
+// const updateSeries = (chart,data) => {
+//     // console.log(chart,data);
+//     Object.keys(data).forEach(key => {
+//         const item = data[key];
+//         const series = chart.series.values.find(s => s.get('name') === item.name_product);
+
+//         if (item.is_visible) {
+//           // console.log('showing',item.name_product)
+//           if (series) {
+//             series.data.setAll(item.data);
+
+//             // series.appear(1000,500);
+//             series.show();
+//             series.strokes.template.setAll({
+//               strokeWidth: 2
+//             });
             
-          }
-        }
-        else{
-          if (series) {
-            series.hide();
-            series.data.setAll([]);
-          }
-        }
-      });
+//           }
+//         }
+//         else{
+//           if (series) {
+//             series.hide();
+//             series.data.setAll([]);
+//           }
+//         }
+//       });
+// }
+
+
+const updateSeries = (chart,item) => {
+      console.log(item);
+  
+      const series = chart.series.values.find(s => s.get('name') === item.name_product);
+
+      var tooltip = am5.Tooltip.new(chart.root, {
+        labelText: `${item['tooltip_text']}: {valueY}`
+      })
+      // if we have data in the nwm product then create the serie, and added it to the legend.
+      if (!series){
+        const series = chart.series.push(am5xy.LineSeries.new(chart.root, {
+          name: item.name_product,
+          xAxis: chart.xAxes.values[0],
+          yAxis: chart.yAxes.values[0],
+          valueYField: "value",
+          valueXField: "forecast-time",
+          stroke: am5.color(item.color),
+          fill: am5.color(item.color),
+          maxDeviation:1,
+          tooltip: tooltip,
+          legendLabelText: `[{stroke}]${item['tooltip_text']}[/]`,
+          legendRangeLabelText: `[{stroke}]${item['tooltip_text']}[/]`,
+        }));
+  
+        defineSeries(item,series)
+        chart.children.values[1].data.push(series)
+      }
+      // if the product data is already in the chart, then update the data and show or hide the serie.
+      else{
+        defineSeries(item,series)
+
+      }
+
+
+    // });
 }
+
+
+
+const defineSeries = (item,series) =>{
+  if (item.is_visible) {
+    if (series) {
+      setTimeout(() => {
+        series.data.setAll(item.data);
+      }, 100);
+      series.show();
+      series.strokes.template.setAll({
+        strokeWidth: 2
+      });
+    }
+  }
+  else{
+    if (series) {
+      series.hide();
+      series.data.setAll([]);
+    }
+  }
+}
+
 
 export  { initializeChart,updateSeries,onPointerOver,onPointerOut};

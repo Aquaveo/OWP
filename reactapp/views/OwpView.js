@@ -116,7 +116,7 @@ const OWPView = () => {
         {currentProducts.isModalOpen && <ChartModalView />}
         
         
-          {/* <Regions/> */}
+          <Regions/>
     </Fragment>
   );
 };
