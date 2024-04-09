@@ -3,6 +3,7 @@ import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
 import {createIndividualLegend} from './legendAuxiliary'
+import { slice } from "@amcharts/amcharts5/.internal/core/util/Array";
 
 const productKeys = [
     'analysis_assimilation',
@@ -186,7 +187,7 @@ const createOrAddLegend = (legendContainer,root,chart,item,toggleProduct,series 
   if (['analysis_assimilation', 'short_range', 'medium_range_blend'].includes(item.name_product)) {
     nameLegend = 'National Water Model';
   } else {
-    nameLegend = `${item.name_product.split('_')[0]} Range Ensembles`;
+    nameLegend = `${item.name_product.split('_')[0][0].toUpperCase() + item.name_product.split('_')[0].slice(1)} Range Ensembles`;
   }
 
   const legend = legendContainer.children.values.find(s => s.get('name','').includes(nameLegend) || s.get('name','') === nameLegend);
