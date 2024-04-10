@@ -5,25 +5,17 @@ import ChartModalView from './modals/ChartModalView';
 import appAPI from 'services/api/app';
 
 import {handleMessage} from 'lib/consumerMessages'
-// import { AddRegionForm } from 'features/RegionsForms/components/AddRegionForm';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 import { Regions } from 'features/Regions/components/Regions';
 import { useMapContext } from 'features/Map/hooks/useMapContext'; //be careful with the import 
 import { useNwpProductsContext } from 'features/NwpProducts/hooks/useNwpProductsContext';
-// import EsriJSON from 'ol/format/EsriJSON.js';
-import GeoJSON from 'ol/format/GeoJSON';
-import {Stroke, Style} from 'ol/style.js';
 
 
 
-// const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
+
 const StreamLayerURL = 'https://mapservices.weather.noaa.gov/vector/rest/services/obs/NWM_Stream_Analysis/MapServer';
-// const StreamLayerURL = 'https://maps.water.noaa.gov/server/rest/services/reference/static_nwm_flowlines/MapServer';
-
-
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
 
-const streamFeatureLayerURL = 'https://services2.arcgis.com/FiaPA4ga0iQKduv3/ArcGIS/rest/services/NLD2_PUBLIC_v1/FeatureServer';
 
 const OWPView = () => {
   const {state:currentProducts, actions:nwpActions} = useNwpProductsContext();
@@ -62,7 +54,7 @@ const OWPView = () => {
           url: StreamLayerURL,
           // all the params for the source goes here
           params: {
-            LAYERS:"show:1,2,3,4,5,6,21"
+            LAYERS:"show:0,7,14,21"
           },
           // the rest of the attributes are for the definition of the layer
           zIndex: 3,
