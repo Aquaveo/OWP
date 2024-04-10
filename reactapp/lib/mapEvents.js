@@ -118,7 +118,7 @@ const onClickStreamFlowLayerHandler = (
                 var regionName = response.data['address']['Region'];
                 var cityName = response.data['address']['City']
                 var stationName = currentStreamFeature.properties['name']
-                
+                console.log(stationName)
                 const metadataArray = [
                     `${stationName} - ${cityName}, ${regionName}`,
                     `streamflow for Reach ID: ${stationID} (lat: ${lat} , lon: ${lon})`

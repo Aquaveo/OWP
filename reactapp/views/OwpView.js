@@ -10,12 +10,20 @@ import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContex
 import { Regions } from 'features/Regions/components/Regions';
 import { useMapContext } from 'features/Map/hooks/useMapContext'; //be careful with the import 
 import { useNwpProductsContext } from 'features/NwpProducts/hooks/useNwpProductsContext';
+// import EsriJSON from 'ol/format/EsriJSON.js';
+import GeoJSON from 'ol/format/GeoJSON';
+import {Stroke, Style} from 'ol/style.js';
 
 
-const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
+
+// const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
+const StreamLayerURL = 'https://mapservices.weather.noaa.gov/vector/rest/services/obs/NWM_Stream_Analysis/MapServer';
+// const StreamLayerURL = 'https://maps.water.noaa.gov/server/rest/services/reference/static_nwm_flowlines/MapServer';
+
+
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
 
-// const ChartModalView = React.lazy(() => import('./modals/ChartModalView'));
+const streamFeatureLayerURL = 'https://services2.arcgis.com/FiaPA4ga0iQKduv3/ArcGIS/rest/services/NLD2_PUBLIC_v1/FeatureServer';
 
 const OWPView = () => {
   const {state:currentProducts, actions:nwpActions} = useNwpProductsContext();

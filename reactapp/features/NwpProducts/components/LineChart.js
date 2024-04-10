@@ -11,6 +11,7 @@ const LineChart = ({}) => {
 
   useEffect(() => {
     const title = currentProducts.currentMetadata[0]
+    console.log(title)
     const subtitle = currentProducts.currentMetadata[1]
     chartRef.current = initializeChart('chartdiv',title, subtitle) // initialize the chart
     legendContainerRef.current = createLegendContainer(chartRef.current.root,chartRef.current)
@@ -47,7 +48,7 @@ const LineChart = ({}) => {
   }, [currentProducts.isModalOpen]);
 
  return (
-    <div id="chartdiv" style={{ width: "90vh", height: "700px" }}></div>
+    <div id="chartdiv" style={{ width: "90vh", height: "900px" }}></div>
  )
 
 }

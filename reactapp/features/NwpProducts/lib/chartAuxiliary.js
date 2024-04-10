@@ -63,7 +63,21 @@ const initializeChart = (containerId, title, subtitle) => {
       })
     );
   
+    yAxis.children.unshift(am5.Label.new(root, {
+      text: 'Flow (CFS)',
+      textAlign: 'center',
+      y: am5.p50,
+      rotation: -90,
+      fontWeight: 'bold'
+    }));
   
+    xAxis.children.push(am5.Label.new(root, {
+      text: 'Date',
+      textAlign: 'center',
+      x: am5.p50,
+      fontWeight: 'bold'
+    }));
+
     //Today date line
     var rangeDataItem = xAxis.makeDataItem({
       value: new Date().setHours(20),
@@ -180,7 +194,7 @@ const updateSeries = (chart,item,legendContainer,toggleProduct) => {
 }
 
 const createOrAddLegend = (legendContainer,root,chart,item,toggleProduct,series ) =>{
-  console.log(legendContainer.children.values)
+  // console.log(legendContainer.children.values)
 
   // Determine the legend name based on the product name.
   let nameLegend;
