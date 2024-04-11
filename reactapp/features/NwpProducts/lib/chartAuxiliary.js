@@ -1,9 +1,9 @@
 import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
+import * as am5plugins_exporting from "@amcharts/amcharts5/plugins/exporting";
 
 import {createIndividualLegend} from './legendAuxiliary'
-import { slice } from "@amcharts/amcharts5/.internal/core/util/Array";
 
 const productKeys = [
     'analysis_assimilation',
@@ -176,6 +176,7 @@ const updateSeries = (chart,item,legendContainer,toggleProduct) => {
       defineSeries(item,series)
       // chart.children.values[chart.children.values.length-1].data.push(series)
       createOrAddLegend(legendContainer,chart.root,chart,item, toggleProduct,series)
+      
       // createIndividualLegend(legendContainer,chart.root,chart,item.name_product, toggleProduct)
       
       // legendContainer.children.values.forEach(element => {
@@ -190,6 +191,7 @@ const updateSeries = (chart,item,legendContainer,toggleProduct) => {
       defineSeries(item,series)
     }
   }
+  makeExportData(chart)
 
 }
 
@@ -236,10 +238,62 @@ const defineSeries = (item,series) =>{
   }
 }
 
+const makeExportData = (chart) =>{
+  var seriesData = [];
+  console.log(chart.series.length)
+  chart.series.each(function (s) {
+    for (var i = 0; i < s.dataItems.length; i++) {
+      var dataItem = s.dataItems[i];
+      var seriesName = s.get('name');
+      const date = new Date(dataItem.get('valueX'));
+      // Get the date string in the desired format (YYYY-MM-DD HH:MM:SS)
+      const dateString = date.toISOString().slice(0, 19).replace('T', ' ');
+      var dataItemObject = {};
+      dataItemObject['forecastTime'] = dateString,
+      dataItemObject[seriesName] = dataItem.get('valueY'),
+      seriesData.push(dataItemObject);
+    }
+  });
+  // Create an object to store the merged values
+  const mergedData = {};
+
+  // Iterate through the data array
+  seriesData.forEach((item) => {
+    const { forecastTime, ...values } = item;
+
+    if (!mergedData[forecastTime]) {
+      mergedData[forecastTime] = { forecastTime, ...values };
+    } else {
+      mergedData[forecastTime] = { forecastTime, ...mergedData[forecastTime], ...values };
+    }
+  });
+
+  // Convert the mergedData object back to an array
+  const mergedDataArray = Object.values(mergedData);
+
+  var exporting = am5plugins_exporting.Exporting.new(chart.root, {
+    menu: am5plugins_exporting.ExportingMenu.new(chart.root, {}),
+    dataSource: mergedDataArray
+  });
+  var annotator = am5plugins_exporting.Annotator.new(chart.root, {});
+
+  var menuitems = exporting.get("menu").get("items");
+
+  menuitems.push({
+      type: "separator"
+  });
+
+  menuitems.push({
+      type: "custom",
+      label: "Annotate",
+      callback: function () {
+          this.close();
+          annotator.toggle();            
+      }
+  });
+}
 
 
-
-  
 export { productKeys, handleUpdate, initializeChart, updateSeries}
 
 
