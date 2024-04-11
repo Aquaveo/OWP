@@ -240,7 +240,6 @@ const defineSeries = (item,series) =>{
 
 const makeExportData = (chart) =>{
   var seriesData = [];
-  console.log(chart.series.length)
   chart.series.each(function (s) {
     for (var i = 0; i < s.dataItems.length; i++) {
       var dataItem = s.dataItems[i];
