@@ -17,8 +17,8 @@ function Layout({navLinks, routes, children}) {
   return (
     <div className="h-100">
         <Header onNavChange={setNavVisible} />
-        <NavMenu navTitle="Menu"  navVisible={navVisible} onNavChange={setNavVisible}>
-          
+        <NavMenu navTitle="About"  navVisible={navVisible} onNavChange={setNavVisible}>
+          <p></p>
         </NavMenu>
         <Routes>
           {routes}

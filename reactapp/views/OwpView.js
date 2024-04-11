@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect,useState, lazy, Suspense,useCallback } from 'react';
+import React, { Fragment, useEffect, useCallback } from 'react';
 import { onClickStreamFlowLayerHandler } from "lib/mapEvents"
 import ChartModalView from './modals/ChartModalView';
 
