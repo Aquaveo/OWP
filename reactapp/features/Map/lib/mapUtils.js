@@ -64,7 +64,6 @@ const findPriorityLayerForOnClickEvent = (layers) => {
 // the click event handler is set in the layer object
 const onClickHandler = async (event) => {
     event.preventDefault();
-    // console.log(event);
     const clickedCoordinate = event.map.getCoordinateFromPixel(event.pixel);
     let layers = getClickEventLayers(event,event.map)
     if (layers.length > 0) {
@@ -135,8 +134,6 @@ const getAllLayerNames = (map) => {
 const getLayerToRemove = (map, layersArray) => {
     // Get all layers from the map
     const allLayers = map.getLayers().getArray();
-    console.log("allLayers",allLayers);
-    console.log("layersArray",layersArray);
     // Extract the names from layersArray for comparison
     const predefinedLayerNames = layersArray.map(layer => layer.options.name);
 
@@ -178,12 +175,10 @@ const addLayer = (map, layerInfo,mapAction) => {
     let {events, priority} = layerInfo.extraProperties;
     layer.set('events', events);
     layer.set('priority', priority);
-    console.log("Layer added");
     map.addLayer(layer);
   };
 
 const removeLayer = (map,layer) => {
-    console.log("Layer removed");
     map.removeLayer(layer);
 };  
 

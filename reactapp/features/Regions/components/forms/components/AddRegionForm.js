@@ -20,7 +20,7 @@ import {Minimize} from '@styled-icons/material-outlined'
 import {useRegionsFormContext}  from '../hooks/useRegionsFormsContext';
 
 const AddRegionForm = ({setVisibleOff}) => {
-  // console.log(useContext(MapContext))
+  // //console.log(useContext(MapContext))
   const { control, handleSubmit, reset } = useForm();
   // const { addForms, addSubForm,deleteAllSubForms,deleteSubForm} = useAddRegionForm();
   const {state:regionsFormState, actions:regionsFormActions} = useRegionsFormContext();
@@ -56,19 +56,19 @@ const AddRegionForm = ({setVisibleOff}) => {
         await handleGeometrySubForm(regionsFormActions.addSubForm,regionsFormActions.deleteSubForm,mapActions,setIsLoading);
         break;
       default:
-        console.log("Unhandled region type:", selectedOption.value);
+        //console.log("Unhandled region type:", selectedOption.value);
     }
   };
 
   useEffect(() => {
-    console.log("useEffect AddRegionForm")
+    //console.log("useEffect AddRegionForm")
 
     const show_hydroshare_regions_notifications = (event)=>{
       let data = JSON.parse(event);
       let command = data['command']
-      console.log(data)
+      //console.log(data)
       if(command ==='show_hydroshare_regions_notifications'){
-        console.log(data['data'])
+        //console.log(data['data'])
         // here create form select for hydroshare        
         regionsFormActions.addSubForm ({
           id: "select-hydroshare-regions",
@@ -86,7 +86,7 @@ const AddRegionForm = ({setVisibleOff}) => {
     websocketActions.addMessageHandler(show_hydroshare_regions_notifications);
 
       return () => {
-        console.log("unmounting show_hydroshare_regions_notifications")
+        //console.log("unmounting show_hydroshare_regions_notifications")
         webSocketState.client.off(show_hydroshare_regions_notifications)
 
       }
@@ -94,7 +94,7 @@ const AddRegionForm = ({setVisibleOff}) => {
   }, [])
 
   useEffect(() => {
-    console.log(regionsFormState.addForms)
+    //console.log(regionsFormState.addForms)
 
   }, [regionsFormState.addForms.regionFormTypes])
 

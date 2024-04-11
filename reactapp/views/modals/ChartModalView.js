@@ -10,7 +10,7 @@ const ChartModalView = () => {
 
 
   const Toggle = () =>{ 
-    console.log('toggle')
+    //console.log('toggle')
     nwpActions.handleModalState(!currentProducts.isModalOpen)
   };
 

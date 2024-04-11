@@ -32,7 +32,7 @@ const handleUpdate = (key, chartRef, currentProducts, updateSeries, legendContai
 
 
 const initializeChart = (containerId, title, subtitle) => {
-    // console.log(containerId,data, onClickLegend);
+    // //console.log(containerId,data, onClickLegend);
     const root = am5.Root.new(containerId);
     
     root.setThemes([am5themes_Animated.new(root)]);
@@ -194,7 +194,7 @@ const updateSeries = (chart,item,legendContainer,toggleProduct) => {
 }
 
 const createOrAddLegend = (legendContainer,root,chart,item,toggleProduct,series ) =>{
-  // console.log(legendContainer.children.values)
+  // //console.log(legendContainer.children.values)
 
   // Determine the legend name based on the product name.
   let nameLegend;

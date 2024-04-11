@@ -6,7 +6,7 @@ import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContex
 const RegionsTable = ({availableReachesList}) => {
     const {state:webSocketState ,actions: websocketActions} = useWebSocketContext();
     const zoomToReach = (availableReach) =>{
-        console.log(availableReach);
+        //console.log(availableReach);
         
         webSocketState.client.send(
           JSON.stringify({

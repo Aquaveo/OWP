@@ -12,7 +12,7 @@ const RegionToolBar = (
 )=>{
     const handleSearchInputChange = () => {
         const valueSearch = document.getElementById('search_reach').value;
-        console.log(valueSearch);
+        //console.log(valueSearch);
         setInputSearchTerm(valueSearch)
     };
     // setInputSearchTerm(e.target.value);
@@ -27,7 +27,7 @@ const RegionToolBar = (
                 size="sm"
                 multiple
                 onChange={(e) => {
-                    console.log(e.target.value);
+                    //console.log(e.target.value);
                     if(!e.target.value){
                         setInputSearchTerm(e.target.value);
                     }

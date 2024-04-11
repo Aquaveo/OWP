@@ -14,7 +14,7 @@ const NwpProductsProvider = ({ children }) => {
   //useEffect to request data from the API based on the requested products
 //   useEffect(() => {
 //     // send the api data here
-//     // console.log(currentProducts.state.products);
+//     // //console.log(currentProducts.state.products);
 //     const controller = new AbortController();
 //     const signal = controller.signal;
   
@@ -35,7 +35,7 @@ const NwpProductsProvider = ({ children }) => {
 //       appAPI.getForecastData(dataRequest, { signal }).catch(error => {
 //         if (error.name === 'AbortError') {
 //           // Handle fetch abort, ignore because it's expected on component unmount
-//           console.log('Fetch aborted');
+//           //console.log('Fetch aborted');
 //         } else {
 //           // Handle other errors
 //           console.error('Fetch error:', error);

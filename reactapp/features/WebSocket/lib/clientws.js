@@ -26,7 +26,7 @@ const reconnectingSocket = (url) => {
       client = new WebSocket(url);
       
       client.onopen = () => {
-        console.log('ws connected');
+        //console.log('ws connected');
         isConnected = true;
         stateChangeListeners.forEach((fn) => fn(client));
       };
@@ -40,7 +40,7 @@ const reconnectingSocket = (url) => {
       };
   
       client.onmessage = (event) => {
-        console.log(messageListeners)
+        //console.log(messageListeners)
         messageListeners.forEach((fn) => fn(event.data));
       };
   
@@ -51,11 +51,11 @@ const reconnectingSocket = (url) => {
         stateChangeListeners.forEach((fn) => fn(client));
   
         if (!reconnectOnClose) {
-          console.log('ws closed by app');
+          //console.log('ws closed by app');
           return;
         }
   
-        console.log('ws closed by server');
+        //console.log('ws closed by server');
   
         setTimeout(start, 3000);
       };

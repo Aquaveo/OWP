@@ -26,7 +26,7 @@ const initalRegionsStoreState = {
 const regionsReducer = (state, action) => {
     switch (action.type) {
         case RegionsActionsTypes.load_regions:
-            console.log(state,action)
+            //console.log(state,action)
             return {
                 ...state,
                 state: {

@@ -21,7 +21,7 @@ export const RegionsProvider = ({ children }) => {
       let command = data['command']
 
       if(command ==='update_regions_users'){
-        console.log(data)
+        //console.log(data)
         actions.loadRegions(data['data'])
       }
       if(command ==='zoom_to_specific_reach'){
@@ -30,7 +30,7 @@ export const RegionsProvider = ({ children }) => {
         const ReachLayer = createClickedReachLayer("reach_on_click_from_region",responseRegions_obj)
         mapActions.addLayer(ReachLayer);
         setTimeout(() => {
-          console.log("zooming to layer")
+          //console.log("zooming to layer")
           zoomToLayerbyName(mapState.mapObject, "reach_on_click_from_region");
         }, 1000);
       }
@@ -41,7 +41,7 @@ export const RegionsProvider = ({ children }) => {
       // const updateRegionsTypeMessageListener = (event)=>{
       //   let data = JSON.parse(event);
       //   let command = data['command']
-      //   console.log(data)
+      //   //console.log(data)
 
       //   if(command ==='show_hs_login_status'){
       //     if (data['message']){
@@ -65,11 +65,11 @@ export const RegionsProvider = ({ children }) => {
       // websocketActions.addMessageHandler(updateRegionsTypeMessageListener);
 
     return () => {
-      console.log("unmounting update_regions_users")
+      //console.log("unmounting update_regions_users")
       webSocketState.client.off(updateRegionsMessageListener);
       // webSocketState.client.off(updateRegionsTypeMessageListener);
 
-      console.log("reseting regions")
+      //console.log("reseting regions")
       actions.reset()
     }
   }, []);

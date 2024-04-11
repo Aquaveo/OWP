@@ -25,11 +25,11 @@ export const MapProvider = ({ children,layers }) => {
     // add the event for cursor in map
     // adding layers 
     layers.forEach(layer => {
-      console.log("adding layer to store", layer);
+      ////console.log("adding layer to store", layer);
       actions.addLayer(layer);
     });
     return  () => {
-      console.log("unmounting map");
+      //console.log("unmounting map");
       actions.reset_map();
     }
 
@@ -37,18 +37,18 @@ export const MapProvider = ({ children,layers }) => {
 
   useEffect(() => {
     if (state.state.layers.length === 0 ) return;
-    console.log("layers changed", state.state.layers);
+    //console.log("layers changed", state.state.layers);
     const layersToRemove = getLayerToRemove(state.state.mapObject, state.state.layers);
     const layersToAdd = filterLayersNotInMap(state.state.mapObject, state.state.layers);
     if (layersToRemove.length > 0){
       layersToRemove.forEach(layer => {
-        console.log("removing layer", layer);
+        //console.log("removing layer", layer);
         removeLayer(state.state.mapObject,layer);
       });
     }
     else{
       layersToAdd.forEach(layerInfo => {
-        console.log("adding layer", layerInfo);
+        //console.log("adding layer", layerInfo);
         addLayer(state.state.mapObject,layerInfo,actions);
 
       });

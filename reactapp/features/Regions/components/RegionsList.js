@@ -46,7 +46,7 @@ const RegionsList = ({}) => {
     const updateReachesMessageListener = (event)=>{
       let data = JSON.parse(event);
       let command = data['command']
-      // console.log(data)
+      // //console.log(data)
       if(command ==='update_reaches_users'){
         const numberOfPageItems = Math.ceil(data['total_reaches']/50);
         setIsLoading(false);
@@ -58,13 +58,13 @@ const RegionsList = ({}) => {
 
     websocketActions.addMessageHandler(updateReachesMessageListener);
       return () => {
-        console.log("unmounting update_reaches_users")
+        //console.log("unmounting update_reaches_users")
         webSocketState.client.off(updateReachesMessageListener)
       }
   }, []);
 
   const handleRegionTypeChange = (region)=>{
-    console.log("region_name",region);
+    //console.log("region_name",region);
     setCurrentRegion(region.value);
     
     mapActions.delete_layer_by_name("region_border") // delete any previous layer
@@ -73,7 +73,7 @@ const RegionsList = ({}) => {
     const layer = createClickedReachLayer("region_border",regionObject.geom)
     mapActions.addLayer(layer);
     setTimeout(() => {
-      console.log("zooming to layer")
+      //console.log("zooming to layer")
       zoomToLayerbyName(mapState.mapObject, "region_border");
     }, 1000);
 
@@ -94,7 +94,7 @@ const RegionsList = ({}) => {
   },[regionsState.pagination.currentPageNumber]);
 
   useEffect(() => {
-    console.log("searching for reaches", regionsState.pagination.searchReachInput)
+    //console.log("searching for reaches", regionsState.pagination.searchReachInput)
     // if (!getValues()['regionType']) return; // don't do anything if the regionType is not set
     if (!currentRegion) return; // don't do anything if the regionType is not set
     handleMessageSending(

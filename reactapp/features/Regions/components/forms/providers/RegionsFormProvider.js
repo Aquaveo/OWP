@@ -15,7 +15,7 @@ export const RegionsFormProvider = ({ children }) => {
       const updateRegionsTypeMessageListener = (event)=>{
         let data = JSON.parse(event);
         let command = data['command']
-        console.log(data)
+        //console.log(data)
 
         if(command ==='show_hs_login_status'){
           let regionsTypes;

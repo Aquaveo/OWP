@@ -28,7 +28,7 @@ const WebSocketProvider = ({ children, url }) => {
   
   // add message listeners when there is a new message listener
   useEffect(() => {
-    console.log("adding message listener")
+    //console.log("adding message listener")
     if (!webSocketState.state.client) return;
   
     const { client, messageListeners } = webSocketState.state;
@@ -37,7 +37,7 @@ const WebSocketProvider = ({ children, url }) => {
     messageListeners.forEach(listener => client.on(listener));
     
     return () => {
-      console.log("unmounting ws message listener")
+      //console.log("unmounting ws message listener")
 
       messageListeners.forEach(listener => client.off(listener));
     }
@@ -46,25 +46,25 @@ const WebSocketProvider = ({ children, url }) => {
 
   // add state change listeners when there is a new state change listener
   useEffect(() => {
-    console.log("adding state change listener")
+    //console.log("adding state change listener")
     if (!webSocketState.state.client) return;
 
     const { client, stateChangeListeners } = webSocketState.state;
     stateChangeListeners.forEach(listener => client.onStateChange(listener));
     return () => {
-      console.log("unmounting ws state change listener")
+      //console.log("unmounting ws state change listener")
     }
   }, [webSocketState.state.stateChangeListeners])
 
 
   useEffect(() => {
-    console.log("adding message")
+    //console.log("adding message")
 
     if (!webSocketState.state.client || !webSocketState.state.message) return;
     const { client, message } = webSocketState.state;
     client.send(message);
     return () => {
-      console.log("unmounting ws message")
+      //console.log("unmounting ws message")
     }
   }, [webSocketState.state.message])
 

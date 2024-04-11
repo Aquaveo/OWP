@@ -20,7 +20,7 @@
 //   }, [isConnected]);
 
 //   useEffect(() => {
-//     console.log("changing messages", messages)
+//     //console.log("changing messages", messages)
 //     // client.on(handleMessage);
 //     // return () => client.off(handleMessage);
 //   }, [messages]);

@@ -75,7 +75,7 @@ const onClickStreamFlowLayerHandler = (
             });
             let currentStreamFeature = processStreamServiceQueryResult(actual_zoom, esriMapPoint, response.data, mapObject)
             var stationID = currentStreamFeature.properties['id']
-            console.log(stationID)
+            // //console.log(stationID)
           
             //updated current geometry
             updateCurrentGeometry(currentStreamFeature.geometry);
@@ -118,7 +118,7 @@ const onClickStreamFlowLayerHandler = (
                 var regionName = response.data['address']['Region'];
                 var cityName = response.data['address']['City']
                 var stationName = currentStreamFeature.properties['name']
-                console.log(stationName)
+                //console.log(stationName)
                 const metadataArray = [
                     `${stationName} - ${cityName}, ${regionName}`,
                     `streamflow for Reach ID: ${stationID} (lat: ${lat} , lon: ${lon})`
@@ -133,7 +133,7 @@ const onClickStreamFlowLayerHandler = (
             });
 
         }).catch((error) => {
-            console.log(error);
+            //console.log(error);
             setProductsLoading(false);
 
             handleModalState(false);
@@ -153,13 +153,13 @@ const onClickStreamFlowLayerHandler = (
 
 
 const onClickHucRegion = (layer, event, mapActions,setIsLoading) =>{
-    console.log("HUC region clicked")
+    //console.log("HUC region clicked")
     setIsLoading(true);
     let mapServerInfo = []
     let clickCoordinate = event.coordinate;
     let mapObject = event.map;
     const urlService = layer.getSource().getUrl() // collect mapServer URL
-    console.log(urlService)
+    //console.log(urlService)
     const id = layer
         .getSource()
         .getParams()
@@ -182,13 +182,13 @@ const onClickHucRegion = (layer, event, mapActions,setIsLoading) =>{
             sr: mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop() // this is because our OL map is in this SR
 
         }
-        console.log(queryIdentify)
+        //console.log(queryIdentify)
         const url = new URL(`${urlService}/identify`);
         url.search = new URLSearchParams(queryIdentify);
         // here we can grab the last layer and then run the query for that layer at that point for the geometry :)
 
         axios.get(url).then((response) => {
-            console.log(response.data);
+            //console.log(response.data);
             let layerId = response.data['results'][response.data['results'].length -1]['layerId']
 
             const queryLayer = {
@@ -206,9 +206,9 @@ const onClickHucRegion = (layer, event, mapActions,setIsLoading) =>{
             }
             const urlQuery = new URL(`${urlService}/${layerId}/query`);
             urlQuery.search = new URLSearchParams(queryLayer);
-            console.log(`${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`)
+            //console.log(`${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`)
             axios.get(urlQuery).then((responseQuery) => {
-                console.log(responseQuery.data);
+                //console.log(responseQuery.data);
                 const layer_name = `${responseQuery.data['features'][0]['id']}_huc_vector_selection}`;
                 const vector_layer = createHUCVectorLayer(layer_name,urlQuery.href,mapActions,responseQuery.data);
                 mapActions.addLayer(vector_layer);
@@ -218,11 +218,11 @@ const onClickHucRegion = (layer, event, mapActions,setIsLoading) =>{
             }).catch((error) => {
                 setIsLoading(false);
 
-                console.log(error);
+                //console.log(error);
             })
         }).catch((error) => {
             setIsLoading(false);
-            console.log(error);
+            //console.log(error);
         })
 
             
@@ -300,7 +300,7 @@ const createClickedReachLayer = (name, features) =>{
         },
         extraProperties: {
             events: [{'type': 'click', 'handler': ()=>{
-                console.log("clicked on reach")
+                //console.log("clicked on reach")
             }}],
             priority: 0,
         }
@@ -312,7 +312,7 @@ const createClickedReachLayer = (name, features) =>{
 
 
 const onClickPreviewFile = (layer, event) =>{
-    console.log("Preview Regions clicked")
+    //console.log("Preview Regions clicked")
 }
 
 

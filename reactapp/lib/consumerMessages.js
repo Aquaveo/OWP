@@ -5,13 +5,13 @@ const handleMessage = (
     handleModalState,
     setProductsLoading
     ) =>{
-    console.log("handleMessage")
+    //console.log("handleMessage")
     let data = JSON.parse(message);
     let command = data['command']
-    console.log("command", data)
+    //console.log("command", data)
     if(command ==='Plot_Data_Retrieved'){
       let product_name = data['product'];
-      console.log("receiving data socket")
+      //console.log("receiving data socket")
       if (data['data'].hasOwnProperty('message')) {
         return;
       }

@@ -60,30 +60,7 @@ limit = asyncio.Semaphore(3)
 def home(request):
     """Controller for the app home page."""
     # The index.html template loads the React frontend
-    # json_response = {}
-    # json_response["type"] = "simple_api_notifications"
-    # json_response["command"] = "show_hs_login_status"
-    # json_response["mssg"] = "Logged in through HydroShare"
-
-    # channel_layer = get_channel_layer()
-
-    # try:
-    # hs = get_oauth_hs(request)
-    # if not hs.auth:
-    #     json_response["mssg"] = "Not logged in through HydroShare"
     context = {}
-
-    # except HSClientInitException:
-    # context = {"message": "Error saving the Regions for current user"}
-    # json_response["mssg"] = "Not logged in through HydroShare"
-
-    # except Exception:
-    # context = {"message": "Error saving the Regions for current user"}
-    # json_response["mssg"] = "Not logged in through HydroShare"
-
-    # print(json_response)
-    # async_to_sync(channel_layer.group_send)("notifications_owp", json_response)
-
     return render(request, "owp/index.html", context)
 
 
@@ -92,31 +69,19 @@ async def get_hs_login_status_method(self_scope):
     json_response = {}
     json_response["type"] = "simple_api_notifications"
     json_response["command"] = "show_hs_login_status"
-    json_response["mssg"] = "Logged in through HydroShare"
+    json_response["mssg"] = True
 
     try:
         hs = await sync_to_async(get_oauth_hs_channels)(self_scope)
         if not hs.auth:
-            json_response["mssg"] = "Not logged in through HydroShare"
+            json_response["mssg"] = False
 
     except HSClientInitException:
-        json_response["mssg"] = "Not logged in through HydroShare"
+        json_response["mssg"] = False
     except Exception:
-        json_response["mssg"] = "Not logged in through HydroShare"
+        json_response["mssg"] = False
 
     return json_response
-
-
-#     station_id = request.GET.get('station_id')
-#     url=f'{BASE_API_URL}/analysis_assim/streamflow?station_id={station_id}'
-#     # https://nwmdata.nohrsc.noaa.gov/latest/forecasts/short_range/streamflow?station_id=19266232
-
-#     #https://nwmdata.nohrsc.noaa.gov/latest/forecasts/long_range_ensemble_mean/streamflow?station_id=19266232
-#     #https://nwmdata.nohrsc.noaa.gov/latest/forecasts/long_range_ensemble_member_4/streamflow?station_id=19266232 this until essemble 1-4
-
-#     #https://nwmdata.nohrsc.noaa.gov/latest/forecasts/medium_range_ensemble_mean/streamflow?station_id=19266232
-
-#     #https://nwmdata.nohrsc.noaa.gov/latest/forecasts/medium_range_ensemble_member_7/streamflow?station_id=19266232 this until ensemble 1-7
 
 
 def create_hydroshare_resource_for_region(hs, file_obj, file_name, region_name):
@@ -167,6 +132,7 @@ def saveUserRegionsFromReaches(request):
     response_obj = {}
     response_obj["msge"] = "success"
     try:
+        # breakpoint()
         if request.user.is_authenticated:
             # Create a session object in preparation for interacting with the database
             engine = app.get_persistent_store_database("user_data")
@@ -186,7 +152,6 @@ def saveUserRegionsFromReaches(request):
                 df_reaches = pd.read_csv(file_data)
                 list_of_reaches = df_reaches[column_id].tolist()
                 number_reaches = len(list_of_reaches)
-            # breakpoint()
 
             # Create an instance of the Region model
             region_instance = Region(
@@ -203,7 +168,6 @@ def saveUserRegionsFromReaches(request):
 
             new_user_region_id = new_user_region[0].id
 
-            # mr = NHD("flowline_mr")
             mr = WaterData("nhdflowline_network")
 
             list_df_nhdp = []
@@ -225,7 +189,6 @@ def saveUserRegionsFromReaches(request):
             )
             nhdp_mr_final = nhdp_mr_final.explode(index_parts=False)
             nhdp_mr_final["region_id"] = new_user_region_id
-            # breakpoint()
             # make the geometry from bounding box of all the geometries in the nhdp_mr
             bounding_box = nhdp_mr_final.total_bounds
             minx, miny, maxx, maxy = bounding_box
@@ -236,7 +199,6 @@ def saveUserRegionsFromReaches(request):
             nhdp_mr_final["geometry"] = nhdp_mr_final["geometry"].apply(
                 lambda x: WKTElement(x.wkt, srid=4326)
             )
-            # breakpoint()
 
             nhdp_mr_final.to_sql(
                 name="reaches",
@@ -321,7 +283,7 @@ def saveUserRegions(request):
 
             if region_type == "huc":
                 region_data = json.loads(request.POST.get("region_data"))
-                breakpoint()
+                # breakpoint()
 
                 df = gpd.GeoDataFrame.from_features(region_data)
                 df = df.set_crs(3857)
@@ -623,13 +585,6 @@ async def make_api_calls(api_base_url, station_id, products):
         )
         list_async_task.append(task_get_forecast_data)
 
-        # if products[product].get("is_requested") == True:
-        #     method_name = products[product].get("name_product")
-        #     task_get_forecast_data = asyncio.create_task(
-        #         api_forecast_call(api_base_url, station_id, method_name)
-        #     )
-        #     list_async_task.append(task_get_forecast_data)
-
     results = await asyncio.gather(*list_async_task)
 
     return results
@@ -638,30 +593,15 @@ async def make_api_calls(api_base_url, station_id, products):
 async def api_forecast_call(api_base_url, station_id, method_name):
     mssge_string = "Complete"
     channel_layer = get_channel_layer()
-    # print(station_id)
-    # breakpoint()
-
     try:
-        # response_await = await async_client.get(
-        #     url = f"{api_base_url}/{method_name}/streamflow",
-        #     params = {
-        #         "station_id": station_id
-        #     },
-        #     timeout=None
-        # )
+
         async with httpx.AsyncClient(verify=False) as client:
-            # response_await = await client.get(
-            #     url=f"{api_base_url}/{method_name}/streamflow",
-            #     params={"station_id": station_id},
-            #     timeout=None,
-            # )
+
             response_await = await client.get(
                 url=f"{api_base_url}/reaches/{station_id}/streamflow",
                 params={"series": method_name},
                 timeout=None,
             )
-        # breakpoint()
-        # print(response_await)
         await channel_layer.group_send(
             "notifications_owp",
             {
@@ -815,7 +755,8 @@ async def getUserReachesPerRegionsMethod(
             list_api_data = await getNwmDataAsync(
                 comid_values,
                 # ["forecast"],
-                ["analysis-assim", "forecast"],
+                # ["analysis-assim", "forecast"],
+                ["forecast"],
                 "2023-05-01T06:00:00",
                 # comid_values, ["assim", "long"], "2023-05-01T06:00:00"
             )
@@ -832,7 +773,7 @@ async def getUserReachesPerRegionsMethod(
                         f"{region[1]}", []
                     ),
                     # "long_forecast": list_api_data["long"][f"{region[1]}"],
-                    "assim": list_api_data["analysis-assim"].get(f"{region[1]}", []),
+                    # "assim": list_api_data["analysis-assim"].get(f"{region[1]}", []),
                 }
                 regions_response["reaches"].append(region_obj)
             # breakpoint()
@@ -962,7 +903,7 @@ def saveUserRegionsFromHydroShareResource(request):
 
             # please create own function to auth and return hs object
             hs = get_oauth_hs_sync(request)
-            breakpoint()
+            # breakpoint()
 
             list_files = hs.resource(resource_id).files.all().json()["results"]
             url_file = get_url_by_filename(list_files, "reaches_nhd_data.csv")

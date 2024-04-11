@@ -13,7 +13,7 @@ const useMap = () => {
         delete_all_layers: () => dispatch({ type: MapActionsTypes.delete_all_layers }),
         reset_map: () => dispatch({ type: MapActionsTypes.reset_map }),
     };
-    // console.log(state, actions)
+    // //console.log(state, actions)
     return { state, actions };
 }
 

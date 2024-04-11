@@ -18,9 +18,9 @@ const RegionsMenu = () => {
   const {state:mapState, actions: mapActions } = useMapContext();
   // const { addForms, set_is_visible } = useAddRegionForm();
   const {state:regionsFormState, actions:regionsFormActions} = useRegionsFormContext();
-  
+
   const toggleVisibilityRegionListMenu = () => {
-    console.log('toggleVisibilityRegionListMenu');
+    //console.log('toggleVisibilityRegionListMenu');
     regionsActions.setIsVisible(!regionsState.isVisible);
     regionsFormActions.set_is_visible(false);
     

@@ -4,7 +4,7 @@ import {Stroke, Style} from 'ol/style.js';
 import GeoJSON from 'ol/format/GeoJSON';
 
 const previewCSVFileData = async (e) =>{
-    console.log(e)
+    //console.log(e)
     
     const dataRequest = new FormData();
     Array.from(e.target.files).forEach(file=>{
@@ -17,7 +17,7 @@ const previewCSVFileData = async (e) =>{
 }
 
 const previewFileDataOnChangeGeopackageLayer = async (e,files) =>{
-  console.log(e,files)
+  //console.log(e,files)
 
   const dataRequest = new FormData();
   dataRequest.append('layers_geopackage', e.value);
@@ -73,7 +73,7 @@ const concatGeoJSON = (g1, g2) => {
 }
 
 const makeGeoJSONFromArray = (selectedRegions) => {
-  console.log(selectedRegions);
+  //console.log(selectedRegions);
 
   if (!selectedRegions.length) return {};
 
@@ -107,7 +107,7 @@ const checkFileTypeForPreview = (fileName) =>{
 
 
 const previewGeometryFileData = async (e) =>{
-  console.log(e)
+  //console.log(e)
   const responseObject={};
 
   const dataRequest = new FormData();
@@ -119,11 +119,11 @@ const previewGeometryFileData = async (e) =>{
 
   if(fileType === 'geopackage' ){
     let responseGeopackageLayers = await appAPI.getGeopackageLayersFromFile(dataRequest).catch((error) => { 
-      console.log(error) 
+      //console.log(error) 
       responseObject['geopackage_layers'] = null;
     });
     dataRequest.append('layers_geopackage', responseGeopackageLayers['layers'][0]);
-    console.log(responseGeopackageLayers['layers'])
+    //console.log(responseGeopackageLayers['layers'])
     responseObject['geopackage_layers'] = responseGeopackageLayers['layers'].map(column => ({ value: column, label: column }));
   }
 
@@ -226,7 +226,7 @@ const handleReachesListSubForm = async (addSubForm,setIsLoading) => {
     name: 'input-file-reaches-regions',
     label: "Upload File (*.csv, *.xlsx)",
     onChange: async (e) => {
-      console.log(e);
+      //console.log(e);
       setIsLoading(true);
       let columns = await previewCSVFileData(e);
       addSubForm({
@@ -275,7 +275,7 @@ const handleGeometrySubForm = async (addSubForm,deleteSubForm,mapActions,setIsLo
           name: 'input-file-geometry-regions',
           label: "Upload File (*.shp, *.json, geopackage)",
           onChange: async (e) => {
-            console.log(e);
+            //console.log(e);
             setIsLoading(true);
             let {geopackage_layers, layer} = await previewGeometryFileData(e);
             mapActions.addLayer(layer);
@@ -287,7 +287,7 @@ const handleGeometrySubForm = async (addSubForm,deleteSubForm,mapActions,setIsLo
                 label:"Select Geopackage Layer",
                 options: geopackage_layers,
                 onChange: async (selectedLayer) => {
-                  console.log(selectedLayer);
+                  //console.log(selectedLayer);
                   mapActions.removeLayer(layer); //remove the previous layer
                   setIsLoading(true);                
                   let selectLayer = await previewFileDataOnChangeGeopackageLayer(selectedLayer, e.target.files);
@@ -316,7 +316,7 @@ const deleteAllAddFormLayers = (mapState, mapActions)=>{
 }
 
 const getDataForm = (formData, mapState) => {
-  console.log('Form Data:', formData);
+  //console.log('Form Data:', formData);
 
   switch (formData.regionType.value) {
     case 'hydroshare':
@@ -334,13 +334,13 @@ const getDataForm = (formData, mapState) => {
       }
       return formData;
     default:
-      console.log("Unhandled region type:", formData.regionType);
+      //console.log("Unhandled region type:", formData.regionType);
   }
 }
 
 
 const handleAddFormSubmit = async (formData) => {
-  console.log('Form Data:', formData);
+  //console.log('Form Data:', formData);
   
   switch (formData.regionType.value) {
     case "hydroshare":
@@ -384,8 +384,8 @@ const handleAddFormSubmit = async (formData) => {
 //   });
   
 //   let responseRegions = await appAPI.saveUserRegionsFromReaches(dataRequest);
-//   console.log("save region reach")
-//   console.log(responseRegions)
+//   //console.log("save region reach")
+//   //console.log(responseRegions)
 //   if(responseRegions['msge'] === 'Error saving the Regions for current user'){
 //     notifyError(responseRegions['msge']);
 //   }
@@ -403,9 +403,9 @@ const handleAddFormSubmit = async (formData) => {
 // }
 
 // const onSubmit = async (data) => {
-//   console.log(data); // Use the data as needed, like sending it to an API endpoint
+//   //console.log(data); // Use the data as needed, like sending it to an API endpoint
 //   let responseRegions = await appAPI.saveUserRegionsFromHydroShareResource(data);
-//   console.log(responseRegions)
+//   //console.log(responseRegions)
 //   if(responseRegions['msge'] === 'Error saving the Regions for current user'){
 //     let custom_message=<CustomNotification> 
 //       <div className='container-row-notification'>

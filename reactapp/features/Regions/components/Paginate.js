@@ -20,25 +20,25 @@ export const Paginate = ({
     }
   const nextPage = () => {
     if(currentPageNumber<totalPageNumber){
-      console.log("nextPage")
+      //console.log("nextPage")
       updateCurrentPage(currentPageNumber+1)
     }
   }
   
   const prevPage = () => {
     if(currentPageNumber>1){
-      console.log("prevPage")
+      //console.log("prevPage")
       updateCurrentPage(currentPageNumber-1)
     }
   }
   const firstPage = () => {
     if(currentPageNumber>1){
-      console.log("firstPage")
+      //console.log("firstPage")
       updateCurrentPage(1);
     }
   }
   const lastPage = () => {
-    console.log("lastPage")
+    //console.log("lastPage")
 
     if(currentPageNumber> 0 ){
       updateCurrentPage(totalPageNumber);

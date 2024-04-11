@@ -30,7 +30,7 @@ class DataConsumer(AsyncWebsocketConsumer):
         # You can call:
         print("receving function to consumer")
         text_data_json = json.loads(text_data)
-        print(text_data_json)
+        # print(text_data_json)
         # updateForecastData(text_data_json['station_id'],text_data_json['product'])
         # json_obj = updateForecastData(text_data_json['station_id'],text_data_json['product'])
         json_obj = {}
