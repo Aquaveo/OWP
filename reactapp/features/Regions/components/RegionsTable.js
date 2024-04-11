@@ -20,34 +20,34 @@ const RegionsTable = ({availableReachesList}) => {
         <TableContainer>
             <StickyHeader>
                 <StyledRow>
-                    <StyledCol sm={3}>
+                    <StyledCol sm={4}>
                         <p>Reach ID</p>
                     </StyledCol>
-                    <StyledCol sm={3}>
+                    <StyledCol sm={4}>
                         <p>Reach Name</p>
                     </StyledCol>
-                    <StyledCol sm={3}>
+                    {/* <StyledCol sm={3}>
                         <p>A.A.</p>
-                    </StyledCol>                
-                    <StyledCol sm={3}>
-                        <p>L.F.</p>
+                    </StyledCol>                 */}
+                    <StyledCol sm={4}>
+                        <p>Mean Long Range Forecast</p>
                     </StyledCol>
                 </StyledRow>
             </StickyHeader>
             {availableReachesList &&
             availableReachesList.map((availableReach, index) => (
               <StyledRow key={index}>
-                <StyledCol sm={3}>
+                <StyledCol sm={4}>
                   <StyledButton onClick={(e) => zoomToReach(availableReach)}>
                     {availableReach['COMID']}
                   </StyledButton>
                 </StyledCol>
-                <StyledCol sm={3}>
+                <StyledCol sm={4}>
                     <p>
                         {availableReach['GNIS_NAME'] !== ' ' ? availableReach['GNIS_NAME'] : '-'}
                     </p>
                 </StyledCol>
-                <StyledCol sm={3}>
+                {/* <StyledCol sm={3}>
                   {availableReach['assim'].length > 0 
                   ?
                   <Sparklines data={availableReach['assim']}>
@@ -56,8 +56,8 @@ const RegionsTable = ({availableReachesList}) => {
                   </Sparklines>
                   : '-'
                   } 
-                </StyledCol>
-                <StyledCol sm={3}>
+                </StyledCol> */}
+                <StyledCol sm={4}>
                   {
                     availableReach['long_forecast'].length > 0 ?
                     <Sparklines data={availableReach['long_forecast']}>

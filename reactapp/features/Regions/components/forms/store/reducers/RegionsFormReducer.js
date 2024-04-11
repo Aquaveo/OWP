@@ -14,9 +14,7 @@ const regionsFormInitialState={
             isVisible: false
         }
     },
-    actions:{
-        onSubmitForm: null,
-    }
+    actions: {}
 }
 
 
@@ -98,6 +96,18 @@ const regionsFormReducer = (state, action) => {
                     addForms: {
                         ...state.state.addForms,
                         isVisible: action.is_visible,
+                    },
+                },
+            };
+        case regionsFormsActionsTypes.set_regions_form_types:
+            console.log(action.formTypes)
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    addForms: {
+                        ...state.state.addForms,
+                        regionFormTypes: action.formTypes,
                     },
                 },
             };

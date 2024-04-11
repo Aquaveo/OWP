@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import {LoadingText} from 'components/UI/StyleComponents/Loader.styled';
 import { useRegionsContext } from '../hooks/useRegionsContext';
-import { FormSelect } from 'features/Regions/components/forms/Forms';
+import { FormSelect } from 'features/Regions/components/forms/components/Forms';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 import { RegionToolBar } from './RegionsToolBar';
 import { RegionsTable } from './RegionsTable';
