@@ -19,7 +19,7 @@ class Owp(TethysAppBase):
     tags = ""
     enable_feedback = False
     feedback_emails = []
-    controller_modules = ["controllers", "consumer"]
+    controller_modules = ["controllers", "consumer", "nwm", "regions"]
 
     def custom_settings(self):
         """

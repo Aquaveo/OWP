@@ -1,15 +1,15 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .controllers import (
-    updateForecastData,
+from .controllers import get_hs_login_status_method
+
+
+from .regions import (
     getUserRegionsMethod,
     getUserReachesPerRegionsMethod,
     getUserSpecificReachMethod,
     getUserSpecificHydroShareRegions,
-    get_hs_login_status_method,
-    # get_nwm_data,
 )
-from asgiref.sync import sync_to_async
+
 
 from tethys_sdk.routing import consumer
 
@@ -30,15 +30,9 @@ class DataConsumer(AsyncWebsocketConsumer):
         # You can call:
         print("receving function to consumer")
         text_data_json = json.loads(text_data)
-        # print(text_data_json)
-        # updateForecastData(text_data_json['station_id'],text_data_json['product'])
-        # json_obj = updateForecastData(text_data_json['station_id'],text_data_json['product'])
+
         json_obj = {}
-        # await self.channel_layer.group_send (
-        #     "notifications_owp",
-        #     json_obj,
-        # )
-        # breakpoint()
+
         if "type" in text_data_json and text_data_json["type"] == "update_user_regions":
             # asyncio.run(retrieve_data_from_file(text_data_json['reach_id']))
             json_obj = await getUserRegionsMethod(
@@ -49,8 +43,7 @@ class DataConsumer(AsyncWebsocketConsumer):
                 json_obj,
             )
         if "type" in text_data_json and text_data_json["type"] == "update_user_reaches":
-            # asyncio.run(retrieve_data_from_file(text_data_json['reach_id']))
-            # breakpoint()
+
             json_obj = await getUserReachesPerRegionsMethod(
                 self.scope["user"].is_authenticated,
                 self.scope["user"].username,
@@ -94,22 +87,6 @@ class DataConsumer(AsyncWebsocketConsumer):
                 "notifications_owp",
                 json_obj,
             )
-
-        # if "type" in text_data_json and text_data_json["type"] == "update_nwm_data":
-        #     json_obj = await get_nwm_data(
-        #         text_data_json["feature_ids"],
-        #         text_data_json["ensemble"],
-        #         text_data_json["start_date"],
-        #         text_data_json["end_date"],
-        #         text_data_json["reference_time"],
-        #     )
-        #     print(json_obj)
-        #     await self.channel_layer.group_send(
-        #         "notifications_owp",
-        #         json_obj,
-        #     )
-        # print(mssge_string)
-        # await self.send(text_data)
 
     async def data_notifications(self, event):
         # print(event)
