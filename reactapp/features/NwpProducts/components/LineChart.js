@@ -47,7 +47,7 @@ const LineChart = ({}) => {
     };
   }, [currentProducts.isModalOpen]);
 
- return (
+ return (  
     <div id="chartdiv" style={{ width: "90vh", height: "900px" }}></div>
  )
 
