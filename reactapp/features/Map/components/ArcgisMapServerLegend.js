@@ -58,8 +58,7 @@ const LegendComponent = ({ url, layerIndex,title }) => {
         .map(portion => ({
             src: `data:image/png;base64,${portion.imageData}`,
             label: matcherDict[portion.label.split('Stream Order: 10').join('').trim()]
-        }));    
-    console.log(legends);
+        }));   
     return (
         <div className="legendBox svelte-1x3cf1v">
             <h6>{title}</h6>
