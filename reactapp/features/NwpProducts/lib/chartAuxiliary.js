@@ -177,13 +177,7 @@ const updateSeries = (chart,item,legendContainer,toggleProduct) => {
       // chart.children.values[chart.children.values.length-1].data.push(series)
       createOrAddLegend(legendContainer,chart.root,chart,item, toggleProduct,series)
       
-      // createIndividualLegend(legendContainer,chart.root,chart,item.name_product, toggleProduct)
-      
-      // legendContainer.children.values.forEach(element => {
-      //   if(element.get('name') === item.name_product){
-      //     element.data.push(series)
-      //   }
-      // });
+  
 
     }
     // if the product data is already in the chart, then update the data and show or hide the serie.
@@ -221,9 +215,11 @@ const createOrAddLegend = (legendContainer,root,chart,item,toggleProduct,series 
 const defineSeries = (item,series) =>{
   if (item.is_visible) {
     if (series) {
-      setTimeout(() => {
-        series.data.setAll(item.data);
-      }, 100);
+      // setTimeout(() => {
+      //   series.data.setAll(item.data);
+      // }, 100);
+      series.data.setAll(item.data);
+
       series.show();
       series.strokes.template.setAll({
         strokeWidth: 2

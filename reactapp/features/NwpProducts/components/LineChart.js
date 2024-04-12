@@ -26,7 +26,7 @@ const LineChart = ({}) => {
     }  
   }, []);
 
-  useEffect(() => {  
+  useEffect(() => {
     productKeys.forEach(key => {
       handleUpdate(key, chartRef, currentProducts, updateSeries,legendContainerRef.current,nwpActions.toggleProduct);
     });
@@ -36,7 +36,8 @@ const LineChart = ({}) => {
         nwpActions.resetProducts();
       }
     };
-  }, [...productKeys.map(key => currentProducts.products[key])]); // Include isModalOpen in the dependency array
+  }, [...productKeys.map(key => currentProducts.products[key])]);
+
 
   useEffect(() => {
     return () => {
