@@ -39,7 +39,7 @@ function App() {
                     element={
                       <Fragment>
                         <WebSocketProvider url={ws} >
-                          <Map>
+                          <Map>  
                             <NwpProductsProvider>
                               <OWPView />
                             </NwpProductsProvider>

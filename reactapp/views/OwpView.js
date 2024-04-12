@@ -10,7 +10,7 @@ import { Regions } from 'features/Regions/components/Regions';
 import { useMapContext } from 'features/Map/hooks/useMapContext'; //be careful with the import 
 import { useNwpProductsContext } from 'features/NwpProducts/hooks/useNwpProductsContext';
 
-
+import {ArcgisMapServerLegend} from 'features/Map/components/ArcgisMapServerLegend';
 
 
 const StreamLayerURL = 'https://mapservices.weather.noaa.gov/vector/rest/services/obs/NWM_Stream_Analysis/MapServer';
@@ -113,6 +113,7 @@ const OWPView = () => {
   
   return (
     <Fragment>
+        <ArcgisMapServerLegend url={StreamLayerURL} layerIndex={1} title={'National Stream Analysis Anomaly'} />
         {currentProducts.isModalOpen && <ChartModalView />}
         <Regions/>
     </Fragment>
