@@ -1,43 +1,47 @@
-from functools import wraps
-from time import process_time
-from time import time
-import asyncio
+def create_hydroshare_resource_for_region(hs, file_obj, file_name, region_name):
+    abstract = f"{region_name} Region created using the OWP Hydroviewer"
+    title = f"{region_name}"
+    keywords = ("OWP_Tethys_App", "NHD", "CIROH", "NWM", "comid_json", "OWP")
+    # https://www.hydroshare.org/terms/
+    rtype = "CompositeResource"
+    fpath = file_obj
+
+    resource_id = hs.createResource(rtype, title, keywords=keywords, abstract=abstract)
+    # check if folder for region was created or not
+    # breakpoint()
+
+    result = hs.addResourceFile(
+        resource_id, resource_file=file_obj, resource_filename=file_name
+    )
+    hs.setAccessRules(resource_id, public=True)
+
+    return result
 
 
-# synchronious function mesuare time
-def measure_sync(func):
-    @wraps(func)
-    def _time_it(*args, **kwargs):
-        start = int(round(process_time() * 1000))
-        try:
-            return func(*args, **kwargs)
-        finally:
-            end_ = int(round(process_time() * 1000)) - start
-            print(f"Total execution time {func.__name__}: {end_ if end_ > 0 else 0} ms")
-
-    return _time_it
+def add_file_to_hydroshare_resource_for_region(
+    hs, file_obj, file_name, region_name, resource_id
+):
+    result = hs.addResourceFile(
+        resource_id, resource_file=file_obj, resource_filename=file_name
+    )
+    return result
 
 
-# https://gist.github.com/Integralist/77d73b2380e4645b564c28c53fae71fb
-# asynchronious function mesuare time
-def measure_async(func):
-    async def process(func, *args, **params):
-        if asyncio.iscoroutinefunction(func):
-            print("this function is a coroutine: {}".format(func.__name__))
-            return await func(*args, **params)
-        else:
-            print("this is not a coroutine")
-            return func(*args, **params)
+def create_reaches_json(df):
+    data = df["comid"].tolist()
+    result = [{"comid": comid} for comid in data]
+    return result
 
-    async def helper(*args, **params):
-        print("{}.time".format(func.__name__))
-        start = time()
-        result = await process(func, *args, **params)
 
-        # Test normal function route...
-        # result = await process(lambda *a, **p: print(*a, **p), *args, **params)
-        print(f"Total execution time {func.__name__}: {time() - start} ms")
+# Define a function to convert MultiLineString with 3 dimensions to 2 dimensions
+def _to_2d(x, y, z=None):
+    if z is None:
+        return (x, y)
+    return tuple(filter(None, [x, y]))
 
-        return result
 
-    return helper
+def get_url_by_filename(file_info, file_name):
+    for file_data in file_info:
+        if file_data["file_name"] == file_name:
+            return file_data["url"]
+    return None  # Return None if file_name not found in the list
