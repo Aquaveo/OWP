@@ -126,14 +126,6 @@ const initialCurrentNwpProducts =
       'is_latest': true,
       'tooltip_text':'MR-6'
     },
-    // medium_range_ensemble_member_7:{
-    //     'is_requested': false,
-    //     'name_product': nwpmActionsTypes.medium_range_ensemble_member_7,
-    //     'color': '#d966ff',
-    //     'data': [],
-    //     'is_latest': true,
-    //     'tooltip_text':'MR-7'
-    // }
     },
     currentGeometry: {},
     currentMetadata:[],
@@ -194,6 +186,7 @@ const reducerProducts = (state, action) => {
     };
     case nwpmActionsTypes.reset:
       return initialCurrentNwpProducts;
+
     case nwpmActionsTypes.set_modal_state:
       return {
         ...state,
@@ -202,6 +195,7 @@ const reducerProducts = (state, action) => {
           isModalOpen: action.isModalOpen
         }
       };
+
     case nwpmActionsTypes.toggle_product:
       return {
         ...state,

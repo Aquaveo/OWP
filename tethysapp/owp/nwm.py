@@ -11,9 +11,8 @@ from asgiref.sync import sync_to_async
 
 try:
     BASE_API_URL = app.get_custom_setting("nwmdata_api")
-    # BASE_API_URL = "https://nwmdata.nohrsc.noaa.gov/latest/forecasts"
 except Exception:
-    BASE_API_URL = ""
+    BASE_API_URL = "https://api.water.noaa.gov/nwps/v1"
 
 try:
     BASE_NWM_API_URL = app.get_custom_setting("base_nwp_api_url")
@@ -28,6 +27,7 @@ limit = asyncio.Semaphore(3)
 
 @controller
 def getForecastData(request):
+
     station_id = request.GET.get("station_id")
     products = [
         "analysis_assimilation",
@@ -75,6 +75,7 @@ async def api_forecast_call(api_base_url, station_id, method_name):
                 params={"series": method_name},
                 timeout=None,
             )
+            print(f"{api_base_url}/reaches/{station_id}/streamflow")
         await channel_layer.group_send(
             "notifications_owp",
             {
