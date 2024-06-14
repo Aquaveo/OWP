@@ -8,8 +8,8 @@ class Owp(TethysAppBase):
     Tethys app class for Owp.
     """
 
-    name = "Owp"
-    description = ""
+    name = "OWP Visualizer"
+    description = "Tethys Application for the Office Of Water Prediction Office (OWP)"
     package = "owp"  # WARNING: Do not change this value
     index = "home"
     icon = f"{package}/images/owp_logo.png"
