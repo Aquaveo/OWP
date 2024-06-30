@@ -18,9 +18,16 @@ let options = {
 const mapInitialStore = {
     state:{
         mapObject: new Map(options),
+        extent: null,
         isFullMap: true,  
         layers:[],
-        toggle_loading_layers: false
+        toggle_loading_layers: false,
+        events:{
+            click: null,
+            loadstart: null,
+            loadend: null,
+            pointermove:null
+        }
     },
     actions:{}
 };
@@ -85,6 +92,58 @@ const mapReducer = (state, action) => {
                 state: {
                     ...state.state,
                     mapObject: null
+                }
+            };
+        case MapActionsTypes.add_click_event:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    events: {
+                        ...state.state.events,
+                        click: action.payload
+                    }
+                }
+            };
+        case MapActionsTypes.add_load_start_event:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    events: {
+                        ...state.state.events,
+                        loadstart: action.payload
+                    }
+                }
+            };
+        case MapActionsTypes.add_load_end_event:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    events: {
+                        ...state.state.events,
+                        loadend: action.payload
+                    }
+                }
+            };
+        case MapActionsTypes.add_pointer_move_event:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    events: {
+                        ...state.state.events,
+                        pointermove: action.payload
+                    }
+                }
+            };
+        case MapActionsTypes.set_extent:
+            return {
+                ...state,
+                state: {
+                    ...state.state,
+                    extent: action.payload
                 }
             };
       default:

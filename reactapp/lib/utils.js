@@ -6,5 +6,4 @@ const getWsURL = () => {
     return ws
 }
 
-
 export { getWsURL }

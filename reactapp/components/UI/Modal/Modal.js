@@ -24,12 +24,7 @@ const Modal = ({ show, close, title, children }) => {
             </button>
           </header>
           <main className="modal_content">{children}</main>
-          {/* <footer className="modal_footer">
-            <button className="modal-close" onClick={() => close()}>
-              Cancel
-            </button>
-            <button className="submit">Submit</button>
-          </footer> */}
+
         </div>
       </div>
     </>,

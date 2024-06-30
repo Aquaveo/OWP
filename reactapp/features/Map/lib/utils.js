@@ -1,78 +1,5 @@
 import { OlImageTileLayer, OlTileLayer, VectorLayer } from './layers/layers';
-import { ArcGISRestTile, OSMWMSTile, TileImageArcGISRest, WMSTile, VectorSourceLayer } from './source/sources';
-
-//get the clickable layers: this works for image layers
-// more info here https://gist.github.com/xemoka/cb4cf95018fdc2cebac4da8f0c308723
-// an issue in this: https://github.com/openlayers/openlayers/issues/9721
-const getClickEventLayers = (event, mapObject) => {
-    let layers = []
-    mapObject.forEachLayerAtPixel(
-        event.pixel,
-        layer => {
-            layers.push(layer)
-        },
-        {
-            layerFilter: layer => {
-                return (
-                    // for the following events: [{'type': 'click', 'handler': onClickHandler}] please filter to only get elements that have type click please
-                   
-                    layer.get('events') && layer.get('events').length > 0 && layer.get('events').findIndex(event => event.type === 'click') > -1
-                )
-            },
-            hitTolerance: 0
-        }
-    )
-
-    return layers
-}
-
-const findKeyWithMaxValue = (obj) => {
-    let maxValue = -Infinity; // Initialize with a very low value
-    let maxKey = null;
-  
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        if (obj[key] > maxValue) {
-          maxValue = obj[key];
-          maxKey = key;
-        }
-      }
-    }
-  
-    return maxKey;
-}
-
-// according to the weight of the layer, we will find the priority layer
-// the priority layer is the one with the highest weight, and it is given by the priority attribute
-// the priority attribute is set in the layer object
-
-const findPriorityLayerForOnClickEvent = (layers) => {
-    let layerWeight={}
-    let priorityLayer = layers[0]
-
-    layers.forEach(function(layer,index){
-        layerWeight[index] = layer.get('priority');
-    });
-
-    let priorityLayerIndex = findKeyWithMaxValue(layerWeight);
-    priorityLayer = layers[priorityLayerIndex]
-    return priorityLayer
-}
-
-
-// onClickHandler will call the click event handler for the layer with the highest priority
-// the click event handler is set in the layer object
-const onClickHandler = async (event) => {
-    event.preventDefault();
-    const clickedCoordinate = event.map.getCoordinateFromPixel(event.pixel);
-    let layers = getClickEventLayers(event,event.map)
-    if (layers.length > 0) {
-        // let layer = layers[0]
-        let layer = findPriorityLayerForOnClickEvent(layers)
-        let clickHandler = layer.get('events').find(event => event.type === 'click').handler
-        clickHandler(layer, event)
-    }
-}
+import { ArcGISRestTile, OSMWMSTile, TileImageArcGISRest, WMSTile, VectorSourceLayer,ClusterSource } from './source/sources';
 
 const useLayerFactory = (layerType, options,mapAction) => {
     
@@ -94,10 +21,13 @@ const useLayerFactory = (layerType, options,mapAction) => {
               });
               break;
           case 'WMSTile':
-              source = WMSTile(options.url, options.params);
+              source = WMSTile(options.url, options.params, options.source);
               break;
           case 'VectorSourceLayer':
               source = VectorSourceLayer(options);
+              break;
+          case 'ClusterSource':
+              source = ClusterSource(options);
               break;
           default:
               console.error('Unsupported source type');
@@ -172,15 +102,19 @@ const filterLayersNotInMap = (map, layersArray) => {
 
 const addLayer = (map, layerInfo,mapAction) => {
     const layer = useLayerFactory(layerInfo.layerType, layerInfo.options,mapAction);
-    let {events, priority} = layerInfo.extraProperties;
-    layer.set('events', events);
-    layer.set('priority', priority);
     map.addLayer(layer);
+
   };
 
 const removeLayer = (map,layer) => {
     map.removeLayer(layer);
 };  
 
-
-export {onClickHandler, filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove,getClickEventLayers,zoomToLayerbyName, getLayerbyName}
+export {
+    filterLayersNotInMap,
+    addLayer,
+    removeLayer,
+    getLayerToRemove,
+    zoomToLayerbyName,
+    getLayerbyName,
+}

@@ -1,7 +1,7 @@
 import React, { useEffect , useRef } from 'react';
+import './map.css';
 import MapContext from 'features/Map/contexts/MapContext';
-import { MapContainer } from './styles/Map.styled';
-import { onClickHandler,filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove,getClickEventLayers } from '../lib/mapUtils';
+import { filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove } from '../lib/utils';
 import { useMap } from '../hooks/useMap';
 import {LoadingText} from 'components/UI/StyleComponents/Loader.styled';
 export const MapProvider = ({ children,layers }) => {
@@ -12,17 +12,6 @@ export const MapProvider = ({ children,layers }) => {
   useEffect(() => {
     // added the map to the reference
     state.state.mapObject.setTarget(mapRef.current);
-    // Define the click handler of the layer
-    state.state.mapObject.on('click',onClickHandler)
-
-    // Define the loading handler of the map object
-    state.state.mapObject.on('loadstart', function () {
-      actions.toggle_loading_layers();
-    });
-    state.state.mapObject.on('loadend', function () {
-      actions.toggle_loading_layers();
-    });
-    // add the event for cursor in map
     // adding layers 
     layers.forEach(layer => {
       ////console.log("adding layer to store", layer);
@@ -67,9 +56,13 @@ export const MapProvider = ({ children,layers }) => {
   // Ensures the hook re-runs only if the map or layer reference changes
   }, [state.state.layers]);
 
+  useEffect(() => {
+    if (!state.state.extent) return;
+    state.state.mapObject.getView().fit(state.state.extent, {duration: 1300, padding: [50, 50, 50, 50]});
+  }, [state.state.extent]);
+
 
   return (
-  <MapContainer>
     <MapContext.Provider value={{ ...state, actions }}>
         <div ref={mapRef} className="ol-map" >
           {children}
@@ -84,7 +77,6 @@ export const MapProvider = ({ children,layers }) => {
         }
 
     </MapContext.Provider>
-  </MapContainer>
 
   );
 };

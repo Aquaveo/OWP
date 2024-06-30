@@ -1,121 +1,71 @@
 import React, { Fragment, useEffect, useCallback } from 'react';
-import { onClickStreamFlowLayerHandler } from "lib/mapEvents"
-import ChartModalView from './modals/ChartModalView';
+// import ChartModalView from './modals/NwpStreamsModalView';
+// import {handleMessage} from 'lib/consumerMessages'
+// import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
+// import { Regions } from 'features/Regions/components/Regions';
+// import { useNwpProductsContext } from 'features/NwpProducts/hooks/useNwpProductsContext';
+import NwpStreamsChartModalView from './modals/NwpStreamsModalView';
+import { ArcgisMapServerLegend } from 'components/MapLegend/ArcgisMapServerLegend';
+import { MapProvider } from 'features/Map/providers/MapProvider';
+import NwpProductsProvider from 'features/NwpProducts/providers/NwpProductsProvider';
+import { WebSocketProvider } from 'features/WebSocket/providers/WebSocketProvider';
+import { layerData } from 'lib/layerData';
+import { getWsURL } from 'lib/utils';
 
-import appAPI from 'services/api/app';
+import MapView from 'features/Map/views/MapView';
 
-import {handleMessage} from 'lib/consumerMessages'
-import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
-import { Regions } from 'features/Regions/components/Regions';
-import { useMapContext } from 'features/Map/hooks/useMapContext'; //be careful with the import 
-import { useNwpProductsContext } from 'features/NwpProducts/hooks/useNwpProductsContext';
+const ws = getWsURL();
+const layerDataObject = new layerData();
 
-import {ArcgisMapServerLegend} from 'features/Map/components/ArcgisMapServerLegend';
-
-
-const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
-const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
-
+const StreamLayerURL = layerDataObject.getStreamAnomalyLayer().options.url;
 
 const OWPView = () => {
-  const {state:currentProducts, actions:nwpActions} = useNwpProductsContext();
-  const {state:webSocketState,  actions:webSocketActions} = useWebSocketContext();
-  const {actions: mapActions } = useMapContext();
+  // const {state:currentProducts, actions:nwpActions} = useNwpProductsContext();
+  // const {state:webSocketState,  actions:webSocketActions} = useWebSocketContext();
 
   
-  const updateProductsMessageListener = useCallback((event) => {
-    handleMessage(event, nwpActions.updateProductsState, nwpActions.handleModalState,nwpActions.setProductsLoading);
-  }, []);
-
-  // add more layers here if needed
-  const layersArray = [
-    {
-        layerType: 'OlTileLayer',
-        options: {
-        sourceType: 'ArcGISRestTile',
-        url: baseMapLayerURL,
-        // all the params for the source goes here
-        params: {
-            LAYERS: 'topp:states',
-            Tiled: true,
-        },
-        // the rest of the attributes are for the definition of the layer
-        name: "baseMapLayer",
-        },
-        extraProperties: {
-        events: [],
-        priority: 1      
-        }    
-    },
-    {
-        layerType: 'OlImageTileLayer',
-        options: {
-          sourceType: 'TileImageArcGISRest',
-          url: StreamLayerURL,
-          // all the params for the source goes here
-          params: {
-            LAYERS:"show:0,7,14,21"
-          },
-          // the rest of the attributes are for the definition of the layer
-          zIndex: 3,
-          name: "StreamFlowMapLayer"
-        },
-        extraProperties: {
-            events: [
-              {
-                'type': 'click', 
-                'handler': (layer,event)=>{
-                  onClickStreamFlowLayerHandler(
-                    layer,
-                    event,
-                    currentProducts,
-                    nwpActions.resetProducts,
-                    nwpActions.updateCurrentGeometry,
-                    nwpActions.updateCurrentMetadata,
-                    nwpActions.handleModalState,
-                    appAPI.getForecastData,
-                    nwpActions.updateCurrentStationID,
-                    nwpActions.setProductsLoading,
-                    mapActions
-                  )}
-              }
-            ],
-            priority: 1      
-        }
-    }
-  ]
+  // const updateProductsMessageListener = useCallback((event) => {
+  //   handleMessage(event, nwpActions.updateProductsState, nwpActions.handleModalState,nwpActions.setProductsLoading);
+  // }, []);
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    webSocketActions.addMessageHandler(
-      updateProductsMessageListener
-    )
+  //   webSocketActions.addMessageHandler(
+  //     updateProductsMessageListener
+  //   )
 
-    //adding layers
-    layersArray.forEach(layer => {
-      mapActions.addLayer(layer);
-    })
-    // remove the layers wheen the component unmounts
-    return () => {
-      webSocketState.client.off(updateProductsMessageListener)  
-
-      //delete added layers when unmounting
-      layersArray.forEach(layer => {
-        mapActions.delete_layer_by_name(layer.options.name)
-      })
-    }
+  //   // remove the layers wheen the component unmounts
+  //   return () => {
+  //     webSocketState.client.off(updateProductsMessageListener)
+  //   }
 
 
-  }, []);
+  // }, []);
 
 
   
   return (
     <Fragment>
-        <ArcgisMapServerLegend url={StreamLayerURL} layerIndex={1} title={'National Stream Analysis Anomaly'} />
-        {currentProducts.isModalOpen && <ChartModalView />}
-        {/* <Regions/> */}
+      <WebSocketProvider url={ws} >
+          <NwpProductsProvider>
+            <MapProvider>
+                <MapView 
+                    isLoading={isLoading} 
+                    setIsLoading={setIsLoading} 
+                />
+                <ArcgisMapServerLegend 
+                  url={StreamLayerURL}
+                  layerIndex={1} 
+                  title={'National Stream Analysis Anomaly'} 
+                />
+                <NwpStreamsChartModalView />
+                {/* {currentProducts.isModalOpen && <ChartModalView />} */}
+                {/* <Regions/> */}
+
+            </MapProvider>
+          </NwpProductsProvider>
+      </WebSocketProvider>
     </Fragment>
   );
 };

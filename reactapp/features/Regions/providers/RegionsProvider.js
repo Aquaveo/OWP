@@ -4,7 +4,7 @@ import { useRegions } from '../hooks/useRegions';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 import {createClickedReachLayer} from 'lib/mapEvents';
 import { useMapContext } from 'features/Map/hooks/useMapContext';
-import {zoomToLayerbyName} from 'features/Map/lib/mapUtils';
+import {zoomToLayerbyName} from 'features/Map/lib/utils';
 // import { useAddRegionForm } from '../components/forms/hooks/useAddRegionForms';
 
 export const RegionsProvider = ({ children }) => {

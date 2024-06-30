@@ -11,7 +11,7 @@ import { FormContainer, Form, SubmitButton } from 'components/UI/StyleComponents
 import {Minimize} from '@styled-icons/material-outlined'
 import { useMapContext } from 'features/Map/hooks/useMapContext';
 import { CircularButton } from 'components/UI/StyleComponents/ui';
-import {zoomToLayerbyName} from 'features/Map/lib/mapUtils';
+import {zoomToLayerbyName} from 'features/Map/lib/utils';
 
 import {createClickedReachLayer} from 'lib/mapEvents';
 
