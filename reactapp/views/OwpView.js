@@ -1,50 +1,21 @@
-import React, { Fragment, useEffect, useCallback } from 'react';
-// import ChartModalView from './modals/NwpStreamsModalView';
-// import {handleMessage} from 'lib/consumerMessages'
-// import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
-// import { Regions } from 'features/Regions/components/Regions';
-// import { useNwpProductsContext } from 'features/NwpProducts/hooks/useNwpProductsContext';
+import React, { Fragment,useState } from 'react';
+
 import NwpStreamsChartModalView from './modals/NwpStreamsModalView';
 import { ArcgisMapServerLegend } from 'components/MapLegend/ArcgisMapServerLegend';
 import { MapProvider } from 'features/Map/providers/MapProvider';
 import NwpProductsProvider from 'features/NwpProducts/providers/NwpProductsProvider';
 import { WebSocketProvider } from 'features/WebSocket/providers/WebSocketProvider';
-import { layerData } from 'lib/layerData';
+import layerData from 'lib/layerData';
 import { getWsURL } from 'lib/utils';
 
-import MapView from 'features/Map/views/MapView';
-
+import MapView from './MapView';
 const ws = getWsURL();
 const layerDataObject = new layerData();
 
 const StreamLayerURL = layerDataObject.getStreamAnomalyLayer().options.url;
 
 const OWPView = () => {
-  // const {state:currentProducts, actions:nwpActions} = useNwpProductsContext();
-  // const {state:webSocketState,  actions:webSocketActions} = useWebSocketContext();
-
-  
-  // const updateProductsMessageListener = useCallback((event) => {
-  //   handleMessage(event, nwpActions.updateProductsState, nwpActions.handleModalState,nwpActions.setProductsLoading);
-  // }, []);
-
-
-  // useEffect(() => {
-
-  //   webSocketActions.addMessageHandler(
-  //     updateProductsMessageListener
-  //   )
-
-  //   // remove the layers wheen the component unmounts
-  //   return () => {
-  //     webSocketState.client.off(updateProductsMessageListener)
-  //   }
-
-
-  // }, []);
-
-
-  
+  const [ isLoading, setIsLoading ] = useState(false);
   return (
     <Fragment>
       <WebSocketProvider url={ws} >

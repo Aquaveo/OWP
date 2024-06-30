@@ -48,4 +48,4 @@ class layerData {
 }
 
 
-export { layerData }
+export default layerData;

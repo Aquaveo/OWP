@@ -3,7 +3,8 @@ import { useMapContext } from 'features/Map/hooks/useMapContext';
 import { useNwpProductsContext } from 'features/NwpProducts/hooks/useNwpProductsContext';
 import appAPI from 'services/api/app';
 import MapEvents from 'lib/mapEvents';
-import { layerData } from 'lib/layersData';
+import layerData from 'lib/layerData';
+
 
 import LoadingAnimation from 'components/loader/LoadingAnimation';
 
