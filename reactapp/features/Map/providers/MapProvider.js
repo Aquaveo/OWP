@@ -4,7 +4,7 @@ import MapContext from 'features/Map/contexts/MapContext';
 import { filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove } from '../lib/utils';
 import { useMap } from '../hooks/useMap';
 import {LoadingText} from 'components/UI/StyleComponents/Loader.styled';
-export const MapProvider = ({ children,layers }) => {
+export const MapProvider = ({ children,layers= [] }) => {
   const {state,actions} = useMap();
 
   const mapRef = useRef();
@@ -23,6 +23,39 @@ export const MapProvider = ({ children,layers }) => {
     }
 
   }, []);
+  
+  useEffect(() => {
+    if (!state.state.events.click) return;
+    const onClickEventHandler = state.state.events.click
+    state.state.mapObject.on('click',(evt)=>{
+      onClickEventHandler(evt)
+    })
+  }, [state.state.events.click]);
+
+  useEffect(() => {
+    if (!state.state.events.loadstart) return;
+    const onLoadStartEventHandler = state.state.events.loadstart
+    state.state.mapObject.on('loadstart',(evt)=>{
+      onLoadStartEventHandler(evt)
+    })
+  }, [state.state.events.loadstart]);
+
+  useEffect(() => {
+    if (!state.state.events.loadend) return;
+    const onLoadEndEventHandler = state.state.events.loadend
+    state.state.mapObject.on('loadend',(evt)=>{
+      onLoadEndEventHandler(evt)
+    })
+  }, [state.state.events.loadend]);
+
+  useEffect(() => {
+    if (!state.state.events.pointermove) return;
+    const onPointerMoveEventHandler = state.state.events.pointermove
+    state.state.mapObject.on('pointermove',(evt)=>{
+      onPointerMoveEventHandler(evt)
+    })
+  }, [state.state.events.pointermove]);
+
 
   useEffect(() => {
     if (state.state.layers.length === 0 ) return;
