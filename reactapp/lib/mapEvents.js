@@ -281,7 +281,7 @@ class MapEvents {
         event.preventDefault();
         // console.log('click event', event);
         let layers = this.mapUtils.getClickEventLayers(event, event.map);
-        _getInfoFromLayers(
+        this._getInfoFromLayers(
             event, 
             layers, 
             nwmActions,
