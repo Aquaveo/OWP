@@ -5,11 +5,20 @@ import LineChart from 'features/NwpProducts/components/LineChart';
 import {LoaderContainer, LoadingText} from 'components/UI/StyleComponents/Loader.styled';
 import {handleMessage} from 'lib/consumerMessages';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
+
+
 const NwpStreamsChartModalView = () => {
 
   const {state:currentProducts, actions:nwpActions} = useNwpProductsContext();
   
   const {state:webSocketState,  actions:webSocketActions} = useWebSocketContext();
+
+
+  const Toggle = () =>{ 
+    //console.log('toggle')
+    nwpActions.handleModalState(!currentProducts.isModalOpen)
+  };
+
 
   const updateProductsMessageListener = useCallback((event) => {
     handleMessage(
