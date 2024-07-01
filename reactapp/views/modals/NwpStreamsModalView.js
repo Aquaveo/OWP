@@ -5,6 +5,7 @@ import LineChart from 'features/NwpProducts/components/LineChart';
 import {LoaderContainer, LoadingText} from 'components/UI/StyleComponents/Loader.styled';
 import {handleMessage} from 'lib/consumerMessages';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
+import LoadingAnimation from 'components/loader/LoadingAnimation';
 
 
 const NwpStreamsChartModalView = () => {
@@ -54,9 +55,7 @@ const NwpStreamsChartModalView = () => {
         </Modal>
       ) : (
         currentProducts.areProductsLoading ? (
-          <LoaderContainer>
-            <LoadingText>Loading Products...</LoadingText>
-          </LoaderContainer>
+          <LoadingAnimation />
         ) : (
           <></>
         )

@@ -4,6 +4,7 @@ import MapContext from 'features/Map/contexts/MapContext';
 import { filterLayersNotInMap,addLayer,removeLayer,getLayerToRemove } from '../lib/utils';
 import { useMap } from '../hooks/useMap';
 import {LoadingText} from 'components/UI/StyleComponents/Loader.styled';
+import LoadingAnimation from 'components/loader/LoadingAnimation';
 export const MapProvider = ({ children,layers= [] }) => {
   const {state,actions} = useMap();
 
@@ -23,7 +24,7 @@ export const MapProvider = ({ children,layers= [] }) => {
     }
 
   }, []);
-  
+
   useEffect(() => {
     if (!state.state.events.click) return;
     const onClickEventHandler = state.state.events.click
@@ -34,6 +35,7 @@ export const MapProvider = ({ children,layers= [] }) => {
 
   useEffect(() => {
     if (!state.state.events.loadstart) return;
+    console.log("loadstart event", state.state.events.loadstart)
     const onLoadStartEventHandler = state.state.events.loadstart
     state.state.mapObject.on('loadstart',(evt)=>{
       onLoadStartEventHandler(evt)
@@ -42,6 +44,7 @@ export const MapProvider = ({ children,layers= [] }) => {
 
   useEffect(() => {
     if (!state.state.events.loadend) return;
+    console.log("loadend event", state.state.events.loadend)
     const onLoadEndEventHandler = state.state.events.loadend
     state.state.mapObject.on('loadend',(evt)=>{
       onLoadEndEventHandler(evt)
@@ -103,9 +106,10 @@ export const MapProvider = ({ children,layers= [] }) => {
         {
           state.state.toggle_loading_layers 
           ?
-            <LoadingText id="progress">
-              Loading ...
-            </LoadingText>
+          <LoadingAnimation/>
+            // <LoadingText id="progress">
+            //   Loading ...
+            // </LoadingText>
           : <> </>
         }
 
