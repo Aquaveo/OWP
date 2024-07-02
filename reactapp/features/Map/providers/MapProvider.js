@@ -35,7 +35,7 @@ export const MapProvider = ({ children,layers= [] }) => {
 
   useEffect(() => {
     if (!state.state.events.loadstart) return;
-    console.log("loadstart event", state.state.events.loadstart)
+    
     const onLoadStartEventHandler = state.state.events.loadstart
     state.state.mapObject.on('loadstart',(evt)=>{
       onLoadStartEventHandler(evt)
@@ -44,7 +44,6 @@ export const MapProvider = ({ children,layers= [] }) => {
 
   useEffect(() => {
     if (!state.state.events.loadend) return;
-    console.log("loadend event", state.state.events.loadend)
     const onLoadEndEventHandler = state.state.events.loadend
     state.state.mapObject.on('loadend',(evt)=>{
       onLoadEndEventHandler(evt)

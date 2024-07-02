@@ -10,16 +10,26 @@ import { ModalBody, ModalContainer } from "../StyleComponents/Modal.styled";
 //make footer optional
 
 const Modal = ({ show, close, title, children }) => {
+  const handleModalBodyClick = (e) => {
+    e.stopPropagation();
+    console.log("Modal body click stopped propagation");
+  };
+
+  const handleModalContainerClick = () => {
+    console.log("Modal container click detected");
+    close();
+  };
   return createPortal(
     <>
       <div
         className={`modalContainer ${show ? "show" : ""} `}
-        onClick={() => close()}
+        onClick={handleModalContainerClick}
       >
-        <div className="modalBody" onClick={(e) => e.stopPropagation()}>
+              
+        <div className="modalBody" onClick={handleModalBodyClick}>
           <header className="modal_header">
             <h2 className="modal_header-title">{title}</h2>
-            <button className="close" onClick={() => close()}>
+            <button className="close" onClick={close}>
               <img src={Close} alt="close" />
             </button>
           </header>

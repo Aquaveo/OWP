@@ -1,6 +1,6 @@
 const StreamLayerURL = 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer';
 const baseMapLayerURL= 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer';
-
+const gaugesMapLayerURL ='https://mapservices.weather.noaa.gov/eventdriven/rest/services/water/riv_gauges/MapServer';
 
 class layerData {
   constructor() {
@@ -32,6 +32,20 @@ class layerData {
             zIndex: 3,
             name: "StreamFlowMapLayer"
           }
+      },
+      "gaugeMapLayer":{
+        layerType: 'OlImageTileLayer',
+        options: {
+          sourceType: 'TileImageArcGISRest',
+          url: gaugesMapLayerURL,
+          // all the params for the source goes here
+          params: {
+            LAYERS:"show:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15"
+          },
+          // the rest of the attributes are for the definition of the layer
+          zIndex: 4,
+          name: "gaugeMapLayer"
+        }
       }
     }
   }

@@ -135,7 +135,7 @@ class MapEvents {
                 });
     
             }).catch((error) => {
-                //console.log(error);
+                
                 nwmActions.setProductsLoading(false);
     
                 nwmActions.handleModalState(false);
@@ -231,7 +231,146 @@ class MapEvents {
             }
         
     }
+    _onClickGaugeLayerHandler(
+        event,
+        layer,
+        nwmState,
+        nwmActions,
+        appAPI,
+        mapActions
+    ){
+        // make function to get the layer, and if there is then execute.
+        let mapServerInfo = []
+        let mapObject = event.map;
+        // remove the gauge layer if it exists
+        // if (getLayerbyName(mapObject,`reach_on_click_from_region`)){
+        //     //only if there is a layer already
+        //     mapActions.delete_layer_by_name(`reach_on_click_from_region`);
+        // }
     
+        let clickCoordinate = event.coordinate;
+    
+        const urlService = layer.getSource().getUrl() // collect mapServer URL
+        const id = layer
+            .getSource()
+            .getParams()
+            .LAYERS.replace('show:', '') // remove the visible component to just get the raw url
+        const server = mapServerInfo.find(server => server.url === urlService) // see if server already exists in mapServerInfo
+        /* Here need to do MapExport request in order to get the data of the layer */
+        if (!server) {
+            // Query Layer 5 
+            const spatialReference= {"latestWkid":3857,"wkid":102100}
+            const geometry = {"spatialReference":spatialReference ,"x":clickCoordinate[0],"y":clickCoordinate[1]}
+            
+            const queryLayer = {
+                geometry: JSON.stringify(geometry),
+                // layer: {"id":"5"},
+                outFields:'*',
+                geometryType: 'esriGeometryPoint',
+                spatialRel: "esriSpatialRelIntersects",
+                units:'esriSRUnit_Meter',
+                distance: this.esriUtils.getDistanceByZoom(mapObject.getView().getZoom()),
+                sr: `${mapObject.getView().getProjection().getCode().split(/:(?=\d+$)/).pop()}`,
+                // layers: `all:${server.layers}`, // query all the layer ids for hits map server built above
+                returnGeometry: true, // I don't want geometry, but you might want to display it on a 'selection layer'
+                f: 'json',
+                inSR:102100,
+                outSR:4326
+            }
+            const url = new URL(`${urlService}/0/query`);
+            url.search = new URLSearchParams(queryLayer);
+            // mapActions.toggle_loading_layers();
+            // nwmActions.setProductsLoading(true);
+            axios.get(url).then((response) => {
+                console.log(response.data);
+                if(response.data.features.length < 1){
+                    return
+                }
+                nwmActions.setGaugeDisplay(true);
+                // handleModalState(true);
+                // const actual_zoom = mapObject.getView().getZoom();
+                // var esriMapPoint = new Point({
+                //     longitude: clickCoordinate[0],
+                //     latitude: clickCoordinate[1],
+                //     spatialReference: spatialReference,
+                // });
+                // let currentStreamFeature = this.esriUtils.processStreamServiceQueryResult(actual_zoom, esriMapPoint, response.data, mapObject)
+                // var stationID = currentStreamFeature.properties['id']
+                // // //console.log(stationID)
+                
+                // //updated current geometry
+                // nwmActions.updateCurrentGeometry(currentStreamFeature.geometry);
+                // //create the reach layer
+                // // const reach_layer = this.mapUtils.createClickedReachLayer(`reach_on_click_from_region`,currentStreamFeature.geometry);
+                // // mapActions.addLayer(reach_layer);
+    
+    
+                // //reset the products
+                // nwmActions.resetProducts();
+    
+                // // this ones are commented needs to be uncommented
+                // // handleShow();
+                // let dataRequest = {
+                //     station_id: stationID,
+                //     products: nwmState.products
+                // }
+                // // appAPI.getForecastData(dataRequest);
+                // appAPI.getForecastData(dataRequest);
+                // nwmActions.updateCurrentStationID(stationID);
+    
+                // // GeoReverse API to get the name of the river
+                // const urlSGeoReverseService = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode'
+                // const queryGeoReverse ={
+                //     f: 'json',
+                //     sourceCountry: 'USA',
+                //     location:JSON.stringify(geometry),
+                //     distance: 8000,	
+                // }
+                
+                // const urlGeo = new URL(`${urlSGeoReverseService}`);
+                // urlGeo.search = new URLSearchParams(queryGeoReverse);
+                // axios.get(urlGeo).then((response) => {
+                //     //MOVE IT LATER, When only clicking on layer
+                //     // this ones are commented needs to be uncommented  
+                //     // handleShow();
+    
+                //     var lat = response.data['location']['x'];
+                //     var lon = response.data['location']['y'];
+                //     var regionName = response.data['address']['Region'];
+                //     var cityName = response.data['address']['City']
+                //     var stationName = currentStreamFeature.properties['name']
+                //     //console.log(stationName)
+                //     const metadataArray = [
+                //         `${stationName} - ${cityName}, ${regionName}`,
+                //         `streamflow for Reach ID: ${stationID} (lat: ${lat} , lon: ${lon})`
+                //     ]
+                    
+                //     // this ones are commented needs to be uncommented  
+                //     // setMetadata(metadataArray);
+                //     setTimeout(() => {
+                //         mapActions.toggle_loading_layers();
+                //     }, 1000);
+                //     nwmActions.updateCurrentMetadata(metadataArray);
+                // });
+    
+            }).catch((error) => {
+                console.log(error);
+                // nwmActions.setProductsLoading(false);
+    
+                // nwmActions.handleModalState(false);
+                // mapActions.toggle_loading_layers();
+                //try to fix the error or
+                //notify the users about somenthing went wrong
+                // this ones are commented needs to be uncommented 
+                // handleHideLoading();
+    
+            });
+    
+    
+        } else {
+            mapServerInfo.find(server => server.url === url).layers.push(id) // if so, add the ID of this layer for query
+        }
+    }
     async _getInfoFromLayers (
         event, 
         clickable_layers, 
@@ -267,6 +406,16 @@ class MapEvents {
           if(layer_name.includes('_huc_vector_selection')){
             mapActions.delete_layer_by_name(layer_name)
           }
+          if (layer_name === 'gaugeMapLayer') {
+            this._onClickGaugeLayerHandler(
+                event, 
+                layer, 
+                nwmState,
+                nwmActions,
+                appAPI,
+                mapActions
+            );
+          }
         }
     };
 
@@ -281,6 +430,7 @@ class MapEvents {
         event.preventDefault();
         // console.log('click event', event);
         let layers = this.mapUtils.getClickEventLayers(event, event.map);
+        // console.log(layers)
         this._getInfoFromLayers(
             event, 
             layers, 

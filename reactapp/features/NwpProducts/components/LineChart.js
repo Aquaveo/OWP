@@ -38,15 +38,15 @@ const LineChart = ({}) => {
     };
   }, [...productKeys.map(key => currentProducts.products[key])]);
 
-
-  useEffect(() => {
-    return () => {
-      if (chartRef.current) {
-        chartRef.current.dispose();
-        nwpActions.resetProducts();
-      }
-    };
-  }, [currentProducts.isModalOpen]);
+  // commented out because cleans the tab
+  // useEffect(() => {
+  //   return () => {
+  //     if (chartRef.current) {
+  //       chartRef.current.dispose();
+  //       nwpActions.resetProducts();
+  //     }
+  //   };
+  // }, [currentProducts.isModalOpen]);
 
  return (  
     <div id="chartdiv" style={{ width: "90vh", height: "900px" }}></div>

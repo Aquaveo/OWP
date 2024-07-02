@@ -21,7 +21,11 @@ const nwpmActionsTypes = {
     set_modal_state: 'set_modal_state',
     toggle_product: 'toggle_product',
     set_current_station_id: 'set_current_station_id',
-    are_products_loading: 'are_products_loading'
+    are_products_loading: 'are_products_loading',
+    //gauges data
+    set_gauge_observed: 'set_gauge_observed',
+    set_gauge_forecast: 'set_gauge_forecast',
+    set_gauge_display: 'set_gauge_display',
 }
 
 export { nwpmActionsTypes }

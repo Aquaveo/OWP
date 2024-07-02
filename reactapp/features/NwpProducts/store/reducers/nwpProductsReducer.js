@@ -131,7 +131,12 @@ const initialCurrentNwpProducts =
     currentMetadata:[],
     areProductsLoading: false,
     isModalOpen: false,
-    currentStationID: null
+    currentStationID: null,
+    gauges:{
+      forecast: [],
+      observed: [],
+      display: false
+    }
   }
 }
 
@@ -185,7 +190,14 @@ const reducerProducts = (state, action) => {
         }
     };
     case nwpmActionsTypes.reset:
-      return initialCurrentNwpProducts;
+      return {
+        ...initialCurrentNwpProducts,
+        state: {
+          ...initialCurrentNwpProducts.state,
+          isModalOpen: state.state.isModalOpen, // Preserve the modal state
+          gauges: state.state.gauges // Preserve the gauges state
+        }
+      };
 
     case nwpmActionsTypes.set_modal_state:
       return {
@@ -224,6 +236,39 @@ const reducerProducts = (state, action) => {
         state: {
           ...state.state,
           areProductsLoading: action.areProductsLoading
+        }
+      };
+    case nwpmActionsTypes.set_gauge_observed:
+      return {
+        ...state,
+        state: {
+          ...state.state,
+          gauges: {
+            ...state.state.gauges,
+            observed: action.data
+          }
+        }
+      };
+    case nwpmActionsTypes.set_gauge_forecast:
+      return {
+        ...state,
+        state: {
+          ...state.state,
+          gauges: {
+            ...state.state.gauges,
+            forecast: action.data
+          }
+        }
+      };
+    case nwpmActionsTypes.set_gauge_display:
+      return {
+        ...state,
+        state: {
+          ...state.state,
+          gauges: {
+            ...state.state.gauges,
+            display: action.display
+          }
         }
       };
     default:

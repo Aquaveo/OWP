@@ -14,6 +14,11 @@ export const useNwpProducts = ({reducer = reducerProducts} = {}) => {
       toggleProduct: (product) => updateProducts({type: nwpmActionsTypes.toggle_product, product: product}),
       updateCurrentStationID: (stationID) => updateProducts({type: nwpmActionsTypes.set_current_station_id, stationID: stationID}),
       setProductsLoading: (isLoaded) => updateProducts({type: nwpmActionsTypes.are_products_loading, areProductsLoading: isLoaded}),
+      //gauge data
+      setGaugeObserved: (data) => updateProducts({type: nwpmActionsTypes.set_gauge_observed, data: data}),
+      setGaugeForecast: (data) => updateProducts({type: nwpmActionsTypes.set_gauge_forecast, data: data}),
+      setGaugeDisplay: (display) => updateProducts({type: nwpmActionsTypes.set_gauge_display, display: display})
+      
     }
 
     return {
