@@ -31,9 +31,7 @@ const NwpStreamsChartModalView = () => {
   const updateProductsMessageListener = useCallback((event) => {
     handleMessage(
       event, 
-      nwpActions.updateProductsState, 
-      nwpActions.handleModalState,
-      nwpActions.setProductsLoading
+      nwpActions
     );
   }, []);
 

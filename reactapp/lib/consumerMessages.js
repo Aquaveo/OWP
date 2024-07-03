@@ -1,9 +1,7 @@
 
 const handleMessage = (
     message,
-    updateProductsState,
-    handleModalState,
-    setProductsLoading
+    nwpActions
     ) =>{
     //console.log("handleMessage")
     let data = JSON.parse(message);
@@ -38,11 +36,11 @@ const handleMessage = (
           'value': obj.flow,
           'forecast-time': new Date(obj['validTime']).getTime()
         }));
-        updateProductsState('long_range_ensemble_mean', ts_mean);
-        updateProductsState('long_range_ensemble_member_1', ts_1);
-        updateProductsState('long_range_ensemble_member_2', ts_2);
-        updateProductsState('long_range_ensemble_member_3', ts_3);
-        updateProductsState('long_range_ensemble_member_4', ts_4);
+        nwpActions.updateProductsState('long_range_ensemble_mean', ts_mean);
+        nwpActions.updateProductsState('long_range_ensemble_member_1', ts_1);
+        nwpActions.updateProductsState('long_range_ensemble_member_2', ts_2);
+        nwpActions.updateProductsState('long_range_ensemble_member_3', ts_3);
+        nwpActions.updateProductsState('long_range_ensemble_member_4', ts_4);
       }
       if (product_name == 'medium_range') {  
         let ts_mean = data['data']['mediumRange']['mean']['data'].map(obj => ({
@@ -77,13 +75,13 @@ const handleMessage = (
           'forecast-time': new Date(obj['validTime']).getTime()
         }));
 
-        updateProductsState('medium_range_ensemble_mean', ts_mean);
-        updateProductsState('medium_range_ensemble_member_1', ts_1);
-        updateProductsState('medium_range_ensemble_member_2', ts_2);
-        updateProductsState('medium_range_ensemble_member_3', ts_3);
-        updateProductsState('medium_range_ensemble_member_4', ts_4);
-        updateProductsState('medium_range_ensemble_member_5', ts_5);
-        updateProductsState('medium_range_ensemble_member_6', ts_6);
+        nwpActions.updateProductsState('medium_range_ensemble_mean', ts_mean);
+        nwpActions.updateProductsState('medium_range_ensemble_member_1', ts_1);
+        nwpActions.updateProductsState('medium_range_ensemble_member_2', ts_2);
+        nwpActions.updateProductsState('medium_range_ensemble_member_3', ts_3);
+        nwpActions.updateProductsState('medium_range_ensemble_member_4', ts_4);
+        nwpActions.updateProductsState('medium_range_ensemble_member_5', ts_5);
+        nwpActions.updateProductsState('medium_range_ensemble_member_6', ts_6);
       }
 
       if (product_name == 'analysis_assimilation') {
@@ -91,7 +89,7 @@ const handleMessage = (
           'value': obj.flow,
           'forecast-time': new Date(obj['validTime']).getTime()
         }));
-        updateProductsState('analysis_assimilation', series);
+        nwpActions.updateProductsState('analysis_assimilation', series);
       }
 
       if (product_name == 'short_range') {
@@ -99,18 +97,18 @@ const handleMessage = (
           'value': obj.flow,
           'forecast-time': new Date(obj['validTime']).getTime()
         }));
-        updateProductsState('short_range', series);
+        nwpActions.updateProductsState('short_range', series);
       }
       if (product_name == 'medium_range_blend') {
         let series = data['data']['mediumRangeBlend']['series']['data'].map(obj => ({
           'value': obj.flow,
           'forecast-time': new Date(obj['validTime']).getTime()
         }));
-        updateProductsState('medium_range_blend', series);
+        nwpActions.updateProductsState('medium_range_blend', series);
       }
 
-      handleModalState(true);
-      setProductsLoading(false);
+      nwpActions.handleModalState(true);
+      nwpActions.setProductsLoading(false);
     }
     if(command==='Plot_Gauge_Data_Retrieved'){
       console.log(data)
@@ -122,6 +120,9 @@ const handleMessage = (
         'value': obj.primary,
         'forecast-time': new Date(obj['generatedTime']).getTime()
       }));
+      nwpActions.setGaugeForecast(forecast_data);
+      nwpActions.setGaugeDisplay(observed_data);
+
     }
 }
 
