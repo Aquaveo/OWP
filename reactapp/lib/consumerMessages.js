@@ -112,6 +112,17 @@ const handleMessage = (
       handleModalState(true);
       setProductsLoading(false);
     }
+    if(command==='Plot_Gauge_Data_Retrieved'){
+      console.log(data)
+      let observed_data = data['data']['observed']['data'].map(obj => ({
+        'value': obj.primary,
+        'forecast-time': new Date(obj['generatedTime']).getTime()
+      }));
+      let forecast_data = data['data']['forecast']['data'].map(obj => ({
+        'value': obj.primary,
+        'forecast-time': new Date(obj['generatedTime']).getTime()
+      }));
+    }
 }
 
 export { handleMessage }

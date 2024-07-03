@@ -51,9 +51,9 @@ async def api_gauge_call(api_base_url, gauge_id):
         await channel_layer.group_send(
             "notifications_owp",
             {
-                "type": "data_notifications",
+                "type": "gauge_data_notifications",
                 "gauge_id": gauge_id,
-                "command": "Plot_Data_Retrieved",
+                "command": "Plot_Gauge_Data_Retrieved",
                 "mssg": mssge_string,
                 "data": response_await.json(),
             },
@@ -71,7 +71,7 @@ async def api_gauge_call(api_base_url, gauge_id):
                 "type": "simple_notifications",
                 "gauge_id": gauge_id,
                 "mssg": mssge_string,
-                "command": "Plot_Data_Retrieved Error",
+                "command": "Plot_Gauge_Data_Retrieved Error",
             },
         )
     except Exception as e:

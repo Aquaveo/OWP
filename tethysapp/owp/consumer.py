@@ -106,7 +106,23 @@ class DataConsumer(AsyncWebsocketConsumer):
             "data": data,
         }
         await self.send(text_data=json.dumps(resp_obj))
-        # print(f"Got message {event} at {self.channel_name}")
+
+    async def gauge_data_notifications(self, event):
+        # print(event)
+        print("gauge_data_notifications from consumer")
+
+        message = event["mssg"]
+        gauge_id = event["gauge_id"]
+        command = event["command"]
+        data = event["data"]
+
+        resp_obj = {
+            "message": message,
+            "gauge_id": gauge_id,
+            "command": command,
+            "data": data,
+        }
+        await self.send(text_data=json.dumps(resp_obj))
 
     async def region_notifications(self, event):
         # print(event)

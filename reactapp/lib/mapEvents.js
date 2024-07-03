@@ -309,49 +309,13 @@ class MapEvents {
                 // nwmActions.resetProducts();
     
                 // // this ones are commented needs to be uncommented
-                // // handleShow();
-                // let dataRequest = {
-                //     station_id: stationID,
-                //     products: nwmState.products
-                // }
-                // // appAPI.getForecastData(dataRequest);
+                // handleShow();
+                let dataRequest = {
+                    gauge_id: response.data.features[0].attributes.gaugelid,
+                }
                 // appAPI.getForecastData(dataRequest);
+                appAPI.getGaugeData(dataRequest);
                 // nwmActions.updateCurrentStationID(stationID);
-    
-                // // GeoReverse API to get the name of the river
-                // const urlSGeoReverseService = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode'
-                // const queryGeoReverse ={
-                //     f: 'json',
-                //     sourceCountry: 'USA',
-                //     location:JSON.stringify(geometry),
-                //     distance: 8000,	
-                // }
-                
-                // const urlGeo = new URL(`${urlSGeoReverseService}`);
-                // urlGeo.search = new URLSearchParams(queryGeoReverse);
-                // axios.get(urlGeo).then((response) => {
-                //     //MOVE IT LATER, When only clicking on layer
-                //     // this ones are commented needs to be uncommented  
-                //     // handleShow();
-    
-                //     var lat = response.data['location']['x'];
-                //     var lon = response.data['location']['y'];
-                //     var regionName = response.data['address']['Region'];
-                //     var cityName = response.data['address']['City']
-                //     var stationName = currentStreamFeature.properties['name']
-                //     //console.log(stationName)
-                //     const metadataArray = [
-                //         `${stationName} - ${cityName}, ${regionName}`,
-                //         `streamflow for Reach ID: ${stationID} (lat: ${lat} , lon: ${lon})`
-                //     ]
-                    
-                //     // this ones are commented needs to be uncommented  
-                //     // setMetadata(metadataArray);
-                //     setTimeout(() => {
-                //         mapActions.toggle_loading_layers();
-                //     }, 1000);
-                //     nwmActions.updateCurrentMetadata(metadataArray);
-                // });
     
             }).catch((error) => {
                 console.log(error);
