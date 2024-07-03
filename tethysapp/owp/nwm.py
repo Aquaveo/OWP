@@ -25,6 +25,76 @@ async_client = httpx.AsyncClient()
 limit = asyncio.Semaphore(3)
 
 
+async def make_api_gauge_calls(api_base_url, gauge_id):
+    list_async_task = []
+    # for product in products:
+    task_get_forecast_data = asyncio.create_task(api_gauge_call(api_base_url, gauge_id))
+    list_async_task.append(task_get_forecast_data)
+
+    results = await asyncio.gather(*list_async_task)
+
+    return results
+
+
+async def api_gauge_call(api_base_url, gauge_id):
+    mssge_string = "Complete"
+    channel_layer = get_channel_layer()
+    try:
+
+        async with httpx.AsyncClient(verify=False) as client:
+
+            response_await = await client.get(
+                url=f"{api_base_url}/gauges/{gauge_id}/stageflow",
+                timeout=None,
+            )
+            print(f"{api_base_url}/gauges/{gauge_id}/stageflow")
+        await channel_layer.group_send(
+            "notifications_owp",
+            {
+                "type": "data_notifications",
+                "gauge_id": gauge_id,
+                "command": "Plot_Data_Retrieved",
+                "mssg": mssge_string,
+                "data": response_await.json(),
+            },
+        )
+        return mssge_string
+
+    except httpx.HTTPError as exc:
+        print(f"Error while requesting {exc.request.url!r}.")
+
+        print(str(exc.__class__.__name__))
+        mssge_string = "incomplete"
+        await channel_layer.group_send(
+            "notifications_owp",
+            {
+                "type": "simple_notifications",
+                "gauge_id": gauge_id,
+                "mssg": mssge_string,
+                "command": "Plot_Data_Retrieved Error",
+            },
+        )
+    except Exception as e:
+        print("api_call error 2")
+        print(e)
+    return mssge_string
+
+
+@controller
+def getGaugeData(request):
+    gauge_id = request.GET.get("gauge_id")
+    response = "executing"
+    try:
+        api_base_url = BASE_API_URL
+        asyncio.run(make_api_gauge_calls(api_base_url, gauge_id))
+
+    except Exception as e:
+        print("getGaugeData  error")
+        print(e)
+
+    return JsonResponse({"state": response})
+
+
 @controller
 def getForecastData(request):
 
