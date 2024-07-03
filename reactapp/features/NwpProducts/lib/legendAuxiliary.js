@@ -72,6 +72,7 @@ const onPointerOver = (event,chart) => {
   }
 
   const createLegendContainer = (root,chart) => {
+    
     let legendContainer = chart.children.push(am5.Container.new(root, {
       // layout: root.verticalLayout
       layout: am5.GridLayout.new(root, {
@@ -80,7 +81,7 @@ const onPointerOver = (event,chart) => {
       })
     
     }));
-    legendContainer.set('id','legendContainer')
+    // legendContainer.set('id','legendContainer')
     return legendContainer
   }
 

@@ -7,7 +7,6 @@ const Tabs = ({ tabs }) => {
   const handleTabClick = (index,e) => {
     e.stopPropagation(); // Prevent click event from propagating
     setActiveTab(index);
-    console.log(`Tab ${index} clicked`);
   };
   return (
     <div>

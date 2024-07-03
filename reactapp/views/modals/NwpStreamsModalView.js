@@ -1,7 +1,7 @@
 import React, { Fragment, useState,useCallback,useEffect } from 'react';
 import Modal from "components/UI/Modal/Modal";
 import { useNwpProductsContext } from 'features/NwpProducts/hooks/useNwpProductsContext';
-import LineChart from 'features/NwpProducts/components/LineChart';
+import StreamsChart from 'features/NwpProducts/components/StreamsChart';
 import {LoaderContainer, LoadingText} from 'components/UI/StyleComponents/Loader.styled';
 import {handleMessage} from 'lib/consumerMessages';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
@@ -18,7 +18,7 @@ const NwpStreamsChartModalView = () => {
   const [tabs, setTabs] = useState([
     {
       title: "NWM Stream",
-      content: <LineChart/>
+      content: <StreamsChart/>
     }
   ]);
 
@@ -66,7 +66,7 @@ const NwpStreamsChartModalView = () => {
       setTabs([
         {
           title: "NWM Stream",
-          content: <LineChart />
+          content: <StreamsChart />
         }
       ]);
     }
