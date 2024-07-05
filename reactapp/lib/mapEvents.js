@@ -286,6 +286,7 @@ class MapEvents {
                 if(response.data.features.length < 1){
                     return
                 }
+                console.log("hey")
                 nwmActions.setGaugeDisplay(true);
                 nwmActions.handleModalState(true);
                 // const actual_zoom = mapObject.getView().getZoom();

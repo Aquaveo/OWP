@@ -2,7 +2,7 @@ import { useEffect ,useRef} from "react";
 import {useNwmContext} from "../hooks/useNwmContext";
 import { NWMGaugeChart } from "../lib/GaugeChartUtils";
 
-const NWMGaugeChart = new NWMGaugeChart();
+const nmwGaugeChart = new NWMGaugeChart();
 
 const GaugeChart = ({}) => {
   const chartRef = useRef(null);
@@ -15,19 +15,19 @@ const GaugeChart = ({}) => {
     const title = nwmState.gauges.currentGaugeID    
     const subtitle = nwmState.reaches.currentMetadata['location']
     
-    chartRef.current = NWMGaugeChart.initializeChart(
+    chartRef.current = nmwGaugeChart.initializeChart(
       'chart-gauges-div',
       title, 
       subtitle
     )
     
-    NWMGaugeChart.initializeLegend(
+    nmwGaugeChart.initializeLegend(
       chartRef.current.root,
       chartRef.current,
       nwpActions.toggleGaugeData
     )
 
-    legendContainerRef.current = NWMGaugeChart.getLegendContainer(chartRef.current.root)
+    legendContainerRef.current = nmwGaugeChart.getLegendContainer(chartRef.current.root)
     
     return () => {
     

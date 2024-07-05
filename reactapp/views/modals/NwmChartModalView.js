@@ -2,15 +2,15 @@ import React, { Fragment, useState,useCallback,useEffect } from 'react';
 import Modal from "components/UI/Modal/Modal";
 import { useNwmContext } from 'features/Nwm/hooks/useNwmContext';
 import ReachChart from 'features/Nwm/components/ReachChart';
+import GaugeChart from 'features/Nwm/components/GaugeChart';
 import {LoaderContainer, LoadingText} from 'components/UI/StyleComponents/Loader.styled';
 import {handleMessage} from 'lib/consumerMessages';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
 import LoadingAnimation from 'components/loader/LoadingAnimation';
-import GaugeTabView from './GaugeTabView';
 import Tabs from 'components/UI/Tabs/Tabs';
 
 
-const NwpStreamsChartModalView = () => {
+const NwmChartModalView = () => {
 
   const {state:currentProducts, actions:nwpActions} = useNwmContext();
   
@@ -57,7 +57,7 @@ const NwpStreamsChartModalView = () => {
         ...prevTabs,
         {
           title: "Gauge Streamflow",
-          content: <GaugeTabView/>
+          content: <GaugeChart/>
         }
       ]);
     } else {
@@ -93,4 +93,4 @@ const NwpStreamsChartModalView = () => {
   );
 }
 
-export default NwpStreamsChartModalView;
+export default NwmChartModalView;

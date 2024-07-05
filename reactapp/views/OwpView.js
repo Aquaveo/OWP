@@ -1,6 +1,6 @@
 import React, { Fragment,useState } from 'react';
 
-import NwpStreamsChartModalView from './modals/NwpStreamsModalView';
+import NwmChartModalView from './modals/NwmChartModalView';
 import { ArcgisMapServerLegend } from 'components/MapLegend/ArcgisMapServerLegend';
 import { MapProvider } from 'features/Map/providers/MapProvider';
 import NwmProvider from 'features/Nwm/providers/NwmProvider';
@@ -30,7 +30,7 @@ const OWPView = () => {
                   layerIndex={1} 
                   title={'National Stream Analysis Anomaly'} 
                 />
-                <NwpStreamsChartModalView />
+                <NwmChartModalView />
                 {/* {currentProducts.isModalOpen && <ChartModalView />} */}
                 {/* <Regions/> */}
 

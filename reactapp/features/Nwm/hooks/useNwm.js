@@ -25,6 +25,7 @@ export const useNwm= ({reducer = reducerNwm} = {}) => {
       setGaugeCurrentMetadata: (metadata) => updateNwm({type: nwmActionsTypes.set_gauge_current_metadata, metadata: metadata}),
       // All
       resetAll: () => updateNwm({type:nwmActionsTypes.reset}),
+      
       handleModalState: (isModalOpen) => updateNwm({type: nwmActionsTypes.set_modal_state, isModalOpen: isModalOpen}),
 
     }
