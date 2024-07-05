@@ -1,7 +1,7 @@
 import React, { Fragment, useState,useCallback,useEffect } from 'react';
 import Modal from "components/UI/Modal/Modal";
-import { useNwmProductsContext } from 'features/NwpProducts/hooks/useNwmProductsContext';
-import ReachChart from 'features/NwpProducts/components/ReachChart';
+import { useNwmContext } from 'features/Nwm/hooks/useNwmContext';
+import ReachChart from 'features/Nwm/components/ReachChart';
 import {LoaderContainer, LoadingText} from 'components/UI/StyleComponents/Loader.styled';
 import {handleMessage} from 'lib/consumerMessages';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
@@ -12,7 +12,7 @@ import Tabs from 'components/UI/Tabs/Tabs';
 
 const NwpStreamsChartModalView = () => {
 
-  const {state:currentProducts, actions:nwpActions} = useNwmProductsContext();
+  const {state:currentProducts, actions:nwpActions} = useNwmContext();
   
   const {state:webSocketState,  actions:webSocketActions} = useWebSocketContext();
   const [tabs, setTabs] = useState([

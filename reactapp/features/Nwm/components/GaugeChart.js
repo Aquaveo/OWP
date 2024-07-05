@@ -1,5 +1,5 @@
 import { useEffect ,useRef} from "react";
-import {useNwmProductsContext} from "../hooks/useNwmProductsContext";
+import {useNwmContext} from "../hooks/useNwmContext";
 import { NWMGaugeChart } from "../lib/GaugeChartUtils";
 
 const NWMGaugeChart = new NWMGaugeChart();
@@ -7,7 +7,7 @@ const NWMGaugeChart = new NWMGaugeChart();
 const GaugeChart = ({}) => {
   const chartRef = useRef(null);
   const legendContainerRef = useRef(null);
-  const {state:nwmState, actions:nwpActions} = useNwmProductsContext();
+  const {state:nwmState, actions:nwpActions} = useNwmContext();
 
   useEffect(() => {
     if (chartRef.current && nwmState.isModalOpen) return 

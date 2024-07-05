@@ -1,5 +1,5 @@
 import { Fragment, useEffect ,useRef,Suspense, lazy } from "react";
-import {useNwmProductsContext} from "../hooks/useNwmProductsContext";
+import {useNwmContext} from "../hooks/useNwmContext";
 import { NWMReachChart } from "../lib/ReachChartUtils"
 
 const nwmReachChart = new NWMReachChart();
@@ -8,7 +8,7 @@ const productKeys = nwmReachChart.getforecastNames();
 const ReachChart = ({}) => {
   const chartRef = useRef(null);
   const legendContainerRef = useRef(null);
-  const {state:nwmState, actions:nwpActions} = useNwmProductsContext();
+  const {state:nwmState, actions:nwpActions} = useNwmContext();
 
   useEffect(() => {
     if (chartRef.current && nwmState.isModalOpen) return 

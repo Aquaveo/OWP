@@ -1,5 +1,5 @@
 import React, { useEffect , useRef } from 'react';
-import NwmContext from 'features/NwpProducts/contexts/NwmProductsContext';
+import NwmContext from 'features/Nwm/contexts/NwmContext';
 import { useNwm } from '../hooks/useNwm';
 
 const NwmProvider = ({ children }) => {
