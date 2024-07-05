@@ -1,7 +1,7 @@
 import React, { Fragment, useState,useCallback,useEffect } from 'react';
 import Modal from "components/UI/Modal/Modal";
-import { useNwpProductsContext } from 'features/NwpProducts/hooks/useNwpProductsContext';
-import StreamsChart from 'features/NwpProducts/components/StreamsChart';
+import { useNwmProductsContext } from 'features/NwpProducts/hooks/useNwmProductsContext';
+import ReachChart from 'features/NwpProducts/components/ReachChart';
 import {LoaderContainer, LoadingText} from 'components/UI/StyleComponents/Loader.styled';
 import {handleMessage} from 'lib/consumerMessages';
 import { useWebSocketContext } from 'features/WebSocket/hooks/useWebSocketContext';
@@ -12,13 +12,13 @@ import Tabs from 'components/UI/Tabs/Tabs';
 
 const NwpStreamsChartModalView = () => {
 
-  const {state:currentProducts, actions:nwpActions} = useNwpProductsContext();
+  const {state:currentProducts, actions:nwpActions} = useNwmProductsContext();
   
   const {state:webSocketState,  actions:webSocketActions} = useWebSocketContext();
   const [tabs, setTabs] = useState([
     {
       title: "NWM Stream",
-      content: <StreamsChart/>
+      content: <ReachChart/>
     }
   ]);
 
@@ -56,7 +56,7 @@ const NwpStreamsChartModalView = () => {
       setTabs(prevTabs => [
         ...prevTabs,
         {
-          title: "Gauge Data",
+          title: "Gauge Streamflow",
           content: <GaugeTabView/>
         }
       ]);
@@ -64,7 +64,7 @@ const NwpStreamsChartModalView = () => {
       setTabs([
         {
           title: "NWM Stream",
-          content: <StreamsChart />
+          content: <ReachChart />
         }
       ]);
     }

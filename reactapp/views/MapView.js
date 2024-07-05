@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect,useCallback} from 'react';
 import { useMapContext } from 'features/Map/hooks/useMapContext';
-import { useNwpProductsContext } from 'features/NwpProducts/hooks/useNwpProductsContext';
+import { useNwmProductsContext } from 'features/NwpProducts/hooks/useNwmProductsContext';
 import appAPI from 'services/api/app';
 import MapEvents from 'lib/mapEvents';
 import layerData from 'lib/layerData';
@@ -14,7 +14,7 @@ const initialLayersArray = new layerData().getLayersArray();
 const MapView = (props) => {
   const {state: mapState, actions: mapActions } = useMapContext();
 
-  const {state: nwmState,actions: nwpActions } = useNwpProductsContext(); 
+  const {state: nwmState,actions: nwpActions } = useNwmProductsContext(); 
   
 
   const onPointerMoveLayersEventCallback = useCallback((event) => {

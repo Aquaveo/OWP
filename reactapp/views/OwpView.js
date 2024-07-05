@@ -3,7 +3,7 @@ import React, { Fragment,useState } from 'react';
 import NwpStreamsChartModalView from './modals/NwpStreamsModalView';
 import { ArcgisMapServerLegend } from 'components/MapLegend/ArcgisMapServerLegend';
 import { MapProvider } from 'features/Map/providers/MapProvider';
-import NwpProductsProvider from 'features/NwpProducts/providers/NwpProductsProvider';
+import NwmProvider from 'features/NwpProducts/providers/NwmProvider';
 import { WebSocketProvider } from 'features/WebSocket/providers/WebSocketProvider';
 import layerData from 'lib/layerData';
 import { getWsURL } from 'lib/utils';
@@ -19,7 +19,7 @@ const OWPView = () => {
   return (
     <Fragment>
       <WebSocketProvider url={ws} >
-          <NwpProductsProvider>
+          <NwmProvider>
             <MapProvider>
                 <MapView 
                     isLoading={isLoading} 
@@ -35,7 +35,7 @@ const OWPView = () => {
                 {/* <Regions/> */}
 
             </MapProvider>
-          </NwpProductsProvider>
+          </NwmProvider>
       </WebSocketProvider>
     </Fragment>
   );

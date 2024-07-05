@@ -66,7 +66,7 @@ class MapEvents {
             const url = new URL(`${urlService}/5/query`);
             url.search = new URLSearchParams(queryLayer5);
             mapActions.toggle_loading_layers();
-            nwmActions.setProductsLoading(true);
+            nwmActions.setReachProductsLoading(true);
             axios.get(url).then((response) => {
                 // handleModalState(true);
                 const actual_zoom = mapObject.getView().getZoom()
@@ -80,14 +80,14 @@ class MapEvents {
                 // //console.log(stationID)
               
                 //updated current geometry
-                nwmActions.updateCurrentGeometry(currentStreamFeature.geometry);
+                nwmActions.updateReachCurrentGeometry(currentStreamFeature.geometry);
                 //create the reach layer
                 const reach_layer = this.mapUtils.createClickedReachLayer(`reach_on_click_from_region`,currentStreamFeature.geometry);
                 mapActions.addLayer(reach_layer);
     
     
                 //reset the products
-                nwmActions.resetProducts();
+                nwmActions.resetReaches();
     
                 // this ones are commented needs to be uncommented
                 // handleShow();
@@ -97,7 +97,7 @@ class MapEvents {
                 }
                 // appAPI.getForecastData(dataRequest);
                 appAPI.getForecastData(dataRequest);
-                nwmActions.updateCurrentStationID(stationID);
+                nwmActions.updateCurrentReachID(stationID);
     
                 // GeoReverse API to get the name of the river
                 const urlSGeoReverseService = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode'
@@ -131,15 +131,15 @@ class MapEvents {
                     setTimeout(() => {
                         mapActions.toggle_loading_layers();
                     }, 1000);
-                    nwmActions.updateCurrentMetadata(metadataArray);
+                    nwmActions.updateReachCurrentMetadata(metadataArray);
                 });
     
             }).catch((error) => {
                 
-                nwmActions.setProductsLoading(false);
-    
+                nwmActions.setReachProductsLoading(false);
                 nwmActions.handleModalState(false);
                 mapActions.toggle_loading_layers();
+
                 //try to fix the error or
                 //notify the users about somenthing went wrong
                 // this ones are commented needs to be uncommented 
@@ -280,14 +280,14 @@ class MapEvents {
             const url = new URL(`${urlService}/0/query`);
             url.search = new URLSearchParams(queryLayer);
             // mapActions.toggle_loading_layers();
-            // nwmActions.setProductsLoading(true);
+            // nwmActions.setReachProductsLoading(true);
             axios.get(url).then((response) => {
                 console.log(response.data);
                 if(response.data.features.length < 1){
                     return
                 }
                 nwmActions.setGaugeDisplay(true);
-                // handleModalState(true);
+                nwmActions.handleModalState(true);
                 // const actual_zoom = mapObject.getView().getZoom();
                 // var esriMapPoint = new Point({
                 //     longitude: clickCoordinate[0],
@@ -305,24 +305,24 @@ class MapEvents {
                 // // mapActions.addLayer(reach_layer);
     
     
-                // //reset the products
-                // nwmActions.resetProducts();
+                // //reset the gauges
+                nwmActions.resetGauges();
     
                 // // this ones are commented needs to be uncommented
                 // handleShow();
                 let dataRequest = {
                     gauge_id: response.data.features[0].attributes.gaugelid,
                 }
-                // appAPI.getForecastData(dataRequest);
+                
                 appAPI.getGaugeData(dataRequest);
-                // nwmActions.updateCurrentStationID(stationID);
+                nwmActions.setGaugeCurrentID(response.data.features[0].attributes.gaugelid);
     
             }).catch((error) => {
                 console.log(error);
-                // nwmActions.setProductsLoading(false);
+                // nwmActions.setReachProductsLoading(false);
     
-                // nwmActions.handleModalState(false);
-                // mapActions.toggle_loading_layers();
+                nwmActions.handleModalState(false);
+                mapActions.toggle_loading_layers();
                 //try to fix the error or
                 //notify the users about somenthing went wrong
                 // this ones are commented needs to be uncommented 
