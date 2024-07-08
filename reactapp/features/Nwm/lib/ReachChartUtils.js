@@ -2,7 +2,7 @@ import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import * as am5plugins_exporting from "@amcharts/amcharts5/plugins/exporting";
-
+import {nwmActionsTypes} from "../store/actions/actionsTypes";
 class NWMReachChart {
   constructor() {
     this.legendObject = new NWMReachLegend();
@@ -155,7 +155,8 @@ class NWMReachChart {
 
   _createOrAddLegend(legendContainerRef, root, chart, seriesItem, toggleSeries, series) {
     let nameLegend;
-    if (['analysis_assimilation', 'short_range', 'medium_range_blend'].includes(seriesItem.name_product)) {
+    
+    if ([nwmActionsTypes.reach_analysis_assimilation, nwmActionsTypes.reach_short_range, nwmActionsTypes.reach_medium_range_blend].includes(seriesItem.name_product)) {
       nameLegend = 'National Water Model';
     } else {
       nameLegend = `${seriesItem.name_product.split('_')[0][0].toUpperCase() + seriesItem.name_product.split('_')[0].slice(1)} Range Ensembles`;
@@ -312,10 +313,7 @@ class NWMReachLegend {
       useDefaultMarker: true,
       centerX: am5.percent(50),
       x: am5.percent(50),
-      layout: am5.GridLayout.new(root, {
-        maxColumns: 7,
-        fixedWidthGrid: true
-      })
+      layout: root.horizontalLayout
     }));
     legend.markerRectangles.template.setAll({});
 
@@ -338,8 +336,9 @@ class NWMReachLegend {
 
   _createLegendContainer(root, chart) {
     let legendContainer = chart.children.push(am5.Container.new(root, {
+      width: am5.percent(100),
       layout: am5.GridLayout.new(root, {
-        maxColumns: 3,
+        maxColumns: 1,
         fixedWidthGrid: true
       })
     }));
@@ -355,7 +354,11 @@ class NWMReachLegend {
     var legend = legendContainer.children.push(am5.Legend.new(root, {
       width: am5.percent(100),
       useDefaultMarker: true,
-      layout: root.horizontalLayout
+      layout: am5.GridLayout.new(root, {
+        maxColumns: 7,
+        fixedWidthGrid: true
+      })
+      // layout: root.horizontalLayout
     }));
     legend.set('name', heading);
 

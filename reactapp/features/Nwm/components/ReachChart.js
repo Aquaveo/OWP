@@ -46,7 +46,6 @@ const ReachChart = ({}) => {
       nwmReachChart.handleUpdate(key, chartRef, nwmState.reaches,legendContainerRef.current,nwpActions.toggleReachProduct);
     });
     return () => {
-      console.log("cleaning chart useeffect 2")
       if (chartRef.current && !nwmState.isModalOpen) {
         chartRef.current.dispose();
         legendContainerRef.current && legendContainerRef.current.dispose();
@@ -67,7 +66,7 @@ const ReachChart = ({}) => {
   }, [nwmState.isModalOpen]);
 
  return (  
-    <div id="chartdiv" style={{ width: "90vh", height: "900px" }}></div>
+    <div id="chartdiv" style={{ width: "100vh", height: "600px" }}></div>
  )
 
 }
