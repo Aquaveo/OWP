@@ -40,7 +40,8 @@ const GaugeChart = ({}) => {
   }, []);
 
   useEffect(() => {
-
+    console.log(nwmState.gauges.gauge_forecast)
+    nmwGaugeChart.handleUpdate('gauge_forecast', chartRef, nwmState.gauges,legendContainerRef.current,nwpActions.toggleGaugeData);
     return () => {
       if (chartRef.current && !nwmState.isModalOpen) {
         chartRef.current.dispose();
@@ -48,7 +49,20 @@ const GaugeChart = ({}) => {
         nwpActions.resetGauges();
       }
     };
-  }, []);
+  }, [nwmState.gauges.gauge_forecast]);
+
+  useEffect(() => {
+    console.log(nwmState.gauges.gauge_observed)
+
+    nmwGaugeChart.handleUpdate('gauge_observed', chartRef, nwmState.gauges,legendContainerRef.current,nwpActions.toggleGaugeData);
+    return () => {
+      if (chartRef.current && !nwmState.isModalOpen) {
+        chartRef.current.dispose();
+        legendContainerRef.current && legendContainerRef.current.dispose();
+        nwpActions.resetGauges();
+      }
+    };
+  }, [nwmState.gauges.gauge_observed]);
 
   // commented out because cleans the tab
   useEffect(() => {
@@ -61,7 +75,7 @@ const GaugeChart = ({}) => {
   }, [nwmState.isModalOpen]);
 
  return (  
-    <div id='chart-gauges-div' style={{ width: '90vh', height: '900px' }}></div>
+    <div id='chart-gauges-div' style={{ width: "100vh", height: "600px" }}></div>
  )
 
 }

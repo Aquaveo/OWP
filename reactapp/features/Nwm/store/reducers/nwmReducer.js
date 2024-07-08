@@ -158,7 +158,6 @@ const initialCurrentNwm =
 }
 
 const reducerNwm = (state, action) => {
-  console.log(state, action)
   switch (action.type) {
     case nwmActionsTypes.reach_analysis_assimilation:
     case nwmActionsTypes.reach_short_range:
@@ -277,7 +276,8 @@ const reducerNwm = (state, action) => {
         }
       };
     case nwmActionsTypes.gauge_observed:
-    case nwmActionsTypes.gauge_forecast:  
+    case nwmActionsTypes.gauge_forecast:
+      
       return {
         ...state,
         state: {

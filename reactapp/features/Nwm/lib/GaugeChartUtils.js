@@ -1,3 +1,7 @@
+import * as am5 from "@amcharts/amcharts5";
+import * as am5xy from "@amcharts/amcharts5/xy";
+import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
+import * as am5plugins_exporting from "@amcharts/amcharts5/plugins/exporting";
 class NWMGaugeChart{
     constructor(){
         this.legendObject = new NWMGaugeLegend();
@@ -121,11 +125,12 @@ class NWMGaugeChart{
 
     handleUpdate(gaugeDataType, chartRef, nwmGuageData, legendContainerRef, toggleSeries) {
         if (chartRef.current && nwmGuageData) {
-            this._updateSeries(chartRef.current, nwmGuageData.gauges[gaugeDataType],legendContainerRef,toggleSeries);
+            this._updateSeries(chartRef.current, nwmGuageData[gaugeDataType],legendContainerRef,toggleSeries);
         }
     };
 
     _updateSeries (chart,seriesItem,legendContainerRef,toggleSeries){
+        console.log(seriesItem['name'])
         const series = chart.series.values.find(s => s.get('name') === seriesItem['name']);
       
         var tooltip = am5.Tooltip.new(chart.root, {
@@ -139,8 +144,8 @@ class NWMGaugeChart{
               name: seriesItem.name_product,
               xAxis: chart.xAxes.values[0],
               yAxis: chart.yAxes.values[0],
-              valueYField: "secondary",
-              valueXField: "validTime",
+              valueYField: "value",
+              valueXField: "time",
               stroke: am5.color(seriesItem.color),
               fill: am5.color(seriesItem.color),
               maxDeviation:1,

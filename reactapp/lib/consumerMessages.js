@@ -111,18 +111,19 @@ const handleMessage = (
       nwpActions.setReachProductsLoading(false);
     }
     if(command==='Plot_Gauge_Data_Retrieved'){
-      console.log(data)
       let observed_data = data['data']['observed']['data'].map(obj => ({
-        'value': obj.primary,
-        'secondary': new Date(obj['generatedTime']).getTime()
+        'value': obj.secondary,
+        'time': new Date(obj['generatedTime']).getTime()
       }));
       let forecast_data = data['data']['forecast']['data'].map(obj => ({
-        'value': obj.primary,
-        'secondary': new Date(obj['generatedTime']).getTime()
+        'value': obj.secondary,
+        'time': new Date(obj['generatedTime']).getTime()
       }));
-      // nwpActions.setGaugeData('gauge_forecast',forecast_data);
-      // nwpActions.setGaugeData('gauge_observed',observed_data);
-      // nwpActions.setGaugeDisplay(true);
+      console.log(forecast_data)
+
+      nwpActions.setGaugeData('gauge_forecast',forecast_data);
+      nwpActions.setGaugeData('gauge_observed',observed_data);
+      nwpActions.setGaugeDisplay(true);
 
     }
 }

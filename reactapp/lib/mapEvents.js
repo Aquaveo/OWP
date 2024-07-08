@@ -287,7 +287,7 @@ class MapEvents {
                     return
                 }
                 console.log("hey")
-                // nwmActions.setGaugeDisplay(true);
+                nwmActions.setGaugeDisplay(true);
                 nwmActions.handleModalState(true);
                 // const actual_zoom = mapObject.getView().getZoom();
                 // var esriMapPoint = new Point({
@@ -307,7 +307,7 @@ class MapEvents {
     
     
                 // //reset the gauges
-                // nwmActions.resetGauges();
+                nwmActions.resetGauges();
     
                 // // this ones are commented needs to be uncommented
                 // handleShow();
@@ -315,8 +315,8 @@ class MapEvents {
                     gauge_id: response.data.features[0].attributes.gaugelid,
                 }
                 
-                // appAPI.getGaugeData(dataRequest);
-                // nwmActions.setGaugeCurrentID(response.data.features[0].attributes.gaugelid);
+                appAPI.getGaugeData(dataRequest);
+                nwmActions.setGaugeCurrentID(response.data.features[0].attributes.gaugelid);
     
             }).catch((error) => {
                 console.log(error);
