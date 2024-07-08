@@ -6,122 +6,122 @@ const initialCurrentNwm =
   state:{
     reaches:{
       products:{
-        analysis_assimilation:{
+        reach_analysis_assimilation:{
           'is_visible': true,
-          'name_product': nwmActionsTypes.analysis_assimilation,
+          'name_product': nwmActionsTypes.reach_analysis_assimilation,
           'color':'#ff8c66',
           'data':[],
           'is_latest': true,
           'tooltip_text':'AnA'
       },
-      short_range: {
+      reach_short_range: {
           'is_visible': true,
-          'name_product': nwmActionsTypes.short_range,
+          'name_product': nwmActionsTypes.reach_short_range,
           'color':'#ff6699',
           'data':[],
           'is_latest': true,
           'tooltip_text':'SR'
       },    
   
-      long_range_ensemble_mean: {
+      reach_long_range_ensemble_mean: {
           'is_visible': false,
-          'name_product': nwmActionsTypes.long_range_ensemble_mean,
+          'name_product': nwmActionsTypes.reach_long_range_ensemble_mean,
           'color': '#8ca9ff',
           'data':[],
           'is_latest': true,
           'tooltip_text':'LR-Mean'
       },
-      long_range_ensemble_member_1:{
+      reach_long_range_ensemble_member_1:{
           'is_visible': false,
-          'name_product': nwmActionsTypes.long_range_ensemble_member_1,
+          'name_product': nwmActionsTypes.reach_long_range_ensemble_member_1,
           'color': '#8ca9ff',
           'data':[],
           'is_latest': true,
           'tooltip_text':'LR-1'
       },
-      long_range_ensemble_member_2: {
+      reach_long_range_ensemble_member_2: {
           'is_visible': false,
-          'name_product': nwmActionsTypes.long_range_ensemble_member_2,
+          'name_product': nwmActionsTypes.reach_long_range_ensemble_member_2,
           'color': '#8ca9ff',
           'data':[],
           'is_latest': true,
           'tooltip_text':'LR-2'
       },
-      long_range_ensemble_member_3: {
+      reach_long_range_ensemble_member_3: {
           'is_visible': false,
-          'name_product': nwmActionsTypes.long_range_ensemble_member_3,
+          'name_product': nwmActionsTypes.reach_long_range_ensemble_member_3,
           'color': '#8ca9ff',
           'data':[],
           'is_latest': true,
           'tooltip_text':'LR-3'
       },
-      long_range_ensemble_member_4: {
+      reach_long_range_ensemble_member_4: {
           'is_visible': false,
-          'name_product': nwmActionsTypes.long_range_ensemble_member_4,
+          'name_product': nwmActionsTypes.reach_long_range_ensemble_member_4,
           'color': '#8ca9ff',
           'data':[],
           'is_latest': true,
           'tooltip_text':'LR-4'
       },
-      medium_range_blend: {
+      reach_medium_range_blend: {
         'is_visible': true,
-        'name_product': nwmActionsTypes.medium_range_blend,
+        'name_product': nwmActionsTypes.reach_medium_range_blend,
         'color': '#d966ff',
         'data':[],
         'is_latest': true,
         'tooltip_text':'MR-Blend'
       },
-      medium_range_ensemble_mean:{
+      reach_medium_range_ensemble_mean:{
         'is_visible': false,
-        'name_product': nwmActionsTypes.medium_range_ensemble_mean,
+        'name_product': nwmActionsTypes.reach_medium_range_ensemble_mean,
         'color': '#d966ff',
         'data':[],
         'is_latest': true,
         'tooltip_text':'MR-Mean'
       },
-      medium_range_ensemble_member_1:{
+      reach_medium_range_ensemble_member_1:{
           'is_visible': false,
-          'name_product': nwmActionsTypes.medium_range_ensemble_member_1,
+          'name_product': nwmActionsTypes.reach_medium_range_ensemble_member_1,
           'color': '#d966ff',
           'data':[],
           'is_latest': true,
           'tooltip_text':'MR-1'
       },
-      medium_range_ensemble_member_2:{
+      reach_medium_range_ensemble_member_2:{
           'is_visible': false,
-          'name_product': nwmActionsTypes.medium_range_ensemble_member_2,
+          'name_product': nwmActionsTypes.reach_medium_range_ensemble_member_2,
           'color': '#d966ff',
           'data':[],
           'is_latest': true,
           'tooltip_text':'MR-2'
       },
-      medium_range_ensemble_member_3:{
+      reach_medium_range_ensemble_member_3:{
           'is_visible': false,
-          'name_product': nwmActionsTypes.medium_range_ensemble_member_3,
+          'name_product': nwmActionsTypes.reach_medium_range_ensemble_member_3,
           'color': '#d966ff',
           'data':[],
           'is_latest': true,
           'tooltip_text':'MR-3'
       },
-      medium_range_ensemble_member_4:{
+      reach_medium_range_ensemble_member_4:{
           'is_visible': false,
-          'name_product': nwmActionsTypes.medium_range_ensemble_member_4,
+          'name_product': nwmActionsTypes.reach_medium_range_ensemble_member_4,
           'color': '#d966ff',
           'data':[],
           'is_latest': true,
           'tooltip_text':'MR-4'
       },
-      medium_range_ensemble_member_5:{
+      reach_medium_range_ensemble_member_5:{
           'is_visible': false,
-          'name_product': nwmActionsTypes.medium_range_ensemble_member_5,
+          'name_product': nwmActionsTypes.reach_medium_range_ensemble_member_5,
           'color': '#d966ff',
           'data':[],
           'is_latest': true,
           'tooltip_text':'MR-5'
       },
-      medium_range_ensemble_member_6:{
+      reach_medium_range_ensemble_member_6:{
         'is_visible': false,
-        'name_product': nwmActionsTypes.medium_range_ensemble_member_6,
+        'name_product': nwmActionsTypes.reach_medium_range_ensemble_member_6,
         'color': '#d966ff',
         'data':[],
         'is_latest': true,
@@ -284,8 +284,8 @@ const reducerNwm = (state, action) => {
           ...state.state,
           gauges: {
             ...state.state.gauges,
-            [action.type]: {
-              ...state.state.gauges[action.type],
+            [action.dataType]: {
+              ...state.state.gauges[action.dataType],
               data: action.data
             }            
           }

@@ -25,7 +25,7 @@ const ReachChart = ({}) => {
     nwmReachChart.initializeLegend(
       chartRef.current.root,
       chartRef.current,
-      nwpActions.toggleProduct
+      nwpActions.toggleReachProduct
     )
 
     legendContainerRef.current = nwmReachChart.getLegendContainer(chartRef.current.root)
@@ -43,7 +43,7 @@ const ReachChart = ({}) => {
   useEffect(() => {
 
     productKeys.forEach(key => {
-      nwmReachChart.handleUpdate(key, chartRef, nwmState.reaches,legendContainerRef.current,nwpActions.toggleProduct);
+      nwmReachChart.handleUpdate(key, chartRef, nwmState.reaches,legendContainerRef.current,nwpActions.toggleReachProduct);
     });
     return () => {
       console.log("cleaning chart useeffect 2")

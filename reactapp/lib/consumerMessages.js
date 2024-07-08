@@ -36,11 +36,11 @@ const handleMessage = (
           'value': obj.flow,
           'forecast-time': new Date(obj['validTime']).getTime()
         }));
-        nwpActions.updateReachProductsState('long_range_ensemble_mean', ts_mean);
-        nwpActions.updateReachProductsState('long_range_ensemble_member_1', ts_1);
-        nwpActions.updateReachProductsState('long_range_ensemble_member_2', ts_2);
-        nwpActions.updateReachProductsState('long_range_ensemble_member_3', ts_3);
-        nwpActions.updateReachProductsState('long_range_ensemble_member_4', ts_4);
+        nwpActions.updateReachProductsState('reach_long_range_ensemble_mean', ts_mean);
+        nwpActions.updateReachProductsState('reach_long_range_ensemble_member_1', ts_1);
+        nwpActions.updateReachProductsState('reach_long_range_ensemble_member_2', ts_2);
+        nwpActions.updateReachProductsState('reach_long_range_ensemble_member_3', ts_3);
+        nwpActions.updateReachProductsState('reach_long_range_ensemble_member_4', ts_4);
       }
       if (product_name == 'medium_range') {  
         let ts_mean = data['data']['mediumRange']['mean']['data'].map(obj => ({
@@ -75,13 +75,13 @@ const handleMessage = (
           'forecast-time': new Date(obj['validTime']).getTime()
         }));
 
-        nwpActions.updateReachProductsState('medium_range_ensemble_mean', ts_mean);
-        nwpActions.updateReachProductsState('medium_range_ensemble_member_1', ts_1);
-        nwpActions.updateReachProductsState('medium_range_ensemble_member_2', ts_2);
-        nwpActions.updateReachProductsState('medium_range_ensemble_member_3', ts_3);
-        nwpActions.updateReachProductsState('medium_range_ensemble_member_4', ts_4);
-        nwpActions.updateReachProductsState('medium_range_ensemble_member_5', ts_5);
-        nwpActions.updateReachProductsState('medium_range_ensemble_member_6', ts_6);
+        nwpActions.updateReachProductsState('reach_medium_range_ensemble_mean', ts_mean);
+        nwpActions.updateReachProductsState('reach_medium_range_ensemble_member_1', ts_1);
+        nwpActions.updateReachProductsState('reach_medium_range_ensemble_member_2', ts_2);
+        nwpActions.updateReachProductsState('reach_medium_range_ensemble_member_3', ts_3);
+        nwpActions.updateReachProductsState('reach_medium_range_ensemble_member_4', ts_4);
+        nwpActions.updateReachProductsState('reach_medium_range_ensemble_member_5', ts_5);
+        nwpActions.updateReachProductsState('reach_medium_range_ensemble_member_6', ts_6);
       }
 
       if (product_name == 'analysis_assimilation') {
@@ -89,7 +89,7 @@ const handleMessage = (
           'value': obj.flow,
           'forecast-time': new Date(obj['validTime']).getTime()
         }));
-        nwpActions.updateReachProductsState('analysis_assimilation', series);
+        nwpActions.updateReachProductsState('reach_analysis_assimilation', series);
       }
 
       if (product_name == 'short_range') {
@@ -97,14 +97,14 @@ const handleMessage = (
           'value': obj.flow,
           'forecast-time': new Date(obj['validTime']).getTime()
         }));
-        nwpActions.updateReachProductsState('short_range', series);
+        nwpActions.updateReachProductsState('reach_short_range', series);
       }
       if (product_name == 'medium_range_blend') {
         let series = data['data']['mediumRangeBlend']['series']['data'].map(obj => ({
           'value': obj.flow,
           'forecast-time': new Date(obj['validTime']).getTime()
         }));
-        nwpActions.updateReachProductsState('medium_range_blend', series);
+        nwpActions.updateReachProductsState('reach_medium_range_blend', series);
       }
 
       nwpActions.handleModalState(true);
@@ -114,15 +114,15 @@ const handleMessage = (
       console.log(data)
       let observed_data = data['data']['observed']['data'].map(obj => ({
         'value': obj.primary,
-        'forecast-time': new Date(obj['generatedTime']).getTime()
+        'secondary': new Date(obj['generatedTime']).getTime()
       }));
       let forecast_data = data['data']['forecast']['data'].map(obj => ({
         'value': obj.primary,
-        'forecast-time': new Date(obj['generatedTime']).getTime()
+        'secondary': new Date(obj['generatedTime']).getTime()
       }));
-      nwpActions.setGaugeData('gauge_forecast',forecast_data);
-      nwpActions.setGaugeData('gauge_observed',observed_data);
-      nwpActions.setGaugeDisplay(true);
+      // nwpActions.setGaugeData('gauge_forecast',forecast_data);
+      // nwpActions.setGaugeData('gauge_observed',observed_data);
+      // nwpActions.setGaugeDisplay(true);
 
     }
 }
