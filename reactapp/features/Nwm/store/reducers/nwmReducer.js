@@ -145,7 +145,7 @@ const initialCurrentNwm =
       gauge_observed: {
         'is_visible': true,
         'name': 'gauge_observed',
-        'color':'#ff8c66',
+        'color':'#ff6699',
         'data':[],
         'tooltip_text':'Observed'
       },
@@ -284,8 +284,8 @@ const reducerNwm = (state, action) => {
           ...state.state,
           gauges: {
             ...state.state.gauges,
-            [action.dataType]: {
-              ...state.state.gauges[action.dataType],
+            [action.type]: {
+              ...state.state.gauges[action.type],
               data: action.data
             }            
           }
@@ -346,9 +346,9 @@ const reducerNwm = (state, action) => {
           ...state.state,
           gauges: {
             ...state.state.gauges,
-            [action.dataType]: {
-              ...state.state.gauges[action.dataType],
-              is_visible: !state.state.gauges[action.dataType].is_visible
+            [action.data]: {
+              ...state.state.gauges[action.data],
+              is_visible: !state.state.gauges[action.data].is_visible
             }
           }
         }

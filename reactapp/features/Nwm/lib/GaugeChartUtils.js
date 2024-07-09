@@ -141,7 +141,7 @@ class NWMGaugeChart{
         if(seriesItem.data.length > 0){
           if (!series) {
             const series = chart.series.push(am5xy.LineSeries.new(chart.root, {
-              name: seriesItem.name_product,
+              name: seriesItem.name,
               xAxis: chart.xAxes.values[0],
               yAxis: chart.yAxes.values[0],
               valueYField: "value",
@@ -238,7 +238,23 @@ class NWMGaugeChart{
         });
       }
 
-
+    _defineSeries(item, series) {
+      if (item.is_visible) {
+        if (series) {
+          series.data.setAll(item.data);
+  
+          series.show();
+          series.strokes.template.setAll({
+            strokeWidth: 2
+          });
+        }
+      } else {
+        if (series) {
+          series.hide();
+          series.data.setAll([]);
+        }
+      }
+    }
     createLegendContainer(root,chart){
         return this.legendObject.createLegendContainer(root,chart)
     }
@@ -300,10 +316,12 @@ class NWMGaugeLegend{
        useDefaultMarker: true,
        centerX: am5.percent(50),
        x: am5.percent(50),
-       layout: am5.GridLayout.new(root, {
-         maxColumns: 7,
-         fixedWidthGrid: true
-       })
+       layout: root.horizontalLayout
+
+      //  layout: am5.GridLayout.new(root, {
+      //    maxColumns: 7,
+      //    fixedWidthGrid: true
+      //  })
    
      }));
      legend.markerRectangles.template.setAll({});
@@ -336,10 +354,15 @@ class NWMGaugeLegend{
    _createLegendContainer(root,chart){
      
      let legendContainer = chart.children.push(am5.Container.new(root, {
-       layout: am5.GridLayout.new(root, {
-         maxColumns: 3,
-         fixedWidthGrid: true
-       })
+      width: am5.percent(100),
+      layout: am5.GridLayout.new(root, {
+        maxColumns: 1,
+        fixedWidthGrid: true
+      })
+      //  layout: am5.GridLayout.new(root, {
+      //    maxColumns: 3,
+      //    fixedWidthGrid: true
+      //  })
      
      }));
      this.legendRef = legendContainer;
@@ -360,29 +383,29 @@ class NWMGaugeLegend{
  
        // create legend
        var legend = legendContainer.children.push(am5.Legend.new(root, {
-         width: am5.percent(100),
-         useDefaultMarker: true,
-         layout: root.horizontalLayout
+        width: am5.percent(100),
+        useDefaultMarker: true,
+        layout: am5.GridLayout.new(root, {
+          maxColumns: 7,
+          fixedWidthGrid: true
+        })
+        //  width: am5.percent(100),
+        //  useDefaultMarker: true,
+        //  layout: root.horizontalLayout
        }));
        legend.set('name',heading)
  
        legend.markerRectangles.template.setAll({});
      
-       // When legend item container is hovered, dim all the series except the hovered one
-       legend.itemContainers.template.events.on("pointerover", function(e) {
-         onPointerOver(e,chart);
-       })
-     
-       // When legend item container is unhovered, make all series as they are
-       legend.itemContainers.template.events.on("pointerout", function(e) {
-         onPointerOut(e,chart);
-       })
-     
-       legend.itemContainers.template.events.on("click", function(e) {
+       legend.itemContainers.template.events.on("pointerover", (e) => this._onPointerOver(e, chart));
+       legend.itemContainers.template.events.on("pointerout", (e) => this._onPointerOut(e, chart));
+       legend.itemContainers.template.events.on("click", (e) => {
          var targetSeries = e.target.dataItem.dataContext;
          var name_series = targetSeries.get('name');
+         console.log(name_series)
          onClick(name_series);
        });
+   
          
        return legend
    }

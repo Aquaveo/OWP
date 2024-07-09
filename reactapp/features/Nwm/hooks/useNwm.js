@@ -22,7 +22,7 @@ export const useNwm = ({ reducer = reducerNwm } = {}) => {
     resetReaches: withLogging(() => updateNwm({ type: nwmActionsTypes.reset_reaches }), 'resetReaches'),
 
     // Gauge data
-    setGaugeData: withLogging((dataType, data) => updateNwm({ type: nwmActionsTypes[dataType], data: data }), 'setGaugeData'),
+    setGaugeData: withLogging((dataType, ts) => updateNwm({ type: nwmActionsTypes[dataType], data: ts }), 'setGaugeData'),
     toggleGaugeData: withLogging((dataType) => updateNwm({ type: nwmActionsTypes.gauge_toggle_data, data: dataType }), 'toggleGaugeData'),
     setGaugeDisplay: withLogging((display) => updateNwm({ type: nwmActionsTypes.set_gauge_display, display: display }), 'setGaugeDisplay'),
     setGaugeCurrentID: withLogging((gaugeID) => updateNwm({ type: nwmActionsTypes.set_gauge_current_id, gaugeID: gaugeID }), 'setGaugeCurrentID'),

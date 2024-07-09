@@ -18,6 +18,8 @@ class BaseLegendUtils {
   setLegendItem(key, value) {
     this.legend[key] = value;
   }
+
+
 }
 class BaseChartUtils {
   constructor() {

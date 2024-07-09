@@ -119,7 +119,8 @@ const handleMessage = (
         'value': obj.secondary,
         'time': new Date(obj['generatedTime']).getTime()
       }));
-      console.log(forecast_data)
+      console.log('forecast data',forecast_data);
+      console.log('observed data',observed_data);
 
       nwpActions.setGaugeData('gauge_forecast',forecast_data);
       nwpActions.setGaugeData('gauge_observed',observed_data);
