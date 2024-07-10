@@ -1,16 +1,21 @@
 import React, { Suspense } from 'react';
-import {ArcgisMapServerLegendContainer} from './ArcgisMapServerLegendContainer.styled';  // CSS module
 import { LegendComponent } from './BaseLegend';  // BaseLegend.js
+import {ArcgisMapServerLegendContainer} from './ArcgisMapServerLegendContainer.styled';
 
-const ArcgisMapServerLegend = ({ url, layerIndex, title }) => {
+const GaugesMapServerLegend = ({ 
+    layer, 
+    layerIndex, 
+    title 
+}) => {
+
     return (
         <ArcgisMapServerLegendContainer>
             <Suspense fallback={<div>Loading legends...</div>}>
-                <LegendComponent url={url} layerIndex={layerIndex} title={title} /> 
+                <LegendComponent layer={layer} layerIndex={layerIndex} title={title} /> 
             </Suspense>
         </ArcgisMapServerLegendContainer>
     );
 };
 
 
-export {ArcgisMapServerLegend};
+export {GaugesMapServerLegend};

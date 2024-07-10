@@ -68,11 +68,26 @@ const GaugeChart = ({}) => {
   useEffect(() => {
     return () => {
       if (!nwmState.isModalOpen) {
+        console.log("cleaning modal gauge chart because modal has closed")
         chartRef.current.dispose();
+        legendContainerRef.current && legendContainerRef.current.dispose();
         nwpActions.resetGauges();
       }
     };
   }, [nwmState.isModalOpen]);
+
+  // commented out because cleans the tab
+  useEffect(() => {
+    return () => {
+      if (!nwmState.gauges.display) {
+        console.log("cleaning modal gauge chart because display is false")
+        chartRef.current.dispose();
+        legendContainerRef.current && legendContainerRef.current.dispose();
+        nwpActions.resetGauges();
+      }
+    };
+  }, [nwmState.gauges.display]);
+
 
  return (  
     <div id='chart-gauges-div' style={{ width: "100vh", height: "600px" }}></div>

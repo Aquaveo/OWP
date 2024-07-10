@@ -12,15 +12,24 @@ const LegendUtil = class {
             '2.5K - 5K,': '',
             '0 - 250,': 'Low',
             'No Data,   (Typically, an intersection with a lake or reservoir.)': 'No Data'
-        };
+        },
+        this.TIMEOUT_DURATION = 5000; // Timeout duration in milliseconds
     }
 
     _fetchLegend(url) {
-        return fetch(url).then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
+        return Promise.race([
+            fetch(url).then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            }),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Request timed out')), this.TIMEOUT_DURATION)
+            )
+        ]).catch(error => {
+            console.error('Fetch legend failed:', error);
+            throw error; // Re-throw the error after logging it
         });
     }
 
@@ -51,6 +60,15 @@ const LegendUtil = class {
             };
         }
         return this.resourceCache[url];
+    }
+
+    processStreamAnomalyLegendData(data, layerIndex){
+        return data.layers[layerIndex].legend
+            .filter(portion => portion.label.includes('Stream Order: 10'))
+            .map(portion => ({
+                src: `data:image/png;base64,${portion.imageData}`,
+                label: this.matcherDict[portion.label.split('Stream Order: 10').join('').trim()]
+            }));
     }
 }
 

@@ -59,11 +59,14 @@ const ReachChart = ({}) => {
   useEffect(() => {
     return () => {
       if (!nwmState.isModalOpen) {
+        console.log("cleaning modal reach chart")
         chartRef.current.dispose();
+        legendContainerRef.current && legendContainerRef.current.dispose();
         nwpActions.resetReaches();
       }
     };
   }, [nwmState.isModalOpen]);
+  
 
  return (  
     <div id="chartdiv" style={{ width: "100vh", height: "600px" }}></div>

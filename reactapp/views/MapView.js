@@ -59,7 +59,9 @@ const MapView = (props) => {
 
     //adding layers
     initialLayersArray.forEach(layer => {
-      mapActions.addLayer(layer);
+      if(layer.options.name !=='gaugeMapLayer'){
+        mapActions.addLayer(layer);
+      }
     })
     
   

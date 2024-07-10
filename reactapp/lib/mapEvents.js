@@ -283,32 +283,14 @@ class MapEvents {
             // nwmActions.setReachProductsLoading(true);
             axios.get(url).then((response) => {
                 console.log(response.data);
+                nwmActions.resetGauges();
                 if(response.data.features.length < 1){
                     return
                 }
-                console.log("hey")
+                
                 nwmActions.setGaugeDisplay(true);
                 nwmActions.handleModalState(true);
-                // const actual_zoom = mapObject.getView().getZoom();
-                // var esriMapPoint = new Point({
-                //     longitude: clickCoordinate[0],
-                //     latitude: clickCoordinate[1],
-                //     spatialReference: spatialReference,
-                // });
-                // let currentStreamFeature = this.esriUtils.processStreamServiceQueryResult(actual_zoom, esriMapPoint, response.data, mapObject)
-                // var stationID = currentStreamFeature.properties['id']
-                // // //console.log(stationID)
-                
-                // //updated current geometry
-                // nwmActions.updateCurrentGeometry(currentStreamFeature.geometry);
-                // //create the reach layer
-                // // const reach_layer = this.mapUtils.createClickedReachLayer(`reach_on_click_from_region`,currentStreamFeature.geometry);
-                // // mapActions.addLayer(reach_layer);
-    
-    
-                // //reset the gauges
-                nwmActions.resetGauges();
-    
+
                 // // this ones are commented needs to be uncommented
                 // handleShow();
                 let dataRequest = {
