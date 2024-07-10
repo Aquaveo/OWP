@@ -13,10 +13,9 @@ import { MapLegend } from 'features/MapLegend/MapLegend';
 const ws = getWsURL();
 const layerDataObject = new layerData();
 
-const StreamLayerURL = layerDataObject.getStreamAnomalyLayer().options.url;
-const GaugeLayerURL = layerDataObject.getGaugeLayer().options.url;
+const StreamLayer = layerDataObject.getStreamAnomalyLayer();
+console.log(StreamLayer)
 const GaugeLayer = layerDataObject.getGaugeLayer();
-console.log(GaugeLayerURL)
 const OWPView = () => {
   const [ isLoading, setIsLoading ] = useState(false);
   return (
@@ -30,13 +29,12 @@ const OWPView = () => {
                 />
                 <MapLegend>
                   <StreamAnomalyArcgisMapServerLegend 
-                      url={StreamLayerURL}
+                      layer={StreamLayer}
                       layerIndex={1} 
                       title={'National Stream Analysis Anomaly'} 
                     />
 
                   <GaugesMapServerLegend 
-                    url={GaugeLayerURL}
                     layer={GaugeLayer}
                     layerIndex={15} 
                     title={'NWPS River Gauge System'} 

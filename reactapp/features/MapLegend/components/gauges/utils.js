@@ -9,16 +9,16 @@ const LegendUtil = class {
         return Promise.race([
             fetch(url).then(response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    console.log(`HTTP error! status: ${response.status}`);
                 }
                 return response.json();
             }),
             new Promise((_, reject) =>
-                setTimeout(() => reject(new Error('Request timed out')), this.TIMEOUT_DURATION)
+                setTimeout(() => reject(console.log('Request timed out')), this.TIMEOUT_DURATION)
             )
         ]).catch(error => {
-            console.error('Fetch legend failed:', error);
-            throw error; // Re-throw the error after logging it
+            console.log('Fetch legend failed:', error);
+            // throw error; // Re-throw the error after logging it
         });
     }
 
@@ -53,11 +53,17 @@ const LegendUtil = class {
 
     processGaugeLegendData(data, layerIndex){
         // return data.layers
-        return data.layers[layerIndex].legend
+        if (data){
+            return data.layers[layerIndex].legend
             .map(portion => ({
                 src: `data:image/png;base64,${portion.imageData}`,
                 label: portion.label
             }));
+        }
+        else{
+            return []
+        }
+
     }
 }
 

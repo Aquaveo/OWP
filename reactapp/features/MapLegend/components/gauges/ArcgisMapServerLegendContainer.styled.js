@@ -2,19 +2,11 @@ import styled from "styled-components";
 
 export const ArcgisMapServerLegendContainer = styled.div`
 
-    z-index: 1000;
-    position: absolute;
-    bottom: 0.5rem;
-    left:0.5rem;
-    background-color: white;
-    opacity: 0.8;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
 
     .legendBox {
         padding: 10px;
         background-color: #f9f9f9;
-        border: 1px solid #ccc;
+        // border: 1px solid #ccc;
         border-radius: 5px;
     }
 

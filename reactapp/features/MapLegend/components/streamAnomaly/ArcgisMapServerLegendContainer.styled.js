@@ -1,15 +1,17 @@
 import styled from "styled-components";
 
 export const ArcgisMapServerLegendContainer = styled.div`
+    .legendTitle {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .legendTitle h6 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+    }
 
-    z-index: 1000;
-    position: absolute;
-    bottom: 0.5rem;
-    left:0.5rem;
-    background-color: white;
-    opacity: 0.8;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
 
     .svelte-1x3cf1v{
         display: inline-block;
