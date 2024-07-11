@@ -1,6 +1,15 @@
 import styled from "styled-components";
 
 export const ArcgisMapServerLegendContainer = styled.div`
+
+    .legendBox {
+        padding: 10px;
+        background-color: #f9f9f9;
+        // border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+
     .legendTitle {
         display: flex;
         align-items: center;
